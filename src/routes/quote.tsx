@@ -4,6 +4,21 @@ import { Clock, MessageCircle, Phone, ShieldCheck } from "lucide-react";
 import { SITE } from "@/lib/siteConfig";
 
 export const Route = createFileRoute("/quote")({
+  validateSearch: (search: Record<string, unknown>): {
+    destination?: string;
+    when?: string;
+    depart?: string;
+    tripType?: string;
+    travellers?: string;
+    cabin?: string;
+  } => ({
+    destination: (search.destination as string) || undefined,
+    when: (search.when as string) || undefined,
+    depart: (search.depart as string) || undefined,
+    tripType: (search.tripType as string) || undefined,
+    travellers: (search.travellers as string) || undefined,
+    cabin: (search.cabin as string) || undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Get a quote — Luxonair" },
@@ -17,18 +32,25 @@ export const Route = createFileRoute("/quote")({
   component: QuotePage,
 });
 
-function QuotePage() {
-  const params = typeof window !== "undefined"
-    ? new URLSearchParams(window.location.search)
-    : new URLSearchParams();
+function parseTravellers(str: string): { adults?: string; children?: string } {
+  if (!str) return {};
+  const adults = str.match(/(\d+)\s*adult/i)?.[1];
+  const children = str.match(/(\d+)\s*child/i)?.[1];
+  return {
+    ...(adults ? { adults } : {}),
+    ...(children ? { children } : {}),
+  };
+}
 
-  // Map hero search widget params to QuoteForm fields
+function QuotePage() {
+  const search = Route.useSearch();
+
+  // Map hero search widget params → QuoteForm initial state
   const initialValues = {
-    destination: params.get("destination") ?? "",
-    // "when" from package form, "depart" (date) from flight form
-    departWindow: params.get("when") ?? params.get("depart") ?? "",
-    // "tripType" is set as a hidden input in the flight form
-    tripType: params.get("tripType") ?? "",
+    destination: search.destination ?? "",
+    departWindow: search.when ?? search.depart ?? "",
+    tripType: search.tripType ?? "",
+    ...parseTravellers(search.travellers ?? ""),
   };
 
   return (

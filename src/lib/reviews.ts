@@ -17,6 +17,6 @@ export const reviews: Review[] = [
 ];
 
 export const aggregate = {
-  average: 4.9,
+  average: +(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1),
   count: reviews.length,
 };

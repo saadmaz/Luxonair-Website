@@ -58,11 +58,13 @@ export function Header() {
               label="Destinations"
               active={openMenu === "destinations"}
               onEnter={() => setOpenMenu("destinations")}
+              panelId="mega-destinations"
             />
             <NavTrigger
               label="Holiday Types"
               active={openMenu === "holiday"}
               onEnter={() => setOpenMenu("holiday")}
+              panelId="mega-holiday"
             />
             <NavLink to="/deals">Deals</NavLink>
             <NavLink to="/blog">Blog</NavLink>
@@ -72,7 +74,7 @@ export function Header() {
             <NavLink to="/contact">Contact</NavLink>
 
             {openMenu === "destinations" && (
-              <MegaPanel onClose={() => setOpenMenu(null)}>
+              <MegaPanel id="mega-destinations" onClose={() => setOpenMenu(null)}>
                 <div className="grid grid-cols-2 gap-x-10 gap-y-6 md:grid-cols-3">
                   {regions.map((r) => {
                     const list = destinations.filter((d) => d.region === r);
@@ -112,7 +114,7 @@ export function Header() {
             )}
 
             {openMenu === "holiday" && (
-              <MegaPanel onClose={() => setOpenMenu(null)}>
+              <MegaPanel id="mega-holiday" onClose={() => setOpenMenu(null)}>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                   {holidayTypes.map((h) => (
                     <Link
@@ -140,7 +142,8 @@ export function Header() {
               <Link to="/quote">Start a quote</Link>
             </Button>
             <button
-              aria-label="Open menu"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
               className="grid h-9 w-9 place-items-center rounded-md border border-border bg-background md:hidden"
             >
@@ -203,10 +206,12 @@ function NavTrigger({
   label,
   active,
   onEnter,
+  panelId,
 }: {
   label: string;
   active: boolean;
   onEnter: () => void;
+  panelId: string;
 }) {
   return (
     <button
@@ -215,6 +220,7 @@ function NavTrigger({
       onFocus={onEnter}
       onClick={onEnter}
       aria-expanded={active}
+      aria-controls={active ? panelId : undefined}
       className={`inline-flex items-center gap-1 text-sm transition-colors ${
         active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
       }`}
@@ -228,14 +234,17 @@ function NavTrigger({
 }
 
 function MegaPanel({
+  id,
   children,
   onClose,
 }: {
+  id: string;
   children: React.ReactNode;
   onClose: () => void;
 }) {
   return (
     <div
+      id={id}
       className="absolute left-0 right-0 top-full border-b border-border bg-background shadow-2xl"
       onMouseLeave={onClose}
     >

@@ -36,7 +36,14 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:url", content: "/" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [
+      { rel: "canonical", href: "/" },
+      {
+        rel: "preload",
+        as: "image",
+        href: "https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=2400&q=70",
+      },
+    ],
   }),
   component: Home,
 });
@@ -65,12 +72,12 @@ function Hero() {
     <section className="relative flex min-h-[calc(100vh-6.25rem)] flex-col overflow-hidden">
       {/* ── Backgrounds ── */}
       <div className="absolute inset-0 -z-10">
-        <div
-          className="absolute inset-0 scale-110 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=2400&q=70)",
-          }}
+        <img
+          src="https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=2400&q=70"
+          alt=""
+          aria-hidden="true"
+          fetchPriority="high"
+          className="absolute inset-0 h-full w-full scale-110 object-cover object-center"
         />
         {/* Deep multi-stop overlay */}
         <div className="absolute inset-0 bg-linear-to-b from-navy/98 via-navy/85 to-navy/65" />
@@ -133,7 +140,7 @@ function Hero() {
               { icon: Clock,       label: "4-hr response" },
               { icon: Users,       label: "500+ trips" },
             ].map(({ icon: Icon, label }) => (
-              <span key={label} className="flex items-center gap-1.5 text-xs text-primary-foreground/30">
+              <span key={label} className="flex items-center gap-1.5 text-xs text-primary-foreground/55">
                 <Icon className="h-3.5 w-3.5 text-teal/70" />
                 {label}
               </span>

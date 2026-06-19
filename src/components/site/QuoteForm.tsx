@@ -179,6 +179,9 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
             </Field>
             <Field label="Budget pp" error={errors.budget}>
               <Pills value={form.budget} onChange={(v) => set("budget", v)} options={[...budgetBands]} />
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                ££ up to £1,500 · £££ £1,500–3,500 · ££££ £3,500+
+              </p>
             </Field>
           </div>
         )}

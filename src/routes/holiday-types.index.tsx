@@ -62,7 +62,7 @@ function HolidayTypesIndex() {
               <div className="absolute inset-x-0 bottom-0 p-5 text-primary-foreground">
                 <div className="font-display text-xl font-semibold">{h.name}</div>
                 <div className="mt-0.5 text-sm text-primary-foreground/75">{h.tagline}</div>
-                <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-gold transition-gap group-hover:gap-2">
+                <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-gold group-hover:gap-2">
                   Explore <ArrowRight className="h-3 w-3" />
                 </span>
               </div>

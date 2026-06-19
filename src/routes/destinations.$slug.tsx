@@ -119,7 +119,7 @@ function DestinationDetail() {
             </div>
             <div className="text-right text-xs text-muted-foreground">per person · {d.durationNights} nights</div>
             <Button asChild size="lg" className="mt-5 w-full bg-gold text-gold-foreground hover:bg-gold/90">
-              <Link to="/quote" search={{ destination: d.name } as never}>Get a quote</Link>
+              <Link to="/quote" search={{ destination: d.name }}>Get a quote</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="mt-2 w-full border-primary/30 hover:border-primary hover:text-primary">
               <a href={`https://wa.me/${SITE.phone.whatsapp}`} target="_blank" rel="noopener noreferrer">
@@ -160,7 +160,7 @@ function QuoteSection({ defaultDestination }: { defaultDestination: string }) {
             We pre-fill destination based on the page you came from. You can change anything.
           </p>
         </div>
-        <QuoteForm defaultDestination={defaultDestination} />
+        <QuoteForm initialValues={{ destination: defaultDestination }} />
       </div>
     </section>
   );
