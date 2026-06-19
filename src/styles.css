@@ -122,8 +122,8 @@
   padding-inline: 0.75rem;
   font-size: 0.875rem;
   color: var(--foreground);
-}
-@utility input-field:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--ring);
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--ring);
+  }
 }
