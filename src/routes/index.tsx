@@ -134,12 +134,12 @@ function StatsStrip() {
     { value: "4 hrs", label: "Quote response time" },
   ];
   return (
-    <div className="bg-navy text-navy-fg">
-      <div className="container-page grid grid-cols-2 gap-6 pt-12 pb-8 md:pt-16 lg:grid-cols-4">
+    <div className="border-y border-border bg-card shadow-sm">
+      <div className="container-page grid grid-cols-2 gap-6 pb-8 pt-12 md:pt-16 lg:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="text-center">
             <div className="font-display text-3xl font-semibold text-gold">{s.value}</div>
-            <div className="mt-1 text-xs text-navy-fg/60">{s.label}</div>
+            <div className="mt-1 text-xs text-muted-foreground">{s.label}</div>
           </div>
         ))}
       </div>
