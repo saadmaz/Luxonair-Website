@@ -14,7 +14,7 @@ export const faqGroups: FaqGroup[] = [
     items: [
       { q: "Is my booking ATOL protected?", a: "Yes — every booking that includes a flight is ATOL protected. You receive an ATOL Certificate within 24 hours of paying a deposit." },
       { q: "What payment methods do you accept?", a: "UK debit and credit cards, bank transfer, and BACS for corporate accounts. We do not charge card fees." },
-      { q: "How much is the deposit?", a: "Typically 20% of the trip total, with the balance due 10–12 weeks before departure. Some operators require larger deposits." },
+      { q: "How much is the deposit?", a: "Typically 20% of the trip total, with the balance due 10–12 weeks before departure. Some operators require larger deposits. TEST" },
     ],
   },
   {
