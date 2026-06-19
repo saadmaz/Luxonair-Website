@@ -172,7 +172,7 @@ export function QuoteForm({ defaultDestination }: { defaultDestination?: string 
             Continue <ChevronRight className="ml-1 h-4 w-4" />
           </Button>
         ) : (
-          <Button type="button" onClick={submit}>Send enquiry</Button>
+          <Button type="button" onClick={submit} className="bg-gold text-gold-foreground hover:bg-gold/90">Send enquiry</Button>
         )}
       </div>
       <p className="mt-4 text-xs text-muted-foreground">

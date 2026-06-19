@@ -92,7 +92,7 @@ function DealsPage() {
                   <div>
                     <div className="text-xs text-muted-foreground">From, per person</div>
                     <div className="flex items-baseline gap-2">
-                      <span className="font-display text-2xl font-semibold">
+                      <span className="font-display text-2xl font-semibold text-teal">
                         £{d.fromPrice.toLocaleString()}
                       </span>
                       {d.oldPrice && (

@@ -25,7 +25,7 @@ export function DestinationCard({ d }: { d: Destination }) {
         <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{d.tagline}</p>
         <div className="mt-4 flex items-center justify-between text-sm">
           <span className="text-muted-foreground">{d.durationNights} nights</span>
-          <span className="font-semibold">
+          <span className="font-semibold text-teal">
             From £{d.fromPrice.toLocaleString()} <span className="text-xs font-normal text-muted-foreground">pp</span>
           </span>
         </div>

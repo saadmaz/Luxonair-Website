@@ -6,7 +6,7 @@ export function HeroSearchTabs() {
   const [tab, setTab] = useState<"package" | "flight">("package");
   return (
     <div className="container-page relative z-10 -mb-12 md:-mb-16">
-      <div className="overflow-hidden rounded-2xl bg-white shadow-[0_20px_64px_-8px_rgba(4,32,69,0.24)] ring-1 ring-navy/8">
+      <div className="overflow-hidden rounded-2xl bg-card shadow-[0_20px_64px_-8px_rgba(4,32,69,0.24)] ring-1 ring-navy/8">
         {/* Tab bar */}
         <div className="flex gap-1 bg-secondary px-4 pt-3">
           <Tab active={tab === "package"} onClick={() => setTab("package")} icon={Package}>
@@ -43,7 +43,7 @@ function Tab({
       className={`flex items-center gap-2 rounded-t-lg px-5 py-2.5 text-sm font-semibold transition-all ${
         active
           ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:bg-white hover:text-foreground"
+          : "text-muted-foreground hover:bg-card hover:text-foreground"
       }`}
     >
       <Icon className="h-4 w-4" /> {children}
