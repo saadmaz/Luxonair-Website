@@ -5,7 +5,7 @@ import { Plane, Package } from "lucide-react";
 export function HeroSearchTabs() {
   const [tab, setTab] = useState<"package" | "flight">("package");
   return (
-    <div className="container-page relative z-10 -mb-8 md:-mb-12">
+    <div className="container-page relative z-10">
       <div className="overflow-hidden rounded-2xl bg-card shadow-[0_20px_64px_-8px_rgba(4,32,69,0.24)] ring-1 ring-navy/8">
         {/* Tab bar */}
         <div className="flex gap-1 bg-muted/70 px-4 pt-3">

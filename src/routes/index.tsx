@@ -60,8 +60,8 @@ function Home() {
 
 function Hero() {
   return (
-    <section className="relative">
-      {/* Backgrounds — clipped separately so the section doesn't clip the search widget */}
+    <section className="relative pb-16 md:pb-20">
+      {/* Backgrounds */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div
           className="absolute inset-0 scale-105 bg-cover bg-center"
@@ -135,7 +135,7 @@ function StatsStrip() {
   ];
   return (
     <div className="border-y border-border bg-card shadow-sm">
-      <div className="container-page grid grid-cols-2 gap-6 pb-8 pt-12 md:pt-16 lg:grid-cols-4">
+      <div className="container-page grid grid-cols-2 gap-6 py-10 lg:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="text-center">
             <div className="font-display text-3xl font-semibold text-gold">{s.value}</div>
