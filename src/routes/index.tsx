@@ -14,7 +14,6 @@ import {
   Phone,
   Plane,
   ShieldCheck,
-  Sparkles,
   Star,
   Users,
 } from "lucide-react";
@@ -71,66 +70,51 @@ function Hero() {
               "url(https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=2400&q=70)",
           }}
         />
-        <div className="absolute inset-0 bg-linear-to-r from-navy/97 via-navy/80 to-navy/10" />
+        <div className="absolute inset-0 bg-linear-to-br from-navy/97 via-navy/88 to-navy/55" />
         {/* Teal accent edge */}
-        <div className="absolute inset-y-0 left-0 w-1.5 bg-linear-to-b from-transparent via-teal/70 to-transparent" />
+        <div className="absolute inset-y-0 left-0 w-1 bg-linear-to-b from-transparent via-teal to-transparent" />
       </div>
 
-      <div className="container-page relative grid gap-10 pb-8 pt-16 md:grid-cols-[1.4fr_1fr] md:items-stretch md:pb-10 md:pt-24">
-        {/* Left: copy */}
-        <div className="flex flex-col justify-center py-2 max-w-xl">
-          <p className="inline-flex w-fit items-center gap-2 rounded-full border border-gold/30 bg-gold/8 px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-primary-foreground/90 backdrop-blur-sm">
-            <Sparkles className="h-3 w-3 text-gold" /> UK Travel Specialists
-          </p>
-          <h1 className="mt-7 font-display text-5xl font-semibold leading-[1.03] text-primary-foreground sm:text-5xl md:text-6xl text-balance">
+      <div className="container-page relative pb-10 pt-20 md:pb-14 md:pt-32">
+        <div className="max-w-3xl">
+          {/* Eyebrow */}
+          <div className="flex items-center gap-3">
+            <div className="h-px w-8 bg-gold/70" />
+            <p className="text-xs font-medium uppercase tracking-[0.3em] text-gold/80">
+              UK Travel Specialists
+            </p>
+          </div>
+
+          {/* Heading */}
+          <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.03] text-primary-foreground sm:text-6xl md:text-7xl text-balance">
             Tailor-made trips,{" "}
             <span className="text-gold">quoted in minutes,</span>{" "}
             built by people.
           </h1>
-          <p className="mt-6 max-w-md text-base leading-relaxed text-primary-foreground/70">
+
+          {/* Subtitle */}
+          <p className="mt-7 max-w-lg text-lg leading-relaxed text-primary-foreground/65">
             Premium long-haul, family escapes, and corporate travel from the UK.
-            One consultant owns your trip end-to-end.
+            One consultant owns your trip, end-to-end.
           </p>
-          <div className="mt-8 flex flex-wrap gap-4">
+
+          {/* CTAs */}
+          <div className="mt-10 flex flex-wrap items-center gap-5">
             <Button
               asChild
               size="lg"
-              className="bg-gold text-gold-foreground shadow-lg hover:bg-gold/90"
+              className="h-12 bg-gold px-8 text-sm text-gold-foreground shadow-lg hover:bg-gold/90"
             >
               <Link to="/quote">
-                Start a quote <ArrowRight className="ml-1 h-4 w-4" />
+                Start a quote <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="border-primary-foreground/25 bg-transparent text-primary-foreground hover:bg-primary-foreground/8 hover:border-primary-foreground/40"
+            <Link
+              to="/destinations"
+              className="flex items-center gap-1.5 text-sm text-primary-foreground/60 transition-colors hover:text-primary-foreground"
             >
-              <Link to="/destinations">Explore destinations</Link>
-            </Button>
-          </div>
-        </div>
-
-        {/* Right: two premium portrait images (desktop only) */}
-        <div className="hidden md:flex flex-col gap-4 self-stretch min-h-0">
-          <div className="relative flex-1 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/15">
-            <img
-              src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80"
-              alt=""
-              className="h-full w-full object-cover"
-              loading="eager"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-navy/60 via-transparent to-transparent" />
-          </div>
-          <div className="relative flex-1 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/15">
-            <img
-              src="https://images.unsplash.com/photo-1540202404-a2f29016b523?auto=format&fit=crop&w=800&q=80"
-              alt=""
-              className="h-full w-full object-cover"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-navy/60 via-transparent to-transparent" />
+              Explore destinations <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
         </div>
       </div>
