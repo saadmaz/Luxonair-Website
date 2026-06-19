@@ -4,11 +4,11 @@
 export const SITE = {
   phone: {
     /** Human-readable display string (used in UI copy) */
-    display: "0800 000 0000",        // TODO: replace with real freephone number
+    display: "07577 002702",
     /** E.164 format for tel: links */
-    tel: "+440000000000",             // TODO: replace with real E.164 number
+    tel: "+447577002702",
     /** Digits only, no +, for wa.me links */
-    whatsapp: "440000000000",         // TODO: replace with real WhatsApp number
+    whatsapp: "447577002702",
   },
   email: "hello@luxonair.com",
   address: "London, United Kingdom",

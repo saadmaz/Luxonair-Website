@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as QuoteRouteImport } from './routes/quote'
+import { Route as HolidaysRouteImport } from './routes/holidays'
 import { Route as HolidayTypesRouteImport } from './routes/holiday-types'
+import { Route as FlightsRouteImport } from './routes/flights'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DestinationsRouteImport } from './routes/destinations'
 import { Route as DealsRouteImport } from './routes/deals'
@@ -42,9 +44,19 @@ const QuoteRoute = QuoteRouteImport.update({
   path: '/quote',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HolidaysRoute = HolidaysRouteImport.update({
+  id: '/holidays',
+  path: '/holidays',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HolidayTypesRoute = HolidayTypesRouteImport.update({
   id: '/holiday-types',
   path: '/holiday-types',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FlightsRoute = FlightsRouteImport.update({
+  id: '/flights',
+  path: '/flights',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -121,7 +133,9 @@ export interface FileRoutesByFullPath {
   '/deals': typeof DealsRoute
   '/destinations': typeof DestinationsRouteWithChildren
   '/faq': typeof FaqRoute
+  '/flights': typeof FlightsRoute
   '/holiday-types': typeof HolidayTypesRouteWithChildren
+  '/holidays': typeof HolidaysRoute
   '/quote': typeof QuoteRoute
   '/reviews': typeof ReviewsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -138,6 +152,8 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/deals': typeof DealsRoute
   '/faq': typeof FaqRoute
+  '/flights': typeof FlightsRoute
+  '/holidays': typeof HolidaysRoute
   '/quote': typeof QuoteRoute
   '/reviews': typeof ReviewsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -157,7 +173,9 @@ export interface FileRoutesById {
   '/deals': typeof DealsRoute
   '/destinations': typeof DestinationsRouteWithChildren
   '/faq': typeof FaqRoute
+  '/flights': typeof FlightsRoute
   '/holiday-types': typeof HolidayTypesRouteWithChildren
+  '/holidays': typeof HolidaysRoute
   '/quote': typeof QuoteRoute
   '/reviews': typeof ReviewsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -178,7 +196,9 @@ export interface FileRouteTypes {
     | '/deals'
     | '/destinations'
     | '/faq'
+    | '/flights'
     | '/holiday-types'
+    | '/holidays'
     | '/quote'
     | '/reviews'
     | '/sitemap.xml'
@@ -195,6 +215,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/deals'
     | '/faq'
+    | '/flights'
+    | '/holidays'
     | '/quote'
     | '/reviews'
     | '/sitemap.xml'
@@ -213,7 +235,9 @@ export interface FileRouteTypes {
     | '/deals'
     | '/destinations'
     | '/faq'
+    | '/flights'
     | '/holiday-types'
+    | '/holidays'
     | '/quote'
     | '/reviews'
     | '/sitemap.xml'
@@ -233,7 +257,9 @@ export interface RootRouteChildren {
   DealsRoute: typeof DealsRoute
   DestinationsRoute: typeof DestinationsRouteWithChildren
   FaqRoute: typeof FaqRoute
+  FlightsRoute: typeof FlightsRoute
   HolidayTypesRoute: typeof HolidayTypesRouteWithChildren
+  HolidaysRoute: typeof HolidaysRoute
   QuoteRoute: typeof QuoteRoute
   ReviewsRoute: typeof ReviewsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -262,11 +288,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QuoteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/holidays': {
+      id: '/holidays'
+      path: '/holidays'
+      fullPath: '/holidays'
+      preLoaderRoute: typeof HolidaysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/holiday-types': {
       id: '/holiday-types'
       path: '/holiday-types'
       fullPath: '/holiday-types'
       preLoaderRoute: typeof HolidayTypesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/flights': {
+      id: '/flights'
+      path: '/flights'
+      fullPath: '/flights'
+      preLoaderRoute: typeof FlightsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -411,7 +451,9 @@ const rootRouteChildren: RootRouteChildren = {
   DealsRoute: DealsRoute,
   DestinationsRoute: DestinationsRouteWithChildren,
   FaqRoute: FaqRoute,
+  FlightsRoute: FlightsRoute,
   HolidayTypesRoute: HolidayTypesRouteWithChildren,
+  HolidaysRoute: HolidaysRoute,
   QuoteRoute: QuoteRoute,
   ReviewsRoute: ReviewsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
