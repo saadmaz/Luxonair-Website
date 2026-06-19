@@ -129,7 +129,9 @@ export function Footer() {
       <div className="border-t border-navy-fg/10">
         <div className="container-page flex flex-col items-start justify-between gap-2 py-5 text-xs text-navy-fg/40 sm:flex-row sm:items-center">
           <span>© {new Date().getFullYear()} Luxonair Travel Ltd. All prices are indicative and subject to availability.</span>
-          <span>Registered in England & Wales · {SITE.registration}</span>
+          {SITE.registration && SITE.registration !== "00000000" && (
+            <span>Registered in England &amp; Wales · {SITE.registration}</span>
+          )}
         </div>
       </div>
     </footer>

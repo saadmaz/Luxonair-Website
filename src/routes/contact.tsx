@@ -140,7 +140,7 @@ function ContactPage() {
                 title="Luxonair London office"
                 src="https://www.openstreetmap.org/export/embed.html?bbox=-0.1421%2C51.5045%2C-0.1186%2C51.5189&amp;layer=mapnik"
                 className="h-72 w-full"
-                loading="lazy"
+                loading="eager"
               />
             </div>
           </aside>

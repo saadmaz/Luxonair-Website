@@ -221,7 +221,7 @@ function NavTrigger({
       onClick={onEnter}
       aria-expanded={active}
       aria-controls={active ? panelId : undefined}
-      className={`inline-flex items-center gap-1 text-sm transition-colors ${
+      className={`inline-flex items-center gap-1 whitespace-nowrap text-sm transition-colors ${
         active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
       }`}
     >

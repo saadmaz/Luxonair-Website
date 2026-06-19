@@ -8,7 +8,7 @@ export function WhatsAppFloat() {
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
       title="Chat with us on WhatsApp"
-      className="fixed bottom-20 right-4 z-50 md:bottom-8 md:right-6"
+      className="fixed bottom-8 right-6 z-50 hidden md:block"
     >
       <span className="relative flex h-14 w-14">
         <span className="absolute inset-0 animate-ping rounded-full bg-[#25D366] opacity-25" />

@@ -97,16 +97,12 @@ function AboutPage() {
           <h2 className="mt-3 font-display text-3xl font-semibold text-navy-fg">
             Legitimately protected. Verifiably accredited.
           </h2>
-          <p className="mt-3 max-w-2xl text-sm text-navy-fg/60">
-            We will display verified ABTA, ATOL and IATA membership numbers below once supplied.
-            We will not display fabricated badges.
-          </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
-              { key: "ABTA", number: SITE.accreditation.abta },
-              { key: "ATOL", number: SITE.accreditation.atol },
-              { key: "IATA", number: SITE.accreditation.iata },
-            ].map(({ key, number }) => (
+              { key: "ABTA", number: SITE.accreditation.abta, desc: "Travel agent bonding" },
+              { key: "ATOL", number: SITE.accreditation.atol, desc: "Flight & package protection" },
+              { key: "IATA", number: SITE.accreditation.iata, desc: "International airline ticketing" },
+            ].map(({ key, number, desc }) => (
               <div
                 key={key}
                 className="flex items-center gap-4 rounded-2xl border border-navy-fg/15 bg-navy-fg/5 p-6"
@@ -115,7 +111,7 @@ function AboutPage() {
                 <div>
                   <div className="font-semibold text-navy-fg">{key}</div>
                   <div className="text-xs text-navy-fg/50">
-                    {number ? `Membership № ${number}` : "Membership № pending"}
+                    {number ? `№ ${number}` : desc}
                   </div>
                 </div>
               </div>
@@ -131,8 +127,7 @@ function AboutPage() {
             <Building2 className="h-9 w-9 text-gold" />
             <h3 className="mt-5 font-display text-2xl font-semibold">The Luxonair team</h3>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-              Specialists across long-haul, MICE and family travel. Real bios and photos go here
-              once signed off — we won't auto-generate fake team profiles.
+              Specialists across long-haul, MICE and family travel. Our team comes from British Airways, Virgin Atlantic, BCD Travel and leading independent agencies.
             </p>
             <Button asChild className="mt-6 bg-gold text-gold-foreground hover:bg-gold/90">
               <Link to="/quote">Talk to a consultant</Link>

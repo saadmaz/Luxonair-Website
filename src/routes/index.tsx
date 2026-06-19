@@ -108,7 +108,7 @@ function Hero() {
           </h1>
 
           {/* Subtitle */}
-          <p className="mt-4 max-w-lg text-sm leading-relaxed text-primary-foreground/55 md:text-base">
+          <p className="mt-4 max-w-lg text-sm leading-relaxed text-primary-foreground/75 md:text-base">
             Premium long-haul, family escapes, and corporate travel from the UK.
             One consultant owns your trip, end-to-end.
           </p>
@@ -172,7 +172,7 @@ function StatsStrip() {
         {stats.map((s) => (
           <div key={s.label} className="text-center">
             <div className="font-display text-3xl font-semibold text-gold">{s.value}</div>
-            <div className="mt-1 text-xs text-muted-foreground">{s.label}</div>
+            <div className="mt-1 text-sm text-muted-foreground">{s.label}</div>
           </div>
         ))}
       </div>
@@ -352,7 +352,7 @@ function WhyLuxonair() {
             <h2 className="mt-3 font-display text-3xl font-semibold leading-snug text-navy-fg sm:text-4xl text-balance">
               Single-invoice simplicity. Human expertise. Total protection.
             </h2>
-            <p className="mt-4 text-sm leading-relaxed text-navy-fg/60">
+            <p className="mt-4 text-sm leading-relaxed text-navy-fg/75 font-normal">
               We're not a call-centre and we're not an aggregator. One consultant builds your
               brief, books every component, and stays reachable throughout — from quote to
               return gate.
