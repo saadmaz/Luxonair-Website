@@ -41,7 +41,7 @@ function HolidayTypePage() {
     <>
       <section className="relative">
         <div className="absolute inset-0 -z-10 bg-cover bg-center" style={{ backgroundImage: `url(${h.heroImage})` }} />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-primary/70 via-primary/55 to-primary/85" />
+        <div className="absolute inset-0 -z-10 bg-linear-to-b from-primary/70 via-primary/55 to-primary/85" />
         <div className="container-page py-20 text-primary-foreground md:py-28">
           <p className="text-xs uppercase tracking-[0.2em] text-primary-foreground/70">Holiday type</p>
           <h1 className="mt-2 font-display text-4xl font-semibold sm:text-6xl text-balance">{h.name}</h1>

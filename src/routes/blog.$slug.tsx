@@ -54,7 +54,7 @@ function PostPage() {
         <p className="mt-4 text-lg text-muted-foreground">{p.excerpt}</p>
         <p className="mt-4 text-xs text-muted-foreground">{p.author} · {new Date(p.date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</p>
       </header>
-      <img src={p.heroImage} alt={p.title} className="mt-10 aspect-[16/9] w-full rounded-2xl object-cover" />
+      <img src={p.heroImage} alt={p.title} className="mt-10 aspect-video w-full rounded-2xl object-cover" />
       <div className="mx-auto mt-10 max-w-3xl space-y-6 text-base leading-relaxed text-foreground">
         {p.content.map((b: { heading?: string; body: string }, i: number) => (
           <div key={i}>

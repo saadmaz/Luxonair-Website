@@ -31,6 +31,8 @@
   --color-ring: var(--ring);
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
+  --color-navy: var(--navy);
+  --color-navy-fg: var(--navy-fg);
   --font-display: "Fraunces", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
 }
@@ -59,6 +61,8 @@
   --ring: oklch(0.7 0.12 75);
   --gold: oklch(0.72 0.13 75);
   --gold-foreground: oklch(0.18 0.04 260);
+  --navy: oklch(0.12 0.04 260);
+  --navy-fg: oklch(0.93 0.01 80);
 }
 
 .dark {
@@ -83,6 +87,8 @@
   --ring: oklch(0.78 0.13 75);
   --gold: oklch(0.78 0.13 75);
   --gold-foreground: oklch(0.14 0.025 260);
+  --navy: oklch(0.08 0.025 260);
+  --navy-fg: oklch(0.93 0.01 80);
 }
 
 @layer base {

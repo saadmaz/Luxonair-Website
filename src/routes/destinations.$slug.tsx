@@ -56,7 +56,7 @@ function DestinationDetail() {
     <article>
       <div className="relative h-[55vh] min-h-[380px] w-full overflow-hidden">
         <img src={d.heroImage} alt={d.name} className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/30 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-primary/85 via-primary/30 to-transparent" />
         <div className="container-page absolute inset-x-0 bottom-0 pb-10 text-primary-foreground">
           <Link to="/destinations" className="inline-flex items-center text-xs uppercase tracking-[0.2em] text-primary-foreground/80 hover:text-primary-foreground">
             <ArrowLeft className="mr-1 h-3 w-3" /> All destinations
