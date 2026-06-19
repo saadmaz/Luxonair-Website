@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Award, Briefcase, Building2, CheckCircle2, Globe2, ShieldCheck, Users } from "lucide-react";
+import { SITE } from "@/lib/siteConfig";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -47,10 +48,10 @@ function AboutPage() {
       <section className="border-b border-border">
         <div className="container-page grid gap-6 py-12 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { icon: Globe2, value: "[PLACEHOLDER]", label: "Trips delivered" },
-            { icon: Users, value: "[PLACEHOLDER]", label: "Repeat traveller rate" },
-            { icon: Award, value: "[PLACEHOLDER]", label: "Years operating" },
-            { icon: Briefcase, value: "[PLACEHOLDER]", label: "Corporate accounts" },
+            { icon: Globe2, value: SITE.stats.trips, label: "Trips delivered" },
+            { icon: Users, value: SITE.stats.repeatRate, label: "Repeat traveller rate" },
+            { icon: Award, value: SITE.stats.years, label: "Years operating" },
+            { icon: Briefcase, value: SITE.stats.corporate, label: "Corporate accounts" },
           ].map(({ icon: Icon, value, label }) => (
             <div key={label} className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
               <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary/8 text-gold">
@@ -101,15 +102,21 @@ function AboutPage() {
             We will not display fabricated badges.
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            {["ABTA", "ATOL", "IATA"].map((b) => (
+            {[
+              { key: "ABTA", number: SITE.accreditation.abta },
+              { key: "ATOL", number: SITE.accreditation.atol },
+              { key: "IATA", number: SITE.accreditation.iata },
+            ].map(({ key, number }) => (
               <div
-                key={b}
+                key={key}
                 className="flex items-center gap-4 rounded-2xl border border-navy-fg/15 bg-navy-fg/5 p-6"
               >
                 <ShieldCheck className="h-8 w-8 shrink-0 text-gold" />
                 <div>
-                  <div className="font-semibold text-navy-fg">{b}</div>
-                  <div className="text-xs text-navy-fg/50">Membership № [PLACEHOLDER]</div>
+                  <div className="font-semibold text-navy-fg">{key}</div>
+                  <div className="text-xs text-navy-fg/50">
+                    {number ? `Membership № ${number}` : "Membership № pending"}
+                  </div>
                 </div>
               </div>
             ))}
@@ -133,9 +140,9 @@ function AboutPage() {
           </div>
           <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
             <p>
-              Founded by ex-airline and corporate-travel staff, Luxonair operates from
-              [PLACEHOLDER, UK]. Our consultants average [PLACEHOLDER] years in the industry
-              across British Airways, Virgin Atlantic, BCD Travel and independent agencies.
+              Founded by ex-airline and corporate-travel staff, Luxonair operates from{" "}
+              {SITE.team.location}, UK. Our consultants average {SITE.team.avgYears} years in the
+              industry across British Airways, Virgin Atlantic, BCD Travel and independent agencies.
             </p>
             <p>
               Every trip is account-managed by one named consultant. There's no off-shore call

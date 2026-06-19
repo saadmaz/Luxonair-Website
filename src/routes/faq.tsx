@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { faqGroups } from "@/lib/faq";
+import { SITE } from "@/lib/siteConfig";
 
 export const Route = createFileRoute("/faq")({
   head: () => ({
@@ -32,7 +33,7 @@ function FaqPage() {
       <header className="max-w-2xl">
         <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Help centre</p>
         <h1 className="mt-2 font-display text-4xl font-semibold sm:text-5xl text-balance">Frequently asked questions.</h1>
-        <p className="mt-3 text-muted-foreground">Can't find your answer? Call 0800 [PLACEHOLDER] or WhatsApp us.</p>
+        <p className="mt-3 text-muted-foreground">Can't find your answer? Call <a href={`tel:${SITE.phone.tel}`} className="text-primary hover:underline">{SITE.phone.display}</a> or WhatsApp us.</p>
       </header>
 
       <div className="mt-12 space-y-12">

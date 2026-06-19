@@ -3,6 +3,7 @@ import { findDestination, destinations } from "@/lib/destinations";
 import { Button } from "@/components/ui/button";
 import { QuoteForm } from "@/components/site/QuoteForm";
 import { ArrowLeft, Check, MessageCircle } from "lucide-react";
+import { SITE } from "@/lib/siteConfig";
 import type { Destination } from "@/lib/destinations";
 
 export const Route = createFileRoute("/destinations/$slug")({
@@ -121,7 +122,7 @@ function DestinationDetail() {
               <Link to="/quote" search={{ destination: d.name } as never}>Get a quote</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="mt-2 w-full border-primary/30 hover:border-primary hover:text-primary">
-              <a href="https://wa.me/440000000000" target="_blank" rel="noopener noreferrer">
+              <a href={`https://wa.me/${SITE.phone.whatsapp}`} target="_blank" rel="noopener noreferrer">
                 <MessageCircle className="mr-1 h-4 w-4" /> WhatsApp a consultant
               </a>
             </Button>

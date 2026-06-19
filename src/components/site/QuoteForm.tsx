@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { regions, tripTypes, budgetBands } from "@/lib/destinations";
+import { SITE } from "@/lib/siteConfig";
 
 const step1 = z.object({
   destination: z.string().min(2, "Tell us where you'd like to go"),
@@ -45,11 +46,13 @@ const initial: Form = {
 
 const steps = ["Where", "When", "Who", "Contact"] as const;
 
-export function QuoteForm({ defaultDestination }: { defaultDestination?: string }) {
-  const [form, setForm] = useState<Form>({ ...initial, destination: defaultDestination ?? "" });
+export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) {
+  const [form, setForm] = useState<Form>({ ...initial, ...initialValues });
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const set = <K extends keyof Form>(k: K, v: Form[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
@@ -70,10 +73,49 @@ export function QuoteForm({ defaultDestination }: { defaultDestination?: string 
   const next = () => { if (validate()) setStep((s) => Math.min(s + 1, steps.length - 1)); };
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
-  const submit = () => {
+  const submit = async () => {
     if (!validate()) return;
-    // Demo: in a real app this would POST to a server function. Lead is captured locally.
-    console.log("[Luxonair lead]", form);
+    setSubmitting(true);
+    setSubmitError("");
+
+    const formspreeId = SITE.formspree.quote;
+    if (formspreeId) {
+      try {
+        const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            _subject: `Quote enquiry — ${form.destination}`,
+            destination: form.destination,
+            region: form.region,
+            tripType: form.tripType,
+            departWindow: form.departWindow,
+            flexibility: form.flexibility,
+            nights: form.nights,
+            adults: form.adults,
+            children: form.children,
+            budget: form.budget,
+            name: form.name,
+            email: form.email,
+            phone: form.phone,
+            notes: form.notes,
+          }),
+        });
+        if (!res.ok) {
+          setSubmitError("Submission failed — please try WhatsApp or email us directly.");
+          setSubmitting(false);
+          return;
+        }
+      } catch {
+        setSubmitError("Network error — please try WhatsApp or email us directly.");
+        setSubmitting(false);
+        return;
+      }
+    } else {
+      console.log("[Luxonair lead — configure SITE.formspree.quote to transmit]", form);
+    }
+
+    setSubmitting(false);
     setSubmitted(true);
   };
 
@@ -93,9 +135,6 @@ export function QuoteForm({ defaultDestination }: { defaultDestination?: string 
           <Row k="Travellers" v={`${form.adults} adult${form.adults === "1" ? "" : "s"}${Number(form.children) ? `, ${form.children} child` : ""}`} />
           <Row k="Budget" v={`${form.budget} (${form.nights} nights)`} />
         </div>
-        <p className="mt-6 text-xs text-muted-foreground">
-          Reference saved locally. Demo build — no live booking system is connected yet. Indicative prices only.
-        </p>
       </div>
     );
   }
@@ -163,16 +202,22 @@ export function QuoteForm({ defaultDestination }: { defaultDestination?: string 
         )}
       </div>
 
+      {submitError && (
+        <p className="mt-4 rounded-md bg-destructive/10 px-4 py-2.5 text-sm text-destructive">{submitError}</p>
+      )}
+
       <div className="mt-8 flex items-center justify-between">
-        <Button type="button" variant="ghost" onClick={back} disabled={step === 0}>
+        <Button type="button" variant="ghost" onClick={back} disabled={step === 0 || submitting}>
           <ChevronLeft className="mr-1 h-4 w-4" /> Back
         </Button>
         {step < steps.length - 1 ? (
-          <Button type="button" onClick={next}>
+          <Button type="button" onClick={next} disabled={submitting}>
             Continue <ChevronRight className="ml-1 h-4 w-4" />
           </Button>
         ) : (
-          <Button type="button" onClick={submit} className="bg-gold text-gold-foreground hover:bg-gold/90">Send enquiry</Button>
+          <Button type="button" onClick={submit} disabled={submitting} className="bg-gold text-gold-foreground hover:bg-gold/90">
+            {submitting ? <><Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> Sending…</> : "Send enquiry"}
+          </Button>
         )}
       </div>
       <p className="mt-4 text-xs text-muted-foreground">

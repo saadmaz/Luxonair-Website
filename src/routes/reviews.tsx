@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { reviews, aggregate } from "@/lib/reviews";
 import { ArrowRight, MessageCircle, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SITE } from "@/lib/siteConfig";
 
 export const Route = createFileRoute("/reviews")({
   head: () => ({
@@ -118,7 +119,7 @@ function ReviewsPage() {
                 variant="outline"
                 className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
               >
-                <a href="https://wa.me/440000000000" target="_blank" rel="noopener noreferrer">
+                <a href={`https://wa.me/${SITE.phone.whatsapp}`} target="_blank" rel="noopener noreferrer">
                   <MessageCircle className="mr-1.5 h-4 w-4" /> WhatsApp
                 </a>
               </Button>

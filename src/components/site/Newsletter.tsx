@@ -1,9 +1,44 @@
 import { useState } from "react";
-import { Mail } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
+import { SITE } from "@/lib/siteConfig";
 
 export function Newsletter({ variant = "footer" }: { variant?: "footer" | "section" }) {
   const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!/.+@.+\..+/.test(email)) return;
+    setSubmitting(true);
+    setError("");
+
+    const formspreeId = SITE.formspree.newsletter;
+    if (formspreeId) {
+      try {
+        const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ email, _subject: "Newsletter sign-up" }),
+        });
+        if (!res.ok) {
+          setError("Couldn't subscribe — please try again or email us.");
+          setSubmitting(false);
+          return;
+        }
+      } catch {
+        setError("Network error — please try again.");
+        setSubmitting(false);
+        return;
+      }
+    } else {
+      console.log("[Luxonair newsletter — configure SITE.formspree.newsletter to transmit]", email);
+    }
+
+    setSubmitting(false);
+    setDone(true);
+  };
 
   if (variant === "section") {
     return (
@@ -18,7 +53,7 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
               Two emails a month: one with a curated trip idea, one with limited-availability deals. Unsubscribe in one click.
             </p>
           </div>
-          <NewsletterForm email={email} setEmail={setEmail} done={done} setDone={setDone} dark />
+          <NewsletterForm email={email} setEmail={setEmail} done={done} submitting={submitting} error={error} onSubmit={handleSubmit} dark />
         </div>
       </section>
     );
@@ -28,14 +63,22 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
     <div>
       <h4 className="text-sm font-semibold">Newsletter</h4>
       <p className="mt-3 text-sm text-muted-foreground">Two emails a month. Trip ideas and deals. Unsubscribe any time.</p>
-      <NewsletterForm email={email} setEmail={setEmail} done={done} setDone={setDone} />
+      <NewsletterForm email={email} setEmail={setEmail} done={done} submitting={submitting} error={error} onSubmit={handleSubmit} />
     </div>
   );
 }
 
 function NewsletterForm({
-  email, setEmail, done, setDone, dark,
-}: { email: string; setEmail: (v: string) => void; done: boolean; setDone: (v: boolean) => void; dark?: boolean }) {
+  email, setEmail, done, submitting, error, onSubmit, dark,
+}: {
+  email: string;
+  setEmail: (v: string) => void;
+  done: boolean;
+  submitting: boolean;
+  error: string;
+  onSubmit: (e: React.FormEvent) => void;
+  dark?: boolean;
+}) {
   if (done) {
     return (
       <p className={`mt-4 text-sm ${dark ? "text-primary-foreground/90" : "text-foreground"}`}>
@@ -44,10 +87,7 @@ function NewsletterForm({
     );
   }
   return (
-    <form
-      onSubmit={(e) => { e.preventDefault(); if (/.+@.+\..+/.test(email)) setDone(true); }}
-      className="mt-4 flex flex-col gap-2 sm:flex-row"
-    >
+    <form onSubmit={onSubmit} className="mt-4 flex flex-col gap-2 sm:flex-row">
       <label className="relative flex-1">
         <Mail className={`pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${dark ? "text-primary-foreground/60" : "text-muted-foreground"}`} />
         <input
@@ -65,12 +105,14 @@ function NewsletterForm({
       </label>
       <button
         type="submit"
-        className={`h-11 rounded-md px-4 text-sm font-medium transition-colors ${
+        disabled={submitting}
+        className={`h-11 rounded-md px-4 text-sm font-medium transition-colors disabled:opacity-60 ${
           dark ? "bg-gold text-gold-foreground hover:bg-gold/90" : "bg-primary text-primary-foreground hover:bg-primary/90"
         }`}
       >
-        Subscribe
+        {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Subscribe"}
       </button>
+      {error && <p className={`text-xs ${dark ? "text-primary-foreground/70" : "text-destructive"}`}>{error}</p>}
     </form>
   );
 }

@@ -4,8 +4,10 @@ import { destinations } from "@/lib/destinations";
 import { DestinationCard } from "@/components/site/DestinationCard";
 import { deals } from "@/lib/deals";
 import { holidayTypes } from "@/lib/holidayTypes";
+import { reviews } from "@/lib/reviews";
 import { HeroSearchTabs } from "@/components/site/HeroSearchTabs";
 import { Newsletter } from "@/components/site/Newsletter";
+import { SITE } from "@/lib/siteConfig";
 import {
   ArrowRight,
   Briefcase,
@@ -397,29 +399,9 @@ function WhyLuxonair() {
 /* ─── Social proof ──────────────────────────────────────────────────── */
 
 function SocialProof() {
-  const reviews = [
-    {
-      quote:
-        "Quoted on Monday morning, on a plane Friday afternoon. The consultant rebooked us in-flight when our connection slipped.",
-      author: "[PLACEHOLDER]",
-      trip: "Family of 4, Antigua",
-      rating: 5,
-    },
-    {
-      quote:
-        "Our finance team gets one invoice a month. Travellers get a human at 3am. That's the bit other agencies miss.",
-      author: "[PLACEHOLDER]",
-      trip: "Head of Ops, UK SaaS",
-      rating: 5,
-    },
-    {
-      quote:
-        "Honeymoon in the Maldives, then Tokyo for two weeks. They held the whole thing together, calmly.",
-      author: "[PLACEHOLDER]",
-      trip: "Honeymooners",
-      rating: 5,
-    },
-  ];
+  // Pull the first 3 reviews directly from the shared reviews library so
+  // author names and trip details are always consistent with /reviews.
+  const featured = reviews.slice(0, 3);
   return (
     <section className="container-page py-16 md:py-24">
       <SectionHeader
@@ -428,9 +410,9 @@ function SocialProof() {
         cta={{ label: "All reviews", to: "/reviews" }}
       />
       <div className="mt-10 grid gap-6 md:grid-cols-3">
-        {reviews.map((r, i) => (
+        {featured.map((r) => (
           <figure
-            key={i}
+            key={r.id}
             className="flex flex-col rounded-2xl border border-border bg-card p-6 shadow-sm"
           >
             <div className="flex gap-0.5 text-gold">
@@ -439,7 +421,7 @@ function SocialProof() {
               ))}
             </div>
             <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-muted-foreground">
-              "{r.quote}"
+              "{r.body}"
             </blockquote>
             <figcaption className="mt-5 border-t border-border pt-4 text-xs">
               <span className="font-medium text-foreground">{r.author}</span>
@@ -481,7 +463,7 @@ function FinalCTA() {
               variant="outline"
               className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
             >
-              <a href="https://wa.me/440000000000" target="_blank" rel="noopener noreferrer">
+              <a href={`https://wa.me/${SITE.phone.whatsapp}`} target="_blank" rel="noopener noreferrer">
                 <MessageCircle className="mr-1.5 h-4 w-4" /> WhatsApp us
               </a>
             </Button>

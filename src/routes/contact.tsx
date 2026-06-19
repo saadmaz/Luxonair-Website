@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { CheckCircle2, Clock, Loader2, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { SITE } from "@/lib/siteConfig";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -22,6 +23,42 @@ export const Route = createFileRoute("/contact")({
 
 function ContactPage() {
   const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitError("");
+
+    const data = Object.fromEntries(new FormData(e.currentTarget));
+    const formspreeId = SITE.formspree.contact;
+
+    if (formspreeId) {
+      try {
+        const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ _subject: `Contact form — ${data.topic ?? "General"}`, ...data }),
+        });
+        if (!res.ok) {
+          setSubmitError("Submission failed — please email us at hello@luxonair.com or call directly.");
+          setSubmitting(false);
+          return;
+        }
+      } catch {
+        setSubmitError("Network error — please email us at hello@luxonair.com or call directly.");
+        setSubmitting(false);
+        return;
+      }
+    } else {
+      console.log("[Luxonair contact — configure SITE.formspree.contact to transmit]", data);
+    }
+
+    setSubmitting(false);
+    setDone(true);
+  };
+
   return (
     <>
       {/* Dark hero */}
@@ -39,13 +76,13 @@ function ContactPage() {
           {/* Quick contact chips */}
           <div className="mt-7 flex flex-wrap gap-3">
             <a
-              href="tel:+440000000000"
+              href={`tel:${SITE.phone.tel}`}
               className="inline-flex items-center gap-2 rounded-full border border-navy-fg/20 bg-navy-fg/5 px-4 py-2 text-sm text-navy-fg/80 transition-colors hover:border-gold hover:text-gold"
             >
               <Phone className="h-3.5 w-3.5" /> Call us
             </a>
             <a
-              href="https://wa.me/440000000000"
+              href={`https://wa.me/${SITE.phone.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-navy-fg/20 bg-navy-fg/5 px-4 py-2 text-sm text-navy-fg/80 transition-colors hover:border-gold hover:text-gold"
@@ -53,7 +90,7 @@ function ContactPage() {
               <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
             </a>
             <a
-              href="mailto:hello@luxonair.com"
+              href={`mailto:${SITE.email}`}
               className="inline-flex items-center gap-2 rounded-full border border-navy-fg/20 bg-navy-fg/5 px-4 py-2 text-sm text-navy-fg/80 transition-colors hover:border-gold hover:text-gold"
             >
               <Mail className="h-3.5 w-3.5" /> Email us
@@ -68,19 +105,19 @@ function ContactPage() {
           {/* Left: info */}
           <aside className="space-y-8">
             <ul className="space-y-4">
-              <Row icon={Phone} title="Call us" body="0800 [PLACEHOLDER]" />
+              <Row icon={Phone} title="Call us" body={SITE.phone.display} />
               <Row
                 icon={MessageCircle}
                 title="WhatsApp"
-                body="+44 [PLACEHOLDER] — text us anything"
+                body={`+${SITE.phone.whatsapp} — text us anything`}
               />
-              <Row icon={Mail} title="Email" body="hello@luxonair.com" />
+              <Row icon={Mail} title="Email" body={SITE.email} />
               <Row
                 icon={Clock}
                 title="Hours"
                 body="Mon–Fri 09:00–19:00 GMT · 24/7 while you're travelling"
               />
-              <Row icon={MapPin} title="Office" body="[PLACEHOLDER] London, United Kingdom" />
+              <Row icon={MapPin} title="Office" body={SITE.address} />
             </ul>
 
             {/* Response promise */}
@@ -121,13 +158,7 @@ function ContactPage() {
                 </p>
               </div>
             ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setDone(true);
-                }}
-                className="grid gap-5"
-              >
+              <form onSubmit={handleSubmit} className="grid gap-5">
                 <div>
                   <h2 className="font-display text-2xl font-semibold">Send a message</h2>
                   <p className="mt-1 text-sm text-muted-foreground">
@@ -164,8 +195,13 @@ function ContactPage() {
                     className="w-full rounded-md border border-input bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </Field>
-                <Button type="submit" size="lg" className="w-full bg-gold text-gold-foreground hover:bg-gold/90">
-                  Send message
+
+                {submitError && (
+                  <p className="rounded-md bg-destructive/10 px-4 py-2.5 text-sm text-destructive">{submitError}</p>
+                )}
+
+                <Button type="submit" size="lg" disabled={submitting} className="w-full bg-gold text-gold-foreground hover:bg-gold/90">
+                  {submitting ? <><Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> Sending…</> : "Send message"}
                 </Button>
               </form>
             )}

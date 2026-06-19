@@ -5,6 +5,7 @@ import { ChevronDown, Clock, Mail, Menu, Phone, Plane, X } from "lucide-react";
 import { useState } from "react";
 import { destinations, regions } from "@/lib/destinations";
 import { holidayTypes } from "@/lib/holidayTypes";
+import { SITE } from "@/lib/siteConfig";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -17,10 +18,10 @@ export function Header() {
         <div className="container-page flex h-9 items-center justify-between text-xs">
           <div className="flex items-center gap-4">
             <a
-              href="tel:+440000000000"
+              href={`tel:${SITE.phone.tel}`}
               className="flex items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold"
             >
-              <Phone className="h-3 w-3" /> 0800 [PLACEHOLDER]
+              <Phone className="h-3 w-3" /> {SITE.phone.display}
             </a>
             <span className="hidden text-navy-fg/30 sm:block">|</span>
             <a
@@ -66,6 +67,7 @@ export function Header() {
             <NavLink to="/deals">Deals</NavLink>
             <NavLink to="/blog">Blog</NavLink>
             <NavLink to="/reviews">Reviews</NavLink>
+            <NavLink to="/faq">FAQ</NavLink>
             <NavLink to="/about">About</NavLink>
             <NavLink to="/contact">Contact</NavLink>
 

@@ -1,8 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Plane, Youtube } from "lucide-react";
 import { Newsletter } from "./Newsletter";
+import { SITE } from "@/lib/siteConfig";
 
 export function Footer() {
+  const socialLinks = [
+    { href: SITE.social.facebook, label: "Facebook", icon: <Facebook className="h-4 w-4" /> },
+    { href: SITE.social.instagram, label: "Instagram", icon: <Instagram className="h-4 w-4" /> },
+    { href: SITE.social.linkedin, label: "LinkedIn", icon: <Linkedin className="h-4 w-4" /> },
+    { href: SITE.social.youtube, label: "YouTube", icon: <Youtube className="h-4 w-4" /> },
+  ].filter((s) => s.href);
+
   return (
     <footer className="bg-navy text-navy-fg">
       {/* Main footer grid */}
@@ -19,23 +27,18 @@ export function Footer() {
             UK-based travel specialists for premium long-haul, family escapes and corporate trips. Tailor-made itineraries, account-managed by a single consultant.
           </p>
 
-          {/* Social icons */}
-          <div className="mt-6 flex items-center gap-3">
-            <SocialLink href="#" label="Facebook">
-              <Facebook className="h-4 w-4" />
-            </SocialLink>
-            <SocialLink href="#" label="Instagram">
-              <Instagram className="h-4 w-4" />
-            </SocialLink>
-            <SocialLink href="#" label="LinkedIn">
-              <Linkedin className="h-4 w-4" />
-            </SocialLink>
-            <SocialLink href="#" label="YouTube">
-              <Youtube className="h-4 w-4" />
-            </SocialLink>
-          </div>
+          {/* Social icons — only rendered when URLs are configured */}
+          {socialLinks.length > 0 && (
+            <div className="mt-6 flex items-center gap-3">
+              {socialLinks.map((s) => (
+                <SocialLink key={s.label} href={s.href} label={s.label}>
+                  {s.icon}
+                </SocialLink>
+              ))}
+            </div>
+          )}
 
-          {/* Accreditation */}
+          {/* Accreditation badges */}
           <div className="mt-6 flex flex-wrap gap-2">
             {["ATOL", "ABTA", "IATA"].map((badge) => (
               <span
@@ -83,16 +86,16 @@ export function Footer() {
           <ul className="space-y-3 text-sm">
             <li>
               <a
-                href="tel:+440000000000"
+                href={`tel:${SITE.phone.tel}`}
                 className="flex items-center gap-2 text-navy-fg/60 transition-colors hover:text-gold"
               >
                 <Phone className="h-3.5 w-3.5 shrink-0 text-gold/60" />
-                0800 [PLACEHOLDER]
+                {SITE.phone.display}
               </a>
             </li>
             <li>
               <a
-                href="https://wa.me/440000000000"
+                href={`https://wa.me/${SITE.phone.whatsapp}`}
                 className="flex items-center gap-2 text-navy-fg/60 transition-colors hover:text-gold"
               >
                 <span className="h-3.5 w-3.5 shrink-0 text-gold/60 flex items-center justify-center">
@@ -103,16 +106,16 @@ export function Footer() {
             </li>
             <li>
               <a
-                href="mailto:hello@luxonair.com"
+                href={`mailto:${SITE.email}`}
                 className="flex items-center gap-2 text-navy-fg/60 transition-colors hover:text-gold"
               >
                 <Mail className="h-3.5 w-3.5 shrink-0 text-gold/60" />
-                hello@luxonair.com
+                {SITE.email}
               </a>
             </li>
             <li className="flex items-start gap-2 text-navy-fg/60">
               <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gold/60" />
-              <span>London, United Kingdom</span>
+              <span>{SITE.address}</span>
             </li>
           </ul>
 
@@ -126,7 +129,7 @@ export function Footer() {
       <div className="border-t border-navy-fg/10">
         <div className="container-page flex flex-col items-start justify-between gap-2 py-5 text-xs text-navy-fg/40 sm:flex-row sm:items-center">
           <span>© {new Date().getFullYear()} Luxonair Travel Ltd. All prices are indicative and subject to availability.</span>
-          <span>Registered in England & Wales · [PLACEHOLDER]</span>
+          <span>Registered in England & Wales · {SITE.registration}</span>
         </div>
       </div>
     </footer>
@@ -154,6 +157,8 @@ function SocialLink({
     <a
       href={href}
       aria-label={label}
+      target="_blank"
+      rel="noopener noreferrer"
       className="grid h-9 w-9 place-items-center rounded-full border border-navy-fg/20 text-navy-fg/50 transition-all hover:border-gold hover:text-gold"
     >
       {children}

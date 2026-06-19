@@ -1,10 +1,11 @@
 import { Award, ShieldCheck, Plane, Star } from "lucide-react";
+import { SITE } from "@/lib/siteConfig";
 
 export function AwardsStrip() {
   const items = [
-    { icon: ShieldCheck, label: "ATOL Protected", note: "Membership [PLACEHOLDER]" },
-    { icon: Award, label: "ABTA Member", note: "Membership [PLACEHOLDER]" },
-    { icon: Plane, label: "IATA Accredited", note: "Membership [PLACEHOLDER]" },
+    { icon: ShieldCheck, label: "ATOL Protected", note: SITE.accreditation.atol ? `Membership № ${SITE.accreditation.atol}` : "Membership № pending" },
+    { icon: Award, label: "ABTA Member", note: SITE.accreditation.abta ? `Membership № ${SITE.accreditation.abta}` : "Membership № pending" },
+    { icon: Plane, label: "IATA Accredited", note: SITE.accreditation.iata ? `Membership № ${SITE.accreditation.iata}` : "Membership № pending" },
     { icon: Star, label: "British Travel Awards", note: "Nominated 2026" },
   ];
   return (
