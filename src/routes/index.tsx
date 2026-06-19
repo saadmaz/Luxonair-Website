@@ -62,26 +62,31 @@ function Home() {
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      {/* Background */}
-      <div
-        className="absolute inset-0 -z-10 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url(https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=2400&q=70)",
-        }}
-      />
-      <div className="absolute inset-0 -z-10 bg-linear-to-r from-primary/95 via-primary/80 to-primary/40" />
+    <section className="relative">
+      {/* Backgrounds — clipped separately so the section doesn't clip the search widget */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div
+          className="absolute inset-0 scale-105 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url(https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=2400&q=70)",
+          }}
+        />
+        <div className="absolute inset-0 bg-linear-to-r from-navy/97 via-navy/84 to-navy/20" />
+        {/* Teal accent edge */}
+        <div className="absolute inset-y-0 left-0 w-1.5 bg-linear-to-b from-transparent via-teal/70 to-transparent" />
+      </div>
 
-      <div className="container-page relative grid gap-8 py-24 md:grid-cols-[1.2fr_1fr] md:items-center md:py-36">
+      <div className="container-page relative grid gap-8 pb-10 pt-24 md:grid-cols-[1.2fr_1fr] md:items-center md:pb-12 md:pt-36">
         {/* Left: copy */}
         <div className="max-w-2xl">
-          <p className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-primary-foreground backdrop-blur">
+          <p className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-primary-foreground backdrop-blur">
             <Sparkles className="h-3 w-3 text-gold" /> UK Travel Specialists
           </p>
           <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.05] text-primary-foreground sm:text-5xl md:text-6xl text-balance">
-            Tailor-made trips, <span className="text-gold">quoted in minutes,</span> built by
-            people.
+            Tailor-made trips,{" "}
+            <span className="text-gold">quoted in minutes,</span>{" "}
+            built by people.
           </h1>
           <p className="mt-5 max-w-xl text-base text-primary-foreground/80 sm:text-lg">
             Premium long-haul, family escapes, and corporate travel — structured quote first, then a
@@ -112,7 +117,7 @@ function Hero() {
             {["ATOL Protected", "No booking fees", "4hr response", "Single consultant"].map(
               (t) => (
                 <span key={t} className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-gold" /> {t}
+                  <CheckCircle2 className="h-3.5 w-3.5 text-teal" /> {t}
                 </span>
               )
             )}
@@ -127,7 +132,10 @@ function Hero() {
             "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=600&q=70",
             "https://images.unsplash.com/photo-1540202404-a2f29016b523?auto=format&fit=crop&w=600&q=70",
           ].map((src, i) => (
-            <div key={i} className={`overflow-hidden rounded-2xl ${i === 1 ? "mt-6" : ""} ${i === 3 ? "-mt-6" : ""}`}>
+            <div
+              key={i}
+              className={`overflow-hidden rounded-2xl ring-1 ring-white/15 ${i === 1 ? "mt-6" : ""} ${i === 3 ? "-mt-6" : ""}`}
+            >
               <img
                 src={src}
                 alt=""

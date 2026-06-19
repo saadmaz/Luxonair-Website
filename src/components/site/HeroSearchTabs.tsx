@@ -5,26 +5,45 @@ import { Plane, Package } from "lucide-react";
 export function HeroSearchTabs() {
   const [tab, setTab] = useState<"package" | "flight">("package");
   return (
-    <div className="container-page relative -mb-12 -mt-10 md:-mb-16">
-      <div className="rounded-2xl border border-border bg-card shadow-xl">
-        <div role="tablist" className="flex border-b border-border">
-          <Tab active={tab === "package"} onClick={() => setTab("package")} icon={Package}>Packages</Tab>
-          <Tab active={tab === "flight"} onClick={() => setTab("flight")} icon={Plane}>Flights</Tab>
+    <div className="container-page relative z-10 -mb-12 md:-mb-16">
+      <div className="overflow-hidden rounded-2xl bg-white shadow-[0_20px_64px_-8px_rgba(4,32,69,0.24)] ring-1 ring-navy/8">
+        {/* Tab bar */}
+        <div className="flex gap-1 bg-secondary px-4 pt-3">
+          <Tab active={tab === "package"} onClick={() => setTab("package")} icon={Package}>
+            Packages
+          </Tab>
+          <Tab active={tab === "flight"} onClick={() => setTab("flight")} icon={Plane}>
+            Flights
+          </Tab>
         </div>
+        {/* Brand accent line — teal → gold → aqua */}
+        <div className="h-0.5 bg-linear-to-r from-teal via-gold to-aqua opacity-80" />
         {tab === "package" ? <PackageForm /> : <FlightForm />}
       </div>
     </div>
   );
 }
 
-function Tab({ active, onClick, icon: Icon, children }: { active: boolean; onClick: () => void; icon: typeof Plane; children: React.ReactNode }) {
+function Tab({
+  active,
+  onClick,
+  icon: Icon,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: typeof Plane;
+  children: React.ReactNode;
+}) {
   return (
     <button
       role="tab"
       aria-selected={active}
       onClick={onClick}
-      className={`flex items-center gap-2 px-5 py-3 text-sm font-medium transition-colors ${
-        active ? "border-b-2 border-gold text-foreground" : "text-muted-foreground hover:text-foreground"
+      className={`flex items-center gap-2 rounded-t-lg px-5 py-2.5 text-sm font-semibold transition-all ${
+        active
+          ? "bg-primary text-primary-foreground"
+          : "text-muted-foreground hover:bg-white hover:text-foreground"
       }`}
     >
       <Icon className="h-4 w-4" /> {children}
@@ -34,9 +53,17 @@ function Tab({ active, onClick, icon: Icon, children }: { active: boolean; onCli
 
 function PackageForm() {
   return (
-    <form action="/quote" method="get" className="grid gap-3 p-4 sm:grid-cols-[1.4fr_1fr_1fr_auto] sm:items-end sm:p-5">
+    <form
+      action="/quote"
+      method="get"
+      className="grid gap-3 p-5 sm:grid-cols-[1.4fr_1fr_1fr_auto] sm:items-end"
+    >
       <Field label="Where to?">
-        <input name="destination" placeholder="Maldives, Tokyo, anywhere warm" className="input-field" />
+        <input
+          name="destination"
+          placeholder="Maldives, Tokyo, anywhere warm"
+          className="input-field"
+        />
       </Field>
       <Field label="When">
         <input name="when" placeholder="October half-term" className="input-field" />
@@ -44,14 +71,24 @@ function PackageForm() {
       <Field label="Travellers">
         <input name="travellers" placeholder="2 adults" className="input-field" />
       </Field>
-      <Button type="submit" size="lg" className="h-11">Get a quote</Button>
+      <Button
+        type="submit"
+        size="lg"
+        className="h-11 bg-gold text-gold-foreground hover:bg-gold/90"
+      >
+        Get a quote
+      </Button>
     </form>
   );
 }
 
 function FlightForm() {
   return (
-    <form action="/quote" method="get" className="grid gap-3 p-4 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] sm:items-end sm:p-5">
+    <form
+      action="/quote"
+      method="get"
+      className="grid gap-3 p-5 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] sm:items-end"
+    >
       <input type="hidden" name="tripType" value="Flight only" />
       <Field label="From">
         <input name="from" placeholder="London (any)" className="input-field" />
@@ -70,7 +107,13 @@ function FlightForm() {
           <option>First</option>
         </select>
       </Field>
-      <Button type="submit" size="lg" className="h-11">Get a quote</Button>
+      <Button
+        type="submit"
+        size="lg"
+        className="h-11 bg-gold text-gold-foreground hover:bg-gold/90"
+      >
+        Get a quote
+      </Button>
     </form>
   );
 }
@@ -78,7 +121,9 @@ function FlightForm() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
+      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </span>
       {children}
     </label>
   );
