@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
-import { SITE } from "@/lib/siteConfig";
+import { SITE } from "@/config/site";
 
 // Full-width CTA banner at the bottom of the home page.
 // WhatsApp href uses SITE.phone.whatsapp (digits-only wa.me format).

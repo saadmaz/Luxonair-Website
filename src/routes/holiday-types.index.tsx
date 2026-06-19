@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { holidayTypes } from "@/lib/holidayTypes";
+import { holidayTypes } from "@/data/holidayTypes";
 import { ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/holiday-types/")({

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { faqGroups } from "@/lib/faq";
-import { SITE } from "@/lib/siteConfig";
+import { faqGroups } from "@/data/faq";
+import { SITE } from "@/config/site";
 
 export const Route = createFileRoute("/faq")({
   head: () => ({

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { QuoteForm } from "@/components/site/QuoteForm";
+import { QuoteForm } from "@/components/shared/QuoteForm";
 import { Clock, MessageCircle, Phone, ShieldCheck } from "lucide-react";
-import { SITE } from "@/lib/siteConfig";
+import { SITE } from "@/config/site";
 
 export const Route = createFileRoute("/quote")({
   validateSearch: (search: Record<string, unknown>): {

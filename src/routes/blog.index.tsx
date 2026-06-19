@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { blogPosts } from "@/lib/blog";
+import { blogPosts } from "@/data/blog";
 import { ArrowRight, Clock } from "lucide-react";
 
 export const Route = createFileRoute("/blog/")({

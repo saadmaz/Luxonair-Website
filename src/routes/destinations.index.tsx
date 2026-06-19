@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { destinations, regions, tripTypes, budgetBands } from "@/lib/destinations";
-import { DestinationCard } from "@/components/site/DestinationCard";
+import { destinations, regions, tripTypes, budgetBands } from "@/data/destinations";
+import { DestinationCard } from "@/components/shared/DestinationCard";
 import { SlidersHorizontal } from "lucide-react";
 
 export const Route = createFileRoute("/destinations/")({

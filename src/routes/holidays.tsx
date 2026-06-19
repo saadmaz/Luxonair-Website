@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { holidayTypes } from "@/lib/holidayTypes";
-import { destinations } from "@/lib/destinations";
-import { DestinationCard } from "@/components/site/DestinationCard";
+import { holidayTypes } from "@/data/holidayTypes";
+import { destinations } from "@/data/destinations";
+import { DestinationCard } from "@/components/shared/DestinationCard";
 import {
   ArrowRight,
   Clock,

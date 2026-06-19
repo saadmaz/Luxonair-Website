@@ -1,10 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { findDestination, destinations } from "@/lib/destinations";
+import { findDestination, destinations } from "@/data/destinations";
 import { Button } from "@/components/ui/button";
-import { QuoteForm } from "@/components/site/QuoteForm";
+import { QuoteForm } from "@/components/shared/QuoteForm";
 import { ArrowLeft, Check, MessageCircle } from "lucide-react";
-import { SITE } from "@/lib/siteConfig";
-import type { Destination } from "@/lib/destinations";
+import { SITE } from "@/config/site";
+import type { Destination } from "@/types/destination";
 
 export const Route = createFileRoute("/destinations/$slug")({
   loader: ({ params }): Destination => {

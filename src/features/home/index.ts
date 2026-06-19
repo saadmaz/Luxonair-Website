@@ -1,5 +1,4 @@
-// Barrel export for all home-page section components.
-// Route files import from here: import { Hero, StatsStrip } from "@/components/home"
+// Barrel export for all home page section components.
 export { Hero } from "./Hero";
 export { StatsStrip } from "./StatsStrip";
 export { TrustPillars } from "./TrustPillars";

@@ -1,7 +1,7 @@
 // Home page route — pure composition of section components.
 // Each section lives in src/components/home/ and can be edited independently.
 import { createFileRoute } from "@tanstack/react-router";
-import { Newsletter } from "@/components/site/Newsletter";
+import { Newsletter } from "@/components/shared/Newsletter";
 import {
   Hero,
   StatsStrip,
@@ -12,7 +12,7 @@ import {
   WhyLuxonair,
   SocialProof,
   FinalCTA,
-} from "@/components/home";
+} from "@/features/home";
 
 export const Route = createFileRoute("/")({
   head: () => ({

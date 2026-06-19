@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { findHolidayType, holidayTypes } from "@/lib/holidayTypes";
-import { destinations } from "@/lib/destinations";
-import { DestinationCard } from "@/components/site/DestinationCard";
+import { findHolidayType, holidayTypes } from "@/data/holidayTypes";
+import { destinations } from "@/data/destinations";
+import { DestinationCard } from "@/components/shared/DestinationCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check } from "lucide-react";
 

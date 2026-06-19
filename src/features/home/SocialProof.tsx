@@ -1,8 +1,8 @@
 import { Star } from "lucide-react";
-import { reviews } from "@/lib/reviews";
-import { SectionHeader } from "@/components/site/SectionHeader";
+import { reviews } from "@/data/reviews";
+import { SectionHeader } from "@/components/shared/SectionHeader";
 
-// Pulls the first 3 reviews from the shared lib so author names and trip
+// Pulls the first 3 reviews from the shared data so author names and trip
 // details stay consistent with the full /reviews page.
 export function SocialProof() {
   const featured = reviews.slice(0, 3);

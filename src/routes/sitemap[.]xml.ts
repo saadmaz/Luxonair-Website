@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { destinations } from "@/lib/destinations";
-import { holidayTypes } from "@/lib/holidayTypes";
-import { blogPosts } from "@/lib/blog";
+import { destinations } from "@/data/destinations";
+import { holidayTypes } from "@/data/holidayTypes";
+import { blogPosts } from "@/data/blog";
 
 const BASE_URL = "";
 

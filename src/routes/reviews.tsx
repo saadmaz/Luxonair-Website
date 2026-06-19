@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { reviews, aggregate } from "@/lib/reviews";
+import { reviews, aggregate } from "@/data/reviews";
 import { ArrowRight, MessageCircle, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SITE } from "@/lib/siteConfig";
+import { SITE } from "@/config/site";
 
 export const Route = createFileRoute("/reviews")({
   head: () => ({

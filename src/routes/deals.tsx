@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { deals } from "@/lib/deals";
+import { deals } from "@/data/deals";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock, Tag } from "lucide-react";
 

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { AIRLINES, FLIGHT_ROUTES } from "@/lib/flights";
+import { AIRLINES, FLIGHT_ROUTES } from "@/data/flights";
 import {
   ArrowRight,
   Briefcase,

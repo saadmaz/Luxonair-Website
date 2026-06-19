@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Award, Briefcase, Building2, CheckCircle2, Globe2, ShieldCheck, Users } from "lucide-react";
-import { SITE } from "@/lib/siteConfig";
+import { SITE } from "@/config/site";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
