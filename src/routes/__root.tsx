@@ -1,3 +1,6 @@
+// Root layout for all routes.
+// RootShell renders the full <html> document (head, body, scripts).
+// RootComponent wraps every page with the shared Header / Footer / floating CTAs.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -94,6 +97,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+// Inline script injected synchronously before first paint to apply the user's
+// stored theme preference. Prevents flash of unstyled content (FOUC) on dark mode.
 const themeInit = `(function(){try{var t=localStorage.getItem('theme');var d=t==='dark';document.documentElement.classList.toggle('dark',d)}catch(e){}})()`;
 
 function RootShell({ children }: { children: ReactNode }) {

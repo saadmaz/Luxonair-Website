@@ -1,17 +1,22 @@
+import { unsplashImg as img } from "@/lib/unsplash";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 export type BlogPost = {
   slug: string;
   title: string;
   excerpt: string;
   category: "Guides" | "Family" | "Corporate" | "News";
   author: string;
+  /** ISO date string (YYYY-MM-DD) used for display and chronological sorting */
   date: string;
   readMinutes: number;
   heroImage: string;
+  /** Ordered content blocks; heading is optional (body-only blocks have no subheading) */
   content: { heading?: string; body: string }[];
 };
 
-const img = (id: string, w = 1600) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=70`;
+// ─── Data ─────────────────────────────────────────────────────────────────────
 
 export const blogPosts: BlogPost[] = [
   {
@@ -78,6 +83,8 @@ export const blogPosts: BlogPost[] = [
   },
 ];
 
-export function findPost(slug: string) {
+// ─── Lookup helpers ───────────────────────────────────────────────────────────
+
+export function findPost(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);
 }

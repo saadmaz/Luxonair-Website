@@ -1,3 +1,6 @@
+// Floating WhatsApp button — desktop only (hidden on mobile where StickyMobileCTA
+// already provides a WhatsApp action). The ping animation draws attention without
+// requiring any user interaction.
 import { SITE } from "@/lib/siteConfig";
 
 export function WhatsAppFloat() {

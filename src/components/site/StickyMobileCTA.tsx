@@ -1,3 +1,5 @@
+// Three-button bar pinned to the bottom of the screen on mobile (hidden at md+).
+// Provides instant access to call, WhatsApp, and quote without scrolling to the header.
 import { Link } from "@tanstack/react-router";
 import { MessageCircle, Phone, FileText } from "lucide-react";
 import { SITE } from "@/lib/siteConfig";

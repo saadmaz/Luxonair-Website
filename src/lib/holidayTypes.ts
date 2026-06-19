@@ -1,15 +1,20 @@
+import { unsplashImg as img } from "@/lib/unsplash";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 export type HolidayType = {
   slug: string;
   name: string;
   tagline: string;
   summary: string;
   heroImage: string;
+  /** Short selling-point bullets shown on the detail page */
   bullets: string[];
+  /** Slugs of destinations that belong to this holiday type — used to populate related cards */
   destinationSlugs: string[];
 };
 
-const img = (id: string, w = 1600) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=70`;
+// ─── Data ─────────────────────────────────────────────────────────────────────
 
 export const holidayTypes: HolidayType[] = [
   {
@@ -74,6 +79,8 @@ export const holidayTypes: HolidayType[] = [
   },
 ];
 
-export function findHolidayType(slug: string) {
+// ─── Lookup helpers ───────────────────────────────────────────────────────────
+
+export function findHolidayType(slug: string): HolidayType | undefined {
   return holidayTypes.find((h) => h.slug === slug);
 }

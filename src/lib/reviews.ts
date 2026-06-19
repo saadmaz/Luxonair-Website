@@ -1,8 +1,13 @@
+// Customer reviews shown on /reviews and as a 3-card preview on the home page.
+// rating is constrained to 4 | 5 — we only publish reviews above a quality threshold.
+
 export type Review = {
   id: string;
   author: string;
+  /** Short trip descriptor shown beneath the author name */
   trip: string;
   rating: 4 | 5;
+  /** ISO date string (YYYY-MM-DD) */
   date: string;
   body: string;
 };
@@ -16,6 +21,8 @@ export const reviews: Review[] = [
   { id: "r6", author: "Emily R.", trip: "Santorini, 7 nights", rating: 5, date: "2025-10-05", body: "Caldera-view suite, sunset cruise, and a very kind handover when our flight home shifted by a day. They handled the airline; we handled the bonus night." },
 ];
 
+// Derived aggregate — recomputed whenever reviews array changes.
+// Used on the About page stats strip and in structured data.
 export const aggregate = {
   average: +(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1),
   count: reviews.length,

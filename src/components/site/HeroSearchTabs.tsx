@@ -1,3 +1,5 @@
+// Quick-search widget shown at the bottom of the Hero section.
+// Both forms submit as GET to /quote, pre-filling QuoteForm fields via URL params.
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plane, Package } from "lucide-react";

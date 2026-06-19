@@ -1,3 +1,7 @@
+import { unsplashImg as img } from "@/lib/unsplash";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 export type Destination = {
   slug: string;
   name: string;
@@ -5,7 +9,8 @@ export type Destination = {
   region: "Europe" | "Caribbean" | "Indian Ocean" | "Asia" | "Americas" | "Middle East";
   tripType: ("Family" | "Business" | "Honeymoon" | "Luxury" | "City Break")[];
   budgetBand: "££" | "£££" | "££££";
-  fromPrice: number; // indicative pp, GBP
+  /** Indicative per-person price in GBP — confirmed live at quote stage */
+  fromPrice: number;
   durationNights: number;
   heroImage: string;
   gallery: string[];
@@ -15,8 +20,12 @@ export type Destination = {
   highlights: string[];
 };
 
-const img = (id: string, w = 1600) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=70`;
+// ─── Reference data ───────────────────────────────────────────────────────────
+
+/** All valid region values — used for nav mega-panel grouping and QuoteForm */
+export const regions = ["Europe", "Caribbean", "Indian Ocean", "Asia", "Americas", "Middle East"] as const;
+export const tripTypes = ["Family", "Business", "Honeymoon", "Luxury", "City Break"] as const;
+export const budgetBands = ["££", "£££", "££££"] as const;
 
 export const destinations: Destination[] = [
   {
@@ -148,10 +157,8 @@ export const destinations: Destination[] = [
   },
 ];
 
-export const regions = ["Europe", "Caribbean", "Indian Ocean", "Asia", "Americas", "Middle East"] as const;
-export const tripTypes = ["Family", "Business", "Honeymoon", "Luxury", "City Break"] as const;
-export const budgetBands = ["££", "£££", "££££"] as const;
+// ─── Lookup helpers ───────────────────────────────────────────────────────────
 
-export function findDestination(slug: string) {
+export function findDestination(slug: string): Destination | undefined {
   return destinations.find((d) => d.slug === slug);
 }

@@ -1,5 +1,7 @@
 // ─── Luxonair site configuration ─────────────────────────────────────────────
-// All brand constants in one place. Update these before going live.
+// Single source of truth for all brand constants used across the app.
+// Update the TODO fields before go-live; empty strings act as "disabled" sentinels
+// (social icons hidden, forms run in demo/console mode, accreditation badges suppressed).
 
 export const SITE = {
   phone: {

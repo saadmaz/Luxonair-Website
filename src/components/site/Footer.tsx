@@ -1,9 +1,13 @@
+// Site footer: brand column, explore links, company links, contact + newsletter.
+// Social icons are only rendered when a URL is configured in SITE.social —
+// filtering out empty strings keeps the footer clean during pre-launch.
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Plane, Youtube } from "lucide-react";
 import { Newsletter } from "./Newsletter";
 import { SITE } from "@/lib/siteConfig";
 
 export function Footer() {
+  // Empty-string social URLs are filtered out so icons are hidden until configured
   const socialLinks = [
     { href: SITE.social.facebook, label: "Facebook", icon: <Facebook className="h-4 w-4" /> },
     { href: SITE.social.instagram, label: "Instagram", icon: <Instagram className="h-4 w-4" /> },

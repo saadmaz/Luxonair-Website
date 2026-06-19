@@ -1,3 +1,6 @@
+// Theme toggle button — persists preference to localStorage and reflects
+// it on <html> via the "dark" class. The initial class is set synchronously
+// by the inline script in __root.tsx to prevent a flash of unstyled content.
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 
@@ -5,6 +8,7 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
+    // Sync React state with whatever the FOUC-prevention script already applied
     const stored = (localStorage.getItem("theme") as "light" | "dark" | null);
     const initial = stored === "dark" ? "dark" : "light";
     setTheme(initial);

@@ -1,3 +1,6 @@
+// Sticky site header: announcement bar → main nav bar → mega-panel dropdowns → mobile drawer.
+// Mega panels are shown on hover/focus (desktop) and dismissed on mouse-leave of the nav.
+// The mobile drawer is a full-width overlay toggled by the hamburger button.
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
@@ -9,6 +12,7 @@ import { SITE } from "@/lib/siteConfig";
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  // null = no panel open; key names correspond to the two mega-menu panels
   const [openMenu, setOpenMenu] = useState<null | "destinations" | "holiday">(null);
 
   return (
@@ -39,7 +43,7 @@ export function Header() {
       </div>
 
       {/* Main navigation bar */}
-      <div className="border-b border-border/60 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
+      <div className="border-b border-border/60 bg-background/90 backdrop-blur supports-backdrop-filter:bg-background/75">
         <div className="container-page flex h-16 items-center justify-between gap-4">
           {/* Logo */}
           <Link to="/" className="flex shrink-0 items-center gap-2">

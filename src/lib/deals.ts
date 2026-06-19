@@ -1,20 +1,31 @@
+import { unsplashImg } from "@/lib/unsplash";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 export type Deal = {
   id: string;
   title: string;
+  /** Links this deal card to its destination detail page when set */
   destinationSlug?: string;
   region: string;
   nights: number;
   board: string;
+  /** Indicative per-person price in GBP */
   fromPrice: number;
+  /** Original price shown crossed out for sale display */
   oldPrice?: number;
   badge?: string;
+  /** ISO date string — used by /deals page to sort by expiry */
   expires: string;
   image: string;
   blurb: string;
 };
 
-const img = (id: string, w = 1200) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=70`;
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+// Narrower default width (1200) compared to destination hero images (1600)
+// because deals are shown in cards, not full-bleed heroes.
+const img = (id: string) => unsplashImg(id, 1200);
 
 export const deals: Deal[] = [
   {

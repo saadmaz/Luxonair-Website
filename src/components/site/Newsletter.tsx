@@ -1,3 +1,8 @@
+// Newsletter sign-up with two layout variants:
+//   "footer"  — compact, used inside the site Footer
+//   "section" — full-bleed dark panel, used inline on the home page
+//
+// Submits to Formspree if SITE.formspree.newsletter is set; logs to console in demo mode.
 import { useState } from "react";
 import { Loader2, Mail } from "lucide-react";
 import { SITE } from "@/lib/siteConfig";

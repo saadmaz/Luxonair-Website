@@ -1,3 +1,8 @@
+// Four-step quote enquiry wizard.
+// Validation runs per-step using Zod schemas so the user only sees errors
+// for the current step's fields. On final submit the payload is sent to
+// Formspree if SITE.formspree.quote is configured; otherwise it logs to the
+// console (demo mode) so the form is always testable without live credentials.
 import { useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -7,6 +12,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { regions, tripTypes, budgetBands } from "@/lib/destinations";
 import { SITE } from "@/lib/siteConfig";
+
+// ─── Per-step Zod schemas ─────────────────────────────────────────────────────
+// Each schema only validates the fields visible on that step, so "Continue"
+// is safe to call without touching untouched steps.
 
 const step1 = z.object({
   destination: z.string().min(2, "Tell us where you'd like to go"),
@@ -29,6 +38,10 @@ const step4 = z.object({
   phone: z.string().trim().min(7, "Phone or WhatsApp number"),
   notes: z.string().max(1000).optional(),
 });
+
+// ─── Form state type ──────────────────────────────────────────────────────────
+// All fields are strings because HTML inputs always yield strings; Zod coerces
+// numeric fields (nights, adults, children) to numbers before validation.
 
 type Form = {
   destination: string; region: string; tripType: string;

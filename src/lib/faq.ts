@@ -1,4 +1,10 @@
-export type FaqGroup = { title: string; items: { q: string; a: string }[] };
+// FAQ content grouped by topic.
+// Add a new group object to extend the /faq page with additional categories.
+
+export type FaqGroup = {
+  title: string;
+  items: { q: string; a: string }[];
+};
 
 export const faqGroups: FaqGroup[] = [
   {

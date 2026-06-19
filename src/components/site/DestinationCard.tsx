@@ -1,3 +1,5 @@
+// Destination card: image thumbnail → region / budget chips → name + tagline → price.
+// Used in FeaturedDestinations (home), the /destinations index, and search results.
 import { Link } from "@tanstack/react-router";
 import type { Destination } from "@/lib/destinations";
 
@@ -8,7 +10,7 @@ export function DestinationCard({ d }: { d: Destination }) {
       params={{ slug: d.slug }}
       className="group overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
     >
-      <div className="aspect-[4/3] overflow-hidden">
+      <div className="aspect-4/3 overflow-hidden">
         <img
           src={d.heroImage}
           alt={`${d.name} — ${d.country}`}
