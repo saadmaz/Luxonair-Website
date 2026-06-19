@@ -33,62 +33,71 @@
   --color-gold-foreground: var(--gold-foreground);
   --color-navy: var(--navy);
   --color-navy-fg: var(--navy-fg);
+  --color-teal: var(--teal);
+  --color-teal-deep: var(--teal-deep);
+  --color-aqua: var(--aqua);
   --font-display: "Fraunces", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
 }
 
 :root {
   --radius: 0.5rem;
-  /* Cream paper base, deep navy ink, warm gold accent */
-  --background: oklch(0.985 0.008 85);
-  --foreground: oklch(0.18 0.04 260);
+  /* Luxonair brand palette — deep navy, turquoise teal, luxury gold */
+  --background: oklch(0.99 0.003 198);
+  --foreground: oklch(0.17 0.055 263);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.04 260);
+  --card-foreground: oklch(0.17 0.055 263);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.04 260);
-  --primary: oklch(0.22 0.05 260);
-  --primary-foreground: oklch(0.98 0.005 85);
-  --secondary: oklch(0.95 0.012 85);
-  --secondary-foreground: oklch(0.22 0.05 260);
-  --muted: oklch(0.95 0.012 85);
-  --muted-foreground: oklch(0.45 0.02 260);
-  --accent: oklch(0.93 0.03 85);
-  --accent-foreground: oklch(0.22 0.05 260);
+  --popover-foreground: oklch(0.17 0.055 263);
+  --primary: oklch(0.25 0.07 262);          /* Royal Navy Blue #12355B */
+  --primary-foreground: oklch(0.985 0.003 198);
+  --secondary: oklch(0.96 0.012 198);       /* Light teal-tinted surface */
+  --secondary-foreground: oklch(0.17 0.055 263);
+  --muted: oklch(0.95 0.010 198);
+  --muted-foreground: oklch(0.48 0.04 262);
+  --accent: oklch(0.93 0.018 198);          /* Very light aqua tint */
+  --accent-foreground: oklch(0.17 0.055 263);
   --destructive: oklch(0.55 0.22 27);
-  --destructive-foreground: oklch(0.98 0.005 85);
-  --border: oklch(0.88 0.012 85);
-  --input: oklch(0.9 0.012 85);
-  --ring: oklch(0.7 0.12 75);
-  --gold: oklch(0.72 0.13 75);
-  --gold-foreground: oklch(0.18 0.04 260);
-  --navy: oklch(0.12 0.04 260);
-  --navy-fg: oklch(0.93 0.01 80);
+  --destructive-foreground: oklch(0.985 0.003 85);
+  --border: oklch(0.90 0.012 198);
+  --input: oklch(0.92 0.012 198);
+  --ring: oklch(0.63 0.095 195);            /* Turquoise Teal #0F9CA4 */
+  --gold: oklch(0.68 0.135 72);             /* Luxury Gold #D2972A */
+  --gold-foreground: oklch(0.17 0.055 263);
+  --navy: oklch(0.17 0.055 263);            /* Deep Navy Blue #042045 */
+  --navy-fg: oklch(0.93 0.008 198);
+  --teal: oklch(0.63 0.095 195);            /* Turquoise Teal #0F9CA4 */
+  --teal-deep: oklch(0.52 0.085 197);       /* Deep Teal #097F8B */
+  --aqua: oklch(0.72 0.052 199);            /* Light Aqua #6AAEB7 */
 }
 
 .dark {
-  --background: oklch(0.14 0.025 260);
-  --foreground: oklch(0.96 0.01 85);
-  --card: oklch(0.18 0.03 260);
-  --card-foreground: oklch(0.96 0.01 85);
-  --popover: oklch(0.18 0.03 260);
-  --popover-foreground: oklch(0.96 0.01 85);
-  --primary: oklch(0.78 0.13 75);
-  --primary-foreground: oklch(0.14 0.025 260);
-  --secondary: oklch(0.24 0.03 260);
-  --secondary-foreground: oklch(0.96 0.01 85);
-  --muted: oklch(0.22 0.03 260);
-  --muted-foreground: oklch(0.7 0.02 260);
-  --accent: oklch(0.26 0.04 260);
-  --accent-foreground: oklch(0.96 0.01 85);
+  --background: oklch(0.14 0.045 263);
+  --foreground: oklch(0.95 0.008 198);
+  --card: oklch(0.18 0.05 263);
+  --card-foreground: oklch(0.95 0.008 198);
+  --popover: oklch(0.18 0.05 263);
+  --popover-foreground: oklch(0.95 0.008 198);
+  --primary: oklch(0.63 0.095 195);         /* Turquoise Teal — vibrant on dark navy */
+  --primary-foreground: oklch(0.14 0.045 263);
+  --secondary: oklch(0.22 0.05 263);
+  --secondary-foreground: oklch(0.95 0.008 198);
+  --muted: oklch(0.20 0.045 263);
+  --muted-foreground: oklch(0.65 0.04 198);
+  --accent: oklch(0.24 0.05 263);
+  --accent-foreground: oklch(0.95 0.008 198);
   --destructive: oklch(0.65 0.2 25);
-  --destructive-foreground: oklch(0.98 0.005 85);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.78 0.13 75);
-  --gold: oklch(0.78 0.13 75);
-  --gold-foreground: oklch(0.14 0.025 260);
-  --navy: oklch(0.08 0.025 260);
-  --navy-fg: oklch(0.93 0.01 80);
+  --destructive-foreground: oklch(0.985 0.003 85);
+  --border: oklch(1 0 0 / 11%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.72 0.052 199);            /* Light Aqua */
+  --gold: oklch(0.74 0.135 72);             /* Slightly brighter gold for dark mode */
+  --gold-foreground: oklch(0.14 0.045 263);
+  --navy: oklch(0.10 0.035 263);
+  --navy-fg: oklch(0.92 0.008 198);
+  --teal: oklch(0.63 0.095 195);
+  --teal-deep: oklch(0.52 0.085 197);
+  --aqua: oklch(0.72 0.052 199);
 }
 
 @layer base {
