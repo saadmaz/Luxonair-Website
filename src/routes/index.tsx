@@ -77,22 +77,22 @@ function Hero() {
         <div className="absolute inset-y-0 left-0 w-1.5 bg-linear-to-b from-transparent via-teal/70 to-transparent" />
       </div>
 
-      <div className="container-page relative grid gap-8 pb-10 pt-24 md:grid-cols-[1.2fr_1fr] md:items-center md:pb-12 md:pt-36">
+      <div className="container-page relative grid gap-6 pb-6 pt-16 md:grid-cols-[1.2fr_1fr] md:items-center md:pb-8 md:pt-24">
         {/* Left: copy */}
         <div className="max-w-2xl">
           <p className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-primary-foreground backdrop-blur">
             <Sparkles className="h-3 w-3 text-gold" /> UK Travel Specialists
           </p>
-          <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.05] text-primary-foreground sm:text-5xl md:text-6xl text-balance">
+          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] text-primary-foreground sm:text-5xl text-balance">
             Tailor-made trips,{" "}
             <span className="text-gold">quoted in minutes,</span>{" "}
             built by people.
           </h1>
-          <p className="mt-5 max-w-xl text-base text-primary-foreground/80 sm:text-lg">
+          <p className="mt-4 max-w-xl text-base text-primary-foreground/80">
             Premium long-haul, family escapes, and corporate travel — structured quote first, then a
             single consultant who owns your trip end-to-end.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-5 flex flex-wrap gap-3">
             <Button
               asChild
               size="lg"
@@ -113,7 +113,7 @@ function Hero() {
           </div>
 
           {/* Quick trust icons */}
-          <div className="mt-8 flex flex-wrap gap-4 text-xs text-primary-foreground/70">
+          <div className="mt-5 flex flex-wrap gap-4 text-xs text-primary-foreground/70">
             {["ATOL Protected", "No booking fees", "4hr response", "Single consultant"].map(
               (t) => (
                 <span key={t} className="flex items-center gap-1.5">
@@ -134,12 +134,12 @@ function Hero() {
           ].map((src, i) => (
             <div
               key={i}
-              className={`overflow-hidden rounded-2xl ring-1 ring-white/15 ${i === 1 ? "mt-6" : ""} ${i === 3 ? "-mt-6" : ""}`}
+              className={`overflow-hidden rounded-2xl ring-1 ring-white/15 ${i === 1 ? "mt-4" : ""} ${i === 3 ? "-mt-4" : ""}`}
             >
               <img
                 src={src}
                 alt=""
-                className="h-36 w-full object-cover"
+                className="h-28 w-full object-cover"
                 loading={i === 0 ? "eager" : "lazy"}
               />
             </div>
@@ -163,7 +163,7 @@ function StatsStrip() {
   ];
   return (
     <div className="bg-navy text-navy-fg">
-      <div className="container-page grid grid-cols-2 gap-6 py-8 lg:grid-cols-4">
+      <div className="container-page grid grid-cols-2 gap-6 pt-12 pb-8 md:pt-16 lg:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="text-center">
             <div className="font-display text-3xl font-semibold text-gold">{s.value}</div>
