@@ -16,8 +16,10 @@ dist-ssr
 .nitro
 *.local
 
-# Vercel
+# Vercel / Nitro build output
 .vercel/
+.output/
+.nitro/
 
 # Wrangler / Cloudflare
 .wrangler/
