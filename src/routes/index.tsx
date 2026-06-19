@@ -9,7 +9,6 @@ import { Newsletter } from "@/components/site/Newsletter";
 import {
   ArrowRight,
   Briefcase,
-  CheckCircle2,
   Clock,
   MessageCircle,
   Phone,
@@ -72,27 +71,27 @@ function Hero() {
               "url(https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=2400&q=70)",
           }}
         />
-        <div className="absolute inset-0 bg-linear-to-r from-navy/97 via-navy/84 to-navy/20" />
+        <div className="absolute inset-0 bg-linear-to-r from-navy/97 via-navy/80 to-navy/10" />
         {/* Teal accent edge */}
         <div className="absolute inset-y-0 left-0 w-1.5 bg-linear-to-b from-transparent via-teal/70 to-transparent" />
       </div>
 
-      <div className="container-page relative grid gap-6 pb-6 pt-16 md:grid-cols-[1.2fr_1fr] md:items-center md:pb-8 md:pt-24">
+      <div className="container-page relative grid gap-10 pb-8 pt-16 md:grid-cols-[1.4fr_1fr] md:items-stretch md:pb-10 md:pt-24">
         {/* Left: copy */}
-        <div className="max-w-2xl">
-          <p className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-primary-foreground backdrop-blur">
+        <div className="flex flex-col justify-center py-2 max-w-xl">
+          <p className="inline-flex w-fit items-center gap-2 rounded-full border border-gold/30 bg-gold/8 px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-primary-foreground/90 backdrop-blur-sm">
             <Sparkles className="h-3 w-3 text-gold" /> UK Travel Specialists
           </p>
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] text-primary-foreground sm:text-5xl text-balance">
+          <h1 className="mt-7 font-display text-5xl font-semibold leading-[1.03] text-primary-foreground sm:text-5xl md:text-6xl text-balance">
             Tailor-made trips,{" "}
             <span className="text-gold">quoted in minutes,</span>{" "}
             built by people.
           </h1>
-          <p className="mt-4 max-w-xl text-base text-primary-foreground/80">
-            Premium long-haul, family escapes, and corporate travel — structured quote first, then a
-            single consultant who owns your trip end-to-end.
+          <p className="mt-6 max-w-md text-base leading-relaxed text-primary-foreground/70">
+            Premium long-haul, family escapes, and corporate travel from the UK.
+            One consultant owns your trip end-to-end.
           </p>
-          <div className="mt-5 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-wrap gap-4">
             <Button
               asChild
               size="lg"
@@ -106,44 +105,33 @@ function Hero() {
               asChild
               size="lg"
               variant="outline"
-              className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
+              className="border-primary-foreground/25 bg-transparent text-primary-foreground hover:bg-primary-foreground/8 hover:border-primary-foreground/40"
             >
               <Link to="/destinations">Explore destinations</Link>
             </Button>
           </div>
-
-          {/* Quick trust icons */}
-          <div className="mt-5 flex flex-wrap gap-4 text-xs text-primary-foreground/70">
-            {["ATOL Protected", "No booking fees", "4hr response", "Single consultant"].map(
-              (t) => (
-                <span key={t} className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-teal" /> {t}
-                </span>
-              )
-            )}
-          </div>
         </div>
 
-        {/* Right: image tiles (desktop only) */}
-        <div className="hidden md:grid grid-cols-2 gap-3 self-stretch">
-          {[
-            "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&q=70",
-            "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=600&q=70",
-            "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=600&q=70",
-            "https://images.unsplash.com/photo-1540202404-a2f29016b523?auto=format&fit=crop&w=600&q=70",
-          ].map((src, i) => (
-            <div
-              key={i}
-              className={`overflow-hidden rounded-2xl ring-1 ring-white/15 ${i === 1 ? "mt-4" : ""} ${i === 3 ? "-mt-4" : ""}`}
-            >
-              <img
-                src={src}
-                alt=""
-                className="h-28 w-full object-cover"
-                loading={i === 0 ? "eager" : "lazy"}
-              />
-            </div>
-          ))}
+        {/* Right: two premium portrait images (desktop only) */}
+        <div className="hidden md:flex flex-col gap-4 self-stretch min-h-0">
+          <div className="relative flex-1 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/15">
+            <img
+              src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80"
+              alt=""
+              className="h-full w-full object-cover"
+              loading="eager"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-navy/60 via-transparent to-transparent" />
+          </div>
+          <div className="relative flex-1 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/15">
+            <img
+              src="https://images.unsplash.com/photo-1540202404-a2f29016b523?auto=format&fit=crop&w=800&q=80"
+              alt=""
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-navy/60 via-transparent to-transparent" />
+          </div>
         </div>
       </div>
 
