@@ -1,9 +1,10 @@
 import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   LayoutDashboard, FileText, MessageSquare, LogOut,
   Menu, X, MapPin, Tag, Sun, BookOpen, Star, HelpCircle,
   UserCog, Mail, Bell, Search, ChevronRight, PanelLeftClose, PanelLeft,
+  FileText as FileTextIcon, Users, MessageCircle, Clock, CheckCircle2, ArrowRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -57,6 +58,22 @@ function AdminLayoutRoute() {
 
   // Mobile drawer
   const [mobileOpen, setMobileOpen] = useState(false);
+  // Search palette
+  const [searchOpen, setSearchOpen] = useState(false);
+  // Notifications panel
+  const [notifOpen, setNotifOpen] = useState(false);
+
+  // ⌘K / Ctrl+K shortcut
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   // Desktop collapse — persisted in localStorage
   const [collapsed, setCollapsed] = useState(() => {
@@ -314,17 +331,26 @@ function AdminLayoutRoute() {
 
           <div className="flex flex-1 items-center justify-end gap-2">
             {/* Search */}
-            <div className="hidden cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 transition-colors hover:border-gray-300 sm:flex">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="hidden cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 transition-colors hover:border-gray-300 hover:bg-gray-100 sm:flex"
+            >
               <Search className="h-3.5 w-3.5 text-gray-400" />
               <span className="select-none text-[12px] text-gray-400">Search…</span>
               <kbd className="ml-4 rounded border border-gray-200 bg-white px-1.5 py-px text-[10px] font-medium text-gray-400">⌘K</kbd>
-            </div>
+            </button>
 
             {/* Bell */}
-            <button className="relative flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800">
-              <Bell className="h-4 w-4" />
-              <span className="absolute right-[7px] top-[7px] h-1.5 w-1.5 rounded-full bg-amber-400 ring-[1.5px] ring-white" />
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setNotifOpen((v) => !v)}
+                className="relative flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
+              >
+                <Bell className="h-4 w-4" />
+                <span className="absolute right-[7px] top-[7px] h-1.5 w-1.5 rounded-full bg-amber-400 ring-[1.5px] ring-white" />
+              </button>
+              {notifOpen && <NotificationsPanel onClose={() => setNotifOpen(false)} navigate={navigate} />}
+            </div>
 
             <div className="h-5 w-px bg-gray-100" />
 
@@ -345,6 +371,181 @@ function AdminLayoutRoute() {
         <main className="flex-1 overflow-y-auto">
           <Outlet />
         </main>
+      </div>
+
+      {/* Search palette */}
+      {searchOpen && <SearchPalette onClose={() => setSearchOpen(false)} navigate={navigate} />}
+    </div>
+  );
+}
+
+// ─── Search Palette ──────────────────────────────────────────────────────────
+
+const allNavItems = navSections.flatMap((s) =>
+  s.items.map((item) => ({ ...item, section: s.label }))
+);
+
+function SearchPalette({ onClose, navigate }: { onClose: () => void; navigate: ReturnType<typeof useNavigate> }) {
+  const [query, setQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  const results = query.trim()
+    ? allNavItems.filter((item) =>
+        item.label.toLowerCase().includes(query.toLowerCase()) ||
+        item.section.toLowerCase().includes(query.toLowerCase())
+      )
+    : allNavItems;
+
+  const go = (to: string) => { navigate({ to: to as "/admin" }); onClose(); };
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-start justify-center px-4 pt-[15vh]">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+
+      {/* Panel */}
+      <div className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/10">
+        {/* Input */}
+        <div className="flex items-center gap-3 border-b border-gray-100 px-4 py-3.5">
+          <Search className="h-4 w-4 shrink-0 text-gray-400" />
+          <input
+            ref={inputRef}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search pages…"
+            className="flex-1 bg-transparent text-sm text-gray-900 placeholder-gray-400 outline-none"
+          />
+          <button onClick={onClose} className="rounded-md border border-gray-200 px-2 py-0.5 text-[10px] font-medium text-gray-400 hover:bg-gray-50">
+            ESC
+          </button>
+        </div>
+
+        {/* Results */}
+        <ul className="max-h-72 overflow-y-auto py-2" style={{ scrollbarWidth: "none" }}>
+          {results.length === 0 && (
+            <li className="px-4 py-6 text-center text-sm text-gray-400">No results for "{query}"</li>
+          )}
+          {results.map((item) => {
+            const Icon = item.icon;
+            return (
+              <li key={item.to}>
+                <button
+                  onClick={() => go(item.to)}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors hover:bg-gray-50"
+                >
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-100">
+                    <Icon className="h-3.5 w-3.5 text-gray-500" strokeWidth={1.75} />
+                  </span>
+                  <span className="flex-1 font-medium text-gray-800">{item.label}</span>
+                  <span className="text-[11px] text-gray-400">{item.section}</span>
+                  <ArrowRight className="h-3.5 w-3.5 text-gray-300" />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="border-t border-gray-100 px-4 py-2 text-[11px] text-gray-400">
+          <span className="mr-3"><kbd className="rounded border border-gray-200 px-1 py-px font-mono">↑↓</kbd> navigate</span>
+          <span><kbd className="rounded border border-gray-200 px-1 py-px font-mono">↵</kbd> select</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Notifications Panel ─────────────────────────────────────────────────────
+
+const mockNotifications = [
+  { id: 1, icon: FileTextIcon,   iconBg: "bg-blue-50",    iconColor: "text-blue-600",   title: "New enquiry received",        body: "James Thornton — Maldives, Aug 2025",   time: "2 min ago",  to: "/admin/enquiries", read: false },
+  { id: 2, icon: MessageCircle,  iconBg: "bg-amber-50",   iconColor: "text-amber-600",  title: "3 unread messages",           body: "Oldest message from 2 days ago",         time: "1 hr ago",   to: "/admin/messages",  read: false },
+  { id: 3, icon: Users,          iconBg: "bg-violet-50",  iconColor: "text-violet-600", title: "8 new subscribers this week", body: "Total now at 152 subscribers",           time: "3 hrs ago",  to: "/admin/subscribers", read: true },
+  { id: 4, icon: CheckCircle2,   iconBg: "bg-emerald-50", iconColor: "text-emerald-600",title: "Enquiry marked responded",    body: "Sarah Mitchell — Dubai trip",            time: "Yesterday",  to: "/admin/enquiries", read: true },
+  { id: 5, icon: Clock,          iconBg: "bg-rose-50",    iconColor: "text-rose-600",   title: "Follow-up overdue",           body: "Oliver Chen — Japan, no reply in 3 days", time: "2 days ago", to: "/admin/enquiries", read: true },
+];
+
+function NotificationsPanel({ onClose, navigate }: { onClose: () => void; navigate: ReturnType<typeof useNavigate> }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [notifs, setNotifs] = useState(mockNotifications);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [onClose]);
+
+  const unreadCount = notifs.filter((n) => !n.read).length;
+  const markAllRead = () => setNotifs((n) => n.map((x) => ({ ...x, read: true })));
+
+  return (
+    <div
+      ref={ref}
+      className="absolute right-0 top-full z-50 mt-2 w-[340px] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-bold text-gray-900">Notifications</span>
+          {unreadCount > 0 && (
+            <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-400 px-1.5 text-[10px] font-bold text-white">
+              {unreadCount}
+            </span>
+          )}
+        </div>
+        {unreadCount > 0 && (
+          <button onClick={markAllRead} className="text-[11px] font-medium text-blue-600 hover:underline">
+            Mark all read
+          </button>
+        )}
+      </div>
+
+      {/* List */}
+      <ul className="max-h-[340px] overflow-y-auto divide-y divide-gray-50" style={{ scrollbarWidth: "none" }}>
+        {notifs.map((n) => {
+          const Icon = n.icon;
+          return (
+            <li key={n.id}>
+              <button
+                onClick={() => { navigate({ to: n.to as "/admin" }); onClose(); }}
+                className={cn(
+                  "flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50",
+                  !n.read && "bg-blue-50/40"
+                )}
+              >
+                <span className={cn("mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl", n.iconBg)}>
+                  <Icon className={cn("h-4 w-4", n.iconColor)} strokeWidth={1.75} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className={cn("text-[13px] leading-snug", n.read ? "text-gray-600" : "font-semibold text-gray-900")}>
+                    {n.title}
+                  </p>
+                  <p className="mt-0.5 truncate text-[11px] text-gray-400">{n.body}</p>
+                  <p className="mt-1 text-[10px] text-gray-400">{n.time}</p>
+                </div>
+                {!n.read && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500" />}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+
+      {/* Footer */}
+      <div className="border-t border-gray-100 px-4 py-2.5">
+        <button
+          onClick={() => { navigate({ to: "/admin/enquiries" }); onClose(); }}
+          className="flex w-full items-center justify-center gap-1.5 text-[12px] font-medium text-gray-500 hover:text-gray-800"
+        >
+          View all activity <ArrowRight className="h-3.5 w-3.5" />
+        </button>
       </div>
     </div>
   );
