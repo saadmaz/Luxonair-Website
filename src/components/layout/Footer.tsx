@@ -133,10 +133,18 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-navy-fg/10">
         <div className="container-page flex flex-col items-start justify-between gap-2 py-5 text-xs text-navy-fg/40 sm:flex-row sm:items-center">
-          <span>© {new Date().getFullYear()} Luxonair Travel Ltd. All prices are indicative and subject to availability.</span>
-          {SITE.registration && SITE.registration !== "00000000" && (
-            <span>Registered in England &amp; Wales · {SITE.registration}</span>
-          )}
+          <span>© 2026 Luxonair Travel</span>
+          <span>
+            Designed and developed by{" "}
+            <a
+              href="https://lasarmedia.online"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-navy-fg/60 underline underline-offset-2 transition-colors hover:text-gold"
+            >
+              LASAR MEDIA
+            </a>
+          </span>
         </div>
       </div>
     </footer>
