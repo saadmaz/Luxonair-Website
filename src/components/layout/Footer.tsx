@@ -2,7 +2,7 @@
 // Social icons are only rendered when a URL is configured in SITE.social -
 // filtering out empty strings keeps the footer clean during pre-launch.
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Plane, Youtube } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
 import { Newsletter } from "@/components/shared/Newsletter";
 import { SITE } from "@/config/site";
 
@@ -21,11 +21,12 @@ export function Footer() {
       <div className="container-page grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-5">
         {/* Brand column */}
         <div className="lg:col-span-2">
-          <Link to="/" className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-gold text-gold-foreground">
-              <Plane className="h-4 w-4" />
-            </span>
-            <span className="font-display text-xl font-semibold text-navy-fg">Luxonair</span>
+          <Link to="/" className="flex items-center">
+            <img
+              src="/Luxeonair-logo-withoutbg.png"
+              alt="Luxonair"
+              className="h-10 w-auto brightness-0 invert"
+            />
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-navy-fg/60">
             UK-based travel specialists for premium long-haul, family escapes and corporate trips. Tailor-made itineraries, account-managed by a single consultant.

@@ -4,7 +4,7 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
-import { ChevronDown, Clock, Mail, Menu, Phone, Plane, X } from "lucide-react";
+import { ChevronDown, Clock, Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
 import { destinations, regions } from "@/data/destinations";
 import { holidayTypes } from "@/data/holidayTypes";
@@ -46,11 +46,12 @@ export function Header() {
       <div className="border-b border-border/60 bg-background/90 backdrop-blur supports-backdrop-filter:bg-background/75">
         <div className="container-page flex h-16 items-center justify-between gap-4">
           {/* Logo */}
-          <Link to="/" className="flex shrink-0 items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm">
-              <Plane className="h-4 w-4" />
-            </span>
-            <span className="font-display text-xl font-semibold tracking-tight">Luxonair</span>
+          <Link to="/" className="flex shrink-0 items-center">
+            <img
+              src="/Luxeonair-logo-withoutbg.png"
+              alt="Luxonair"
+              className="h-10 w-auto dark:brightness-0 dark:invert"
+            />
           </Link>
 
           {/* Desktop navigation */}
