@@ -1,13 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Mail, MailOpen } from "lucide-react";
+import { Mail, MailOpen, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/admin/messages")({
   component: AdminMessagesPage,
 });
 
-const messages = [
+type Message = {
+  id: number; name: string; email: string; subject: string;
+  body: string; received: string; read: boolean;
+};
+
+const initialData: Message[] = [
   { id: 1, name: "Priya Nair", email: "priya.n@email.com", subject: "Group booking for 12 people", body: "Hi, we are planning a family reunion in the Maldives for 12 adults and 4 children next Easter. Could you help with group pricing and villa arrangements?", received: "20 Jun 2025", read: false },
   { id: 2, name: "Tom Bradley", email: "t.bradley@firm.co.uk", subject: "Corporate account enquiry", body: "We are a 50-person professional services firm based in London. We travel frequently to Dubai and New York. Interested in setting up a corporate account with single invoice billing.", received: "19 Jun 2025", read: false },
   { id: 3, name: "Laura Santos", email: "l.santos@gmail.com", subject: "Honeymoon planning — Bora Bora", body: "Looking to plan our honeymoon to Bora Bora in February 2026. Budget is flexible for the right experience. Can you send options with business class flights from Heathrow?", received: "18 Jun 2025", read: false },
@@ -17,15 +23,23 @@ const messages = [
 ];
 
 function AdminMessagesPage() {
+  const [items, setItems] = useState<Message[]>(initialData);
   const [selected, setSelected] = useState<number | null>(null);
-  const [readIds, setReadIds] = useState<Set<number>>(new Set(messages.filter((m) => m.read).map((m) => m.id)));
+  const [deleteId, setDeleteId] = useState<number | null>(null);
 
-  const selectedMsg = messages.find((m) => m.id === selected);
-  const unread = messages.filter((m) => !readIds.has(m.id)).length;
+  const selectedMsg = items.find((m) => m.id === selected);
+  const unread = items.filter((m) => !m.read).length;
 
   const open = (id: number) => {
     setSelected(id);
-    setReadIds((s) => new Set([...s, id]));
+    setItems((prev) => prev.map((m) => (m.id === id ? { ...m, read: true } : m)));
+  };
+
+  const confirmDelete = () => {
+    if (deleteId == null) return;
+    setItems((prev) => prev.filter((m) => m.id !== deleteId));
+    if (selected === deleteId) setSelected(null);
+    setDeleteId(null);
   };
 
   return (
@@ -35,38 +49,35 @@ function AdminMessagesPage() {
         <p className="mt-1 text-sm text-gray-500">
           Contact form submissions.{" "}
           {unread > 0 && <span className="font-semibold text-amber-600">{unread} unread</span>}
+          {unread === 0 && <span className="text-emerald-600">All read</span>}
         </p>
       </div>
 
       <div className="flex h-[calc(100vh-220px)] min-h-[400px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-        {/* Message list */}
-        <div className={cn("flex w-full flex-col divide-y divide-gray-100 overflow-y-auto md:w-80 md:border-r md:border-gray-100", selected && "hidden md:flex")}>
-          {messages.map((m) => {
-            const isRead = readIds.has(m.id);
-            return (
-              <button
-                key={m.id}
-                onClick={() => open(m.id)}
-                className={cn(
-                  "flex flex-col items-start gap-1 px-4 py-4 text-left transition-colors hover:bg-gray-50",
-                  selected === m.id && "bg-blue-50/60",
-                  !isRead && "bg-amber-50/30"
-                )}
-              >
-                <div className="flex w-full items-center gap-2">
-                  {isRead ? <MailOpen className="h-3.5 w-3.5 shrink-0 text-gray-300" /> : <Mail className="h-3.5 w-3.5 shrink-0 text-amber-500" />}
-                  <p className={cn("flex-1 truncate text-sm", !isRead ? "font-semibold text-gray-900" : "font-medium text-gray-700")}>{m.name}</p>
-                  <p className="text-[11px] text-gray-400">{m.received.split(" ").slice(0, 2).join(" ")}</p>
-                </div>
-                <p className="pl-5 text-xs font-medium text-gray-600 truncate w-full">{m.subject}</p>
-                <p className="pl-5 line-clamp-1 text-xs text-gray-400">{m.body}</p>
-              </button>
-            );
-          })}
+        {/* List */}
+        <div className={cn("flex w-full flex-col divide-y divide-gray-100 overflow-y-auto md:w-80 md:border-r md:border-gray-100", selected !== null && "hidden md:flex")}>
+          {items.length === 0 && (
+            <div className="flex flex-1 items-center justify-center p-8 text-center">
+              <p className="text-sm text-gray-400">No messages</p>
+            </div>
+          )}
+          {items.map((m) => (
+            <button key={m.id} onClick={() => open(m.id)}
+              className={cn("flex flex-col items-start gap-1 px-4 py-4 text-left transition-colors hover:bg-gray-50", selected === m.id && "bg-blue-50/60", !m.read && "bg-amber-50/30")}
+            >
+              <div className="flex w-full items-center gap-2">
+                {m.read ? <MailOpen className="h-3.5 w-3.5 shrink-0 text-gray-300" /> : <Mail className="h-3.5 w-3.5 shrink-0 text-amber-500" />}
+                <p className={cn("flex-1 truncate text-sm", !m.read ? "font-semibold text-gray-900" : "font-medium text-gray-700")}>{m.name}</p>
+                <p className="text-[11px] text-gray-400">{m.received.split(" ").slice(0, 2).join(" ")}</p>
+              </div>
+              <p className="pl-5 text-xs font-medium text-gray-600 truncate w-full">{m.subject}</p>
+              <p className="pl-5 line-clamp-1 text-xs text-gray-400">{m.body}</p>
+            </button>
+          ))}
         </div>
 
-        {/* Message detail */}
-        <div className={cn("flex flex-1 flex-col", !selected && "hidden md:flex md:items-center md:justify-center")}>
+        {/* Detail */}
+        <div className={cn("flex flex-1 flex-col", selected === null && "hidden md:flex md:items-center md:justify-center")}>
           {selectedMsg ? (
             <>
               <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
@@ -76,6 +87,7 @@ function AdminMessagesPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <button onClick={() => setSelected(null)} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 md:hidden">Back</button>
+                  <button onClick={() => setDeleteId(selectedMsg.id)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"><Trash2 className="h-4 w-4" /></button>
                   <a href={`mailto:${selectedMsg.email}?subject=Re: ${selectedMsg.subject}`} className="rounded-lg bg-[#042045] px-4 py-1.5 text-xs font-semibold text-white hover:bg-[#042045]/90">Reply</a>
                 </div>
               </div>
@@ -92,6 +104,17 @@ function AdminMessagesPage() {
           )}
         </div>
       </div>
+
+      <Dialog open={deleteId !== null} onOpenChange={(o) => !o && setDeleteId(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader><DialogTitle>Delete message?</DialogTitle></DialogHeader>
+          <p className="text-sm text-gray-500">This will permanently remove the message. This cannot be undone.</p>
+          <DialogFooter>
+            <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
+            <button onClick={confirmDelete} className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Delete</button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
