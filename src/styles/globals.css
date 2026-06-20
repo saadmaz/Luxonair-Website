@@ -97,7 +97,7 @@
   --destructive: oklch(0.65 0.20 25);
   --destructive-foreground: oklch(0.985 0.003 85);
   --border: oklch(1 0 0 / 11%);
-  --input: oklch(1 0 0 / 15%);
+  --input: oklch(1 0 0 / 28%);
   --ring: oklch(0.715 0.057 205);           /* Light Aqua #6AAEB7 */
   --gold: oklch(0.745 0.148 72);            /* Luxury Gold — brighter for dark mode */
   --gold-foreground: oklch(0.135 0.048 257);
