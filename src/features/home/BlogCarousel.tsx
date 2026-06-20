@@ -35,9 +35,9 @@ export function BlogCarousel() {
   const post = blogPosts[current];
 
   return (
-    <section className="py-14 md:py-20">
+    <section className="py-10 md:py-14">
       {/* Section header stays inside the page container */}
-      <div className="container-page mb-8">
+      <div className="container-page mb-6">
         <SectionHeader
           eyebrow="From the journal"
           title="Guides, insights & destination notes."
@@ -46,20 +46,20 @@ export function BlogCarousel() {
       </div>
 
       {/* Carousel wrapper — padded to create space for the outer arrows */}
-      <div className="mx-auto max-w-[1200px] px-12 md:px-16">
+      <div className="mx-auto max-w-[1100px] px-12 md:px-16">
         <div className="relative">
           {/* ── Card ─────────────────────────────────────────────────────── */}
           <div
             className={cn(
-              "overflow-hidden rounded-2xl shadow-2xl transition-opacity duration-250",
+              "overflow-hidden rounded-xl shadow-xl transition-opacity duration-250",
               animating ? "opacity-0" : "opacity-100"
             )}
             style={{ minHeight: 0 }}
           >
-            <div className="flex h-full flex-col md:flex-row md:h-[420px] lg:h-[460px]">
+            <div className="flex h-full flex-col md:flex-row md:h-[320px] lg:h-[360px]">
 
               {/* Mobile: image strip across the top */}
-              <div className="relative h-52 w-full shrink-0 md:hidden">
+              <div className="relative h-40 w-full shrink-0 md:hidden">
                 <img
                   src={post.heroImage}
                   alt={post.title}
@@ -69,21 +69,21 @@ export function BlogCarousel() {
               </div>
 
               {/* Text panel */}
-              <div className="flex flex-col justify-center bg-[#042045] px-8 py-8 md:w-[46%] md:shrink-0 md:px-12 lg:px-14 lg:py-12">
-                <span className="inline-flex w-fit rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
+              <div className="flex flex-col justify-center bg-[#042045] px-7 py-6 md:w-[46%] md:shrink-0 md:px-10 lg:px-12 lg:py-8">
+                <span className="inline-flex w-fit rounded-full bg-white/10 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-white/60">
                   {post.category}
                 </span>
 
-                <h3 className="mt-4 font-display text-[1.35rem] font-semibold leading-snug text-white md:text-2xl lg:text-[1.65rem]">
+                <h3 className="mt-3 font-display text-lg font-semibold leading-snug text-white md:text-xl lg:text-[1.35rem]">
                   {post.title}
                 </h3>
 
-                <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-white/55 md:line-clamp-3">
+                <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-white/55 md:line-clamp-3 md:text-sm">
                   {post.excerpt}
                 </p>
 
-                <div className="mt-4 flex items-center gap-1.5 text-xs text-white/35">
-                  <Clock className="h-3.5 w-3.5" />
+                <div className="mt-3 flex items-center gap-1.5 text-[11px] text-white/35">
+                  <Clock className="h-3 w-3" />
                   <span>{post.readMinutes} min read</span>
                   <span className="mx-0.5">·</span>
                   <span>
@@ -98,9 +98,9 @@ export function BlogCarousel() {
                 <Link
                   to="/blog/$slug"
                   params={{ slug: post.slug }}
-                  className="mt-7 inline-flex w-fit items-center gap-2 rounded-lg border border-white/20 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:border-white/40 hover:bg-white/10"
+                  className="mt-5 inline-flex w-fit items-center gap-2 rounded-lg border border-white/20 px-4 py-2 text-xs font-semibold text-white transition-all hover:border-white/40 hover:bg-white/10"
                 >
-                  Read article <ArrowRight className="h-4 w-4" />
+                  Read article <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
 
