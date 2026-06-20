@@ -57,16 +57,16 @@ function DestinationDetail() {
     <article>
       <div className="relative h-[55vh] min-h-[380px] w-full overflow-hidden">
         <img src={d.heroImage} alt={d.name} className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-linear-to-t from-primary/85 via-primary/30 to-transparent" />
-        <div className="container-page absolute inset-x-0 bottom-0 pb-10 text-primary-foreground">
-          <Link to="/destinations" className="inline-flex items-center text-xs uppercase tracking-[0.2em] text-primary-foreground/80 hover:text-primary-foreground">
+        <div className="absolute inset-0 bg-linear-to-t from-navy/85 via-navy/30 to-transparent" />
+        <div className="container-page absolute inset-x-0 bottom-0 pb-10 text-navy-fg">
+          <Link to="/destinations" className="inline-flex items-center text-xs uppercase tracking-[0.2em] text-navy-fg/80 hover:text-navy-fg">
             <ArrowLeft className="mr-1 h-3 w-3" /> All destinations
           </Link>
           <h1 className="mt-3 max-w-3xl font-display text-4xl font-semibold sm:text-6xl text-balance">{d.name}</h1>
-          <p className="mt-3 max-w-2xl text-primary-foreground/85">{d.tagline}</p>
+          <p className="mt-3 max-w-2xl text-navy-fg/85">{d.tagline}</p>
           <div className="mt-5 flex flex-wrap gap-2 text-xs">
             {[d.region, ...d.tripType, d.budgetBand].map((t) => (
-              <span key={t} className="rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-1 backdrop-blur">
+              <span key={t} className="rounded-full border border-navy-fg/30 bg-navy-fg/10 px-3 py-1 backdrop-blur">
                 {t}
               </span>
             ))}

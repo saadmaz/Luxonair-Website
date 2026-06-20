@@ -119,10 +119,10 @@ function HolidaysPage() {
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
-              <div className="absolute inset-0 bg-linear-to-t from-primary/90 via-primary/40 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-5 text-primary-foreground">
+              <div className="absolute inset-0 bg-linear-to-t from-navy/90 via-navy/40 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5 text-navy-fg">
                 <div className="font-display text-xl font-semibold">{h.name}</div>
-                <div className="mt-0.5 text-sm text-primary-foreground/75">{h.tagline}</div>
+                <div className="mt-0.5 text-sm text-navy-fg/75">{h.tagline}</div>
                 <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-gold group-hover:gap-2 transition-all">
                   Explore <ArrowRight className="h-3 w-3" />
                 </span>

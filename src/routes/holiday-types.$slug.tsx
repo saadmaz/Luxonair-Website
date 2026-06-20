@@ -41,11 +41,11 @@ function HolidayTypePage() {
     <>
       <section className="relative">
         <div className="absolute inset-0 -z-10 bg-cover bg-center" style={{ backgroundImage: `url(${h.heroImage})` }} />
-        <div className="absolute inset-0 -z-10 bg-linear-to-b from-primary/70 via-primary/55 to-primary/85" />
-        <div className="container-page py-20 text-primary-foreground md:py-28">
-          <p className="text-xs uppercase tracking-[0.2em] text-primary-foreground/70">Holiday type</p>
+        <div className="absolute inset-0 -z-10 bg-linear-to-b from-navy/70 via-navy/55 to-navy/85" />
+        <div className="container-page py-20 text-navy-fg md:py-28">
+          <p className="text-xs uppercase tracking-[0.2em] text-navy-fg/70">Holiday type</p>
           <h1 className="mt-2 font-display text-4xl font-semibold sm:text-6xl text-balance">{h.name}</h1>
-          <p className="mt-4 max-w-2xl text-lg text-primary-foreground/90">{h.tagline}</p>
+          <p className="mt-4 max-w-2xl text-lg text-navy-fg/90">{h.tagline}</p>
           <Button asChild size="lg" className="mt-6 bg-gold text-gold-foreground hover:bg-gold/90">
             <Link to="/quote" search={{ tripType: h.name }}>Start a {h.name.toLowerCase()} quote <ArrowRight className="ml-1 h-4 w-4" /></Link>
           </Button>
