@@ -10,10 +10,10 @@ export function FinalCTA() {
     <section className="container-page pb-16 md:pb-24">
       <div className="relative overflow-hidden rounded-3xl bg-navy px-6 py-14 text-navy-fg shadow-2xl md:px-14">
         {/* Decorative background circles */}
-        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-navy-fg/5" />
-        <div className="pointer-events-none absolute -bottom-12 right-32 h-40 w-40 rounded-full bg-gold/10" />
+        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/5" />
+        <div className="pointer-events-none absolute bottom-0 right-24 h-32 w-32 rounded-full bg-gold/8" />
 
-        <div className="relative grid gap-8 md:grid-cols-[1.4fr_1fr] md:items-center">
+        <div className="relative grid gap-8 md:grid-cols-[1.4fr_auto] md:items-center">
           <div>
             <h2 className="font-display text-3xl font-semibold sm:text-4xl text-balance">
               Tell us where, when, and roughly how much. We'll do the rest.
@@ -23,7 +23,7 @@ export function FinalCTA() {
               working hours.
             </p>
           </div>
-          <div className="flex flex-wrap gap-3 md:justify-end">
+          <div className="flex flex-wrap items-center gap-3 md:justify-end">
             <Button asChild size="lg" className="bg-gold text-gold-foreground hover:bg-gold/90">
               <Link to="/quote">Start a quote</Link>
             </Button>

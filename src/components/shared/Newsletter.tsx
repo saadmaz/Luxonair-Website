@@ -92,7 +92,7 @@ function NewsletterForm({
     );
   }
   return (
-    <form onSubmit={onSubmit} className="mt-4 flex flex-col gap-2 sm:flex-row">
+    <form onSubmit={onSubmit} className={`flex flex-col gap-2 sm:flex-row${dark ? "" : " mt-4"}`}>
       <label className="relative flex-1">
         <Mail className={`pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${dark ? "text-navy-fg/60" : "text-muted-foreground"}`} />
         <input
