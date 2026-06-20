@@ -30,7 +30,17 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as HolidayTypesSlugRouteImport } from './routes/holiday-types.$slug'
 import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
+import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
+import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminHolidaysRouteImport } from './routes/admin.holidays'
+import { Route as AdminFaqsRouteImport } from './routes/admin.faqs'
+import { Route as AdminEnquiriesRouteImport } from './routes/admin.enquiries'
+import { Route as AdminDestinationsRouteImport } from './routes/admin.destinations'
+import { Route as AdminDealsRouteImport } from './routes/admin.deals'
+import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -137,9 +147,59 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogRoute,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
+  id: '/subscribers',
+  path: '/subscribers',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMessagesRoute = AdminMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminHolidaysRoute = AdminHolidaysRouteImport.update({
+  id: '/holidays',
+  path: '/holidays',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFaqsRoute = AdminFaqsRouteImport.update({
+  id: '/faqs',
+  path: '/faqs',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEnquiriesRoute = AdminEnquiriesRouteImport.update({
+  id: '/enquiries',
+  path: '/enquiries',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDestinationsRoute = AdminDestinationsRouteImport.update({
+  id: '/destinations',
+  path: '/destinations',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDealsRoute = AdminDealsRouteImport.update({
+  id: '/deals',
+  path: '/deals',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBlogRoute = AdminBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => AdminRoute,
 } as any)
 
@@ -158,7 +218,17 @@ export interface FileRoutesByFullPath {
   '/quote': typeof QuoteRoute
   '/reviews': typeof ReviewsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/blog': typeof AdminBlogRoute
+  '/admin/deals': typeof AdminDealsRoute
+  '/admin/destinations': typeof AdminDestinationsRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/faqs': typeof AdminFaqsRoute
+  '/admin/holidays': typeof AdminHolidaysRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/holiday-types/$slug': typeof HolidayTypesSlugRoute
@@ -178,7 +248,17 @@ export interface FileRoutesByTo {
   '/quote': typeof QuoteRoute
   '/reviews': typeof ReviewsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/blog': typeof AdminBlogRoute
+  '/admin/deals': typeof AdminDealsRoute
+  '/admin/destinations': typeof AdminDestinationsRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/faqs': typeof AdminFaqsRoute
+  '/admin/holidays': typeof AdminHolidaysRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/holiday-types/$slug': typeof HolidayTypesSlugRoute
@@ -203,7 +283,17 @@ export interface FileRoutesById {
   '/quote': typeof QuoteRoute
   '/reviews': typeof ReviewsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/blog': typeof AdminBlogRoute
+  '/admin/deals': typeof AdminDealsRoute
+  '/admin/destinations': typeof AdminDestinationsRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/faqs': typeof AdminFaqsRoute
+  '/admin/holidays': typeof AdminHolidaysRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/holiday-types/$slug': typeof HolidayTypesSlugRoute
@@ -229,7 +319,17 @@ export interface FileRouteTypes {
     | '/quote'
     | '/reviews'
     | '/sitemap.xml'
+    | '/admin/blog'
+    | '/admin/deals'
+    | '/admin/destinations'
+    | '/admin/enquiries'
+    | '/admin/faqs'
+    | '/admin/holidays'
     | '/admin/login'
+    | '/admin/messages'
+    | '/admin/subscribers'
+    | '/admin/testimonials'
+    | '/admin/users'
     | '/blog/$slug'
     | '/destinations/$slug'
     | '/holiday-types/$slug'
@@ -249,7 +349,17 @@ export interface FileRouteTypes {
     | '/quote'
     | '/reviews'
     | '/sitemap.xml'
+    | '/admin/blog'
+    | '/admin/deals'
+    | '/admin/destinations'
+    | '/admin/enquiries'
+    | '/admin/faqs'
+    | '/admin/holidays'
     | '/admin/login'
+    | '/admin/messages'
+    | '/admin/subscribers'
+    | '/admin/testimonials'
+    | '/admin/users'
     | '/blog/$slug'
     | '/destinations/$slug'
     | '/holiday-types/$slug'
@@ -273,7 +383,17 @@ export interface FileRouteTypes {
     | '/quote'
     | '/reviews'
     | '/sitemap.xml'
+    | '/admin/blog'
+    | '/admin/deals'
+    | '/admin/destinations'
+    | '/admin/enquiries'
+    | '/admin/faqs'
+    | '/admin/holidays'
     | '/admin/login'
+    | '/admin/messages'
+    | '/admin/subscribers'
+    | '/admin/testimonials'
+    | '/admin/users'
     | '/blog/$slug'
     | '/destinations/$slug'
     | '/holiday-types/$slug'
@@ -449,6 +569,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/testimonials': {
+      id: '/admin/testimonials'
+      path: '/testimonials'
+      fullPath: '/admin/testimonials'
+      preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/subscribers': {
+      id: '/admin/subscribers'
+      path: '/subscribers'
+      fullPath: '/admin/subscribers'
+      preLoaderRoute: typeof AdminSubscribersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/messages': {
+      id: '/admin/messages'
+      path: '/messages'
+      fullPath: '/admin/messages'
+      preLoaderRoute: typeof AdminMessagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/login'
@@ -456,16 +604,78 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/holidays': {
+      id: '/admin/holidays'
+      path: '/holidays'
+      fullPath: '/admin/holidays'
+      preLoaderRoute: typeof AdminHolidaysRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/faqs': {
+      id: '/admin/faqs'
+      path: '/faqs'
+      fullPath: '/admin/faqs'
+      preLoaderRoute: typeof AdminFaqsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/enquiries': {
+      id: '/admin/enquiries'
+      path: '/enquiries'
+      fullPath: '/admin/enquiries'
+      preLoaderRoute: typeof AdminEnquiriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/destinations': {
+      id: '/admin/destinations'
+      path: '/destinations'
+      fullPath: '/admin/destinations'
+      preLoaderRoute: typeof AdminDestinationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/deals': {
+      id: '/admin/deals'
+      path: '/deals'
+      fullPath: '/admin/deals'
+      preLoaderRoute: typeof AdminDealsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/blog': {
+      id: '/admin/blog'
+      path: '/blog'
+      fullPath: '/admin/blog'
+      preLoaderRoute: typeof AdminBlogRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminBlogRoute: typeof AdminBlogRoute
+  AdminDealsRoute: typeof AdminDealsRoute
+  AdminDestinationsRoute: typeof AdminDestinationsRoute
+  AdminEnquiriesRoute: typeof AdminEnquiriesRoute
+  AdminFaqsRoute: typeof AdminFaqsRoute
+  AdminHolidaysRoute: typeof AdminHolidaysRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminMessagesRoute: typeof AdminMessagesRoute
+  AdminSubscribersRoute: typeof AdminSubscribersRoute
+  AdminTestimonialsRoute: typeof AdminTestimonialsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminBlogRoute: AdminBlogRoute,
+  AdminDealsRoute: AdminDealsRoute,
+  AdminDestinationsRoute: AdminDestinationsRoute,
+  AdminEnquiriesRoute: AdminEnquiriesRoute,
+  AdminFaqsRoute: AdminFaqsRoute,
+  AdminHolidaysRoute: AdminHolidaysRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminMessagesRoute: AdminMessagesRoute,
+  AdminSubscribersRoute: AdminSubscribersRoute,
+  AdminTestimonialsRoute: AdminTestimonialsRoute,
+  AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

@@ -9,6 +9,14 @@ import {
   Plane,
   Menu,
   X,
+  MapPin,
+  Tag,
+  Sun,
+  BookOpen,
+  Star,
+  HelpCircle,
+  UserCog,
+  Mail,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -16,11 +24,43 @@ export const Route = createFileRoute("/admin")({
   component: AdminLayoutRoute,
 });
 
-const navItems = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { to: "/admin/enquiries", label: "Enquiries", icon: FileText, exact: false },
-  { to: "/admin/messages", label: "Messages", icon: MessageSquare, exact: false },
-  { to: "/admin/subscribers", label: "Subscribers", icon: Users, exact: false },
+const navSections = [
+  {
+    label: "Overview",
+    items: [
+      { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+    ],
+  },
+  {
+    label: "Enquiries",
+    items: [
+      { to: "/admin/enquiries", label: "Enquiries", icon: FileText, exact: false, badge: "7", badgeColor: "bg-white/15" },
+      { to: "/admin/messages", label: "Messages", icon: MessageSquare, exact: false, badge: "3", badgeColor: "bg-amber-500/80" },
+      { to: "/admin/subscribers", label: "Subscribers", icon: Mail, exact: false },
+    ],
+  },
+  {
+    label: "Content",
+    items: [
+      { to: "/admin/destinations", label: "Destinations", icon: MapPin, exact: false },
+      { to: "/admin/deals", label: "Deals", icon: Tag, exact: false },
+      { to: "/admin/holidays", label: "Holiday Types", icon: Sun, exact: false },
+      { to: "/admin/blog", label: "Blog", icon: BookOpen, exact: false },
+    ],
+  },
+  {
+    label: "Feedback",
+    items: [
+      { to: "/admin/testimonials", label: "Testimonials", icon: Star, exact: false },
+      { to: "/admin/faqs", label: "FAQs", icon: HelpCircle, exact: false },
+    ],
+  },
+  {
+    label: "Settings",
+    items: [
+      { to: "/admin/users", label: "Users", icon: UserCog, exact: false },
+    ],
+  },
 ] as const;
 
 function AdminLayoutRoute() {
@@ -87,36 +127,43 @@ function AdminLayoutRoute() {
         </div>
 
         {/* Nav links */}
-        <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-5">
-          {navItems.map(({ to, label, icon: Icon, exact }) => {
-            const active = exact ? pathname === to : pathname.startsWith(to);
-            return (
-              <Link
-                key={to}
-                to={to}
-                onClick={() => setSidebarOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
-                  active
-                    ? "bg-white/15 text-white shadow-sm"
-                    : "text-white/55 hover:bg-white/8 hover:text-white"
-                )}
-              >
-                <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} />
-                {label}
-                {label === "Enquiries" && (
-                  <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-white/15 px-1.5 text-[10px] font-semibold text-white">
-                    7
-                  </span>
-                )}
-                {label === "Messages" && (
-                  <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500/80 px-1.5 text-[10px] font-semibold text-white">
-                    3
-                  </span>
-                )}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 space-y-4 overflow-y-auto px-3 py-5">
+          {navSections.map((section) => (
+            <div key={section.label}>
+              <p className="mb-1 px-3 text-[10px] font-semibold uppercase tracking-widest text-white/30">
+                {section.label}
+              </p>
+              <div className="space-y-0.5">
+                {section.items.map((item) => {
+                  const { to, label, icon: Icon, exact } = item;
+                  const badge = "badge" in item ? item.badge : undefined;
+                  const badgeColor = "badgeColor" in item ? item.badgeColor : undefined;
+                  const active = exact ? pathname === to : pathname.startsWith(to);
+                  return (
+                    <Link
+                      key={to}
+                      to={to}
+                      onClick={() => setSidebarOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150",
+                        active
+                          ? "bg-white/15 text-white shadow-sm"
+                          : "text-white/55 hover:bg-white/8 hover:text-white"
+                      )}
+                    >
+                      <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} />
+                      {label}
+                      {badge && (
+                        <span className={cn("ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-semibold text-white", badgeColor)}>
+                          {badge}
+                        </span>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         {/* Footer */}
