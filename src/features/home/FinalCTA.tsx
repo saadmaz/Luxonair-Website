@@ -7,12 +7,11 @@ import { SITE } from "@/config/site";
 // WhatsApp href uses SITE.phone.whatsapp (digits-only wa.me format).
 export function FinalCTA() {
   return (
-    <section className="container-page pb-16 md:pb-24">
-      <div className="relative overflow-hidden rounded-3xl bg-navy px-8 py-12 text-navy-fg shadow-2xl sm:px-12 md:px-16 md:py-14">
-        {/* Decorative background circles */}
-        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/5" />
+    <section className="container-page py-12 md:py-16">
+      <div className="relative overflow-hidden rounded-2xl bg-navy text-navy-fg shadow-xl">
+        <div className="px-8 py-10 sm:px-12 md:px-16 md:py-12">
 
-        <div className="relative grid gap-8 md:grid-cols-[1fr_auto] md:items-center md:gap-12">
+        <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center md:gap-12">
           <div>
             <h2 className="font-display text-3xl font-semibold sm:text-4xl text-balance">
               Tell us where, when, and roughly how much. We'll do the rest.
@@ -41,6 +40,7 @@ export function FinalCTA() {
               </a>
             </Button>
           </div>
+        </div>
         </div>
       </div>
     </section>
