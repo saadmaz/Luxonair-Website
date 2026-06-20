@@ -8,12 +8,11 @@ import { SITE } from "@/config/site";
 export function FinalCTA() {
   return (
     <section className="container-page pb-16 md:pb-24">
-      <div className="relative overflow-hidden rounded-3xl bg-navy px-6 py-14 text-navy-fg shadow-2xl md:px-14">
+      <div className="relative overflow-hidden rounded-3xl bg-navy px-8 py-12 text-navy-fg shadow-2xl sm:px-12 md:px-16 md:py-14">
         {/* Decorative background circles */}
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/5" />
-        <div className="pointer-events-none absolute bottom-0 right-24 h-32 w-32 rounded-full bg-gold/8" />
 
-        <div className="relative grid gap-8 md:grid-cols-[1.4fr_auto] md:items-center">
+        <div className="relative grid gap-8 md:grid-cols-[1fr_auto] md:items-center md:gap-12">
           <div>
             <h2 className="font-display text-3xl font-semibold sm:text-4xl text-balance">
               Tell us where, when, and roughly how much. We'll do the rest.
