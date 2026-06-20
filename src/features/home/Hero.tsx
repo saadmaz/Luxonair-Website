@@ -35,13 +35,13 @@ export function Hero() {
             </p>
           </div>
 
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-tight text-primary-foreground sm:text-5xl md:text-[3.25rem] text-balance">
+          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-tight text-navy-fg sm:text-5xl md:text-[3.25rem] text-balance">
             Tailor-made trips,{" "}
             <span className="text-gold">quoted in minutes,</span>{" "}
             built by people.
           </h1>
 
-          <p className="mt-4 max-w-lg text-sm leading-relaxed text-primary-foreground/75 md:text-base">
+          <p className="mt-4 max-w-lg text-sm leading-relaxed text-navy-fg/75 md:text-base">
             Premium long-haul, family escapes, and corporate travel from the UK.
             One consultant owns your trip, end-to-end.
           </p>
@@ -59,7 +59,7 @@ export function Hero() {
             </Button>
             <Link
               to="/destinations"
-              className="flex items-center gap-1.5 text-sm text-primary-foreground/50 transition-colors hover:text-primary-foreground"
+              className="flex items-center gap-1.5 text-sm text-navy-fg/50 transition-colors hover:text-navy-fg"
             >
               Explore destinations <ArrowRight className="h-3.5 w-3.5" />
             </Link>
@@ -73,7 +73,7 @@ export function Hero() {
               { icon: Clock,       label: "4-hr response" },
               { icon: Users,       label: "500+ trips" },
             ].map(({ icon: Icon, label }) => (
-              <span key={label} className="flex items-center gap-1.5 text-xs text-primary-foreground/55">
+              <span key={label} className="flex items-center gap-1.5 text-xs text-navy-fg/55">
                 <Icon className="h-3.5 w-3.5 text-teal/70" />
                 {label}
               </span>
