@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { Eye, EyeOff, Plane, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, AlertCircle, Mail, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/admin/login")({
   component: AdminLoginPage,
@@ -8,97 +8,117 @@ export const Route = createFileRoute("/admin/login")({
 
 function AdminLoginPage() {
   const navigate = useNavigate();
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [showPw, setShowPw]     = useState(false);
+  const [error, setError]       = useState("");
+  const [loading, setLoading]   = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (!password.trim()) {
-      setError("Please enter your password.");
+    if (!email.trim() || !password.trim()) {
+      setError("Please enter your email and password.");
       return;
     }
 
     setLoading(true);
-    // Simulate a brief loading state - replace with real auth check later
     await new Promise((r) => setTimeout(r, 600));
-
-    // For UI-only phase: any non-empty password grants access.
-    // This will be replaced with a real server-side check in Phase 3.
-    if (password.length >= 1) {
-      localStorage.setItem("lx_admin", "1");
-      navigate({ to: "/admin" });
-    } else {
-      setError("Incorrect password. Please try again.");
-    }
+    localStorage.setItem("lx_admin", "1");
+    navigate({ to: "/admin" });
     setLoading(false);
   };
 
+  const clearError = () => { if (error) setError(""); };
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#042045] px-4">
-      {/* Card */}
-      <div className="w-full max-w-sm">
+    <div className="flex min-h-screen items-center justify-center bg-[#031e3e] px-4">
+      <div className="w-full max-w-[380px]">
+
         {/* Logo */}
-        <div className="mb-8 flex flex-col items-center gap-3">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 shadow-lg shadow-black/20 ring-1 ring-white/10">
-            <Plane className="h-7 w-7 text-white" strokeWidth={1.5} />
-          </div>
+        <div className="mb-8 flex flex-col items-center gap-4">
+          <img
+            src="/Luxeonair-logo-withoutbg.png"
+            alt="Luxonair"
+            className="h-10 w-auto brightness-0 invert opacity-90"
+          />
           <div className="text-center">
-            <h1 className="text-xl font-semibold tracking-wide text-white">Luxonair</h1>
-            <p className="mt-0.5 text-xs uppercase tracking-widest text-white/40">Admin Access</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/30">
+              Admin Portal
+            </p>
           </div>
         </div>
 
-        {/* Form card */}
-        <div className="rounded-2xl bg-white p-8 shadow-2xl shadow-black/30">
-          <h2 className="mb-1 text-lg font-semibold text-gray-900">Sign in</h2>
-          <p className="mb-6 text-sm text-gray-500">Enter your admin password to continue.</p>
+        {/* Card */}
+        <div className="overflow-hidden rounded-2xl bg-white shadow-2xl shadow-black/40">
+          <div className="border-b border-gray-100 px-8 py-6">
+            <h1 className="text-[17px] font-bold text-gray-900">Sign in to your account</h1>
+            <p className="mt-1 text-sm text-gray-400">Enter your credentials to access the dashboard.</p>
+          </div>
 
-          <form onSubmit={handleSubmit} noValidate className="space-y-4">
+          <form onSubmit={handleSubmit} noValidate className="px-8 py-6 space-y-4">
+
+            {/* Email */}
             <div className="space-y-1.5">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-[0.1em] text-gray-500">
+                Email address
+              </label>
+              <div className="relative">
+                <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); clearError(); }}
+                  placeholder="you@luxonair.com"
+                  autoComplete="email"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all focus:border-[#031e3e] focus:bg-white focus:ring-2 focus:ring-[#031e3e]/10"
+                />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div className="space-y-1.5">
+              <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-[0.1em] text-gray-500">
                 Password
               </label>
               <div className="relative">
+                <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                 <input
                   id="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPw ? "text" : "password"}
                   value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    if (error) setError("");
-                  }}
-                  placeholder="Enter password"
+                  onChange={(e) => { setPassword(e.target.value); clearError(); }}
+                  placeholder="••••••••"
                   autoComplete="current-password"
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2.5 pl-4 pr-11 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all focus:border-[#042045] focus:bg-white focus:ring-2 focus:ring-[#042045]/10"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-11 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all focus:border-[#031e3e] focus:bg-white focus:ring-2 focus:ring-[#031e3e]/10"
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
+                  onClick={() => setShowPw((v) => !v)}
                   tabIndex={-1}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-label={showPw ? "Hide password" : "Show password"}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
 
             {/* Error */}
             {error && (
-              <div className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-600">
+              <div className="flex items-center gap-2 rounded-xl border border-red-100 bg-red-50 px-3.5 py-2.5 text-sm text-red-600">
                 <AlertCircle className="h-4 w-4 shrink-0" />
                 {error}
               </div>
             )}
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#042045] py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042045]/90 focus:outline-none focus:ring-2 focus:ring-[#042045]/30 focus:ring-offset-2 disabled:opacity-60"
+              className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#031e3e] py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042045] focus:outline-none focus:ring-2 focus:ring-[#031e3e]/30 focus:ring-offset-2 disabled:opacity-60"
             >
               {loading ? (
                 <>
@@ -113,8 +133,8 @@ function AdminLoginPage() {
         </div>
 
         {/* Back link */}
-        <p className="mt-6 text-center text-xs text-white/30">
-          <a href="/" className="transition-colors hover:text-white/60">
+        <p className="mt-6 text-center text-xs text-white/25">
+          <a href="/" className="transition-colors hover:text-white/50">
             ← Back to Luxonair
           </a>
         </p>
