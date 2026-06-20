@@ -58,6 +58,7 @@ export function Header() {
             className="hidden items-center gap-5 md:flex"
             onMouseLeave={() => setOpenMenu(null)}
           >
+            <NavLink to="/about">About us</NavLink>
             <NavTrigger
               label="Destinations"
               active={openMenu === "destinations"}
@@ -65,17 +66,14 @@ export function Header() {
               panelId="mega-destinations"
             />
             <NavTrigger
-              label="Holiday Types"
+              label="Holidays"
               active={openMenu === "holiday"}
               onEnter={() => setOpenMenu("holiday")}
               panelId="mega-holiday"
             />
             <NavLink to="/deals">Deals</NavLink>
             <NavLink to="/blog">Blog</NavLink>
-            <NavLink to="/reviews">Reviews</NavLink>
-            <NavLink to="/faq">FAQ</NavLink>
-            <NavLink to="/about">About</NavLink>
-            <NavLink to="/contact">Contact</NavLink>
+            <NavLink to="/contact">Contact us</NavLink>
 
             {openMenu === "destinations" && (
               <MegaPanel id="mega-destinations" onClose={() => setOpenMenu(null)}>
@@ -162,15 +160,12 @@ export function Header() {
         <div className="border-b border-border bg-background md:hidden">
           <div className="container-page flex flex-col gap-1 py-3">
             {[
-              { to: "/", label: "Home" },
+              { to: "/about", label: "About us" },
               { to: "/destinations", label: "Destinations" },
-              { to: "/holiday-types", label: "Holiday Types" },
+              { to: "/holiday-types", label: "Holidays" },
               { to: "/deals", label: "Deals" },
               { to: "/blog", label: "Blog" },
-              { to: "/reviews", label: "Reviews" },
-              { to: "/faq", label: "FAQ" },
-              { to: "/about", label: "About" },
-              { to: "/contact", label: "Contact" },
+              { to: "/contact", label: "Contact us" },
             ].map((n) => (
               <Link
                 key={n.to}
