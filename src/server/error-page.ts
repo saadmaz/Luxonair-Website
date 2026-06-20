@@ -14,6 +14,13 @@ export function renderErrorPage(): string {
       a, button { padding: 0.5rem 1rem; border-radius: 0.375rem; font: inherit; cursor: pointer; text-decoration: none; border: 1px solid transparent; }
       .primary { background: #111; color: #fff; }
       .secondary { background: #fff; color: #111; border-color: #d1d5db; }
+      @media (prefers-color-scheme: dark) {
+        body { background: #0a1628; color: #e8edf2; }
+        p { color: #94a3b8; }
+        .card { background: #12223d; }
+        .primary { background: #0f9ca4; color: #0a1628; }
+        .secondary { background: #12223d; color: #e8edf2; border-color: #1e3554; }
+      }
     </style>
   </head>
   <body>
