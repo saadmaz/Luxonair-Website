@@ -12,6 +12,7 @@ import {
   WhyLuxonair,
   SocialProof,
   FinalCTA,
+  BlogCarousel,
 } from "@/features/home";
 
 export const Route = createFileRoute("/")({
@@ -54,6 +55,7 @@ function Home() {
       <DealsSection />
       <WhyLuxonair />
       <SocialProof />
+      <BlogCarousel />
       <Newsletter variant="section" />
       <FinalCTA />
     </>
