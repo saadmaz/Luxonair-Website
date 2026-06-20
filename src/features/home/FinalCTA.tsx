@@ -8,9 +8,9 @@ import { SITE } from "@/config/site";
 export function FinalCTA() {
   return (
     <section className="container-page pb-16 md:pb-24">
-      <div className="relative overflow-hidden rounded-3xl bg-primary px-6 py-14 text-primary-foreground shadow-2xl md:px-14">
+      <div className="relative overflow-hidden rounded-3xl bg-navy px-6 py-14 text-navy-fg shadow-2xl md:px-14">
         {/* Decorative background circles */}
-        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary-foreground/5" />
+        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-navy-fg/5" />
         <div className="pointer-events-none absolute -bottom-12 right-32 h-40 w-40 rounded-full bg-gold/10" />
 
         <div className="relative grid gap-8 md:grid-cols-[1.4fr_1fr] md:items-center">
@@ -18,7 +18,7 @@ export function FinalCTA() {
             <h2 className="font-display text-3xl font-semibold sm:text-4xl text-balance">
               Tell us where, when, and roughly how much. We'll do the rest.
             </h2>
-            <p className="mt-3 max-w-xl text-primary-foreground/70">
+            <p className="mt-3 max-w-xl text-navy-fg/70">
               Four short steps. No phone-tag, no auto-mailers. A consultant replies within 4
               working hours.
             </p>
@@ -31,7 +31,7 @@ export function FinalCTA() {
               asChild
               size="lg"
               variant="outline"
-              className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
+              className="border-navy-fg/30 bg-transparent text-navy-fg hover:bg-navy-fg/10"
             >
               <a
                 href={`https://wa.me/${SITE.phone.whatsapp}`}

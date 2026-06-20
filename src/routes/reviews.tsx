@@ -98,13 +98,13 @@ function ReviewsPage() {
 
       {/* Bottom CTA */}
       <section className="container-page pb-16">
-        <div className="rounded-2xl bg-primary px-8 py-10 text-primary-foreground md:px-12">
+        <div className="rounded-2xl bg-navy px-8 py-10 text-navy-fg md:px-12">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="font-display text-2xl font-semibold">
                 Ready to write your own review?
               </h2>
-              <p className="mt-2 text-sm text-primary-foreground/70">
+              <p className="mt-2 text-sm text-navy-fg/70">
                 Start with a free quote — a consultant replies within 4 working hours.
               </p>
             </div>
@@ -117,7 +117,7 @@ function ReviewsPage() {
               <Button
                 asChild
                 variant="outline"
-                className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
+                className="border-navy-fg/30 bg-transparent text-navy-fg hover:bg-navy-fg/10"
               >
                 <a href={`https://wa.me/${SITE.phone.whatsapp}`} target="_blank" rel="noopener noreferrer">
                   <MessageCircle className="mr-1.5 h-4 w-4" /> WhatsApp

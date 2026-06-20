@@ -208,14 +208,14 @@ function HolidaysPage() {
 
       {/* Bottom CTA */}
       <section className="container-page pb-16 md:pb-24">
-        <div className="relative overflow-hidden rounded-3xl bg-primary px-6 py-14 text-primary-foreground shadow-2xl md:px-14">
-          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary-foreground/5" />
+        <div className="relative overflow-hidden rounded-3xl bg-navy px-6 py-14 text-navy-fg shadow-2xl md:px-14">
+          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-navy-fg/5" />
           <div className="pointer-events-none absolute -bottom-10 right-36 h-40 w-40 rounded-full bg-gold/10" />
           <div className="relative max-w-2xl">
             <h2 className="font-display text-3xl font-semibold sm:text-4xl text-balance">
               Ready to plan your holiday?
             </h2>
-            <p className="mt-3 text-primary-foreground/70">
+            <p className="mt-3 text-navy-fg/70">
               Tell us where you'd like to go, roughly when, and how many are travelling. A
               consultant replies within 4 working hours — no spam, no auto-mailers.
             </p>
@@ -227,7 +227,7 @@ function HolidaysPage() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
+                className="border-navy-fg/30 bg-transparent text-navy-fg hover:bg-navy-fg/10"
               >
                 <Link to="/contact">Speak to someone first</Link>
               </Button>

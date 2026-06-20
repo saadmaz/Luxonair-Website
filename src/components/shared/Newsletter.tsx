@@ -47,14 +47,14 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
 
   if (variant === "section") {
     return (
-      <section className="border-y border-border bg-primary text-primary-foreground">
+      <section className="border-y border-border bg-navy text-navy-fg">
         <div className="container-page grid gap-8 py-14 md:grid-cols-[1.4fr_1fr] md:items-center md:py-20">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-primary-foreground/60">Newsletter</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-navy-fg/60">Newsletter</p>
             <h2 className="mt-2 font-display text-3xl font-semibold sm:text-4xl text-balance">
               Quiet emails. Sharp deals. <span className="text-gold">No spam.</span>
             </h2>
-            <p className="mt-3 max-w-lg text-primary-foreground/80">
+            <p className="mt-3 max-w-lg text-navy-fg/80">
               Two emails a month: one with a curated trip idea, one with limited-availability deals. Unsubscribe in one click.
             </p>
           </div>
@@ -86,7 +86,7 @@ function NewsletterForm({
 }) {
   if (done) {
     return (
-      <p className={`mt-4 text-sm ${dark ? "text-primary-foreground/90" : "text-foreground"}`}>
+      <p className={`mt-4 text-sm ${dark ? "text-navy-fg/90" : "text-foreground"}`}>
         ✓ Thanks — we'll send a confirmation to <strong>{email}</strong>.
       </p>
     );
@@ -94,7 +94,7 @@ function NewsletterForm({
   return (
     <form onSubmit={onSubmit} className="mt-4 flex flex-col gap-2 sm:flex-row">
       <label className="relative flex-1">
-        <Mail className={`pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${dark ? "text-primary-foreground/60" : "text-muted-foreground"}`} />
+        <Mail className={`pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${dark ? "text-navy-fg/60" : "text-muted-foreground"}`} />
         <input
           type="email"
           required
@@ -103,7 +103,7 @@ function NewsletterForm({
           placeholder="you@example.com"
           className={`h-11 w-full rounded-md pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring ${
             dark
-              ? "border border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground placeholder:text-primary-foreground/50"
+              ? "border border-navy-fg/30 bg-navy-fg/10 text-navy-fg placeholder:text-navy-fg/50"
               : "border border-input bg-background"
           }`}
         />
@@ -117,7 +117,7 @@ function NewsletterForm({
       >
         {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Subscribe"}
       </button>
-      {error && <p className={`text-xs ${dark ? "text-primary-foreground/70" : "text-destructive"}`}>{error}</p>}
+      {error && <p className={`text-xs ${dark ? "text-navy-fg/70" : "text-destructive"}`}>{error}</p>}
     </form>
   );
 }
