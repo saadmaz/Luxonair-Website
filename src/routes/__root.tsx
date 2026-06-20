@@ -7,6 +7,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
   ScriptOnce,
@@ -118,23 +119,30 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAdmin = pathname.startsWith("/admin");
+
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-dvh flex-col">
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-foreground focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary"
-        >
-          Skip to content
-        </a>
-        <Header />
-        <main id="main-content" className="flex-1 pb-16 md:pb-0">
-          <Outlet />
-        </main>
-        <Footer />
-        <StickyMobileCTA />
-        <WhatsAppFloat />
-      </div>
+      {isAdmin ? (
+        <Outlet />
+      ) : (
+        <div className="flex min-h-dvh flex-col">
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-foreground focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            Skip to content
+          </a>
+          <Header />
+          <main id="main-content" className="flex-1 pb-16 md:pb-0">
+            <Outlet />
+          </main>
+          <Footer />
+          <StickyMobileCTA />
+          <WhatsAppFloat />
+        </div>
+      )}
     </QueryClientProvider>
   );
 }
