@@ -23,7 +23,7 @@ function AdminLoginPage() {
     }
 
     setLoading(true);
-    // Simulate a brief loading state — replace with real auth check later
+    // Simulate a brief loading state - replace with real auth check later
     await new Promise((r) => setTimeout(r, 600));
 
     // For UI-only phase: any non-empty password grants access.

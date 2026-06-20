@@ -1,5 +1,5 @@
 // Site footer: brand column, explore links, company links, contact + newsletter.
-// Social icons are only rendered when a URL is configured in SITE.social —
+// Social icons are only rendered when a URL is configured in SITE.social -
 // filtering out empty strings keeps the footer clean during pre-launch.
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Plane, Youtube } from "lucide-react";
@@ -31,7 +31,7 @@ export function Footer() {
             UK-based travel specialists for premium long-haul, family escapes and corporate trips. Tailor-made itineraries, account-managed by a single consultant.
           </p>
 
-          {/* Social icons — only rendered when URLs are configured */}
+          {/* Social icons - only rendered when URLs are configured */}
           {socialLinks.length > 0 && (
             <div className="mt-6 flex items-center gap-3">
               {socialLinks.map((s) => (

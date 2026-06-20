@@ -23,7 +23,7 @@ export function WhyLuxonair() {
     {
       icon: ShieldCheck,
       title: "Fully Protected",
-      body: "ATOL, ABTA and IATA memberships — all legitimately held.",
+      body: "ATOL, ABTA and IATA memberships - all legitimately held.",
     },
   ];
 
@@ -40,7 +40,7 @@ export function WhyLuxonair() {
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-navy-fg/75 font-normal">
               We're not a call-centre and we're not an aggregator. One consultant builds your
-              brief, books every component, and stays reachable throughout — from quote to
+              brief, books every component, and stays reachable throughout - from quote to
               return gate.
             </p>
             <Button asChild className="mt-8 bg-gold text-gold-foreground hover:bg-gold/90">

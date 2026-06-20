@@ -7,7 +7,7 @@ import { SITE } from "@/config/site";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact Luxonair — Phone, WhatsApp & UK office" },
+      { title: "Contact Luxonair - Phone, WhatsApp & UK office" },
       {
         name: "description",
         content:
@@ -39,20 +39,20 @@ function ContactPage() {
         const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ _subject: `Contact form — ${data.topic ?? "General"}`, ...data }),
+          body: JSON.stringify({ _subject: `Contact form - ${data.topic ?? "General"}`, ...data }),
         });
         if (!res.ok) {
-          setSubmitError("Submission failed — please email us at hello@luxonair.com or call directly.");
+          setSubmitError("Submission failed - please email us at hello@luxonair.com or call directly.");
           setSubmitting(false);
           return;
         }
       } catch {
-        setSubmitError("Network error — please email us at hello@luxonair.com or call directly.");
+        setSubmitError("Network error - please email us at hello@luxonair.com or call directly.");
         setSubmitting(false);
         return;
       }
     } else {
-      console.log("[Luxonair contact — configure SITE.formspree.contact to transmit]", data);
+      console.log("[Luxonair contact - configure SITE.formspree.contact to transmit]", data);
     }
 
     setSubmitting(false);
@@ -109,7 +109,7 @@ function ContactPage() {
               <Row
                 icon={MessageCircle}
                 title="WhatsApp"
-                body={`+${SITE.phone.whatsapp} — text us anything`}
+                body={`+${SITE.phone.whatsapp} - text us anything`}
               />
               <Row icon={Mail} title="Email" body={SITE.email} />
               <Row
@@ -151,7 +151,7 @@ function ContactPage() {
               <div className="flex flex-col items-center justify-center py-10 text-center">
                 <CheckCircle2 className="h-12 w-12 text-gold" />
                 <h2 className="mt-5 font-display text-2xl font-semibold">
-                  Got it — we'll be in touch.
+                  Got it - we'll be in touch.
                 </h2>
                 <p className="mt-3 text-sm text-muted-foreground">
                   A consultant replies within 4 working hours.

@@ -63,8 +63,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Luxonair — UK travel specialists for premium long-haul, family & corporate trips" },
-      { name: "description", content: "UK-based travel agency specialising in tailor-made long-haul, family escapes and corporate trips. Get a structured quote in minutes — a consultant replies within 4 working hours." },
+      { title: "Luxonair - UK travel specialists for premium long-haul, family & corporate trips" },
+      { name: "description", content: "UK-based travel agency specialising in tailor-made long-haul, family escapes and corporate trips. Get a structured quote in minutes - a consultant replies within 4 working hours." },
       { name: "author", content: "Luxonair" },
       { property: "og:site_name", content: "Luxonair" },
       { property: "og:type", content: "website" },

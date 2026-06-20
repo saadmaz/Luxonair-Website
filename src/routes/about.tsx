@@ -6,13 +6,13 @@ import { SITE } from "@/config/site";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — Luxonair" },
+      { title: "About - Luxonair" },
       {
         name: "description",
         content:
           "Luxonair is a UK-based travel agency for premium long-haul, family escapes and corporate travel. Independent, account-managed, ATOL-protected.",
       },
-      { property: "og:title", content: "About — Luxonair" },
+      { property: "og:title", content: "About - Luxonair" },
       {
         property: "og:description",
         content: "UK travel specialists. Independent, account-managed, ATOL-protected.",
@@ -79,9 +79,9 @@ function AboutPage() {
           <div className="rounded-2xl bg-secondary/50 border border-border p-8">
             <h2 className="font-display text-2xl font-semibold">What we are not</h2>
             <ul className="mt-5 space-y-3">
-              <Bullet>Not a discount aggregator — we don't compete on shouty deal pages.</Bullet>
-              <Bullet>Not a call-centre — calls go to a named consultant, not a queue.</Bullet>
-              <Bullet>Not a live online booking platform — pricing is confirmed within hours.</Bullet>
+              <Bullet>Not a discount aggregator - we don't compete on shouty deal pages.</Bullet>
+              <Bullet>Not a call-centre - calls go to a named consultant, not a queue.</Bullet>
+              <Bullet>Not a live online booking platform - pricing is confirmed within hours.</Bullet>
               <Bullet>Not selling fake reviews or fabricated accreditation.</Bullet>
             </ul>
           </div>
@@ -141,13 +141,13 @@ function AboutPage() {
             </p>
             <p>
               Every trip is account-managed by one named consultant. There's no off-shore call
-              centre, no automated rebooking — when something goes wrong on a Friday night, the
+              centre, no automated rebooking - when something goes wrong on a Friday night, the
               same person who built your trip handles it.
             </p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {[
                 "Named consultant from day one",
-                "Real bios — no AI-generated profiles",
+                "Real bios - no AI-generated profiles",
                 "Direct mobile contact en route",
                 "Post-trip debrief & next itinerary",
               ].map((item) => (

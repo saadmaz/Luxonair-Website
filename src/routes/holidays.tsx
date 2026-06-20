@@ -15,17 +15,17 @@ import {
 export const Route = createFileRoute("/holidays")({
   head: () => ({
     meta: [
-      { title: "Tailor-Made Holidays from the UK — Luxonair" },
+      { title: "Tailor-Made Holidays from the UK - Luxonair" },
       {
         name: "description",
         content:
-          "Beach, honeymoon, family, luxury and city break holidays from the UK. One consultant builds and manages your entire trip — quote within 4 working hours.",
+          "Beach, honeymoon, family, luxury and city break holidays from the UK. One consultant builds and manages your entire trip - quote within 4 working hours.",
       },
-      { property: "og:title", content: "Tailor-Made Holidays — Luxonair" },
+      { property: "og:title", content: "Tailor-Made Holidays - Luxonair" },
       {
         property: "og:description",
         content:
-          "Premium tailor-made holidays from the UK. Beach, family, honeymoon, luxury and more. A real consultant — not a call centre.",
+          "Premium tailor-made holidays from the UK. Beach, family, honeymoon, luxury and more. A real consultant - not a call centre.",
       },
       { property: "og:url", content: "/holidays" },
     ],
@@ -49,7 +49,7 @@ function HolidaysPage() {
           <p className="mt-5 max-w-2xl text-base text-navy-fg/70 leading-relaxed">
             Every Luxonair holiday is tailor-made: you tell us the destination, travel window, and
             budget, and one consultant builds the flights, transfers, hotels and extras into a
-            single confirmed itinerary — at no booking fee.
+            single confirmed itinerary - at no booking fee.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild size="lg" className="bg-gold text-gold-foreground hover:bg-gold/90">
@@ -74,7 +74,7 @@ function HolidaysPage() {
               { icon: Star,        label: "4.9★ average rating" },
               { icon: Clock,       label: "4-hr response Mon–Fri" },
               { icon: Users,       label: "500+ trips delivered" },
-              { icon: Phone,       label: "No call centre — a named consultant" },
+              { icon: Phone,       label: "No call centre - a named consultant" },
             ].map(({ icon: Icon, label }) => (
               <span key={label} className="flex items-center gap-1.5 text-xs text-navy-fg/60">
                 <Icon className="h-3.5 w-3.5 text-gold/70" /> {label}
@@ -151,7 +151,7 @@ function HolidaysPage() {
               {
                 step: "02",
                 title: "Consultant replies",
-                body: "Within 4 working hours. A real person — no automated quotes, no call queue.",
+                body: "Within 4 working hours. A real person - no automated quotes, no call queue.",
               },
               {
                 step: "03",
@@ -217,7 +217,7 @@ function HolidaysPage() {
             </h2>
             <p className="mt-3 text-navy-fg/70">
               Tell us where you'd like to go, roughly when, and how many are travelling. A
-              consultant replies within 4 working hours — no spam, no auto-mailers.
+              consultant replies within 4 working hours - no spam, no auto-mailers.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-gold text-gold-foreground hover:bg-gold/90">

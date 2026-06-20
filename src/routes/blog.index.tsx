@@ -5,7 +5,7 @@ import { ArrowRight, Clock } from "lucide-react";
 export const Route = createFileRoute("/blog/")({
   head: () => ({
     meta: [
-      { title: "Travel Guides & News — Luxonair Blog" },
+      { title: "Travel Guides & News - Luxonair Blog" },
       {
         name: "description",
         content:

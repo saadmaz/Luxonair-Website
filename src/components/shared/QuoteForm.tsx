@@ -98,7 +98,7 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
           method: "POST",
           headers: { "Content-Type": "application/json", Accept: "application/json" },
           body: JSON.stringify({
-            _subject: `Quote enquiry — ${form.destination}`,
+            _subject: `Quote enquiry - ${form.destination}`,
             destination: form.destination,
             region: form.region,
             tripType: form.tripType,
@@ -115,17 +115,17 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
           }),
         });
         if (!res.ok) {
-          setSubmitError("Submission failed — please try WhatsApp or email us directly.");
+          setSubmitError("Submission failed - please try WhatsApp or email us directly.");
           setSubmitting(false);
           return;
         }
       } catch {
-        setSubmitError("Network error — please try WhatsApp or email us directly.");
+        setSubmitError("Network error - please try WhatsApp or email us directly.");
         setSubmitting(false);
         return;
       }
     } else {
-      console.log("[Luxonair lead — configure SITE.formspree.quote to transmit]", form);
+      console.log("[Luxonair lead - configure SITE.formspree.quote to transmit]", form);
     }
 
     setSubmitting(false);
@@ -237,7 +237,7 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
         )}
       </div>
       <p className="mt-4 text-xs text-muted-foreground">
-        We respond within 4 working hours, Mon–Fri 09:00–19:00 GMT. No spam, no auto-mailers — just a consultant.
+        We respond within 4 working hours, Mon–Fri 09:00–19:00 GMT. No spam, no auto-mailers - just a consultant.
       </p>
     </div>
   );
@@ -279,7 +279,7 @@ function Row({ k, v }: { k: string; v: string }) {
   return (
     <div className="rounded-md bg-muted px-3 py-2">
       <div className="text-xs uppercase tracking-wider text-muted-foreground">{k}</div>
-      <div className="font-medium">{v || "—"}</div>
+      <div className="font-medium">{v || "-"}</div>
     </div>
   );
 }

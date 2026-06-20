@@ -15,9 +15,9 @@ export const Route = createFileRoute("/destinations/$slug")({
   head: ({ loaderData, params }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.name} — Luxonair` },
+          { title: `${loaderData.name} - Luxonair` },
           { name: "description", content: `${loaderData.tagline} ${loaderData.durationNights} nights from £${loaderData.fromPrice} pp (indicative).` },
-          { property: "og:title", content: `${loaderData.name} — Luxonair` },
+          { property: "og:title", content: `${loaderData.name} - Luxonair` },
           { property: "og:description", content: loaderData.tagline },
           { property: "og:image", content: loaderData.heroImage },
           { property: "og:type", content: "article" },

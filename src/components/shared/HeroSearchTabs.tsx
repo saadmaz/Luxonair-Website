@@ -18,7 +18,7 @@ export function HeroSearchTabs() {
             Flights
           </Tab>
         </div>
-        {/* Brand accent line — teal → gold → aqua */}
+        {/* Brand accent line - teal → gold → aqua */}
         <div className="h-0.5 bg-linear-to-r from-teal via-gold to-aqua opacity-80" />
         {tab === "package"
           ? <div id="panel-package" role="tabpanel" aria-labelledby="tab-package"><PackageForm /></div>

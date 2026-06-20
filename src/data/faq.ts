@@ -14,7 +14,7 @@ export const faqGroups: FaqGroup[] = [
   {
     title: "Payments & protection",
     items: [
-      { q: "Is my booking ATOL protected?", a: "Yes — every booking that includes a flight is ATOL protected. You receive an ATOL Certificate within 24 hours of paying a deposit." },
+      { q: "Is my booking ATOL protected?", a: "Yes - every booking that includes a flight is ATOL protected. You receive an ATOL Certificate within 24 hours of paying a deposit." },
       { q: "What payment methods do you accept?", a: "UK debit and credit cards, bank transfer, and BACS for corporate accounts. We do not charge card fees." },
       { q: "How much is the deposit?", a: "Typically 20% of the trip total, with the balance due 10–12 weeks before departure. Some operators require larger deposits." },
     ],
@@ -30,7 +30,7 @@ export const faqGroups: FaqGroup[] = [
     title: "Corporate accounts",
     items: [
       { q: "Do you support single-invoice billing?", a: "Yes. Corporate clients receive a single monthly invoice with line-item PO references and traveller breakdown." },
-      { q: "Can you integrate with our travel policy?", a: "Yes — we configure cabin thresholds, hotel bands and approver workflows per account." },
+      { q: "Can you integrate with our travel policy?", a: "Yes - we configure cabin thresholds, hotel bands and approver workflows per account." },
     ],
   },
 ];

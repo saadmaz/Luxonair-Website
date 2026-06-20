@@ -14,7 +14,7 @@ export const blogPosts: BlogPost[] = [
     heroImage: img("1514282401047-d79a71a590e8"),
     content: [
       { body: "The Maldives has two distinct seasons. Dry season (Iruvai) runs roughly December through April with low humidity and reliable sun. Wet season (Hulhangu) runs May through November with shorter showers and lower rates." },
-      { heading: "Half-term sweet spots", body: "October half-term lands in shoulder season — expect short afternoon showers but materially lower flight and resort pricing. February half-term is peak: book 9–12 months ahead." },
+      { heading: "Half-term sweet spots", body: "October half-term lands in shoulder season - expect short afternoon showers but materially lower flight and resort pricing. February half-term is peak: book 9–12 months ahead." },
       { heading: "Flight timing from London", body: "Most Maldives-bound flights leave LHR or LGW between 19:00–22:00, arriving Malé mid-morning. Plan a daylight seaplane transfer where possible." },
     ],
   },

@@ -4,7 +4,7 @@ import { deals } from "@/data/deals";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 
 // Previews the top 3 deals from data/deals.ts.
-// The full deals list lives at /deals — add more deals there, not here.
+// The full deals list lives at /deals - add more deals there, not here.
 export function DealsSection() {
   const top = deals.slice(0, 3);
 

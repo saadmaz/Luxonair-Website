@@ -1,4 +1,4 @@
-// rating is constrained to 4 | 5 — only high-quality reviews are published.
+// rating is constrained to 4 | 5 - only high-quality reviews are published.
 export type Review = {
   id: string;
   author: string;

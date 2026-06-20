@@ -45,7 +45,7 @@ function AdminDashboard() {
     <div className="p-6 lg:p-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-500">Welcome back — here's what's happening with Luxonair.</p>
+        <p className="mt-1 text-sm text-gray-500">Welcome back - here's what's happening with Luxonair.</p>
       </div>
 
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">

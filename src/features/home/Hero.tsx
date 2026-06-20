@@ -24,7 +24,7 @@ export function Hero() {
         <div className="absolute inset-y-0 left-0 w-0.5 bg-linear-to-b from-transparent via-teal/50 to-transparent" />
       </div>
 
-      {/* Main content — grows to fill the viewport height above the search widget */}
+      {/* Main content - grows to fill the viewport height above the search widget */}
       <div className="container-page flex flex-1 flex-col justify-center pb-3 pt-6 md:pb-4 md:pt-8">
         <div className="max-w-3xl">
           {/* Eyebrow */}
@@ -82,7 +82,7 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Search widget — pinned to the bottom of the hero section */}
+      {/* Search widget - pinned to the bottom of the hero section */}
       <div className="pb-6 md:pb-8">
         <HeroSearchTabs />
       </div>

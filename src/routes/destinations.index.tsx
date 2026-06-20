@@ -7,13 +7,13 @@ import { SlidersHorizontal } from "lucide-react";
 export const Route = createFileRoute("/destinations/")({
   head: () => ({
     meta: [
-      { title: "Destinations — Luxonair" },
+      { title: "Destinations - Luxonair" },
       {
         name: "description",
         content:
           "Browse Luxonair's curated long-haul, Caribbean, Indian Ocean and European itineraries. Filter by region, trip type and budget.",
       },
-      { property: "og:title", content: "Destinations — Luxonair" },
+      { property: "og:title", content: "Destinations - Luxonair" },
       {
         property: "og:description",
         content: "Curated UK-departing itineraries. Filter by region, trip type and budget.",
@@ -53,7 +53,7 @@ function DestinationsList() {
             Trips our consultants know inside-out.
           </h1>
           <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
-            Indicative pricing, departing the UK. Every itinerary is tailor-made — these are
+            Indicative pricing, departing the UK. Every itinerary is tailor-made - these are
             starting points, not packages.
           </p>
         </div>

@@ -90,7 +90,7 @@ export function ImageUpload({ value, onChange, label = "Image" }: Props) {
             <p className="text-sm font-medium text-gray-700">
               {dragging ? "Drop to upload" : "Click or drag to upload"}
             </p>
-            <p className="mt-0.5 text-xs text-gray-400">PNG, JPG, WEBP — max 10 MB</p>
+            <p className="mt-0.5 text-xs text-gray-400">PNG, JPG, WEBP - max 10 MB</p>
           </div>
         </button>
       )}

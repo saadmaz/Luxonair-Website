@@ -1,4 +1,4 @@
-// Theme toggle button — persists preference to localStorage and reflects
+// Theme toggle button - persists preference to localStorage and reflects
 // it on <html> via the "dark" class. The initial class is set synchronously
 // by the inline script in __root.tsx to prevent a flash of unstyled content.
 import { useEffect, useState } from "react";

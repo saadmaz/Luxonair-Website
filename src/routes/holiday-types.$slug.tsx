@@ -12,12 +12,12 @@ export const Route = createFileRoute("/holiday-types/$slug")({
     return h;
   },
   head: ({ loaderData, params }) => {
-    if (!loaderData) return { meta: [{ title: "Holiday type — Luxonair" }] };
+    if (!loaderData) return { meta: [{ title: "Holiday type - Luxonair" }] };
     return {
       meta: [
-        { title: `${loaderData.name} holidays from the UK — Luxonair` },
+        { title: `${loaderData.name} holidays from the UK - Luxonair` },
         { name: "description", content: `${loaderData.name} holidays: ${loaderData.tagline} ${loaderData.summary}` },
-        { property: "og:title", content: `${loaderData.name} holidays — Luxonair` },
+        { property: "og:title", content: `${loaderData.name} holidays - Luxonair` },
         { property: "og:description", content: loaderData.tagline },
         { property: "og:image", content: loaderData.heroImage },
         { property: "og:url", content: `/holiday-types/${params.slug}` },

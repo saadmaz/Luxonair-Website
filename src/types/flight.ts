@@ -1,6 +1,6 @@
 export type Airline = {
   name: string;
-  /** Premium cabin products this carrier offers — rendered as a bullet list */
+  /** Premium cabin products this carrier offers - rendered as a bullet list */
   cabins: string[];
   /** Primary hub or connection point from the UK */
   hub: string;

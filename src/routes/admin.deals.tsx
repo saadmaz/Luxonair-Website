@@ -95,7 +95,7 @@ function AdminDealsPage() {
                   <td className="px-4 py-4 text-gray-600">{d.nights}n</td>
                   <td className="px-4 py-4 text-gray-600">{d.board}</td>
                   <td className="px-4 py-4 font-semibold text-gray-900">£{d.fromPrice.toLocaleString()}</td>
-                  <td className="px-4 py-4 text-gray-400 line-through">{d.oldPrice ? `£${d.oldPrice.toLocaleString()}` : "—"}</td>
+                  <td className="px-4 py-4 text-gray-400 line-through">{d.oldPrice ? `£${d.oldPrice.toLocaleString()}` : "-"}</td>
                   <td className="px-4 py-4">
                     <span className="inline-flex items-center gap-1 rounded-full bg-[#042045]/8 px-2.5 py-0.5 text-xs font-medium text-[#042045]">
                       <Tag className="h-3 w-3" />{d.badge}

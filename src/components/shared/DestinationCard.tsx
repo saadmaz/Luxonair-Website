@@ -13,7 +13,7 @@ export function DestinationCard({ d }: { d: Destination }) {
       <div className="aspect-4/3 overflow-hidden">
         <img
           src={d.heroImage}
-          alt={`${d.name} — ${d.country}`}
+          alt={`${d.name} - ${d.country}`}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />

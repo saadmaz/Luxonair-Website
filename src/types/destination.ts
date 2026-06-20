@@ -5,7 +5,7 @@ export type Destination = {
   region: "Europe" | "Caribbean" | "Indian Ocean" | "Asia" | "Americas" | "Middle East";
   tripType: ("Family" | "Business" | "Honeymoon" | "Luxury" | "City Break")[];
   budgetBand: "££" | "£££" | "££££";
-  /** Indicative per-person price in GBP — confirmed live at quote stage */
+  /** Indicative per-person price in GBP - confirmed live at quote stage */
   fromPrice: number;
   durationNights: number;
   heroImage: string;

@@ -45,7 +45,7 @@ export const SITE = {
   },
 
   /**
-   * Formspree form IDs — create free forms at https://formspree.io
+   * Formspree form IDs - create free forms at https://formspree.io
    * Leave empty to run in demo mode (submissions logged to console).
    */
   formspree: {

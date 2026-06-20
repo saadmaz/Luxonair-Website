@@ -8,7 +8,7 @@ const img = (id: string) => unsplashImg(id, 1200);
 export const deals: Deal[] = [
   {
     id: "maldives-7nt-bb",
-    title: "Maldives — 7 nights, water villa",
+    title: "Maldives - 7 nights, water villa",
     destinationSlug: "maldives-private-villa",
     region: "Indian Ocean",
     nights: 7,
@@ -22,7 +22,7 @@ export const deals: Deal[] = [
   },
   {
     id: "antigua-10nt-ai",
-    title: "Antigua — 10 nights all-inclusive",
+    title: "Antigua - 10 nights all-inclusive",
     destinationSlug: "antigua-family-all-inclusive",
     region: "Caribbean",
     nights: 10,
@@ -36,7 +36,7 @@ export const deals: Deal[] = [
   },
   {
     id: "dubai-4nt-corp",
-    title: "Dubai — 4 nights, business stopover",
+    title: "Dubai - 4 nights, business stopover",
     destinationSlug: "dubai-corporate-stopover",
     region: "Middle East",
     nights: 4,
@@ -49,7 +49,7 @@ export const deals: Deal[] = [
   },
   {
     id: "santorini-7nt",
-    title: "Santorini — 7 nights, caldera view",
+    title: "Santorini - 7 nights, caldera view",
     destinationSlug: "santorini-couples",
     region: "Europe",
     nights: 7,
@@ -63,7 +63,7 @@ export const deals: Deal[] = [
   },
   {
     id: "japan-12nt",
-    title: "Japan — 12 nights tailor-made",
+    title: "Japan - 12 nights tailor-made",
     destinationSlug: "japan-tailor-made",
     region: "Asia",
     nights: 12,
@@ -76,7 +76,7 @@ export const deals: Deal[] = [
   },
   {
     id: "nyc-4nt",
-    title: "New York — 4 nights Midtown",
+    title: "New York - 4 nights Midtown",
     destinationSlug: "new-york-business",
     region: "Americas",
     nights: 4,

@@ -15,20 +15,20 @@ import {
 export const Route = createFileRoute("/flights")({
   head: () => ({
     meta: [
-      { title: "Premium Flights from the UK — Business & First Class | Luxonair" },
+      { title: "Premium Flights from the UK - Business & First Class | Luxonair" },
       {
         name: "description",
         content:
-          "Business class, first class and premium economy flights from the UK. We compare fares across BA, Virgin, Emirates, Qatar and more — one consultant, one invoice.",
+          "Business class, first class and premium economy flights from the UK. We compare fares across BA, Virgin, Emirates, Qatar and more - one consultant, one invoice.",
       },
       {
         property: "og:title",
-        content: "Premium Flights from the UK — Luxonair",
+        content: "Premium Flights from the UK - Luxonair",
       },
       {
         property: "og:description",
         content:
-          "Business and first class flights from UK airports. Independent fare comparison across all major carriers — no booking fee.",
+          "Business and first class flights from UK airports. Independent fare comparison across all major carriers - no booking fee.",
       },
       { property: "og:url", content: "/flights" },
     ],
@@ -50,7 +50,7 @@ function FlightsPage() {
             Business class. First class. The right airline for your route.
           </h1>
           <p className="mt-5 max-w-2xl text-base text-navy-fg/70 leading-relaxed">
-            We're independent — we compare fares across every major carrier so you get the best
+            We're independent - we compare fares across every major carrier so you get the best
             seat for your budget, not whoever pays us the highest commission. One consultant, one
             invoice, no booking fee.
           </p>
@@ -76,7 +76,7 @@ function FlightsPage() {
 
           <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
             {[
-              { icon: Plane,       label: "Independent — not tied to one airline" },
+              { icon: Plane,       label: "Independent - not tied to one airline" },
               { icon: Star,        label: "4.9★ average rating" },
               { icon: ShieldCheck, label: "ATOL Protected" },
               { icon: Clock,       label: "4-hr response Mon–Fri" },
@@ -100,7 +100,7 @@ function FlightsPage() {
               The best fare isn't always on the airline's own site.
             </h2>
             <p className="mt-4 text-muted-foreground leading-relaxed">
-              Consolidator fares, mixed-carrier itineraries, and flexible ticketing — these are
+              Consolidator fares, mixed-carrier itineraries, and flexible ticketing - these are
               available through agents, not publicly. We access them all and present you with a
               clear comparison, explained in plain English.
             </p>
@@ -109,7 +109,7 @@ function FlightsPage() {
                 "Net and consolidator fares below public pricing",
                 "Mixed-carrier outbound/return combinations",
                 "Flexible ticketing for corporate travellers",
-                "Lounge access, seat pre-selection, baggage — all included at booking",
+                "Lounge access, seat pre-selection, baggage - all included at booking",
                 "24/7 support while you're travelling",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2 text-sm">
@@ -121,7 +121,7 @@ function FlightsPage() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {[
-              { icon: Globe2,    title: "All major carriers", body: "BA, Virgin, Emirates, Qatar, Etihad, Singapore Airlines and more — one search." },
+              { icon: Globe2,    title: "All major carriers", body: "BA, Virgin, Emirates, Qatar, Etihad, Singapore Airlines and more - one search." },
               { icon: Briefcase, title: "Corporate accounts", body: "Single monthly invoice, flexible rebooking, preferred rate agreements." },
               { icon: Plane,     title: "Any cabin class", body: "Economy to First. Premium economy often the sweet spot for long-haul." },
               { icon: ShieldCheck, title: "ATOL protected", body: "Every flight booking is financially protected. No risk if an airline fails." },
@@ -184,7 +184,7 @@ function FlightsPage() {
         </h2>
         <p className="mt-3 max-w-xl text-sm text-muted-foreground">
           Prices are per person, return, from UK departure airports. Actual fares depend on dates and
-          availability — get a quote for a live price.
+          availability - get a quote for a live price.
         </p>
         <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
           <table className="w-full text-sm">
@@ -245,7 +245,7 @@ function FlightsPage() {
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { n: "1", title: "Tell us your route", body: "Origin, destination, travel dates, number of passengers and cabin preference." },
-              { n: "2", title: "We search every carrier", body: "Published fares, net fares and consolidator rates — compared on your behalf." },
+              { n: "2", title: "We search every carrier", body: "Published fares, net fares and consolidator rates - compared on your behalf." },
               { n: "3", title: "You pick", body: "We present 2–3 options with clear trade-offs. No pressure, no upsell." },
               { n: "4", title: "One invoice, full protection", body: "ATOL-protected booking. We handle any changes, delays or rebooking en route." },
             ].map(({ n, title, body }) => (
@@ -274,7 +274,7 @@ function FlightsPage() {
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
             Tell us your route, dates and budget and a consultant will reply with a genuine
-            comparison — no jargon, no hidden fees, within 4 working hours.
+            comparison - no jargon, no hidden fees, within 4 working hours.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Button asChild className="bg-gold text-gold-foreground hover:bg-gold/90">

@@ -8,10 +8,10 @@ export const Route = createFileRoute("/blog/$slug")({
     return p;
   },
   head: ({ loaderData, params }) => {
-    if (!loaderData) return { meta: [{ title: "Article — Luxonair" }] };
+    if (!loaderData) return { meta: [{ title: "Article - Luxonair" }] };
     return {
       meta: [
-        { title: `${loaderData.title} — Luxonair` },
+        { title: `${loaderData.title} - Luxonair` },
         { name: "description", content: loaderData.excerpt },
         { property: "og:title", content: loaderData.title },
         { property: "og:description", content: loaderData.excerpt },

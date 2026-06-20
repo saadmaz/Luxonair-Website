@@ -21,9 +21,9 @@ export const Route = createFileRoute("/quote")({
   }),
   head: () => ({
     meta: [
-      { title: "Get a quote — Luxonair" },
+      { title: "Get a quote - Luxonair" },
       { name: "description", content: "Four short steps. A Luxonair consultant replies within 4 working hours, Mon–Fri 09:00–19:00 GMT. No spam." },
-      { property: "og:title", content: "Get a quote — Luxonair" },
+      { property: "og:title", content: "Get a quote - Luxonair" },
       { property: "og:description", content: "Structured 4-step quote. A consultant replies within 4 working hours." },
       { property: "og:url", content: "/quote" },
     ],
@@ -66,7 +66,7 @@ function QuotePage() {
         <ul className="mt-8 space-y-4 text-sm">
           <Row icon={Clock} title="Reply within 4 working hours" body="Mon–Fri 09:00–19:00 GMT. Outside hours, first thing next morning." />
           <Row icon={ShieldCheck} title="ATOL-protected" body="Where flights are included. Membership numbers shown on About page." />
-          <Row icon={Phone} title="Or call us" body={`${SITE.phone.display} — direct to a consultant, never a queue.`} href={`tel:${SITE.phone.tel}`} />
+          <Row icon={Phone} title="Or call us" body={`${SITE.phone.display} - direct to a consultant, never a queue.`} href={`tel:${SITE.phone.tel}`} />
           <Row icon={MessageCircle} title="WhatsApp" body="Send the same details on WhatsApp if you prefer." href={`https://wa.me/${SITE.phone.whatsapp}`} />
         </ul>
       </aside>

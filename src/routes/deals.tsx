@@ -6,13 +6,13 @@ import { ArrowRight, Clock, Tag } from "lucide-react";
 export const Route = createFileRoute("/deals")({
   head: () => ({
     meta: [
-      { title: "Travel Deals & Offers — Luxonair" },
+      { title: "Travel Deals & Offers - Luxonair" },
       {
         name: "description",
         content:
-          "Limited-availability holiday and flight deals from the UK. Indicative pricing — confirmed at quote stage.",
+          "Limited-availability holiday and flight deals from the UK. Indicative pricing - confirmed at quote stage.",
       },
-      { property: "og:title", content: "Travel Deals & Offers — Luxonair" },
+      { property: "og:title", content: "Travel Deals & Offers - Luxonair" },
       {
         property: "og:description",
         content: "Hand-picked, limited-availability deals from UK departure airports.",
@@ -134,7 +134,7 @@ function DealsPage() {
             Don't see what you're looking for?
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Tell us your destination, budget and dates — we'll find you a deal that isn't on any
+            Tell us your destination, budget and dates - we'll find you a deal that isn't on any
             aggregator.
           </p>
           <Button asChild className="mt-5 bg-gold text-gold-foreground hover:bg-gold/90">

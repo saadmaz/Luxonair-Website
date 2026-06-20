@@ -57,7 +57,7 @@ export const holidayTypes: HolidayType[] = [
     name: "All-Inclusive",
     tagline: "One price, no surprises, premium board.",
     summary:
-      "Premium all-inclusive resorts in the Caribbean, Indian Ocean and Mediterranean. Drinks, dining, and watersports included — tipping covered.",
+      "Premium all-inclusive resorts in the Caribbean, Indian Ocean and Mediterranean. Drinks, dining, and watersports included - tipping covered.",
     heroImage: img("1505228395891-9a51e7e86bf6"),
     bullets: ["Premium all-inclusive board", "Watersports included", "Tipping covered", "Family or adult-only"],
     destinationSlugs: ["antigua-family-all-inclusive", "maldives-private-villa"],

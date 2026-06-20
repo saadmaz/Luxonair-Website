@@ -1,6 +1,6 @@
 // Newsletter sign-up with two layout variants:
-//   "footer"  — compact, used inside the site Footer
-//   "section" — full-bleed dark panel, used inline on the home page
+//   "footer"  - compact, used inside the site Footer
+//   "section" - full-bleed dark panel, used inline on the home page
 //
 // Submits to Formspree if SITE.formspree.newsletter is set; logs to console in demo mode.
 import { useState } from "react";
@@ -28,17 +28,17 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
           body: JSON.stringify({ email, _subject: "Newsletter sign-up" }),
         });
         if (!res.ok) {
-          setError("Couldn't subscribe — please try again or email us.");
+          setError("Couldn't subscribe - please try again or email us.");
           setSubmitting(false);
           return;
         }
       } catch {
-        setError("Network error — please try again.");
+        setError("Network error - please try again.");
         setSubmitting(false);
         return;
       }
     } else {
-      console.log("[Luxonair newsletter — configure SITE.formspree.newsletter to transmit]", email);
+      console.log("[Luxonair newsletter - configure SITE.formspree.newsletter to transmit]", email);
     }
 
     setSubmitting(false);
@@ -87,7 +87,7 @@ function NewsletterForm({
   if (done) {
     return (
       <p className={`mt-4 text-sm ${dark ? "text-navy-fg/90" : "text-foreground"}`}>
-        ✓ Thanks — we'll send a confirmation to <strong>{email}</strong>.
+        ✓ Thanks - we'll send a confirmation to <strong>{email}</strong>.
       </p>
     );
   }

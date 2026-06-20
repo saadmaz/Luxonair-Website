@@ -11,7 +11,7 @@ export type Deal = {
   /** Original price shown crossed out for sale display */
   oldPrice?: number;
   badge?: string;
-  /** ISO date string — used by /deals to sort and hide expired entries */
+  /** ISO date string - used by /deals to sort and hide expired entries */
   expires: string;
   image: string;
   blurb: string;

@@ -7,12 +7,12 @@ import { SITE } from "@/config/site";
 export const Route = createFileRoute("/reviews")({
   head: () => ({
     meta: [
-      { title: "Customer Reviews — Luxonair" },
+      { title: "Customer Reviews - Luxonair" },
       {
         name: "description",
         content: `Read unedited reviews from Luxonair travellers. Average rating ${aggregate.average} from ${aggregate.count} verified trips.`,
       },
-      { property: "og:title", content: "Customer Reviews — Luxonair" },
+      { property: "og:title", content: "Customer Reviews - Luxonair" },
       { property: "og:url", content: "/reviews" },
     ],
     links: [{ rel: "canonical", href: "/reviews" }],
@@ -36,7 +36,7 @@ function ReviewsPage() {
               </h1>
               <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
                 We'll publish a verified Trustpilot / Feefo aggregate here once enabled. Until
-                then: every review below is from a Luxonair-booked trip — nothing fabricated.
+                then: every review below is from a Luxonair-booked trip - nothing fabricated.
               </p>
             </div>
 
@@ -55,7 +55,7 @@ function ReviewsPage() {
                 From {aggregate.count} verified trips
               </div>
               <div className="mt-5 border-t border-navy-fg/10 pt-4 text-xs text-navy-fg/40">
-                Trustpilot / Feefo score pending — ask us for references directly.
+                Trustpilot / Feefo score pending - ask us for references directly.
               </div>
             </div>
           </div>
@@ -105,7 +105,7 @@ function ReviewsPage() {
                 Ready to write your own review?
               </h2>
               <p className="mt-2 text-sm text-navy-fg/70">
-                Start with a free quote — a consultant replies within 4 working hours.
+                Start with a free quote - a consultant replies within 4 working hours.
               </p>
             </div>
             <div className="flex flex-wrap gap-3 shrink-0">

@@ -13,7 +13,7 @@ export const budgetBands = ["££", "£££", "££££"] as const;
 export const destinations: Destination[] = [
   {
     slug: "maldives-private-villa",
-    name: "Maldives — Private Water Villa",
+    name: "Maldives - Private Water Villa",
     country: "Maldives",
     region: "Indian Ocean",
     tripType: ["Honeymoon", "Luxury", "Family"],
@@ -34,7 +34,7 @@ export const destinations: Destination[] = [
   },
   {
     slug: "dubai-corporate-stopover",
-    name: "Dubai — Corporate Stopover",
+    name: "Dubai - Corporate Stopover",
     country: "United Arab Emirates",
     region: "Middle East",
     tripType: ["Business", "City Break", "Luxury"],
@@ -55,7 +55,7 @@ export const destinations: Destination[] = [
   },
   {
     slug: "antigua-family-all-inclusive",
-    name: "Antigua — Family All-Inclusive",
+    name: "Antigua - Family All-Inclusive",
     country: "Antigua & Barbuda",
     region: "Caribbean",
     tripType: ["Family", "Luxury"],
@@ -76,7 +76,7 @@ export const destinations: Destination[] = [
   },
   {
     slug: "japan-tailor-made",
-    name: "Japan — Tailor-Made Tour",
+    name: "Japan - Tailor-Made Tour",
     country: "Japan",
     region: "Asia",
     tripType: ["Luxury", "City Break", "Honeymoon"],
@@ -85,7 +85,7 @@ export const destinations: Destination[] = [
     durationNights: 12,
     heroImage: img("1492571350019-22de08371fd3"),
     gallery: [img("1528360983277-13d401cdc186"), img("1545569341-9eb8b30979d9"), img("1493976040374-85c8e12f0c0e")],
-    tagline: "Tokyo, Kyoto, Hakone — JR Pass, ryokan stays, English-speaking guides.",
+    tagline: "Tokyo, Kyoto, Hakone - JR Pass, ryokan stays, English-speaking guides.",
     summary:
       "A 12-night itinerary blending neon Tokyo, temple Kyoto and a ryokan night near Mount Fuji. Bullet-train transfers and curated local guides.",
     itinerary: [
@@ -98,7 +98,7 @@ export const destinations: Destination[] = [
   },
   {
     slug: "santorini-couples",
-    name: "Santorini — Caldera Couples",
+    name: "Santorini - Caldera Couples",
     country: "Greece",
     region: "Europe",
     tripType: ["Honeymoon", "Luxury", "City Break"],
@@ -119,7 +119,7 @@ export const destinations: Destination[] = [
   },
   {
     slug: "new-york-business",
-    name: "New York — Business City Break",
+    name: "New York - Business City Break",
     country: "United States",
     region: "Americas",
     tripType: ["Business", "City Break"],

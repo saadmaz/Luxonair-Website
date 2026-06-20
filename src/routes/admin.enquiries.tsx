@@ -157,7 +157,7 @@ function AdminEnquiriesPage() {
                       <td colSpan={8} className="px-6 py-4">
                         <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
                           <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Phone</p><p className="mt-1 text-gray-800">{e.phone}</p></div>
-                          <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Notes</p><p className="mt-1 text-gray-800">{e.notes || "—"}</p></div>
+                          <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Notes</p><p className="mt-1 text-gray-800">{e.notes || "-"}</p></div>
                           <div className="col-span-2 flex items-center gap-2">
                             <a href={`mailto:${e.email}`} className="rounded-lg bg-[#042045] px-4 py-2 text-xs font-semibold text-white hover:bg-[#042045]/90">Reply by email</a>
                             <a href={`https://wa.me/${e.phone.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="rounded-lg border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">WhatsApp</a>
