@@ -4,6 +4,7 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import { destinations as initialDestinations } from "@/data/destinations";
 import type { Destination } from "@/types/destination";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/destinations")({
@@ -146,7 +147,7 @@ function AdminDestinationsPage() {
             </div>
             <div><label className={labelCls}>Tagline</label><input className={inputCls} value={form.tagline} onChange={(e) => setForm({ ...form, tagline: e.target.value })} /></div>
             <div><label className={labelCls}>Summary</label><textarea className={inputCls} rows={3} value={form.summary} onChange={(e) => setForm({ ...form, summary: e.target.value })} /></div>
-            <div><label className={labelCls}>Hero image URL</label><input className={inputCls} value={form.heroImage} onChange={(e) => setForm({ ...form, heroImage: e.target.value })} /></div>
+            <ImageUpload label="Hero image" value={form.heroImage} onChange={(url) => setForm({ ...form, heroImage: url })} />
           </div>
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>

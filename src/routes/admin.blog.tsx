@@ -4,6 +4,7 @@ import { Plus, Pencil, Trash2, Clock } from "lucide-react";
 import { blogPosts as initialPosts } from "@/data/blog";
 import type { BlogPost } from "@/types/blog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 export const Route = createFileRoute("/admin/blog")({
   component: AdminBlogPage,
@@ -147,7 +148,7 @@ function AdminBlogPage() {
               <div><label className={labelCls}>Publish date</label><input type="date" className={inputCls} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></div>
               <div><label className={labelCls}>Read time (min)</label><input type="number" className={inputCls} value={form.readMinutes} onChange={(e) => setForm({ ...form, readMinutes: +e.target.value })} /></div>
             </div>
-            <div><label className={labelCls}>Hero image URL</label><input className={inputCls} value={form.heroImage} onChange={(e) => setForm({ ...form, heroImage: e.target.value })} /></div>
+            <ImageUpload label="Hero image" value={form.heroImage} onChange={(url) => setForm({ ...form, heroImage: url })} />
           </div>
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>

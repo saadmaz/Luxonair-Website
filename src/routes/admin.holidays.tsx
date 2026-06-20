@@ -4,6 +4,7 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import { holidayTypes as initialHolidays } from "@/data/holidayTypes";
 import type { HolidayType } from "@/types/holiday-type";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 export const Route = createFileRoute("/admin/holidays")({
   component: AdminHolidaysPage,
@@ -122,7 +123,7 @@ function AdminHolidaysPage() {
                 ))}
               </div>
             </div>
-            <div><label className={labelCls}>Hero image URL</label><input className={inputCls} value={form.heroImage} onChange={(e) => setForm({ ...form, heroImage: e.target.value })} /></div>
+            <ImageUpload label="Hero image" value={form.heroImage} onChange={(url) => setForm({ ...form, heroImage: url })} />
           </div>
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>

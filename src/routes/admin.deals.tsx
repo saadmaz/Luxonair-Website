@@ -4,6 +4,7 @@ import { Plus, Pencil, Trash2, Tag } from "lucide-react";
 import { deals as initialDeals } from "@/data/deals";
 import type { Deal } from "@/types/deal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 export const Route = createFileRoute("/admin/deals")({
   component: AdminDealsPage,
@@ -164,7 +165,7 @@ function AdminDealsPage() {
               <div><label className={labelCls}>Expires</label><input type="date" className={inputCls} value={form.expires} onChange={(e) => setForm({ ...form, expires: e.target.value })} /></div>
             </div>
             <div><label className={labelCls}>Blurb</label><textarea className={inputCls} rows={2} value={form.blurb} onChange={(e) => setForm({ ...form, blurb: e.target.value })} /></div>
-            <div><label className={labelCls}>Image URL</label><input className={inputCls} value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} /></div>
+            <ImageUpload label="Deal image" value={form.image} onChange={(url) => setForm({ ...form, image: url })} />
           </div>
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
