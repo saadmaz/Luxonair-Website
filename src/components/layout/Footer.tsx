@@ -24,7 +24,7 @@ export function Footer() {
           <Link to="/" className="flex items-center">
             <img
               src="/Luxeonair-logo-withoutbg.png"
-              alt="Luxonair"
+              alt="Luxe on Air"
               className="h-10 w-auto brightness-0 invert"
             />
           </Link>
@@ -133,7 +133,7 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-navy-fg/10">
         <div className="container-page flex flex-col items-start justify-between gap-2 py-5 text-xs text-navy-fg/40 sm:flex-row sm:items-center">
-          <span>© 2026 Luxonair Travel</span>
+          <span>© 2026 Luxe on Air Travel</span>
           <span>
             Designed and developed by{" "}
             <a

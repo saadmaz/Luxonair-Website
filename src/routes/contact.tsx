@@ -7,13 +7,13 @@ import { SITE } from "@/config/site";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact Luxonair - Phone, WhatsApp & UK office" },
+      { title: "Contact Luxe on Air - Phone, WhatsApp & UK office" },
       {
         name: "description",
         content:
           "Speak directly to a UK travel consultant. Phone, WhatsApp, email, or visit our London office. No queue, no call centre.",
       },
-      { property: "og:title", content: "Contact Luxonair" },
+      { property: "og:title", content: "Contact Luxe on Air" },
       { property: "og:url", content: "/contact" },
     ],
     links: [{ rel: "canonical", href: "/contact" }],
@@ -137,7 +137,7 @@ function ContactPage() {
             {/* Map */}
             <div className="overflow-hidden rounded-2xl border border-border shadow-sm">
               <iframe
-                title="Luxonair London office"
+                title="Luxe on Air London office"
                 src="https://www.openstreetmap.org/export/embed.html?bbox=-0.1421%2C51.5045%2C-0.1186%2C51.5189&amp;layer=mapnik"
                 className="h-72 w-full"
                 loading="eager"

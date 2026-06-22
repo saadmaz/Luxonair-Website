@@ -6,14 +6,14 @@ export const Route = createFileRoute("/holiday-types/")({
   head: () => ({
     meta: [
       {
-        title: "Holiday Types - Beach, Honeymoon, Family, Luxury & more | Luxonair",
+        title: "Holiday Types - Beach, Honeymoon, Family, Luxury & more | Luxe on Air",
       },
       {
         name: "description",
         content:
-          "Browse Luxonair holiday types - beach, honeymoon, family, luxury, city breaks and all-inclusive escapes from the UK.",
+          "Browse Luxe on Air holiday types - beach, honeymoon, family, luxury, city breaks and all-inclusive escapes from the UK.",
       },
-      { property: "og:title", content: "Holiday Types - Luxonair" },
+      { property: "og:title", content: "Holiday Types - Luxe on Air" },
       { property: "og:url", content: "/holiday-types" },
     ],
     links: [{ rel: "canonical", href: "/holiday-types" }],

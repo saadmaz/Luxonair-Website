@@ -7,13 +7,13 @@ import { SlidersHorizontal } from "lucide-react";
 export const Route = createFileRoute("/destinations/")({
   head: () => ({
     meta: [
-      { title: "Destinations - Luxonair" },
+      { title: "Destinations - Luxe on Air" },
       {
         name: "description",
         content:
-          "Browse Luxonair's curated long-haul, Caribbean, Indian Ocean and European itineraries. Filter by region, trip type and budget.",
+          "Browse Luxe on Air's curated long-haul, Caribbean, Indian Ocean and European itineraries. Filter by region, trip type and budget.",
       },
-      { property: "og:title", content: "Destinations - Luxonair" },
+      { property: "og:title", content: "Destinations - Luxe on Air" },
       {
         property: "og:description",
         content: "Curated UK-departing itineraries. Filter by region, trip type and budget.",

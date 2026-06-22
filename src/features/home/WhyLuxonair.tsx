@@ -33,7 +33,7 @@ export function WhyLuxonair() {
         <div className="grid gap-12 md:grid-cols-2 md:items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-              Why Luxonair
+              Why Luxe on Air
             </p>
             <h2 className="mt-3 font-display text-3xl font-semibold leading-snug text-navy-fg sm:text-4xl text-balance">
               Single-invoice simplicity. Human expertise. Total protection.

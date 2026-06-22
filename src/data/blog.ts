@@ -8,7 +8,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "December to April is dry season, but rates and crowds peak. Here's how UK travellers should weigh weather, price and school holidays.",
     category: "Guides",
-    author: "Luxonair Editorial",
+    author: "Luxe on Air Editorial",
     date: "2026-05-12",
     readMinutes: 6,
     heroImage: img("1514282401047-d79a71a590e8"),
@@ -24,7 +24,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Single-invoice billing, premium-cabin thresholds, and duty-of-care basics. A short field guide for UK ops leads.",
     category: "Corporate",
-    author: "Luxonair Corporate",
+    author: "Luxe on Air Corporate",
     date: "2026-04-02",
     readMinutes: 8,
     heroImage: img("1512453979798-5ea266f8880c"),
@@ -40,7 +40,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Direct flights, beach time, the Stingray City excursion that actually works for under-10s, and what to skip.",
     category: "Family",
-    author: "Luxonair Editorial",
+    author: "Luxe on Air Editorial",
     date: "2026-03-18",
     readMinutes: 5,
     heroImage: img("1519046904884-53103b34b206"),
@@ -55,7 +55,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Three acronyms, three different protections. A plain-English guide before you pay a deposit.",
     category: "Guides",
-    author: "Luxonair Editorial",
+    author: "Luxe on Air Editorial",
     date: "2026-02-08",
     readMinutes: 4,
     heroImage: img("1488085061387-422e29b40080"),

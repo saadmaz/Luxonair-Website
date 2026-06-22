@@ -7,12 +7,12 @@ import { SITE } from "@/config/site";
 export const Route = createFileRoute("/reviews")({
   head: () => ({
     meta: [
-      { title: "Customer Reviews - Luxonair" },
+      { title: "Customer Reviews - Luxe on Air" },
       {
         name: "description",
-        content: `Read unedited reviews from Luxonair travellers. Average rating ${aggregate.average} from ${aggregate.count} verified trips.`,
+        content: `Read unedited reviews from Luxe on Air travellers. Average rating ${aggregate.average} from ${aggregate.count} verified trips.`,
       },
-      { property: "og:title", content: "Customer Reviews - Luxonair" },
+      { property: "og:title", content: "Customer Reviews - Luxe on Air" },
       { property: "og:url", content: "/reviews" },
     ],
     links: [{ rel: "canonical", href: "/reviews" }],
@@ -36,7 +36,7 @@ function ReviewsPage() {
               </h1>
               <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
                 We'll publish a verified Trustpilot / Feefo aggregate here once enabled. Until
-                then: every review below is from a Luxonair-booked trip - nothing fabricated.
+                then: every review below is from a Luxe on Air-booked trip - nothing fabricated.
               </p>
             </div>
 

@@ -5,9 +5,9 @@ import { SITE } from "@/config/site";
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: "FAQ - Luxonair Help Centre" },
+      { title: "FAQ - Luxe on Air Help Centre" },
       { name: "description", content: "Answers to common questions about quotes, ATOL protection, payments and 24/7 support." },
-      { property: "og:title", content: "FAQ - Luxonair Help Centre" },
+      { property: "og:title", content: "FAQ - Luxe on Air Help Centre" },
       { property: "og:url", content: "/faq" },
     ],
     links: [{ rel: "canonical", href: "/faq" }],

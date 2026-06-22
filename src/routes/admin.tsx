@@ -151,7 +151,7 @@ function AdminLayoutRoute() {
           {/* Logo — hidden in collapsed desktop mode */}
           <img
             src="/Luxeonair-logo-withoutbg.png"
-            alt="Luxonair"
+            alt="Luxe on Air"
             className={cn(
               "h-7 w-auto brightness-0 invert opacity-90 transition-all duration-300",
               collapsed && "lg:hidden"
@@ -276,7 +276,7 @@ function AdminLayoutRoute() {
             </div>
             <div className={cn("min-w-0 flex-1", collapsed && "lg:hidden")}>
               <p className="truncate text-[12px] font-semibold text-white/80">Admin</p>
-              <p className="truncate text-[10px] text-white/30">Luxonair</p>
+              <p className="truncate text-[10px] text-white/30">Luxe on Air</p>
             </div>
             <button
               onClick={handleLogout}
@@ -361,7 +361,7 @@ function AdminLayoutRoute() {
               </div>
               <div className="hidden sm:block">
                 <p className="text-[12px] font-semibold text-gray-800 leading-none">Admin</p>
-                <p className="text-[10px] text-gray-400 leading-none mt-0.5">Luxonair</p>
+                <p className="text-[10px] text-gray-400 leading-none mt-0.5">Luxe on Air</p>
               </div>
             </div>
           </div>

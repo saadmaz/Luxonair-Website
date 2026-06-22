@@ -15,13 +15,13 @@ import {
 export const Route = createFileRoute("/holidays")({
   head: () => ({
     meta: [
-      { title: "Tailor-Made Holidays from the UK - Luxonair" },
+      { title: "Tailor-Made Holidays from the UK - Luxe on Air" },
       {
         name: "description",
         content:
           "Beach, honeymoon, family, luxury and city break holidays from the UK. One consultant builds and manages your entire trip - quote within 4 working hours.",
       },
-      { property: "og:title", content: "Tailor-Made Holidays - Luxonair" },
+      { property: "og:title", content: "Tailor-Made Holidays - Luxe on Air" },
       {
         property: "og:description",
         content:
@@ -47,7 +47,7 @@ function HolidaysPage() {
             Your holiday, built around you. Not a template.
           </h1>
           <p className="mt-5 max-w-2xl text-base text-navy-fg/70 leading-relaxed">
-            Every Luxonair holiday is tailor-made: you tell us the destination, travel window, and
+            Every Luxe on Air holiday is tailor-made: you tell us the destination, travel window, and
             budget, and one consultant builds the flights, transfers, hotels and extras into a
             single confirmed itinerary - at no booking fee.
           </p>

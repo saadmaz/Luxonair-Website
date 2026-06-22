@@ -19,7 +19,7 @@ const initialData: Message[] = [
   { id: 3, name: "Laura Santos", email: "l.santos@gmail.com", subject: "Honeymoon planning - Bora Bora", body: "Looking to plan our honeymoon to Bora Bora in February 2026. Budget is flexible for the right experience. Can you send options with business class flights from Heathrow?", received: "18 Jun 2025", read: false },
   { id: 4, name: "David Kim", email: "d.kim@outlook.com", subject: "Japan trip assistance", body: "We are a couple who would love help planning a Japan trip for cherry blossom season (late March / early April 2026). 10–14 nights. Business class preferred.", received: "17 Jun 2025", read: true },
   { id: 5, name: "Fatima Al-Hassan", email: "f.alhassan@email.com", subject: "Safari and beach combination", body: "Looking for a two-week trip combining a Kenya safari with a beach stay in Zanzibar. Two adults. Interested in luxury lodges.", received: "15 Jun 2025", read: true },
-  { id: 6, name: "George Whitfield", email: "g.whitfield@corp.com", subject: "Feedback - excellent service", body: "Just returned from our Dubai trip arranged by Luxonair. The chauffeur was on time, the hotel was perfect, and the consultant's assistance during our flight delay was invaluable. Thank you.", received: "12 Jun 2025", read: true },
+  { id: 6, name: "George Whitfield", email: "g.whitfield@corp.com", subject: "Feedback - excellent service", body: "Just returned from our Dubai trip arranged by Luxe on Air. The chauffeur was on time, the hotel was perfect, and the consultant's assistance during our flight delay was invaluable. Thank you.", received: "12 Jun 2025", read: true },
 ];
 
 function AdminMessagesPage() {

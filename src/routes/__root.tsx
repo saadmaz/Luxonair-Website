@@ -63,10 +63,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Luxonair - UK travel specialists for premium long-haul, family & corporate trips" },
+      { title: "Luxe on Air - UK travel specialists for premium long-haul, family & corporate trips" },
       { name: "description", content: "UK-based travel agency specialising in tailor-made long-haul, family escapes and corporate trips. Get a structured quote in minutes - a consultant replies within 4 working hours." },
-      { name: "author", content: "Luxonair" },
-      { property: "og:site_name", content: "Luxonair" },
+      { name: "author", content: "Luxe on Air" },
+      { property: "og:site_name", content: "Luxe on Air" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#042045" },
@@ -85,7 +85,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "TravelAgency",
-          name: "Luxonair",
+          name: "Luxe on Air",
           areaServed: "United Kingdom",
           description: "UK travel specialists for premium long-haul, family escapes and corporate trips.",
         }),

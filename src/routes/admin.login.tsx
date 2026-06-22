@@ -40,7 +40,7 @@ function AdminLoginPage() {
         <div className="mb-8 flex flex-col items-center gap-4">
           <img
             src="/Luxeonair-logo-withoutbg.png"
-            alt="Luxonair"
+            alt="Luxe on Air"
             className="h-10 w-auto brightness-0 invert opacity-90"
           />
           <div className="text-center">
@@ -135,7 +135,7 @@ function AdminLoginPage() {
         {/* Back link */}
         <p className="mt-6 text-center text-xs text-white/25">
           <a href="/" className="transition-colors hover:text-white/50">
-            ← Back to Luxonair
+            ← Back to Luxe on Air
           </a>
         </p>
       </div>

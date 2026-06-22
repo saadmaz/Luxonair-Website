@@ -102,7 +102,7 @@ function AdminDashboard() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">{dateStr}</p>
           <h1 className="mt-1 text-2xl font-bold text-gray-900">{greeting} 👋</h1>
-          <p className="mt-0.5 text-sm text-gray-400">Here's what's happening with Luxonair today.</p>
+          <p className="mt-0.5 text-sm text-gray-400">Here's what's happening with Luxe on Air today.</p>
         </div>
       </div>
 

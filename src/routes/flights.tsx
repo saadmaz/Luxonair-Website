@@ -15,7 +15,7 @@ import {
 export const Route = createFileRoute("/flights")({
   head: () => ({
     meta: [
-      { title: "Premium Flights from the UK - Business & First Class | Luxonair" },
+      { title: "Premium Flights from the UK - Business & First Class | Luxe on Air" },
       {
         name: "description",
         content:
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/flights")({
       },
       {
         property: "og:title",
-        content: "Premium Flights from the UK - Luxonair",
+        content: "Premium Flights from the UK - Luxe on Air",
       },
       {
         property: "og:description",

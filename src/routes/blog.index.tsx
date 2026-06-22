@@ -5,13 +5,13 @@ import { ArrowRight, Clock } from "lucide-react";
 export const Route = createFileRoute("/blog/")({
   head: () => ({
     meta: [
-      { title: "Travel Guides & News - Luxonair Blog" },
+      { title: "Travel Guides & News - Luxe on Air Blog" },
       {
         name: "description",
         content:
-          "Field-tested travel guides, corporate-travel essays, and destination notes from the Luxonair team.",
+          "Field-tested travel guides, corporate-travel essays, and destination notes from the Luxe on Air team.",
       },
-      { property: "og:title", content: "Luxonair Blog" },
+      { property: "og:title", content: "Luxe on Air Blog" },
       { property: "og:url", content: "/blog" },
     ],
     links: [{ rel: "canonical", href: "/blog" }],
@@ -28,7 +28,7 @@ function BlogIndex() {
         <div className="container-page py-16 md:py-20">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Journal</p>
           <h1 className="mt-3 max-w-2xl font-display text-4xl font-semibold text-navy-fg sm:text-5xl text-balance">
-            Travel notes from the Luxonair desk.
+            Travel notes from the Luxe on Air desk.
           </h1>
           <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
             Guides, essays, and field notes from consultants who fly the routes they sell.

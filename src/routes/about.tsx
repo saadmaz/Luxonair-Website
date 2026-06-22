@@ -6,13 +6,13 @@ import { SITE } from "@/config/site";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About - Luxonair" },
+      { title: "About - Luxe on Air" },
       {
         name: "description",
         content:
-          "Luxonair is a UK-based travel agency for premium long-haul, family escapes and corporate travel. Independent, account-managed, ATOL-protected.",
+          "Luxe on Air is a UK-based travel agency for premium long-haul, family escapes and corporate travel. Independent, account-managed, ATOL-protected.",
       },
-      { property: "og:title", content: "About - Luxonair" },
+      { property: "og:title", content: "About - Luxe on Air" },
       {
         property: "og:description",
         content: "UK travel specialists. Independent, account-managed, ATOL-protected.",
@@ -31,7 +31,7 @@ function AboutPage() {
       <section className="bg-navy text-navy-fg">
         <div className="container-page py-20 md:py-28">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-            About Luxonair
+            About Luxe on Air
           </p>
           <h1 className="mt-3 max-w-3xl font-display text-4xl font-semibold leading-tight text-navy-fg sm:text-5xl md:text-6xl text-balance">
             A UK travel agency built for people who value their time.
@@ -125,7 +125,7 @@ function AboutPage() {
         <div className="grid gap-10 md:grid-cols-[1fr_1.5fr] md:items-center">
           <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
             <Building2 className="h-9 w-9 text-gold" />
-            <h3 className="mt-5 font-display text-2xl font-semibold">The Luxonair team</h3>
+            <h3 className="mt-5 font-display text-2xl font-semibold">The Luxe on Air team</h3>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
               Specialists across long-haul, MICE and family travel. Our team comes from British Airways, Virgin Atlantic, BCD Travel and leading independent agencies.
             </p>
@@ -135,7 +135,7 @@ function AboutPage() {
           </div>
           <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
             <p>
-              Founded by ex-airline and corporate-travel staff, Luxonair operates from{" "}
+              Founded by ex-airline and corporate-travel staff, Luxe on Air operates from{" "}
               {SITE.team.location}, UK. Our consultants average {SITE.team.avgYears} years in the
               industry across British Airways, Virgin Atlantic, BCD Travel and independent agencies.
             </p>

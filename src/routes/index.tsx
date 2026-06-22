@@ -18,13 +18,13 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Luxonair - UK travel specialists for long-haul, family & corporate trips" },
+      { title: "Luxe on Air - UK travel specialists for long-haul, family & corporate trips" },
       {
         name: "description",
         content:
           "Tailor-made long-haul, family escapes and corporate trips from the UK. Start a structured quote in minutes - a consultant replies within 4 working hours.",
       },
-      { property: "og:title", content: "Luxonair - UK travel specialists" },
+      { property: "og:title", content: "Luxe on Air - UK travel specialists" },
       {
         property: "og:description",
         content: "Tailor-made long-haul, family escapes and corporate trips from the UK.",
