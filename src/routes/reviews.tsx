@@ -7,15 +7,33 @@ import { SITE } from "@/config/site";
 export const Route = createFileRoute("/reviews")({
   head: () => ({
     meta: [
-      { title: "Customer Reviews - Luxe on Air" },
-      {
-        name: "description",
-        content: `Read unedited reviews from Luxe on Air travellers. Average rating ${aggregate.average} from ${aggregate.count} verified trips.`,
-      },
-      { property: "og:title", content: "Customer Reviews - Luxe on Air" },
-      { property: "og:url", content: "/reviews" },
+      { title: `Client Reviews & Testimonials | ${aggregate.average}★ from ${aggregate.count} Trips | Luxe on Air` },
+      { name: "description", content: `${aggregate.average}/5 from ${aggregate.count} verified trips. Unedited reviews from Luxe on Air clients covering honeymoons, family holidays, corporate travel and long-haul escapes.` },
+      { name: "robots", content: "index, follow" },
+      { property: "og:title", content: `Client Reviews | ${aggregate.average}/5 from ${aggregate.count} Verified Trips | Luxe on Air` },
+      { property: "og:description", content: `${aggregate.average}/5 from ${aggregate.count} verified trips — honeymoons, family holidays, corporate travel and long-haul escapes. Unedited.` },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.luxeonair.com/reviews" },
+      { name: "twitter:title", content: `Luxe on Air Reviews | ${aggregate.average}/5 from ${aggregate.count} Trips` },
+      { name: "twitter:description", content: `Unedited client reviews — ${aggregate.average}/5 from ${aggregate.count} verified trips. Honeymoons, family holidays and corporate travel.` },
     ],
-    links: [{ rel: "canonical", href: "/reviews" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.com/reviews" }],
+    scripts: [{
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "@id": "https://www.luxeonair.com/#organization",
+        "name": "Luxe on Air",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": aggregate.average,
+          "reviewCount": aggregate.count,
+          "bestRating": "5",
+          "worstRating": "1"
+        }
+      }),
+    }],
   }),
   component: ReviewsPage,
 });

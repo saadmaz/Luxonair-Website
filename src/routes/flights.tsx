@@ -15,24 +15,17 @@ import {
 export const Route = createFileRoute("/flights")({
   head: () => ({
     meta: [
-      { title: "Premium Flights from the UK - Business & First Class | Luxe on Air" },
-      {
-        name: "description",
-        content:
-          "Business class, first class and premium economy flights from the UK. We compare fares across BA, Virgin, Emirates, Qatar and more - one consultant, one invoice.",
-      },
-      {
-        property: "og:title",
-        content: "Premium Flights from the UK - Luxe on Air",
-      },
-      {
-        property: "og:description",
-        content:
-          "Business and first class flights from UK airports. Independent fare comparison across all major carriers - no booking fee.",
-      },
-      { property: "og:url", content: "/flights" },
+      { title: "Business & First Class Flights from the UK | Luxe on Air" },
+      { name: "description", content: "Independent fare comparison across BA, Virgin Atlantic, Emirates, Qatar Airways and more. Business class, first class and premium economy — one consultant, one invoice, no booking fee." },
+      { name: "robots", content: "index, follow" },
+      { property: "og:title", content: "Business & First Class Flights from the UK | Luxe on Air" },
+      { property: "og:description", content: "Compare business and first class fares across BA, Virgin, Emirates & Qatar. One consultant, one invoice. No booking fee." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.luxeonair.com/flights" },
+      { name: "twitter:title", content: "Business & First Class Flights | Luxe on Air" },
+      { name: "twitter:description", content: "Independent fare search across BA, Virgin Atlantic, Emirates & Qatar. One consultant, one invoice. No fee." },
     ],
-    links: [{ rel: "canonical", href: "/flights" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.com/flights" }],
   }),
   component: FlightsPage,
 });

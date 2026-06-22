@@ -15,27 +15,41 @@ export const Route = createFileRoute("/destinations/$slug")({
   head: ({ loaderData, params }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.name} - Luxe on Air` },
-          { name: "description", content: `${loaderData.tagline} ${loaderData.durationNights} nights from £${loaderData.fromPrice} pp (indicative).` },
-          { property: "og:title", content: `${loaderData.name} - Luxe on Air` },
-          { property: "og:description", content: loaderData.tagline },
+          { title: `${loaderData.name} Holidays from the UK | Luxe on Air` },
+          { name: "description", content: `${loaderData.tagline}. From £${loaderData.fromPrice}pp for ${loaderData.durationNights} nights. Tailor-made itinerary, ATOL protected, built by a dedicated London consultant.` },
+          { name: "robots", content: "index, follow" },
+          { property: "og:title", content: `${loaderData.name} Holidays from the UK | Luxe on Air` },
+          { property: "og:description", content: `${loaderData.tagline}. From £${loaderData.fromPrice}pp. Tailor-made, ATOL protected, departing UK airports.` },
           { property: "og:image", content: loaderData.heroImage },
           { property: "og:type", content: "article" },
-          { property: "og:url", content: `/destinations/${params.slug}` },
+          { property: "og:url", content: `https://www.luxeonair.com/destinations/${params.slug}` },
+          { name: "twitter:title", content: `${loaderData.name} Holidays | Luxe on Air` },
+          { name: "twitter:description", content: `${loaderData.tagline}. From £${loaderData.fromPrice}pp for ${loaderData.durationNights} nights. ATOL protected.` },
           { name: "twitter:image", content: loaderData.heroImage },
         ]
       : [],
-    links: [{ rel: "canonical", href: `/destinations/${params.slug}` }],
+    links: [{ rel: "canonical", href: `https://www.luxeonair.com/destinations/${params.slug}` }],
     scripts: loaderData
       ? [{
           type: "application/ld+json",
           children: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "TouristTrip",
-            name: loaderData.name,
-            description: loaderData.tagline,
-            image: loaderData.heroImage,
-            offers: { "@type": "Offer", priceCurrency: "GBP", price: loaderData.fromPrice, availability: "https://schema.org/InStock" },
+            "@id": `https://www.luxeonair.com/destinations/${params.slug}`,
+            "name": `${loaderData.name} Holiday`,
+            "description": loaderData.tagline,
+            "image": loaderData.heroImage,
+            "touristType": loaderData.tripType,
+            "offers": {
+              "@type": "Offer",
+              "priceCurrency": "GBP",
+              "price": loaderData.fromPrice,
+              "priceSpecification": { "@type": "UnitPriceSpecification", "price": loaderData.fromPrice, "priceCurrency": "GBP", "unitText": "per person" },
+              "availability": "https://schema.org/InStock",
+              "validFrom": new Date().toISOString().split("T")[0],
+              "offeredBy": { "@id": "https://www.luxeonair.com/#organization" }
+            },
+            "provider": { "@id": "https://www.luxeonair.com/#organization" },
           }),
         }]
       : [],

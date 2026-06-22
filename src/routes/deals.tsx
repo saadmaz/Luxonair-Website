@@ -6,20 +6,17 @@ import { ArrowRight, Clock, Tag } from "lucide-react";
 export const Route = createFileRoute("/deals")({
   head: () => ({
     meta: [
-      { title: "Travel Deals & Offers - Luxe on Air" },
-      {
-        name: "description",
-        content:
-          "Limited-availability holiday and flight deals from the UK. Indicative pricing - confirmed at quote stage.",
-      },
-      { property: "og:title", content: "Travel Deals & Offers - Luxe on Air" },
-      {
-        property: "og:description",
-        content: "Hand-picked, limited-availability deals from UK departure airports.",
-      },
-      { property: "og:url", content: "/deals" },
+      { title: "Holiday Deals & Exclusive Travel Offers | Luxe on Air" },
+      { name: "description", content: "Hand-picked flight and holiday deals from UK airports. Limited availability — prices confirmed by a consultant at quote stage. Business class, beach and family deals updated regularly." },
+      { name: "robots", content: "index, follow" },
+      { property: "og:title", content: "Holiday Deals & Exclusive Travel Offers | Luxe on Air" },
+      { property: "og:description", content: "Curated UK-departing deals — limited availability. Business class, beach and family holidays confirmed by a real consultant." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.luxeonair.com/deals" },
+      { name: "twitter:title", content: "Holiday Deals & Exclusive Offers | Luxe on Air" },
+      { name: "twitter:description", content: "Hand-picked UK-departing deals. Limited availability. Business class, beach and family. Confirmed by a consultant." },
     ],
-    links: [{ rel: "canonical", href: "/deals" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.com/deals" }],
   }),
   component: DealsPage,
 });

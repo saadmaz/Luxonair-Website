@@ -15,21 +15,17 @@ import {
 export const Route = createFileRoute("/holidays")({
   head: () => ({
     meta: [
-      { title: "Tailor-Made Holidays from the UK - Luxe on Air" },
-      {
-        name: "description",
-        content:
-          "Beach, honeymoon, family, luxury and city break holidays from the UK. One consultant builds and manages your entire trip - quote within 4 working hours.",
-      },
-      { property: "og:title", content: "Tailor-Made Holidays - Luxe on Air" },
-      {
-        property: "og:description",
-        content:
-          "Premium tailor-made holidays from the UK. Beach, family, honeymoon, luxury and more. A real consultant - not a call centre.",
-      },
-      { property: "og:url", content: "/holidays" },
+      { title: "Bespoke Tailor-Made Holidays from the UK | Luxe on Air" },
+      { name: "description", content: "Every holiday built around your brief — not a template. Beach, family, honeymoon, luxury and adventure from the UK. One consultant handles everything from quote to return gate." },
+      { name: "robots", content: "index, follow" },
+      { property: "og:title", content: "Bespoke Tailor-Made Holidays from the UK | Luxe on Air" },
+      { property: "og:description", content: "Beach, family, honeymoon, luxury & adventure — built around your brief. One consultant, ATOL protected, departing UK airports." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.luxeonair.com/holidays" },
+      { name: "twitter:title", content: "Tailor-Made Holidays from the UK | Luxe on Air" },
+      { name: "twitter:description", content: "Every holiday built around your brief. Beach, family, honeymoon or adventure. One consultant handles everything." },
     ],
-    links: [{ rel: "canonical", href: "/holidays" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.com/holidays" }],
   }),
   component: HolidaysPage,
 });

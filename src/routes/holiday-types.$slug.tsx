@@ -12,17 +12,22 @@ export const Route = createFileRoute("/holiday-types/$slug")({
     return h;
   },
   head: ({ loaderData, params }) => {
-    if (!loaderData) return { meta: [{ title: "Holiday type - Luxe on Air" }] };
+    if (!loaderData) return { meta: [{ title: "Holiday Type | Luxe on Air" }] };
     return {
       meta: [
-        { title: `${loaderData.name} holidays from the UK - Luxe on Air` },
-        { name: "description", content: `${loaderData.name} holidays: ${loaderData.tagline} ${loaderData.summary}` },
-        { property: "og:title", content: `${loaderData.name} holidays - Luxe on Air` },
-        { property: "og:description", content: loaderData.tagline },
+        { title: `${loaderData.name} Holidays from the UK | Tailor-Made | Luxe on Air` },
+        { name: "description", content: `${loaderData.tagline}. Handcrafted ${loaderData.name.toLowerCase()} holidays departing the UK — ATOL protected, one dedicated consultant from first quote to return gate.` },
+        { name: "robots", content: "index, follow" },
+        { property: "og:title", content: `${loaderData.name} Holidays from the UK | Luxe on Air` },
+        { property: "og:description", content: `${loaderData.tagline}. Tailor-made, ATOL protected, departing UK airports.` },
         { property: "og:image", content: loaderData.heroImage },
-        { property: "og:url", content: `/holiday-types/${params.slug}` },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: `https://www.luxeonair.com/holiday-types/${params.slug}` },
+        { name: "twitter:title", content: `${loaderData.name} Holidays | Luxe on Air` },
+        { name: "twitter:description", content: `${loaderData.tagline}. Tailor-made from the UK, ATOL protected.` },
+        { name: "twitter:image", content: loaderData.heroImage },
       ],
-      links: [{ rel: "canonical", href: `/holiday-types/${params.slug}` }],
+      links: [{ rel: "canonical", href: `https://www.luxeonair.com/holiday-types/${params.slug}` }],
     };
   },
   component: HolidayTypePage,

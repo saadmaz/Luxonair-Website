@@ -7,16 +7,19 @@ import { SITE } from "@/config/site";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact Luxe on Air - Phone, WhatsApp & UK office" },
-      {
-        name: "description",
-        content:
-          "Speak directly to a UK travel consultant. Phone, WhatsApp, email, or visit our London office. No queue, no call centre.",
-      },
-      { property: "og:title", content: "Contact Luxe on Air" },
-      { property: "og:url", content: "/contact" },
+      { title: "Contact Our London Travel Team | Luxe on Air" },
+      { name: "description", content: "Speak directly with a named UK travel consultant — no queue, no call centre. Call +44 7577 002702, WhatsApp, or email hello@luxeonair.com. We reply within 4 working hours." },
+      { name: "robots", content: "index, follow" },
+      { property: "og:title", content: "Contact Luxe on Air | Speak to a UK Travel Consultant" },
+      { property: "og:description", content: "Phone, WhatsApp or email a named consultant in London. No queues. No call centres. Reply within 4 working hours, Mon–Fri." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.luxeonair.com/contact" },
+      { name: "twitter:title", content: "Contact Luxe on Air | UK Travel Consultants" },
+      { name: "twitter:description", content: "Call, WhatsApp or email a named London travel consultant. No queues. Reply within 4 working hours." },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [
+      { rel: "canonical", href: "https://www.luxeonair.com/contact" },
+    ],
   }),
   component: ContactPage,
 });

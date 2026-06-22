@@ -63,11 +63,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Luxe on Air - UK travel specialists for premium long-haul, family & corporate trips" },
-      { name: "description", content: "UK-based travel agency specialising in tailor-made long-haul, family escapes and corporate trips. Get a structured quote in minutes - a consultant replies within 4 working hours." },
+      { title: "Luxe on Air | Tailor-Made Luxury Travel from the UK" },
+      { name: "description", content: "London luxury travel agency specialising in bespoke long-haul holidays, family escapes and corporate trips. ATOL & ABTA protected. A consultant replies to every quote within 4 hours." },
       { name: "author", content: "Luxe on Air" },
+      { name: "robots", content: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" },
       { property: "og:site_name", content: "Luxe on Air" },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "en_GB" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#042045" },
     ],
@@ -78,16 +80,80 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preload", as: "style", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" },
       { rel: "icon", href: "/Favicon.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/Logo/Main%20Logo.png" },
     ],
     scripts: [
       {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "TravelAgency",
-          name: "Luxe on Air",
-          areaServed: "United Kingdom",
-          description: "UK travel specialists for premium long-haul, family escapes and corporate trips.",
+          "@graph": [
+            {
+              "@type": "TravelAgency",
+              "@id": "https://www.luxeonair.com/#organization",
+              "name": "Luxe on Air",
+              "url": "https://www.luxeonair.com",
+              "logo": "https://www.luxeonair.com/Logo/Main%20Logo.png",
+              "description": "London-based luxury travel agency crafting bespoke long-haul holidays, family escapes and corporate travel programmes from the UK. ATOL and ABTA protected. One dedicated consultant per trip.",
+              "telephone": "+447577002702",
+              "email": "hello@luxeonair.com",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "London",
+                "addressCountry": "GB"
+              },
+              "areaServed": { "@type": "Country", "name": "United Kingdom" },
+              "openingHoursSpecification": [
+                {
+                  "@type": "OpeningHoursSpecification",
+                  "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+                  "opens": "09:00",
+                  "closes": "19:00"
+                }
+              ],
+              "priceRange": "£££",
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "reviewCount": "6",
+                "bestRating": "5",
+                "worstRating": "1"
+              },
+              "knowsAbout": [
+                "Long-haul holidays",
+                "Luxury travel",
+                "Corporate travel management",
+                "Family holidays",
+                "Honeymoon travel",
+                "Business class flights",
+                "Maldives holidays",
+                "Dubai holidays",
+                "ATOL protected travel"
+              ],
+              "hasCredential": [
+                { "@type": "EducationalOccupationalCredential", "name": "ATOL Protected" },
+                { "@type": "EducationalOccupationalCredential", "name": "ABTA Member" },
+                { "@type": "EducationalOccupationalCredential", "name": "IATA Accredited" }
+              ]
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://www.luxeonair.com/#website",
+              "url": "https://www.luxeonair.com",
+              "name": "Luxe on Air",
+              "description": "Tailor-made luxury travel from the UK",
+              "publisher": { "@id": "https://www.luxeonair.com/#organization" },
+              "inLanguage": "en-GB",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://www.luxeonair.com/destinations?q={search_term_string}"
+                },
+                "query-input": "required name=search_term_string"
+              }
+            }
+          ]
         }),
       },
     ],

@@ -5,16 +5,17 @@ import { ArrowRight, Clock } from "lucide-react";
 export const Route = createFileRoute("/blog/")({
   head: () => ({
     meta: [
-      { title: "Travel Guides & News - Luxe on Air Blog" },
-      {
-        name: "description",
-        content:
-          "Field-tested travel guides, corporate-travel essays, and destination notes from the Luxe on Air team.",
-      },
-      { property: "og:title", content: "Luxe on Air Blog" },
-      { property: "og:url", content: "/blog" },
+      { title: "Travel Journal | Expert Guides & Destination Notes | Luxe on Air" },
+      { name: "description", content: "Insider guides, destination notes and corporate travel essays from consultants who fly the routes they sell. Maldives timing, business class tips, family travel and more." },
+      { name: "robots", content: "index, follow" },
+      { property: "og:title", content: "Travel Journal | Expert Guides & Destination Notes | Luxe on Air" },
+      { property: "og:description", content: "Field-tested destination guides and corporate travel essays from consultants who fly the routes they sell." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.luxeonair.com/blog" },
+      { name: "twitter:title", content: "Luxe on Air Travel Journal | Expert Guides & Notes" },
+      { name: "twitter:description", content: "Destination guides, business class tips and family travel notes from consultants who fly the routes they sell." },
     ],
-    links: [{ rel: "canonical", href: "/blog" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.com/blog" }],
   }),
   component: BlogIndex,
 });

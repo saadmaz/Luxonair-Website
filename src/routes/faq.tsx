@@ -5,12 +5,17 @@ import { SITE } from "@/config/site";
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: "FAQ - Luxe on Air Help Centre" },
-      { name: "description", content: "Answers to common questions about quotes, ATOL protection, payments and 24/7 support." },
-      { property: "og:title", content: "FAQ - Luxe on Air Help Centre" },
-      { property: "og:url", content: "/faq" },
+      { title: "FAQs | ATOL Protection, Quotes & How We Work | Luxe on Air" },
+      { name: "description", content: "Everything you need to know before booking. How quotes work, ATOL protection, deposit requirements, payment methods and 24/7 in-trip support — answered plainly." },
+      { name: "robots", content: "index, follow" },
+      { property: "og:title", content: "Frequently Asked Questions | Luxe on Air Help Centre" },
+      { property: "og:description", content: "Answers about ATOL protection, how quotes work, deposits, payments and in-trip support." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.luxeonair.com/faq" },
+      { name: "twitter:title", content: "FAQs | Luxe on Air Help Centre" },
+      { name: "twitter:description", content: "ATOL protection, how quotes work, deposits, payment methods and 24/7 support — all answered." },
     ],
-    links: [{ rel: "canonical", href: "/faq" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.com/faq" }],
     scripts: [{
       type: "application/ld+json",
       children: JSON.stringify({

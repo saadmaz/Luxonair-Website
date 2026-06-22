@@ -21,13 +21,17 @@ export const Route = createFileRoute("/quote")({
   }),
   head: () => ({
     meta: [
-      { title: "Get a quote - Luxe on Air" },
-      { name: "description", content: "Four short steps. A Luxe on Air consultant replies within 4 working hours, Mon–Fri 09:00–19:00 GMT. No spam." },
-      { property: "og:title", content: "Get a quote - Luxe on Air" },
-      { property: "og:description", content: "Structured 4-step quote. A consultant replies within 4 working hours." },
-      { property: "og:url", content: "/quote" },
+      { title: "Get a Free Holiday Quote | 4 Steps | Luxe on Air" },
+      { name: "description", content: "Four quick steps. A dedicated UK travel consultant reviews your brief and replies within 4 working hours, Mon–Fri 09:00–19:00 GMT. ATOL protected. No obligation, no spam." },
+      { name: "robots", content: "index, follow" },
+      { property: "og:title", content: "Get a Free Holiday Quote | Luxe on Air" },
+      { property: "og:description", content: "Four quick steps. A UK consultant replies within 4 working hours. ATOL protected. No obligation, no spam." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.luxeonair.com/quote" },
+      { name: "twitter:title", content: "Get a Free Holiday Quote | Luxe on Air" },
+      { name: "twitter:description", content: "Four quick steps. A UK consultant replies within 4 hours. ATOL protected. No obligation." },
     ],
-    links: [{ rel: "canonical", href: "/quote" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.com/quote" }],
   }),
   component: QuotePage,
 });

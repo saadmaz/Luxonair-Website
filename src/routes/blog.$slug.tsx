@@ -8,28 +8,47 @@ export const Route = createFileRoute("/blog/$slug")({
     return p;
   },
   head: ({ loaderData, params }) => {
-    if (!loaderData) return { meta: [{ title: "Article - Luxe on Air" }] };
+    if (!loaderData) return { meta: [{ title: "Article | Luxe on Air Travel Journal" }] };
     return {
       meta: [
-        { title: `${loaderData.title} - Luxe on Air` },
+        { title: `${loaderData.title} | Luxe on Air` },
         { name: "description", content: loaderData.excerpt },
+        { name: "robots", content: "index, follow" },
         { property: "og:title", content: loaderData.title },
         { property: "og:description", content: loaderData.excerpt },
         { property: "og:image", content: loaderData.heroImage },
         { property: "og:type", content: "article" },
-        { property: "og:url", content: `/blog/${params.slug}` },
+        { property: "og:url", content: `https://www.luxeonair.com/blog/${params.slug}` },
+        { name: "twitter:title", content: loaderData.title },
+        { name: "twitter:description", content: loaderData.excerpt },
+        { name: "twitter:image", content: loaderData.heroImage },
       ],
-      links: [{ rel: "canonical", href: `/blog/${params.slug}` }],
+      links: [{ rel: "canonical", href: `https://www.luxeonair.com/blog/${params.slug}` }],
       scripts: [{
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Article",
-          headline: loaderData.title,
-          description: loaderData.excerpt,
-          image: loaderData.heroImage,
-          author: { "@type": "Organization", name: loaderData.author },
-          datePublished: loaderData.date,
+          "@id": `https://www.luxeonair.com/blog/${params.slug}`,
+          "headline": loaderData.title,
+          "description": loaderData.excerpt,
+          "image": loaderData.heroImage,
+          "author": {
+            "@type": "Organization",
+            "name": loaderData.author,
+            "@id": "https://www.luxeonair.com/#organization"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Luxe on Air",
+            "@id": "https://www.luxeonair.com/#organization",
+            "logo": { "@type": "ImageObject", "url": "https://www.luxeonair.com/Logo/Main%20Logo.png" }
+          },
+          "datePublished": loaderData.date,
+          "dateModified": loaderData.date,
+          "mainEntityOfPage": { "@type": "WebPage", "@id": `https://www.luxeonair.com/blog/${params.slug}` },
+          "inLanguage": "en-GB",
+          "keywords": loaderData.category,
         }),
       }],
     };
