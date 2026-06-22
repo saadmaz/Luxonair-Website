@@ -48,9 +48,14 @@ export function Header() {
           {/* Logo */}
           <Link to="/" className="flex shrink-0 items-center">
             <img
-              src="/Luxeonair-logo-withoutbg.png"
+              src="/Logo/Black%20Logo.png"
               alt="Luxe on Air"
-              className="h-10 w-auto dark:brightness-0 dark:invert"
+              className="h-10 w-auto dark:hidden"
+            />
+            <img
+              src="/Logo/White%20Logo.png"
+              alt="Luxe on Air"
+              className="hidden h-10 w-auto dark:block"
             />
           </Link>
 

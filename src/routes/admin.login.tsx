@@ -39,9 +39,9 @@ function AdminLoginPage() {
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center gap-4">
           <img
-            src="/Luxeonair-logo-withoutbg.png"
+            src="/Logo/White%20Logo.png"
             alt="Luxe on Air"
-            className="h-10 w-auto brightness-0 invert opacity-90"
+            className="h-10 w-auto opacity-90"
           />
           <div className="text-center">
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/30">

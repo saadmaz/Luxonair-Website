@@ -23,9 +23,9 @@ export function Footer() {
         <div className="lg:col-span-2">
           <Link to="/" className="flex items-center">
             <img
-              src="/Luxeonair-logo-withoutbg.png"
+              src="/Logo/Yellow%20Logo.png"
               alt="Luxe on Air"
-              className="h-10 w-auto brightness-0 invert"
+              className="h-10 w-auto"
             />
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-navy-fg/60">
