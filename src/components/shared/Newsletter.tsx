@@ -66,9 +66,9 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
 
   return (
     <div>
-      <h4 className="text-sm font-semibold">Newsletter</h4>
-      <p className="mt-3 text-sm text-muted-foreground">Two emails a month. Trip ideas and deals. Unsubscribe any time.</p>
-      <NewsletterForm email={email} setEmail={setEmail} done={done} submitting={submitting} error={error} onSubmit={handleSubmit} />
+      <h4 className="text-sm font-semibold text-navy-fg">Newsletter</h4>
+      <p className="mt-1.5 text-xs leading-relaxed text-navy-fg/50">Two emails a month. Trip ideas and deals. Unsubscribe any time.</p>
+      <NewsletterForm email={email} setEmail={setEmail} done={done} submitting={submitting} error={error} onSubmit={handleSubmit} dark />
     </div>
   );
 }
@@ -92,30 +92,30 @@ function NewsletterForm({
     );
   }
   return (
-    <form onSubmit={onSubmit} className={`flex flex-col gap-2 sm:flex-row${dark ? "" : " mt-4"}`}>
-      <label className="relative flex-1">
-        <Mail className={`pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${dark ? "text-navy-fg/60" : "text-muted-foreground"}`} />
+    <form onSubmit={onSubmit} className={`flex flex-col gap-2${dark ? " mt-3" : " mt-4"}`}>
+      <label className="relative">
+        <Mail className={`pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${dark ? "text-gold/70" : "text-muted-foreground"}`} />
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-          className={`h-11 w-full rounded-md pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring ${
+          placeholder="Enter your email address"
+          className={`h-11 w-full rounded-md pl-10 pr-4 text-sm transition-colors focus:outline-none focus:ring-2 ${
             dark
-              ? "border border-navy-fg/30 bg-navy-fg/10 text-navy-fg placeholder:text-navy-fg/50"
-              : "border border-input bg-background"
+              ? "border border-white/10 bg-white/5 text-navy-fg placeholder:text-navy-fg/35 focus:border-gold/50 focus:ring-gold/20 hover:border-white/20"
+              : "border border-input bg-background focus:ring-ring"
           }`}
         />
       </label>
       <button
         type="submit"
         disabled={submitting}
-        className={`h-11 rounded-md px-4 text-sm font-medium transition-colors disabled:opacity-60 ${
-          dark ? "bg-gold text-gold-foreground hover:bg-gold/90" : "bg-primary text-primary-foreground hover:bg-primary/90"
+        className={`h-11 w-full rounded-md text-sm font-semibold tracking-wide transition-colors disabled:opacity-60 ${
+          dark ? "bg-gold text-[#0a0a0a] hover:bg-gold/90" : "bg-primary text-primary-foreground hover:bg-primary/90"
         }`}
       >
-        {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Subscribe"}
+        {submitting ? <Loader2 className="mx-auto h-4 w-4 animate-spin" /> : "Subscribe"}
       </button>
       {error && <p className={`text-xs ${dark ? "text-navy-fg/70" : "text-destructive"}`}>{error}</p>}
     </form>
