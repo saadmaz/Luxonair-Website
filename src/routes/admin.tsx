@@ -150,7 +150,7 @@ function AdminLayoutRoute() {
         )}>
           {/* Logo — hidden in collapsed desktop mode */}
           <img
-            src="/Logo/White%20Logo.png"
+            src="/Logo/Main%20Logo.png"
             alt="Luxe on Air"
             className={cn(
               "h-7 w-auto opacity-90 transition-all duration-300",
