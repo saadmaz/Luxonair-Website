@@ -50,7 +50,7 @@ export function Header() {
             <img
               src="/Logo/Main%20Logo.png"
               alt="Luxe on Air"
-              className="h-10 w-auto"
+              className="h-16 w-auto"
             />
           </Link>
 
