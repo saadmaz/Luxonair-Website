@@ -79,7 +79,7 @@ function PackageForm() {
       <Field label="Depart">
         <input name="depart" type="date" className="input-field" />
       </Field>
-      <Field label="Return (optional)">
+      <Field label="Return">
         <input name="return" type="date" className="input-field" />
       </Field>
       <Field label="Travellers">
