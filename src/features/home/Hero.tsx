@@ -18,9 +18,14 @@ export function Hero() {
           fetchPriority="high"
           className="absolute inset-0 h-full w-full scale-110 object-cover object-center"
         />
-        <div className="absolute inset-0 bg-linear-to-b from-navy/98 via-navy/85 to-navy/65" />
-        <div className="absolute -bottom-40 -right-40 h-[700px] w-[700px] rounded-full bg-gold/8 blur-[130px]" />
-        <div className="absolute left-0 top-1/2 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-teal/6 blur-[120px]" />
+        {/* Left-to-right: text side stays readable, image breathes on the right */}
+        <div className="absolute inset-0 bg-linear-to-r from-navy/90 via-navy/60 to-navy/20" />
+        {/* Subtle top scrim so the eyebrow text has contrast */}
+        <div className="absolute inset-x-0 top-0 h-32 bg-linear-to-b from-navy/50 to-transparent" />
+        {/* Bottom scrim for the search widget */}
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-navy/55 to-transparent" />
+        <div className="absolute -bottom-40 -right-40 h-[700px] w-[700px] rounded-full bg-gold/10 blur-[140px]" />
+        <div className="absolute left-0 top-1/2 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-teal/8 blur-[120px]" />
         <div className="absolute inset-y-0 left-0 w-0.5 bg-linear-to-b from-transparent via-teal/50 to-transparent" />
       </div>
 
