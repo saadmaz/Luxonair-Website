@@ -48,7 +48,7 @@ export function Footer() {
             <a href="https://www.caa.co.uk/atol-protection/" target="_blank" rel="noopener noreferrer"
               className="rounded-lg bg-white px-3 py-2 transition-opacity hover:opacity-80">
               <img
-                src="https://iconape.com/wp-content/png_logo_vector/atol-protected-logo.png"
+                src="/Logo/atol-logo.png"
                 alt="ATOL Protected"
                 className="h-8 w-auto"
               />
@@ -56,7 +56,7 @@ export function Footer() {
             <a href="https://www.iata.org" target="_blank" rel="noopener noreferrer"
               className="rounded-lg bg-white px-3 py-2 transition-opacity hover:opacity-80">
               <img
-                src="https://brandslogos.com/wp-content/uploads/images/large/iata-logo.png"
+                src="/Logo/iata-logo.png"
                 alt="IATA"
                 className="h-8 w-auto"
               />

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Award, Briefcase, Building2, Globe2, ShieldCheck, Users } from "lucide-react";
+import { Award, Briefcase, Building2, Globe2, Users } from "lucide-react";
 import { SITE } from "@/config/site";
 
 export const Route = createFileRoute("/about")({
@@ -98,24 +98,39 @@ function AboutPage() {
           <p className="mt-3 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
             Our recognised industry credentials reflect our commitment to providing secure, reliable, and exceptional travel experiences.
           </p>
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            {[
-              { key: "ATOL", number: SITE.accreditation.atol, desc: "Flight & package protection" },
-              { key: "IATA", number: SITE.accreditation.iata, desc: "International airline ticketing" },
-            ].map(({ key, number, desc }) => (
-              <div
-                key={key}
-                className="flex items-center gap-4 rounded-2xl border border-navy-fg/15 bg-navy-fg/5 p-6"
-              >
-                <ShieldCheck className="h-8 w-8 shrink-0 text-gold" />
-                <div>
-                  <div className="font-semibold text-navy-fg">{key}</div>
-                  <div className="text-xs text-navy-fg/50">
-                    {number ? `№ ${number}` : desc}
-                  </div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <a
+              href="https://www.caa.co.uk/atol-protection/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-5 rounded-2xl border border-navy-fg/15 bg-navy-fg/5 p-6 transition-colors hover:border-gold/40"
+            >
+              <div className="shrink-0 rounded-xl bg-white px-3 py-2">
+                <img src="/Logo/atol-logo.png" alt="ATOL Protected" className="h-10 w-auto" />
+              </div>
+              <div>
+                <div className="font-semibold text-navy-fg">ATOL Protected</div>
+                <div className="text-xs text-navy-fg/50">
+                  {SITE.accreditation.atol ? `№ ${SITE.accreditation.atol}` : "Flight & package protection"}
                 </div>
               </div>
-            ))}
+            </a>
+            <a
+              href="https://www.iata.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-5 rounded-2xl border border-navy-fg/15 bg-navy-fg/5 p-6 transition-colors hover:border-gold/40"
+            >
+              <div className="shrink-0 rounded-xl bg-white px-3 py-2">
+                <img src="/Logo/iata-logo.png" alt="IATA" className="h-10 w-auto" />
+              </div>
+              <div>
+                <div className="font-semibold text-navy-fg">IATA Accredited</div>
+                <div className="text-xs text-navy-fg/50">
+                  {SITE.accreditation.iata ? `№ ${SITE.accreditation.iata}` : "International airline ticketing"}
+                </div>
+              </div>
+            </a>
           </div>
         </div>
       </section>
