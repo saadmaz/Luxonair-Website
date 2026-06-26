@@ -34,7 +34,6 @@ export const SITE = {
   accreditation: {
     // Set to real membership numbers when available
     atol: "",   // TODO: ATOL membership number
-    abta: "",   // TODO: ABTA membership number
     iata: "",   // TODO: IATA code
   },
 

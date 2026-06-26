@@ -45,7 +45,7 @@ export function Footer() {
 
           {/* Accreditation badges */}
           <div className="mt-6 flex flex-wrap gap-2">
-            {["ATOL", "ABTA", "IATA"].map((badge) => (
+            {["ATOL", "IATA"].map((badge) => (
               <span
                 key={badge}
                 className="rounded border border-navy-fg/20 px-2.5 py-1 text-xs font-semibold tracking-wider text-navy-fg/50"

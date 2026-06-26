@@ -7,14 +7,14 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About Us | London's Premium Travel Consultants | Luxe on Air" },
-      { name: "description", content: "500+ trips. 78% repeat clients. 8 years based in London. Ex-airline consultants — ATOL, ABTA & IATA accredited. One named consultant manages your trip from first quote to return gate." },
+      { name: "description", content: "500+ trips. 78% repeat clients. 8 years based in London. Ex-airline consultants — ATOL & IATA accredited. One named consultant manages your trip from first quote to return gate." },
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "About Luxe on Air | London's Premium Travel Consultants" },
-      { property: "og:description", content: "500+ bespoke trips. 78% repeat clients. Ex-airline team, ATOL & ABTA protected, based in London. One consultant. End-to-end." },
+      { property: "og:description", content: "500+ bespoke trips. 78% repeat clients. Ex-airline team, ATOL protected, based in London. One consultant. End-to-end." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.com/about" },
       { name: "twitter:title", content: "About Luxe on Air | London's Premium Travel Consultants" },
-      { name: "twitter:description", content: "500+ trips. 78% repeat clients. Ex-airline consultants, ATOL & ABTA protected, based in London." },
+      { name: "twitter:description", content: "500+ trips. 78% repeat clients. Ex-airline consultants, ATOL protected, based in London." },
     ],
     links: [{ rel: "canonical", href: "https://www.luxeonair.com/about" }],
   }),
@@ -96,7 +96,6 @@ function AboutPage() {
           </h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
-              { key: "ABTA", number: SITE.accreditation.abta, desc: "Travel agent bonding" },
               { key: "ATOL", number: SITE.accreditation.atol, desc: "Flight & package protection" },
               { key: "IATA", number: SITE.accreditation.iata, desc: "International airline ticketing" },
             ].map(({ key, number, desc }) => (

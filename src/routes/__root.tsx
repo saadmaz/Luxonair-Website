@@ -64,7 +64,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Luxe on Air | Tailor-Made Luxury Travel from the UK" },
-      { name: "description", content: "London luxury travel agency specialising in bespoke long-haul holidays, family escapes and corporate trips. ATOL & ABTA protected. A consultant replies to every quote within 4 hours." },
+      { name: "description", content: "London luxury travel agency specialising in bespoke long-haul holidays, family escapes and corporate trips. ATOL protected. A consultant replies to every quote within 4 hours." },
       { name: "author", content: "Luxe on Air" },
       { name: "robots", content: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" },
       { property: "og:site_name", content: "Luxe on Air" },
@@ -94,7 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "name": "Luxe on Air",
               "url": "https://www.luxeonair.com",
               "logo": "https://www.luxeonair.com/Logo/Main%20Logo.png",
-              "description": "London-based luxury travel agency crafting bespoke long-haul holidays, family escapes and corporate travel programmes from the UK. ATOL and ABTA protected. One dedicated consultant per trip.",
+              "description": "London-based luxury travel agency crafting bespoke long-haul holidays, family escapes and corporate travel programmes from the UK. ATOL protected. One dedicated consultant per trip.",
               "telephone": "+447448009739",
               "email": "info@luxeonair.co.uk",
               "address": {
@@ -138,7 +138,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               ],
               "hasCredential": [
                 { "@type": "EducationalOccupationalCredential", "name": "ATOL Protected" },
-                { "@type": "EducationalOccupationalCredential", "name": "ABTA Member" },
                 { "@type": "EducationalOccupationalCredential", "name": "IATA Accredited" }
               ]
             },

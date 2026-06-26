@@ -19,10 +19,10 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Luxe on Air | Tailor-Made Luxury Holidays & Corporate Travel from the UK" },
-      { name: "description", content: "Bespoke long-haul holidays, family escapes and corporate trips built by London consultants who know every route. ATOL & ABTA protected. Quote replied to within 4 working hours." },
+      { name: "description", content: "Bespoke long-haul holidays, family escapes and corporate trips built by London consultants who know every route. ATOL protected. Quote replied to within 4 working hours." },
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Luxe on Air | Tailor-Made Luxury Travel from the UK" },
-      { property: "og:description", content: "Bespoke long-haul holidays, family escapes and corporate trips from the UK. One consultant. ATOL & ABTA protected. Quote in minutes." },
+      { property: "og:description", content: "Bespoke long-haul holidays, family escapes and corporate trips from the UK. One consultant. ATOL protected. Quote in minutes." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.com/" },
       { name: "twitter:title", content: "Luxe on Air | Tailor-Made Luxury Travel from the UK" },
