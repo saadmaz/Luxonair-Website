@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Plus, Pencil, Trash2, Clock } from "lucide-react";
 import { blogPosts as initialPosts } from "@/data/blog";
@@ -22,7 +22,7 @@ const categoryColors: Record<string, string> = {
   Family: "bg-amber-50 text-amber-700", Destinations: "bg-emerald-50 text-emerald-700", News: "bg-gray-100 text-gray-600",
 };
 
-const emptyForm = { slug: "", title: "", excerpt: "", category: "Guides", author: "Luxe on Air Editorial", date: new Date().toISOString().slice(0, 10), readMinutes: 5, heroImage: "" };
+const emptyForm = { slug: "", title: "", excerpt: "", category: "Guides", author: "Luxeonair Editorial", date: new Date().toISOString().slice(0, 10), readMinutes: 5, heroImage: "" };
 
 function AdminBlogPage() {
   const [items, setItems] = useState<PostItem[]>(initialPosts.map(toItem));

@@ -1,18 +1,18 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { blogPosts } from "@/data/blog";
 import { ArrowRight, Clock } from "lucide-react";
 
 export const Route = createFileRoute("/blog/")({
   head: () => ({
     meta: [
-      { title: "Travel Journal | Expert Guides & Destination Notes | Luxe on Air" },
+      { title: "Travel Journal | Expert Guides & Destination Notes | Luxeonair" },
       { name: "description", content: "Insider guides, destination notes and corporate travel essays from consultants who fly the routes they sell. Maldives timing, business class tips, family travel and more." },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: "Travel Journal | Expert Guides & Destination Notes | Luxe on Air" },
+      { property: "og:title", content: "Travel Journal | Expert Guides & Destination Notes | Luxeonair" },
       { property: "og:description", content: "Field-tested destination guides and corporate travel essays from consultants who fly the routes they sell." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.com/blog" },
-      { name: "twitter:title", content: "Luxe on Air Travel Journal | Expert Guides & Notes" },
+      { name: "twitter:title", content: "Luxeonair Travel Journal | Expert Guides & Notes" },
       { name: "twitter:description", content: "Destination guides, business class tips and family travel notes from consultants who fly the routes they sell." },
     ],
     links: [{ rel: "canonical", href: "https://www.luxeonair.com/blog" }],
@@ -29,7 +29,7 @@ function BlogIndex() {
         <div className="container-page py-16 md:py-20">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Journal</p>
           <h1 className="mt-3 max-w-2xl font-display text-4xl font-semibold text-navy-fg sm:text-5xl text-balance">
-            Travel notes from the Luxe on Air desk.
+            Travel notes from the Luxeonair desk.
           </h1>
           <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
             Guides, essays, and field notes from consultants who fly the routes they sell.

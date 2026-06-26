@@ -1,11 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { User, Database, Settings, Share2, Globe, Clock, ShieldCheck, Cookie, Baby, RefreshCw, Phone } from "lucide-react";
 import { SITE } from "@/config/site";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy | Luxe on Air" },
+      { title: "Privacy Policy | Luxeonair" },
       { name: "description", content: "How Luxeonair LTD collects, uses and protects your personal data in line with UK GDPR. Learn what we collect, why we collect it, and your rights." },
       { name: "robots", content: "index, follow" },
     ],

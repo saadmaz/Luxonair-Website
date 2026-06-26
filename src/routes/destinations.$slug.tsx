@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+﻿import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { findDestination, destinations } from "@/data/destinations";
 import { Button } from "@/components/ui/button";
 import { QuoteForm } from "@/components/shared/QuoteForm";
@@ -15,15 +15,15 @@ export const Route = createFileRoute("/destinations/$slug")({
   head: ({ loaderData, params }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.name} Holidays from the UK | Luxe on Air` },
+          { title: `${loaderData.name} Holidays from the UK | Luxeonair` },
           { name: "description", content: `${loaderData.tagline}. From £${loaderData.fromPrice}pp for ${loaderData.durationNights} nights. Tailor-made itinerary, ATOL protected, built by a dedicated London consultant.` },
           { name: "robots", content: "index, follow" },
-          { property: "og:title", content: `${loaderData.name} Holidays from the UK | Luxe on Air` },
+          { property: "og:title", content: `${loaderData.name} Holidays from the UK | Luxeonair` },
           { property: "og:description", content: `${loaderData.tagline}. From £${loaderData.fromPrice}pp. Tailor-made, ATOL protected, departing UK airports.` },
           { property: "og:image", content: loaderData.heroImage },
           { property: "og:type", content: "article" },
           { property: "og:url", content: `https://www.luxeonair.com/destinations/${params.slug}` },
-          { name: "twitter:title", content: `${loaderData.name} Holidays | Luxe on Air` },
+          { name: "twitter:title", content: `${loaderData.name} Holidays | Luxeonair` },
           { name: "twitter:description", content: `${loaderData.tagline}. From £${loaderData.fromPrice}pp for ${loaderData.durationNights} nights. ATOL protected.` },
           { name: "twitter:image", content: loaderData.heroImage },
         ]

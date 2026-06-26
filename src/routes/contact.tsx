@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Clock, Loader2, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
@@ -7,14 +7,14 @@ import { SITE } from "@/config/site";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact Our London Travel Team | Luxe on Air" },
+      { title: "Contact Our London Travel Team | Luxeonair" },
       { name: "description", content: "Speak directly with a named UK travel consultant — no queue, no call centre. Call +44 7448 009739, WhatsApp, or email info@luxeonair.co.uk. We reply within 4 working hours." },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: "Contact Luxe on Air | Speak to a UK Travel Consultant" },
+      { property: "og:title", content: "Contact Luxeonair | Speak to a UK Travel Consultant" },
       { property: "og:description", content: "Phone, WhatsApp or email a named consultant in London. No queues. No call centres. Reply within 4 working hours, Mon–Fri." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.com/contact" },
-      { name: "twitter:title", content: "Contact Luxe on Air | UK Travel Consultants" },
+      { name: "twitter:title", content: "Contact Luxeonair | UK Travel Consultants" },
       { name: "twitter:description", content: "Call, WhatsApp or email a named London travel consultant. No queues. Reply within 4 working hours." },
     ],
     links: [
@@ -140,7 +140,7 @@ function ContactPage() {
             {/* Map */}
             <div className="overflow-hidden rounded-2xl border border-border shadow-sm">
               <iframe
-                title="Luxe on Air London office"
+                title="Luxeonair London office"
                 src="https://www.openstreetmap.org/export/embed.html?bbox=-0.1421%2C51.5045%2C-0.1186%2C51.5189&amp;layer=mapnik"
                 className="h-72 w-full"
                 loading="eager"

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { destinations, regions, tripTypes, budgetBands } from "@/data/destinations";
 import { DestinationCard } from "@/components/shared/DestinationCard";
@@ -7,14 +7,14 @@ import { SlidersHorizontal } from "lucide-react";
 export const Route = createFileRoute("/destinations/")({
   head: () => ({
     meta: [
-      { title: "Luxury Holiday Destinations from the UK | Luxe on Air" },
+      { title: "Luxury Holiday Destinations from the UK | Luxeonair" },
       { name: "description", content: "Explore Maldives, Dubai, Japan, Antigua, Santorini and beyond. Curated long-haul holidays departing the UK — tailor-made to your dates, budget and travel style. Filter by region and trip type." },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: "Luxury Holiday Destinations from the UK | Luxe on Air" },
+      { property: "og:title", content: "Luxury Holiday Destinations from the UK | Luxeonair" },
       { property: "og:description", content: "Maldives, Dubai, Japan, Antigua & more — tailor-made to your dates and budget. Departing UK airports." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.com/destinations" },
-      { name: "twitter:title", content: "Luxury Holiday Destinations | Luxe on Air" },
+      { name: "twitter:title", content: "Luxury Holiday Destinations | Luxeonair" },
       { name: "twitter:description", content: "Maldives, Dubai, Japan, Antigua & more. Bespoke UK-departing holidays filtered by region, type and budget." },
     ],
     links: [{ rel: "canonical", href: "https://www.luxeonair.com/destinations" }],

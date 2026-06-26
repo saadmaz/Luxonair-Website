@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { deals } from "@/data/deals";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock, Tag } from "lucide-react";
@@ -6,14 +6,14 @@ import { ArrowRight, Clock, Tag } from "lucide-react";
 export const Route = createFileRoute("/deals")({
   head: () => ({
     meta: [
-      { title: "Holiday Deals & Exclusive Travel Offers | Luxe on Air" },
+      { title: "Holiday Deals & Exclusive Travel Offers | Luxeonair" },
       { name: "description", content: "Hand-picked flight and holiday deals from UK airports. Limited availability — prices confirmed by a consultant at quote stage. Business class, beach and family deals updated regularly." },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: "Holiday Deals & Exclusive Travel Offers | Luxe on Air" },
+      { property: "og:title", content: "Holiday Deals & Exclusive Travel Offers | Luxeonair" },
       { property: "og:description", content: "Curated UK-departing deals — limited availability. Business class, beach and family holidays confirmed by a real consultant." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.com/deals" },
-      { name: "twitter:title", content: "Holiday Deals & Exclusive Offers | Luxe on Air" },
+      { name: "twitter:title", content: "Holiday Deals & Exclusive Offers | Luxeonair" },
       { name: "twitter:description", content: "Hand-picked UK-departing deals. Limited availability. Business class, beach and family. Confirmed by a consultant." },
     ],
     links: [{ rel: "canonical", href: "https://www.luxeonair.com/deals" }],

@@ -1,4 +1,4 @@
-// Sticky site header: announcement bar → main nav bar → mega-panel dropdowns → mobile drawer.
+﻿// Sticky site header: announcement bar → main nav bar → mega-panel dropdowns → mobile drawer.
 // Mega panels are shown on hover/focus (desktop) and dismissed on mouse-leave of the nav.
 // The mobile drawer is a full-width overlay toggled by the hamburger button.
 import { Link } from "@tanstack/react-router";
@@ -49,7 +49,7 @@ export function Header() {
           <Link to="/" className="flex shrink-0 items-center">
             <img
               src="/Logo/Main%20Logo.png"
-              alt="Luxe on Air"
+              alt="Luxeonair"
               className="h-16 w-auto"
             />
           </Link>

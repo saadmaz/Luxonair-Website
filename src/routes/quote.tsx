@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { QuoteForm } from "@/components/shared/QuoteForm";
 import { Clock, MessageCircle, Phone, ShieldCheck } from "lucide-react";
 import { SITE } from "@/config/site";
@@ -21,14 +21,14 @@ export const Route = createFileRoute("/quote")({
   }),
   head: () => ({
     meta: [
-      { title: "Get a Free Holiday Quote | 4 Steps | Luxe on Air" },
+      { title: "Get a Free Holiday Quote | 4 Steps | Luxeonair" },
       { name: "description", content: "Four quick steps. A dedicated UK travel consultant reviews your brief and replies within 4 working hours. Mon–Fri 09:00–18:00, Sat–Sun 10:00–17:00 GMT. ATOL protected. No obligation, no spam." },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: "Get a Free Holiday Quote | Luxe on Air" },
+      { property: "og:title", content: "Get a Free Holiday Quote | Luxeonair" },
       { property: "og:description", content: "Four quick steps. A UK consultant replies within 4 working hours. ATOL protected. No obligation, no spam." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.com/quote" },
-      { name: "twitter:title", content: "Get a Free Holiday Quote | Luxe on Air" },
+      { name: "twitter:title", content: "Get a Free Holiday Quote | Luxeonair" },
       { name: "twitter:description", content: "Four quick steps. A UK consultant replies within 4 hours. ATOL protected. No obligation." },
     ],
     links: [{ rel: "canonical", href: "https://www.luxeonair.com/quote" }],

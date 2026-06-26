@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+﻿import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { findPost } from "@/data/blog";
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -8,10 +8,10 @@ export const Route = createFileRoute("/blog/$slug")({
     return p;
   },
   head: ({ loaderData, params }) => {
-    if (!loaderData) return { meta: [{ title: "Article | Luxe on Air Travel Journal" }] };
+    if (!loaderData) return { meta: [{ title: "Article | Luxeonair Travel Journal" }] };
     return {
       meta: [
-        { title: `${loaderData.title} | Luxe on Air` },
+        { title: `${loaderData.title} | Luxeonair` },
         { name: "description", content: loaderData.excerpt },
         { name: "robots", content: "index, follow" },
         { property: "og:title", content: loaderData.title },
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/blog/$slug")({
           },
           "publisher": {
             "@type": "Organization",
-            "name": "Luxe on Air",
+            "name": "Luxeonair",
             "@id": "https://www.luxeonair.com/#organization",
             "logo": { "@type": "ImageObject", "url": "https://www.luxeonair.com/Logo/Main%20Logo.png" }
           },

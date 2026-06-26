@@ -1,4 +1,4 @@
-// Site footer: brand column, explore links, company links, contact + newsletter.
+﻿// Site footer: brand column, explore links, company links, contact + newsletter.
 // Social icons are only rendered when a URL is configured in SITE.social -
 // filtering out empty strings keeps the footer clean during pre-launch.
 import { Link } from "@tanstack/react-router";
@@ -24,7 +24,7 @@ export function Footer() {
           <Link to="/" className="flex items-center">
             <img
               src="/Logo/White%20Logo.png"
-              alt="Luxe on Air"
+              alt="Luxeonair"
               className="h-10 w-auto"
             />
           </Link>
@@ -158,7 +158,7 @@ export function Footer() {
       <div className="border-t border-navy-fg/10">
         <div className="container-page flex flex-col items-start justify-between gap-2 py-5 text-xs text-navy-fg/40 sm:flex-row sm:items-center">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            <span>© 2026 Luxe on Air Travel</span>
+            <span>© 2026 Luxeonair Travel</span>
             <Link to="/terms" className="transition-colors hover:text-navy-fg/70">Terms &amp; Conditions</Link>
             <Link to="/privacy" className="transition-colors hover:text-navy-fg/70">Privacy Policy</Link>
           </div>

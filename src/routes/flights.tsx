@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { AIRLINES, FLIGHT_ROUTES } from "@/data/flights";
 import {
@@ -15,14 +15,14 @@ import {
 export const Route = createFileRoute("/flights")({
   head: () => ({
     meta: [
-      { title: "Business & First Class Flights from the UK | Luxe on Air" },
+      { title: "Business & First Class Flights from the UK | Luxeonair" },
       { name: "description", content: "Independent fare comparison across BA, Virgin Atlantic, Emirates, Qatar Airways and more. Business class, first class and premium economy — one consultant, one invoice, no booking fee." },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: "Business & First Class Flights from the UK | Luxe on Air" },
+      { property: "og:title", content: "Business & First Class Flights from the UK | Luxeonair" },
       { property: "og:description", content: "Compare business and first class fares across BA, Virgin, Emirates & Qatar. One consultant, one invoice. No booking fee." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.com/flights" },
-      { name: "twitter:title", content: "Business & First Class Flights | Luxe on Air" },
+      { name: "twitter:title", content: "Business & First Class Flights | Luxeonair" },
       { name: "twitter:description", content: "Independent fare search across BA, Virgin Atlantic, Emirates & Qatar. One consultant, one invoice. No fee." },
     ],
     links: [{ rel: "canonical", href: "https://www.luxeonair.com/flights" }],

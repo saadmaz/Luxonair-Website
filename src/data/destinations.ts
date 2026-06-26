@@ -43,7 +43,7 @@ export const destinations: Destination[] = [
     durationNights: 4,
     heroImage: img("1512453979798-5ea266f8880c"),
     gallery: [img("1518684079-3c830dcef090"), img("1546412414-e1885259563a"), img("1582672060674-bc2bd808a8f5")],
-    tagline: "Premium-cabin flights, DIFC-adjacent hotels, fast meeting logistics.",
+    tagline: "Experience the unparalleled opulence, comfort and the exclusivity throughout the your Journey",
     summary:
       "Configured for UK corporate travellers: flexible dates, business-class returns, hotels within 10 minutes of DIFC and Downtown. Account-managed with single-point invoicing.",
     itinerary: [

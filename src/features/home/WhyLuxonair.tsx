@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+﻿import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Phone, ShieldCheck, Users } from "lucide-react";
 
@@ -27,13 +27,13 @@ export function WhyLuxonair() {
         <div className="grid gap-12 md:grid-cols-2 md:items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-              Why Luxe on Air
+              Why Luxeonair
             </p>
             <h2 className="mt-3 font-display text-3xl font-semibold leading-snug text-navy-fg sm:text-4xl text-balance">
-              Why Book with Luxe on Air?
+              Why Book with Luxeonair?
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-navy-fg/75 font-normal">
-              At Luxe on Air, booking travel should feel simple, personal and genuinely exciting.
+              At Luxeonair, booking travel should feel simple, personal and genuinely exciting.
               Whether you're heading away on business, planning the family holiday, or treating yourself
               to a premium cabin, we're here to make the whole process as enjoyable as the trip itself.
             </p>

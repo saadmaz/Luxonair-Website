@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Eye, EyeOff, AlertCircle, Mail, Lock } from "lucide-react";
 
@@ -40,7 +40,7 @@ function AdminLoginPage() {
         <div className="mb-8 flex flex-col items-center gap-4">
           <img
             src="/Logo/White%20Logo.png"
-            alt="Luxe on Air"
+            alt="Luxeonair"
             className="h-10 w-auto opacity-90"
           />
           <div className="text-center">
@@ -135,7 +135,7 @@ function AdminLoginPage() {
         {/* Back link */}
         <p className="mt-6 text-center text-xs text-white/25">
           <a href="/" className="transition-colors hover:text-white/50">
-            ← Back to Luxe on Air
+            ← Back to Luxeonair
           </a>
         </p>
       </div>

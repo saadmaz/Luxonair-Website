@@ -1,18 +1,18 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { holidayTypes } from "@/data/holidayTypes";
 import { ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/holiday-types/")({
   head: () => ({
     meta: [
-      { title: "Types of Holiday | Beach, Honeymoon, Family & Luxury | Luxe on Air" },
+      { title: "Types of Holiday | Beach, Honeymoon, Family & Luxury | Luxeonair" },
       { name: "description", content: "Beach retreats, romantic honeymoons, family adventures, luxury escapes, city breaks and all-inclusive holidays — all tailor-made from the UK by a dedicated consultant." },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: "Types of Holiday | Beach, Honeymoon, Family & Luxury | Luxe on Air" },
+      { property: "og:title", content: "Types of Holiday | Beach, Honeymoon, Family & Luxury | Luxeonair" },
       { property: "og:description", content: "Beach, honeymoon, family, luxury, city breaks and all-inclusive — every style tailor-made from the UK." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.com/holiday-types" },
-      { name: "twitter:title", content: "Types of Holiday | Luxe on Air" },
+      { name: "twitter:title", content: "Types of Holiday | Luxeonair" },
       { name: "twitter:description", content: "Beach, honeymoon, family, luxury & all-inclusive. Every holiday style, tailor-made from the UK." },
     ],
     links: [{ rel: "canonical", href: "https://www.luxeonair.com/holiday-types" }],

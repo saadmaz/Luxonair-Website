@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { holidayTypes } from "@/data/holidayTypes";
 import { destinations } from "@/data/destinations";
@@ -15,14 +15,14 @@ import {
 export const Route = createFileRoute("/holidays")({
   head: () => ({
     meta: [
-      { title: "Bespoke Tailor-Made Holidays from the UK | Luxe on Air" },
+      { title: "Bespoke Tailor-Made Holidays from the UK | Luxeonair" },
       { name: "description", content: "Every holiday built around your brief — not a template. Beach, family, honeymoon, luxury and adventure from the UK. One consultant handles everything from quote to return gate." },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: "Bespoke Tailor-Made Holidays from the UK | Luxe on Air" },
+      { property: "og:title", content: "Bespoke Tailor-Made Holidays from the UK | Luxeonair" },
       { property: "og:description", content: "Beach, family, honeymoon, luxury & adventure — built around your brief. One consultant, ATOL protected, departing UK airports." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.com/holidays" },
-      { name: "twitter:title", content: "Tailor-Made Holidays from the UK | Luxe on Air" },
+      { name: "twitter:title", content: "Tailor-Made Holidays from the UK | Luxeonair" },
       { name: "twitter:description", content: "Every holiday built around your brief. Beach, family, honeymoon or adventure. One consultant handles everything." },
     ],
     links: [{ rel: "canonical", href: "https://www.luxeonair.com/holidays" }],
@@ -43,7 +43,7 @@ function HolidaysPage() {
             Your holiday, built around you. Not a template.
           </h1>
           <p className="mt-5 max-w-2xl text-base text-navy-fg/70 leading-relaxed">
-            Every Luxe on Air holiday is tailor-made: you tell us the destination, travel window, and
+            Every Luxeonair holiday is tailor-made: you tell us the destination, travel window, and
             budget, and one consultant builds the flights, transfers, hotels and extras into a
             single confirmed itinerary - at no booking fee.
           </p>

@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+﻿import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { findHolidayType, holidayTypes } from "@/data/holidayTypes";
 import { destinations } from "@/data/destinations";
 import { DestinationCard } from "@/components/shared/DestinationCard";
@@ -12,18 +12,18 @@ export const Route = createFileRoute("/holiday-types/$slug")({
     return h;
   },
   head: ({ loaderData, params }) => {
-    if (!loaderData) return { meta: [{ title: "Holiday Type | Luxe on Air" }] };
+    if (!loaderData) return { meta: [{ title: "Holiday Type | Luxeonair" }] };
     return {
       meta: [
-        { title: `${loaderData.name} Holidays from the UK | Tailor-Made | Luxe on Air` },
+        { title: `${loaderData.name} Holidays from the UK | Tailor-Made | Luxeonair` },
         { name: "description", content: `${loaderData.tagline}. Handcrafted ${loaderData.name.toLowerCase()} holidays departing the UK — ATOL protected, one dedicated consultant from first quote to return gate.` },
         { name: "robots", content: "index, follow" },
-        { property: "og:title", content: `${loaderData.name} Holidays from the UK | Luxe on Air` },
+        { property: "og:title", content: `${loaderData.name} Holidays from the UK | Luxeonair` },
         { property: "og:description", content: `${loaderData.tagline}. Tailor-made, ATOL protected, departing UK airports.` },
         { property: "og:image", content: loaderData.heroImage },
         { property: "og:type", content: "website" },
         { property: "og:url", content: `https://www.luxeonair.com/holiday-types/${params.slug}` },
-        { name: "twitter:title", content: `${loaderData.name} Holidays | Luxe on Air` },
+        { name: "twitter:title", content: `${loaderData.name} Holidays | Luxeonair` },
         { name: "twitter:description", content: `${loaderData.tagline}. Tailor-made from the UK, ATOL protected.` },
         { name: "twitter:image", content: loaderData.heroImage },
       ],

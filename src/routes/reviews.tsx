@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { reviews, aggregate } from "@/data/reviews";
 import { loadTestimonials, calcAggregate } from "@/lib/testimonials";
@@ -9,14 +9,14 @@ import { SITE } from "@/config/site";
 export const Route = createFileRoute("/reviews")({
   head: () => ({
     meta: [
-      { title: `Client Reviews & Testimonials | ${aggregate.average}★ from ${aggregate.count} Trips | Luxe on Air` },
-      { name: "description", content: `${aggregate.average}/5 from ${aggregate.count} verified trips. Unedited reviews from Luxe on Air clients covering honeymoons, family holidays, corporate travel and long-haul escapes.` },
+      { title: `Client Reviews & Testimonials | ${aggregate.average}★ from ${aggregate.count} Trips | Luxeonair` },
+      { name: "description", content: `${aggregate.average}/5 from ${aggregate.count} verified trips. Unedited reviews from Luxeonair clients covering honeymoons, family holidays, corporate travel and long-haul escapes.` },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: `Client Reviews | ${aggregate.average}/5 from ${aggregate.count} Verified Trips | Luxe on Air` },
+      { property: "og:title", content: `Client Reviews | ${aggregate.average}/5 from ${aggregate.count} Verified Trips | Luxeonair` },
       { property: "og:description", content: `${aggregate.average}/5 from ${aggregate.count} verified trips — honeymoons, family holidays, corporate travel and long-haul escapes. Unedited.` },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.com/reviews" },
-      { name: "twitter:title", content: `Luxe on Air Reviews | ${aggregate.average}/5 from ${aggregate.count} Trips` },
+      { name: "twitter:title", content: `Luxeonair Reviews | ${aggregate.average}/5 from ${aggregate.count} Trips` },
       { name: "twitter:description", content: `Unedited client reviews — ${aggregate.average}/5 from ${aggregate.count} verified trips. Honeymoons, family holidays and corporate travel.` },
     ],
     links: [{ rel: "canonical", href: "https://www.luxeonair.com/reviews" }],
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/reviews")({
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
         "@id": "https://www.luxeonair.com/#organization",
-        "name": "Luxe on Air",
+        "name": "Luxeonair",
         "aggregateRating": {
           "@type": "AggregateRating",
           "ratingValue": aggregate.average,
@@ -59,7 +59,7 @@ function ReviewsPage() {
               </h1>
               <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
                 We'll publish a verified Trustpilot / Feefo aggregate here once enabled. Until
-                then: every review below is from a Luxe on Air-booked trip - nothing fabricated.
+                then: every review below is from a Luxeonair-booked trip - nothing fabricated.
               </p>
             </div>
 

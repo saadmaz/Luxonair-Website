@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
+﻿import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
   LayoutDashboard, FileText, MessageSquare, LogOut,
@@ -151,7 +151,7 @@ function AdminLayoutRoute() {
           {/* Logo — hidden in collapsed desktop mode */}
           <img
             src="/Logo/Main%20Logo.png"
-            alt="Luxe on Air"
+            alt="Luxeonair"
             className={cn(
               "h-7 w-auto opacity-90 transition-all duration-300",
               collapsed && "lg:hidden"
@@ -276,7 +276,7 @@ function AdminLayoutRoute() {
             </div>
             <div className={cn("min-w-0 flex-1", collapsed && "lg:hidden")}>
               <p className="truncate text-[12px] font-semibold text-white/80">Admin</p>
-              <p className="truncate text-[10px] text-white/30">Luxe on Air</p>
+              <p className="truncate text-[10px] text-white/30">Luxeonair</p>
             </div>
             <button
               onClick={handleLogout}
@@ -361,7 +361,7 @@ function AdminLayoutRoute() {
               </div>
               <div className="hidden sm:block">
                 <p className="text-[12px] font-semibold text-gray-800 leading-none">Admin</p>
-                <p className="text-[10px] text-gray-400 leading-none mt-0.5">Luxe on Air</p>
+                <p className="text-[10px] text-gray-400 leading-none mt-0.5">Luxeonair</p>
               </div>
             </div>
           </div>

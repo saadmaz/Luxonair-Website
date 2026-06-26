@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Award, Briefcase, Building2, Globe2, Users } from "lucide-react";
 import { SITE } from "@/config/site";
@@ -6,14 +6,14 @@ import { SITE } from "@/config/site";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Us | London's Premium Travel Consultants | Luxe on Air" },
+      { title: "About Us | London's Premium Travel Consultants | Luxeonair" },
       { name: "description", content: "500+ trips. 78% repeat clients. 8 years based in London. Ex-airline consultants — ATOL & IATA accredited. One named consultant manages your trip from first quote to return gate." },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: "About Luxe on Air | London's Premium Travel Consultants" },
+      { property: "og:title", content: "About Luxeonair | London's Premium Travel Consultants" },
       { property: "og:description", content: "500+ bespoke trips. 78% repeat clients. Ex-airline team, ATOL protected, based in London. One consultant. End-to-end." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.com/about" },
-      { name: "twitter:title", content: "About Luxe on Air | London's Premium Travel Consultants" },
+      { name: "twitter:title", content: "About Luxeonair | London's Premium Travel Consultants" },
       { name: "twitter:description", content: "500+ trips. 78% repeat clients. Ex-airline consultants, ATOL protected, based in London." },
     ],
     links: [{ rel: "canonical", href: "https://www.luxeonair.com/about" }],
@@ -28,13 +28,13 @@ function AboutPage() {
       <section className="bg-navy text-navy-fg">
         <div className="container-page py-20 md:py-28">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-            About Luxe on Air
+            About Luxeonair
           </p>
           <h1 className="mt-3 max-w-3xl font-display text-4xl font-semibold leading-tight text-navy-fg sm:text-5xl md:text-6xl text-balance">
             Travel designed around you.
           </h1>
           <p className="mt-5 max-w-2xl text-base text-navy-fg/60 leading-relaxed">
-            At Luxe on Air, we believe exceptional travel begins with exceptional service. Every
+            At Luxeonair, we believe exceptional travel begins with exceptional service. Every
             journey is planned by a dedicated travel specialist who takes the time to understand
             your needs, carefully curates your itinerary, and remains your trusted point of contact
             from planning through to your return home.
@@ -140,9 +140,9 @@ function AboutPage() {
         <div className="grid gap-10 md:grid-cols-[1fr_1.5fr] md:items-center">
           <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
             <Building2 className="h-9 w-9 text-gold" />
-            <h3 className="mt-5 font-display text-2xl font-semibold">The Luxe on Air team</h3>
+            <h3 className="mt-5 font-display text-2xl font-semibold">The Luxeonair team</h3>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-              At Luxe on Air, our team is passionate about creating exceptional travel experiences.
+              At Luxeonair, our team is passionate about creating exceptional travel experiences.
               We believe that every journey is unique, which is why we take the time to understand
               your travel needs and provide personalised solutions that suit your plans, preferences,
               and budget.
@@ -172,7 +172,7 @@ function AboutPage() {
             </p>
             <p>
               Whether you're flying in Economy, Premium Economy, Business Class, or First Class, the
-              Luxe on Air team is committed to helping you discover the right journey at the right
+              Luxeonair team is committed to helping you discover the right journey at the right
               price, backed by professional support whenever you need it.
             </p>
           </div>

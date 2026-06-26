@@ -35,7 +35,7 @@ export const holidayTypes: HolidayType[] = [
   {
     slug: "luxury",
     name: "Luxury",
-    tagline: "Premium-cabin flights, five-star resorts, off-script extras.",
+    tagline: "Experience the unparalleled opulence, comfort and the exclusivity throughout the your Journey",
     summary:
       "First and business-class flights, hand-picked five-star resorts, and access to suite upgrades, restaurant bookings and private guides.",
     heroImage: img("1551918120-9739cb430c6d"),

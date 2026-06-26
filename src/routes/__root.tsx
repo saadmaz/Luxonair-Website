@@ -1,4 +1,4 @@
-// Root layout for all routes.
+﻿// Root layout for all routes.
 // RootShell renders the full <html> document (head, body, scripts).
 // RootComponent wraps every page with the shared Header / Footer / floating CTAs.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -63,11 +63,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Luxe on Air | Tailor-Made Luxury Travel from the UK" },
+      { title: "Luxeonair | Tailor-Made Luxury Travel from the UK" },
       { name: "description", content: "London luxury travel agency specialising in bespoke long-haul holidays, family escapes and corporate trips. ATOL protected. A consultant replies to every quote within 4 hours." },
-      { name: "author", content: "Luxe on Air" },
+      { name: "author", content: "Luxeonair" },
       { name: "robots", content: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" },
-      { property: "og:site_name", content: "Luxe on Air" },
+      { property: "og:site_name", content: "Luxeonair" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_GB" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -91,7 +91,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             {
               "@type": "TravelAgency",
               "@id": "https://www.luxeonair.com/#organization",
-              "name": "Luxe on Air",
+              "name": "Luxeonair",
               "url": "https://www.luxeonair.com",
               "logo": "https://www.luxeonair.com/Logo/Main%20Logo.png",
               "description": "London-based luxury travel agency crafting bespoke long-haul holidays, family escapes and corporate travel programmes from the UK. ATOL protected. One dedicated consultant per trip.",
@@ -147,7 +147,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "@type": "WebSite",
               "@id": "https://www.luxeonair.com/#website",
               "url": "https://www.luxeonair.com",
-              "name": "Luxe on Air",
+              "name": "Luxeonair",
               "description": "Tailor-made luxury travel from the UK",
               "publisher": { "@id": "https://www.luxeonair.com/#organization" },
               "inLanguage": "en-GB",

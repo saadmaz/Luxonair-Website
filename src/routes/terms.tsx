@@ -1,11 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { FileText, Shield, Plane, CreditCard, AlertTriangle, Phone, Globe, Briefcase, Lock } from "lucide-react";
 import { SITE } from "@/config/site";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms & Conditions | Luxe on Air" },
+      { title: "Terms & Conditions | Luxeonair" },
       { name: "description", content: "Booking conditions for Luxeonair LTD. Covers ATOL protection, flight bookings, cancellation policy, payments and your rights as a UK travel customer." },
       { name: "robots", content: "index, follow" },
     ],
