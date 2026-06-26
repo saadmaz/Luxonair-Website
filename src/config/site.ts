@@ -13,7 +13,7 @@ export const SITE = {
     whatsapp: "447448009739",
   },
   email: "info@luxeonair.co.uk",
-  address: "London, United Kingdom",
+  address: "11 Charlotte Avenue, Bicester, OX27 8AS",
 
   hours: {
     weekday: { days: "Mon–Fri", open: "09:00", close: "18:00" },

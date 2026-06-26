@@ -130,6 +130,20 @@ export function Footer() {
         </div>
       </div>
 
+      {/* Legal disclaimer */}
+      <div className="border-t border-navy-fg/10">
+        <div className="container-page py-6 text-xs leading-relaxed text-navy-fg/35 space-y-2 text-center">
+          <p>
+            All flights and packages purchased from Luxeonair in and departing from the UK are protected under our{" "}
+            <a href="https://www.caa.co.uk" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-navy-fg/60 transition-colors">ATOL</a>{" "}
+            scheme except for scheduled flights when e-tickets are sent to you on the day of payment. Please see our booking conditions for further information or for more information about financial protection and the ATOL Certificate.
+          </p>
+          <p>
+            Luxeonair LTD is registered in England and Wales, Registration number: 17264512.
+          </p>
+        </div>
+      </div>
+
       {/* Bottom bar */}
       <div className="border-t border-navy-fg/10">
         <div className="container-page flex flex-col items-start justify-between gap-2 py-5 text-xs text-navy-fg/40 sm:flex-row sm:items-center">

@@ -14,10 +14,11 @@ export function FinalCTA() {
         <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center md:gap-12">
           <div>
             <h2 className="font-display text-3xl font-semibold sm:text-4xl text-balance">
-              Tell us where, when, and roughly how much. We'll do the rest.
+              Your journey starts with a simple conversation.
             </h2>
             <p className="mt-3 max-w-xl text-navy-fg/70">
-              Four short steps. No phone-tag, no auto-mailers. A consultant replies within 4
+              Let us know your destination, travel dates, and budget, and we'll begin creating an
+              experience tailored to you. A dedicated travel consultant will be in touch within 4
               working hours.
             </p>
           </div>

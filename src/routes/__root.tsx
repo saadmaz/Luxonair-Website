@@ -99,7 +99,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "email": "info@luxeonair.co.uk",
               "address": {
                 "@type": "PostalAddress",
-                "addressLocality": "London",
+                "streetAddress": "11 Charlotte Avenue",
+                "addressLocality": "Bicester",
+                "postalCode": "OX27 8AS",
                 "addressCountry": "GB"
               },
               "areaServed": { "@type": "Country", "name": "United Kingdom" },
