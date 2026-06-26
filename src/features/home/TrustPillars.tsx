@@ -5,9 +5,9 @@ import { Clock, Plane, ShieldCheck, Users } from "lucide-react";
 export function TrustPillars() {
   const items = [
     { icon: ShieldCheck, label: "ATOL-protected",       note: "Every booking financially protected" },
-    { icon: Plane,       label: "Premium-cabin partners", note: "BA, Virgin, Emirates, Qatar" },
-    { icon: Clock,       label: "4-hour response",      note: "Mon–Fri 09:00–18:00 · Sat–Sun 10:00–17:00 GMT" },
-    { icon: Users,       label: "Single consultant",    note: "Quote to return, one person" },
+    { icon: Plane,       label: "Premium Airline Partners", note: "Access to world-class carriers" },
+    { icon: Clock,       label: "Rapid response",           note: "Mon–Fri 09:00–18:00 · Sat–Sun 10:00–17:00 GMT" },
+    { icon: Users,       label: "Dedicated Travel Experts", note: "Your own expert, start to finish" },
   ];
 
   return (

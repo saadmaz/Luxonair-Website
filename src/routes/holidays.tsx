@@ -68,7 +68,7 @@ function HolidaysPage() {
             {[
               { icon: ShieldCheck, label: "ATOL Protected" },
               { icon: Star,        label: "4.9★ average rating" },
-              { icon: Clock,       label: "4-hr response Mon–Fri" },
+              { icon: Clock,       label: "Rapid response" },
               { icon: Users,       label: "500+ trips delivered" },
               { icon: Phone,       label: "No call centre - a named consultant" },
             ].map(({ icon: Icon, label }) => (

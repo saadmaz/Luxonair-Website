@@ -6,7 +6,7 @@ export function StatsStrip() {
     { value: "500+", label: "Premium trips delivered" },
     { value: "4.9★", label: "Average client rating" },
     { value: "£0",   label: "Booking fees, ever" },
-    { value: "4 hrs", label: "Quote response time" },
+    { value: "Same day", label: "Quote turnaround" },
   ];
 
   return (

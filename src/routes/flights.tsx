@@ -72,7 +72,7 @@ function FlightsPage() {
               { icon: Plane,       label: "Independent - not tied to one airline" },
               { icon: Star,        label: "4.9★ average rating" },
               { icon: ShieldCheck, label: "ATOL Protected" },
-              { icon: Clock,       label: "4-hr response Mon–Fri" },
+              { icon: Clock,       label: "Rapid response" },
             ].map(({ icon: Icon, label }) => (
               <span key={label} className="flex items-center gap-1.5 text-xs text-navy-fg/60">
                 <Icon className="h-3.5 w-3.5 text-gold/70" /> {label}

@@ -270,6 +270,14 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
                     options={["Flexible ±3 days", "Flexible ±1 week", "Flexible ±1 month"]}
                   />
                 </Field>
+                <Field label="Return date (optional)" className="sm:col-span-2">
+                  <Input
+                    type="date"
+                    min={today}
+                    value={form.returnDate}
+                    onChange={(e) => set("returnDate", e.target.value)}
+                  />
+                </Field>
               </div>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
@@ -419,9 +427,9 @@ function Stepper({ current }: { current: number }) {
   );
 }
 
-function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+function Field({ label, error, children, className }: { label: string; error?: string; children: React.ReactNode; className?: string }) {
   return (
-    <div className="grid gap-1.5">
+    <div className={`grid gap-1.5${className ? ` ${className}` : ""}`}>
       <Label className="text-sm font-medium">{label}</Label>
       {children}
       {error && <span className="text-xs text-destructive">{error}</span>}

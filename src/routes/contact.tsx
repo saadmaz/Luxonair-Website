@@ -128,9 +128,9 @@ function ContactPage() {
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
                 <div>
-                  <div className="text-sm font-semibold">4-hour response guarantee</div>
+                  <div className="text-sm font-semibold">Rapid response guarantee</div>
                   <div className="mt-1 text-xs text-muted-foreground">
-                    Mon–Fri 09:00–18:00 or Sat–Sun 10:00–17:00 GMT, we'll reply within 4 hours. Outside these hours, first thing next morning.
+                    We reply promptly during opening hours — Mon–Fri 09:00–18:00 and Sat–Sun 10:00–17:00 GMT. Outside hours, first thing next morning.
                   </div>
                 </div>
               </div>

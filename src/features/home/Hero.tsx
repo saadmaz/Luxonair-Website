@@ -70,7 +70,7 @@ export function Hero() {
             {[
               { icon: ShieldCheck, label: "ATOL Protected" },
               { icon: Star,        label: "4.9★ avg rating" },
-              { icon: Clock,       label: "4-hr response" },
+              { icon: Clock,       label: "Rapid response" },
               { icon: Users,       label: "500+ trips" },
             ].map(({ icon: Icon, label }) => (
               <span key={label} className="flex items-center gap-1.5 text-xs text-navy-fg/55">
