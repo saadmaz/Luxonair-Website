@@ -10,7 +10,7 @@ export function HolidayTypeTiles() {
       <div className="container-page py-16 md:py-20">
         <SectionHeader
           eyebrow="Holiday types"
-          title="Find the trip shape that fits you."
+          title="Find a holiday that best suits you."
           cta={{ label: "All types", to: "/holiday-types" }}
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

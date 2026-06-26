@@ -5,7 +5,7 @@ export const holidayTypes: HolidayType[] = [
   {
     slug: "beach",
     name: "Beach",
-    tagline: "Sand, sea, and a flat white on arrival.",
+    tagline: "Escape the grey weather with your loved ones to a serene sun-soaked beach holiday!",
     summary:
       "Curated beachfront resorts with direct UK flights or premium-cabin connections. Reef-fronted villas, family-friendly all-inclusives, and adult-only retreats.",
     heroImage: img("1507525428034-b723cf961d3e"),
@@ -15,7 +15,7 @@ export const holidayTypes: HolidayType[] = [
   {
     slug: "honeymoon",
     name: "Honeymoon",
-    tagline: "Two weeks. One consultant. Zero stress.",
+    tagline: "Celebrate the new chapter in life by creating a memorable trip with us.",
     summary:
       "Multi-stop honeymoons combining safari + beach, city + island, or twin-island Caribbean. Private transfers and surprise touches included.",
     heroImage: img("1540202404-a2f29016b523"),
@@ -25,7 +25,7 @@ export const holidayTypes: HolidayType[] = [
   {
     slug: "family",
     name: "Family",
-    tagline: "School-holiday escapes that work for everyone.",
+    tagline: "Family holidays offer you an excellent chance to make treasured memories.",
     summary:
       "Family-friendly resorts on direct UK routes. Kids clubs, family suites, and itinerary timing that lands you home before Monday.",
     heroImage: img("1519046904884-53103b34b206"),
@@ -45,7 +45,7 @@ export const holidayTypes: HolidayType[] = [
   {
     slug: "city-breaks",
     name: "City Breaks",
-    tagline: "Long weekends, short flights, late returns.",
+    tagline: "Discover city breaks whether it's cultural, culinary or a classic city escape.",
     summary:
       "European and short-haul city breaks built around late-Friday departures and Sunday-night returns. Boutique hotels in walkable districts.",
     heroImage: img("1496442226666-8d4d0e62e6e9"),
@@ -55,7 +55,7 @@ export const holidayTypes: HolidayType[] = [
   {
     slug: "all-inclusive",
     name: "All-Inclusive",
-    tagline: "One price, no surprises, premium board.",
+    tagline: "Unmatched all-inclusive experiences — whether you're a beach lover, adventure seeker, or culture fanatic.",
     summary:
       "Premium all-inclusive resorts in the Caribbean, Indian Ocean and Mediterranean. Drinks, dining, and watersports included - tipping covered.",
     heroImage: img("1505228395891-9a51e7e86bf6"),

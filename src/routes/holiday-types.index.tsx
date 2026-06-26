@@ -30,7 +30,7 @@ function HolidayTypesIndex() {
             Holiday types
           </p>
           <h1 className="mt-3 max-w-2xl font-display text-4xl font-semibold text-navy-fg sm:text-5xl text-balance">
-            Find the trip shape that fits you.
+            Find a holiday that best suits you.
           </h1>
           <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
             Pick the type, we'll match the destination, board basis, and flight cabin to your
