@@ -44,15 +44,23 @@ export function Footer() {
           )}
 
           {/* Accreditation badges */}
-          <div className="mt-6 flex flex-wrap gap-2">
-            {["ATOL", "IATA"].map((badge) => (
-              <span
-                key={badge}
-                className="rounded border border-navy-fg/20 px-2.5 py-1 text-xs font-semibold tracking-wider text-navy-fg/50"
-              >
-                {badge}
-              </span>
-            ))}
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <a href="https://www.caa.co.uk/atol-protection/" target="_blank" rel="noopener noreferrer"
+              className="rounded-lg bg-white px-3 py-2 transition-opacity hover:opacity-80">
+              <img
+                src="https://iconape.com/wp-content/png_logo_vector/atol-protected-logo.png"
+                alt="ATOL Protected"
+                className="h-8 w-auto"
+              />
+            </a>
+            <a href="https://www.iata.org" target="_blank" rel="noopener noreferrer"
+              className="rounded-lg bg-white px-3 py-2 transition-opacity hover:opacity-80">
+              <img
+                src="https://brandslogos.com/wp-content/uploads/images/large/iata-logo.png"
+                alt="IATA"
+                className="h-8 w-auto"
+              />
+            </a>
           </div>
         </div>
 

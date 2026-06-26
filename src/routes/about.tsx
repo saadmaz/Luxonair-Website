@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Award, Briefcase, Building2, CheckCircle2, Globe2, ShieldCheck, Users } from "lucide-react";
+import { Award, Briefcase, Building2, Globe2, ShieldCheck, Users } from "lucide-react";
 import { SITE } from "@/config/site";
 
 export const Route = createFileRoute("/about")({
@@ -31,12 +31,13 @@ function AboutPage() {
             About Luxe on Air
           </p>
           <h1 className="mt-3 max-w-3xl font-display text-4xl font-semibold leading-tight text-navy-fg sm:text-5xl md:text-6xl text-balance">
-            A UK travel agency built for people who value their time.
+            Travel designed around you.
           </h1>
           <p className="mt-5 max-w-2xl text-base text-navy-fg/60 leading-relaxed">
-            Most UK agencies are either pure call-centres or pure online aggregators. We sit
-            between: a structured quote tool that captures your brief in minutes, then one
-            consultant who builds, books, and stays with you for the whole trip.
+            At Luxe on Air, we believe exceptional travel begins with exceptional service. Every
+            journey is planned by a dedicated travel specialist who takes the time to understand
+            your needs, carefully curates your itinerary, and remains your trusted point of contact
+            from planning through to your return home.
           </p>
         </div>
       </section>
@@ -92,8 +93,11 @@ function AboutPage() {
             Accreditation
           </p>
           <h2 className="mt-3 font-display text-3xl font-semibold text-navy-fg">
-            Legitimately protected. Verifiably accredited.
+            Accredited. Trusted. Protected.
           </h2>
+          <p className="mt-3 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
+            Our recognised industry credentials reflect our commitment to providing secure, reliable, and exceptional travel experiences.
+          </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
               { key: "ATOL", number: SITE.accreditation.atol, desc: "Flight & package protection" },
@@ -123,7 +127,10 @@ function AboutPage() {
             <Building2 className="h-9 w-9 text-gold" />
             <h3 className="mt-5 font-display text-2xl font-semibold">The Luxe on Air team</h3>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-              Specialists across long-haul, MICE and family travel. Our team comes from British Airways, Virgin Atlantic, BCD Travel and leading independent agencies.
+              At Luxe on Air, our team is passionate about creating exceptional travel experiences.
+              We believe that every journey is unique, which is why we take the time to understand
+              your travel needs and provide personalised solutions that suit your plans, preferences,
+              and budget.
             </p>
             <Button asChild className="mt-6 bg-gold text-gold-foreground hover:bg-gold/90">
               <Link to="/quote">Talk to a consultant</Link>
@@ -131,28 +138,28 @@ function AboutPage() {
           </div>
           <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
             <p>
-              Founded by ex-airline and corporate-travel staff, Luxe on Air operates from{" "}
-              {SITE.team.location}, UK. Our consultants average {SITE.team.avgYears} years in the
-              industry across British Airways, Virgin Atlantic, BCD Travel and independent agencies.
+              Our travel specialists combine industry knowledge with a genuine commitment to customer
+              care. Whether you're arranging a last-minute business trip, planning a luxury holiday,
+              booking a family getaway, or searching for the perfect premium cabin experience, we're
+              here to guide you every step of the way.
             </p>
             <p>
-              Every trip is account-managed by one named consultant. There's no off-shore call
-              centre, no automated rebooking - when something goes wrong on a Friday night, the
-              same person who built your trip handles it.
+              We pride ourselves on delivering honest advice, prompt communication, and a service
+              that puts our clients first. From your initial enquiry through to your return home,
+              our goal is to make your travel experience smooth, enjoyable, and completely
+              stress-free.
             </p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {[
-                "Named consultant from day one",
-                "Real bios - no AI-generated profiles",
-                "Direct mobile contact en route",
-                "Post-trip debrief & next itinerary",
-              ].map((item) => (
-                <div key={item} className="flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                  <span>{item}</span>
-                </div>
-              ))}
-            </div>
+            <p>
+              As a UK-based travel agency, we are dedicated to building long-term relationships with
+              our clients through trust, reliability, and attention to detail. We understand that
+              travel is more than just getting from one place to another — it's about creating
+              experiences, making memories, and travelling with confidence.
+            </p>
+            <p>
+              Whether you're flying in Economy, Premium Economy, Business Class, or First Class, the
+              Luxe on Air team is committed to helping you discover the right journey at the right
+              price, backed by professional support whenever you need it.
+            </p>
           </div>
         </div>
       </section>
