@@ -67,17 +67,20 @@ function PackageForm() {
     <form
       action="/quote"
       method="get"
-      className="grid gap-3 p-5 sm:grid-cols-[1.4fr_1fr_1fr_1fr_auto] sm:items-end"
+      className="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr_auto] lg:items-end"
     >
-      <Field label="Where to?">
+      <Field label="Where to?" className="sm:col-span-2 lg:col-span-1">
         <input
           name="destination"
           placeholder="Maldives, Tokyo, anywhere warm"
           className="input-field"
         />
       </Field>
-      <Field label="When">
-        <input name="when" placeholder="October half-term" className="input-field" />
+      <Field label="Depart">
+        <input name="depart" type="date" className="input-field" />
+      </Field>
+      <Field label="Return (optional)">
+        <input name="return" type="date" className="input-field" />
       </Field>
       <Field label="Travellers">
         <input name="travellers" placeholder="2 adults" className="input-field" />
@@ -93,7 +96,7 @@ function PackageForm() {
       <Button
         type="submit"
         size="lg"
-        className="h-11 bg-gold text-gold-foreground hover:bg-gold/90"
+        className="h-11 w-full bg-gold text-gold-foreground hover:bg-gold/90 sm:col-span-2 lg:col-span-1 lg:w-auto"
       >
         Get a quote
       </Button>
@@ -106,7 +109,7 @@ function FlightForm() {
     <form
       action="/quote"
       method="get"
-      className="grid gap-3 p-5 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] sm:items-end"
+      className="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] lg:items-end"
     >
       <input type="hidden" name="tripType" value="Flight only" />
       <Field label="From">
@@ -117,6 +120,9 @@ function FlightForm() {
       </Field>
       <Field label="Depart">
         <input name="depart" type="date" className="input-field" />
+      </Field>
+      <Field label="Return (optional)">
+        <input name="return" type="date" className="input-field" />
       </Field>
       <Field label="Cabin">
         <select name="cabin" className="input-field">
@@ -129,7 +135,7 @@ function FlightForm() {
       <Button
         type="submit"
         size="lg"
-        className="h-11 bg-gold text-gold-foreground hover:bg-gold/90"
+        className="h-11 w-full bg-gold text-gold-foreground hover:bg-gold/90 sm:col-span-2 lg:col-span-1 lg:w-auto"
       >
         Get a quote
       </Button>
@@ -137,9 +143,9 @@ function FlightForm() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
   return (
-    <label className="block">
+    <label className={`block${className ? ` ${className}` : ""}`}>
       <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         {label}
       </span>
