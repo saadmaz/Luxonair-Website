@@ -1,4 +1,4 @@
-// Four-step quote enquiry wizard.
+// Five-step quote enquiry wizard.
 // Validation runs per-step using Zod schemas so the user only sees errors
 // for the current step's fields. On final submit the payload is sent to
 // Formspree if SITE.formspree.quote is configured; otherwise it logs to the
@@ -14,25 +14,43 @@ import { regions, tripTypes, budgetBands } from "@/data/destinations";
 import { SITE } from "@/config/site";
 
 // ─── Per-step Zod schemas ─────────────────────────────────────────────────────
-// Each schema only validates the fields visible on that step, so "Continue"
-// is safe to call without touching untouched steps.
 
 const step1 = z.object({
   destination: z.string().min(2, "Tell us where you'd like to go"),
   region: z.string().optional(),
   tripType: z.string().min(1, "Pick one"),
 });
+
 const step2 = z.object({
-  departWindow: z.string().min(2, "Roughly when?"),
-  flexibility: z.string().min(1),
+  dateMode: z.enum(["flexible", "specific"]),
+  departWindow: z.string().optional(),
+  departDate: z.string().optional(),
+  returnDate: z.string().optional(),
+  flexibility: z.string().optional(),
   nights: z.coerce.number().min(1, "At least 1 night").max(60),
+}).superRefine((data, ctx) => {
+  if (data.dateMode === "flexible" && (!data.departWindow || data.departWindow.trim().length < 2)) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Roughly when?", path: ["departWindow"] });
+  }
+  if (data.dateMode === "specific" && !data.departDate) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Pick a departure date", path: ["departDate"] });
+  }
 });
+
 const step3 = z.object({
+  departAirport: z.string().min(2, "Select your departure airport"),
+  cabinClass: z.string().min(1, "Pick a cabin class"),
+  directOnly: z.string(),
+  preferredAirlines: z.string().optional(),
+});
+
+const step4 = z.object({
   adults: z.coerce.number().min(1, "At least 1 adult").max(20),
   children: z.coerce.number().min(0).max(20),
   budget: z.string().min(1, "Pick a budget band"),
 });
-const step4 = z.object({
+
+const step5 = z.object({
   name: z.string().trim().min(2, "Your full name"),
   email: z.string().trim().email("Valid email"),
   phone: z.string().trim().min(7, "Phone or WhatsApp number"),
@@ -40,24 +58,46 @@ const step4 = z.object({
 });
 
 // ─── Form state type ──────────────────────────────────────────────────────────
-// All fields are strings because HTML inputs always yield strings; Zod coerces
-// numeric fields (nights, adults, children) to numbers before validation.
 
 type Form = {
   destination: string; region: string; tripType: string;
+  dateMode: "flexible" | "specific";
   departWindow: string; flexibility: string; nights: string;
+  departDate: string; returnDate: string;
+  departAirport: string; cabinClass: string; directOnly: string; preferredAirlines: string;
   adults: string; children: string; budget: string;
   name: string; email: string; phone: string; notes: string;
 };
 
 const initial: Form = {
   destination: "", region: "", tripType: "Luxury",
+  dateMode: "flexible",
   departWindow: "", flexibility: "Flexible ±1 week", nights: "7",
+  departDate: "", returnDate: "",
+  departAirport: "", cabinClass: "Business Class", directOnly: "No preference", preferredAirlines: "",
   adults: "2", children: "0", budget: "£££",
   name: "", email: "", phone: "", notes: "",
 };
 
-const steps = ["Where", "When", "Who", "Contact"] as const;
+const UK_AIRPORTS = [
+  "London Heathrow (LHR)",
+  "London Gatwick (LGW)",
+  "London Stansted (STN)",
+  "London Luton (LTN)",
+  "Manchester (MAN)",
+  "Birmingham (BHX)",
+  "Edinburgh (EDI)",
+  "Glasgow (GLA)",
+  "Bristol (BRS)",
+  "Leeds Bradford (LBA)",
+  "Newcastle (NCL)",
+  "Other",
+];
+
+const CABIN_CLASSES = ["Economy", "Premium Economy", "Business Class", "First Class"];
+const DIRECT_OPTIONS = ["No preference", "Direct only"];
+
+const steps = ["Where", "When", "Flights", "Who", "Contact"] as const;
 
 export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) {
   const [form, setForm] = useState<Form>({ ...initial, ...initialValues });
@@ -70,8 +110,24 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
   const set = <K extends keyof Form>(k: K, v: Form[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
 
+  const calcNights = (depart: string, ret: string) => {
+    if (!depart || !ret) return null;
+    const diff = Math.round((new Date(ret).getTime() - new Date(depart).getTime()) / 86_400_000);
+    return diff > 0 ? diff : null;
+  };
+
+  const handleDepartDate = (date: string) => {
+    const nights = calcNights(date, form.returnDate);
+    setForm((f) => ({ ...f, departDate: date, ...(nights ? { nights: String(nights) } : {}) }));
+  };
+
+  const handleReturnDate = (date: string) => {
+    const nights = calcNights(form.departDate, date);
+    setForm((f) => ({ ...f, returnDate: date, ...(nights ? { nights: String(nights) } : {}) }));
+  };
+
   const validate = () => {
-    const schema = [step1, step2, step3, step4][step];
+    const schema = [step1, step2, step3, step4, step5][step];
     const res = schema.safeParse(form);
     if (!res.success) {
       const e: Record<string, string> = {};
@@ -91,6 +147,10 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
     setSubmitting(true);
     setSubmitError("");
 
+    const departInfo = form.dateMode === "specific"
+      ? `${form.departDate}${form.returnDate ? ` → ${form.returnDate}` : ""}`
+      : `${form.departWindow} (${form.flexibility})`;
+
     const formspreeId = SITE.formspree.quote;
     if (formspreeId) {
       try {
@@ -102,9 +162,12 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
             destination: form.destination,
             region: form.region,
             tripType: form.tripType,
-            departWindow: form.departWindow,
-            flexibility: form.flexibility,
+            dates: departInfo,
             nights: form.nights,
+            departAirport: form.departAirport,
+            cabinClass: form.cabinClass,
+            directOnly: form.directOnly,
+            preferredAirlines: form.preferredAirlines,
             adults: form.adults,
             children: form.children,
             budget: form.budget,
@@ -133,6 +196,10 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
   };
 
   if (submitted) {
+    const departInfo = form.dateMode === "specific"
+      ? `${form.departDate}${form.returnDate ? ` → ${form.returnDate}` : ""}`
+      : `${form.departWindow} (${form.flexibility})`;
+
     return (
       <div className="rounded-2xl border border-border bg-card p-8 text-center">
         <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-primary text-primary-foreground">
@@ -144,7 +211,8 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
         </p>
         <div className="mt-6 grid gap-2 text-left text-sm sm:grid-cols-2">
           <Row k="Destination" v={form.destination} />
-          <Row k="When" v={form.departWindow} />
+          <Row k="When" v={departInfo} />
+          <Row k="Flights" v={`${form.departAirport} · ${form.cabinClass}`} />
           <Row k="Travellers" v={`${form.adults} adult${form.adults === "1" ? "" : "s"}${Number(form.children) ? `, ${form.children} child` : ""}`} />
           <Row k="Budget" v={`${form.budget} (${form.nights} nights)`} />
         </div>
@@ -152,10 +220,14 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
     );
   }
 
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
       <Stepper current={step} />
       <div className="mt-6">
+
+        {/* ── Step 0: Where ── */}
         {step === 0 && (
           <div className="grid gap-4">
             <Field label="Destination or region" error={errors.destination}>
@@ -169,20 +241,100 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
             </Field>
           </div>
         )}
+
+        {/* ── Step 1: When ── */}
         {step === 1 && (
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Depart window" error={errors.departWindow}>
-              <Input value={form.departWindow} onChange={(e) => set("departWindow", e.target.value)} placeholder="e.g. October half-term" />
+          <div className="grid gap-4">
+            <Field label="How fixed are your dates?">
+              <Pills
+                value={form.dateMode}
+                onChange={(v) => set("dateMode", v as "flexible" | "specific")}
+                options={["flexible", "specific"]}
+                labels={{ flexible: "I'm flexible", specific: "I have specific dates" }}
+              />
             </Field>
-            <Field label="Date flexibility">
-              <Select value={form.flexibility} onChange={(v) => set("flexibility", v)} options={["Fixed dates", "Flexible ±3 days", "Flexible ±1 week", "Flexible ±1 month"]} />
-            </Field>
+
+            {form.dateMode === "flexible" ? (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Depart window" error={errors.departWindow}>
+                  <Input
+                    value={form.departWindow}
+                    onChange={(e) => set("departWindow", e.target.value)}
+                    placeholder="e.g. October half-term"
+                  />
+                </Field>
+                <Field label="Date flexibility">
+                  <Select
+                    value={form.flexibility}
+                    onChange={(v) => set("flexibility", v)}
+                    options={["Flexible ±3 days", "Flexible ±1 week", "Flexible ±1 month"]}
+                  />
+                </Field>
+              </div>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Departure date" error={errors.departDate}>
+                  <Input
+                    type="date"
+                    min={today}
+                    value={form.departDate}
+                    onChange={(e) => handleDepartDate(e.target.value)}
+                  />
+                </Field>
+                <Field label="Return date (optional)">
+                  <Input
+                    type="date"
+                    min={form.departDate || today}
+                    value={form.returnDate}
+                    onChange={(e) => handleReturnDate(e.target.value)}
+                  />
+                </Field>
+              </div>
+            )}
+
             <Field label="Nights" error={errors.nights}>
-              <Input type="number" min={1} value={form.nights} onChange={(e) => set("nights", e.target.value)} />
+              <Input
+                type="number"
+                min={1}
+                value={form.nights}
+                onChange={(e) => set("nights", e.target.value)}
+              />
+              {form.dateMode === "specific" && form.departDate && form.returnDate && (
+                <p className="mt-1 text-xs text-muted-foreground">Auto-calculated from your dates</p>
+              )}
             </Field>
           </div>
         )}
+
+        {/* ── Step 2: Flights ── */}
         {step === 2 && (
+          <div className="grid gap-4">
+            <Field label="Departing from" error={errors.departAirport}>
+              <Select
+                value={form.departAirport}
+                onChange={(v) => set("departAirport", v)}
+                options={["", ...UK_AIRPORTS]}
+                emptyLabel="Select departure airport"
+              />
+            </Field>
+            <Field label="Cabin class" error={errors.cabinClass}>
+              <Pills value={form.cabinClass} onChange={(v) => set("cabinClass", v)} options={CABIN_CLASSES} />
+            </Field>
+            <Field label="Routing preference">
+              <Pills value={form.directOnly} onChange={(v) => set("directOnly", v)} options={DIRECT_OPTIONS} />
+            </Field>
+            <Field label="Preferred airlines (optional)">
+              <Input
+                value={form.preferredAirlines}
+                onChange={(e) => set("preferredAirlines", e.target.value)}
+                placeholder="e.g. Emirates, British Airways"
+              />
+            </Field>
+          </div>
+        )}
+
+        {/* ── Step 3: Who ── */}
+        {step === 3 && (
           <div className="grid gap-4 sm:grid-cols-3">
             <Field label="Adults" error={errors.adults}>
               <Input type="number" min={1} value={form.adults} onChange={(e) => set("adults", e.target.value)} />
@@ -198,7 +350,9 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
             </Field>
           </div>
         )}
-        {step === 3 && (
+
+        {/* ── Step 4: Contact ── */}
+        {step === 4 && (
           <div className="grid gap-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Full name" error={errors.name}>
@@ -284,7 +438,12 @@ function Row({ k, v }: { k: string; v: string }) {
   );
 }
 
-function Select({ value, onChange, options }: { value: string; onChange: (v: string) => void; options: string[] }) {
+function Select({ value, onChange, options, emptyLabel = "Any region" }: {
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+  emptyLabel?: string;
+}) {
   return (
     <select
       value={value}
@@ -292,13 +451,18 @@ function Select({ value, onChange, options }: { value: string; onChange: (v: str
       className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
     >
       {options.map((o) => (
-        <option key={o} value={o}>{o || "Any region"}</option>
+        <option key={o} value={o}>{o || emptyLabel}</option>
       ))}
     </select>
   );
 }
 
-function Pills({ value, onChange, options }: { value: string; onChange: (v: string) => void; options: string[] }) {
+function Pills({ value, onChange, options, labels }: {
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+  labels?: Record<string, string>;
+}) {
   return (
     <div className="flex flex-wrap gap-2">
       {options.map((o) => (
@@ -312,7 +476,7 @@ function Pills({ value, onChange, options }: { value: string; onChange: (v: stri
               : "border-border bg-background text-foreground hover:bg-muted"
           }`}
         >
-          {o}
+          {labels?.[o] ?? o}
         </button>
       ))}
     </div>
