@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Plus, Pencil, Trash2, ChevronDown } from "lucide-react";
-import { faqGroups as initialGroups } from "@/data/faq";
+import { loadFaqs, persistFaqs } from "@/lib/faqs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +13,7 @@ type FaqItem = { id: string; q: string; a: string };
 type FaqGroup = { id: string; title: string; items: FaqItem[] };
 
 const toGroups = (): FaqGroup[] =>
-  initialGroups.map((g, gi) => ({
+  loadFaqs().map((g, gi) => ({
     id: `g${gi}`,
     title: g.title,
     items: g.items.map((item, ii) => ({ id: `g${gi}i${ii}`, q: item.q, a: item.a })),
@@ -40,12 +40,17 @@ function AdminFaqsPage() {
 
   const totalFaqs = groups.reduce((s, g) => s + g.items.length, 0);
 
+  const sync = (next: FaqGroup[]) => {
+    setGroups(next);
+    persistFaqs(next.map(({ title, items }) => ({ title, items: items.map(({ q, a }) => ({ q, a })) })));
+  };
+
   // Question handlers
   const openAddQ = (groupId: string) => { setQForm({ q: "", a: "" }); setQModal({ mode: "add", groupId }); };
   const openEditQ = (groupId: string, item: FaqItem) => { setQForm({ q: item.q, a: item.a }); setQModal({ mode: "edit", groupId, itemId: item.id }); };
   const saveQ = () => {
     if (!qModal) return;
-    setGroups((prev) => prev.map((g) => {
+    sync(groups.map((g) => {
       if (g.id !== qModal.groupId) return g;
       if (qModal.mode === "add") return { ...g, items: [...g.items, { id: `q${Date.now()}`, ...qForm }] };
       return { ...g, items: g.items.map((i) => i.id === qModal.itemId ? { ...i, ...qForm } : i) };
@@ -54,7 +59,7 @@ function AdminFaqsPage() {
   };
   const confirmDeleteQ = () => {
     if (!deleteItem) return;
-    setGroups((prev) => prev.map((g) => g.id === deleteItem.groupId ? { ...g, items: g.items.filter((i) => i.id !== deleteItem.itemId) } : g));
+    sync(groups.map((g) => g.id === deleteItem.groupId ? { ...g, items: g.items.filter((i) => i.id !== deleteItem.itemId) } : g));
     setDeleteItem(null);
   };
 
@@ -64,15 +69,15 @@ function AdminFaqsPage() {
   const saveCat = () => {
     if (!catModal) return;
     if (catModal.mode === "add") {
-      setGroups((prev) => [...prev, { id: `g${Date.now()}`, title: catForm, items: [] }]);
+      sync([...groups, { id: `g${Date.now()}`, title: catForm, items: [] }]);
     } else if (catModal.groupId) {
-      setGroups((prev) => prev.map((g) => g.id === catModal.groupId ? { ...g, title: catForm } : g));
+      sync(groups.map((g) => g.id === catModal.groupId ? { ...g, title: catForm } : g));
     }
     setCatModal(null);
   };
   const confirmDeleteGroup = () => {
     if (!deleteGroup) return;
-    setGroups((prev) => prev.filter((g) => g.id !== deleteGroup));
+    sync(groups.filter((g) => g.id !== deleteGroup));
     setDeleteGroup(null);
   };
 

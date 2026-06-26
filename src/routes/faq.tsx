@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { faqGroups } from "@/data/faq";
+import { loadFaqs } from "@/lib/faqs";
 import { SITE } from "@/config/site";
 
 export const Route = createFileRoute("/faq")({
@@ -33,6 +35,8 @@ export const Route = createFileRoute("/faq")({
 });
 
 function FaqPage() {
+  const [groups] = useState(() => loadFaqs());
+
   return (
     <div className="container-page py-12 md:py-20">
       <header className="max-w-2xl">
@@ -42,7 +46,7 @@ function FaqPage() {
       </header>
 
       <div className="mt-12 space-y-12">
-        {faqGroups.map((g) => (
+        {groups.map((g) => (
           <section key={g.title}>
             <h2 className="font-display text-2xl font-semibold">{g.title}</h2>
             <div className="mt-5 divide-y divide-border rounded-xl border border-border bg-card">

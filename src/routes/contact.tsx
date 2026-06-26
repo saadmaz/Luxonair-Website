@@ -69,11 +69,12 @@ function ContactPage() {
         <div className="container-page py-16 md:py-20">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Contact</p>
           <h1 className="mt-3 max-w-2xl font-display text-4xl font-semibold text-navy-fg sm:text-5xl text-balance">
-            Talk to a real consultant.
+            Travel advice, tailored to you.
           </h1>
           <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
-            One human owns your enquiry from first message to return flight. No automated
-            routing, no offshore call centre.
+            Every enquiry is handled by a dedicated travel specialist who takes the time to
+            understand your needs, coordinate every detail, and remain your trusted point of
+            contact from start to finish.
           </p>
 
           {/* Quick contact chips */}
