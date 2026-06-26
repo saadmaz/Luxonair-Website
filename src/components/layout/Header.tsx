@@ -37,7 +37,7 @@ export function Header() {
           </div>
           <div className="flex items-center gap-1.5 text-navy-fg/60">
             <Clock className="h-3 w-3" />
-            <span>Mon–Fri 09:00–19:00 GMT</span>
+            <span>{SITE.hours.display}</span>
           </div>
         </div>
       </div>

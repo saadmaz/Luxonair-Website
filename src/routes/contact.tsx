@@ -118,7 +118,7 @@ function ContactPage() {
               <Row
                 icon={Clock}
                 title="Hours"
-                body="Mon–Fri 09:00–19:00 GMT · 24/7 while you're travelling"
+                body="Mon–Fri 09:00–18:00 · Sat–Sun 10:00–17:00 GMT"
               />
               <Row icon={MapPin} title="Office" body={SITE.address} />
             </ul>
@@ -130,8 +130,7 @@ function ContactPage() {
                 <div>
                   <div className="text-sm font-semibold">4-hour response guarantee</div>
                   <div className="mt-1 text-xs text-muted-foreground">
-                    Mon–Fri during office hours, we'll reply within 4 hours. Weekends we'll pick
-                    up the following morning.
+                    Mon–Fri 09:00–18:00 or Sat–Sun 10:00–17:00 GMT, we'll reply within 4 hours. Outside these hours, first thing next morning.
                   </div>
                 </div>
               </div>

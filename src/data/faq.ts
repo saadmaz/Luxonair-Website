@@ -6,7 +6,7 @@ export const faqGroups: FaqGroup[] = [
   {
     title: "Booking & quotes",
     items: [
-      { q: "How quickly will I hear back after submitting a quote?", a: "A consultant replies within 4 working hours, Mon–Fri 09:00–19:00 GMT. Outside hours, first thing the next working morning." },
+      { q: "How quickly will I hear back after submitting a quote?", a: "A consultant replies within 4 working hours. We're available Mon–Fri 09:00–18:00 GMT and Sat–Sun 10:00–17:00 GMT. Outside these hours, first thing the next working morning." },
       { q: "Do I pay anything to get a quote?", a: "No. Quotes are free and non-binding. You only pay a deposit if you choose to book." },
       { q: "Can I change my dates after booking?", a: "Most components allow date changes for a fee. Your consultant will confirm change rules in writing before deposit." },
     ],

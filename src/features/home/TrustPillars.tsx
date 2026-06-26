@@ -6,7 +6,7 @@ export function TrustPillars() {
   const items = [
     { icon: ShieldCheck, label: "ATOL-protected",       note: "Every booking financially protected" },
     { icon: Plane,       label: "Premium-cabin partners", note: "BA, Virgin, Emirates, Qatar" },
-    { icon: Clock,       label: "4-hour response",      note: "Mon–Fri 09:00–19:00 GMT" },
+    { icon: Clock,       label: "4-hour response",      note: "Mon–Fri 09:00–18:00 · Sat–Sun 10:00–17:00 GMT" },
     { icon: Users,       label: "Single consultant",    note: "Quote to return, one person" },
   ];
 

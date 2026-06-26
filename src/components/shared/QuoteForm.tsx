@@ -140,7 +140,7 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
         </div>
         <h2 className="mt-5 font-display text-2xl font-semibold">Thank you, {form.name.split(" ")[0] || "traveller"}.</h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-          Your enquiry is with our consultants. <strong className="text-foreground">A specialist will reply within 4 working hours</strong> (Mon–Fri, 09:00–19:00 GMT) by email and, if requested, WhatsApp.
+          Your enquiry is with our consultants. <strong className="text-foreground">A specialist will reply within 4 working hours</strong> ({SITE.hours.display}) by email and, if requested, WhatsApp.
         </p>
         <div className="mt-6 grid gap-2 text-left text-sm sm:grid-cols-2">
           <Row k="Destination" v={form.destination} />
@@ -237,7 +237,7 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
         )}
       </div>
       <p className="mt-4 text-xs text-muted-foreground">
-        We respond within 4 working hours, Mon–Fri 09:00–19:00 GMT. No spam, no auto-mailers - just a consultant.
+        We respond within 4 working hours, {SITE.hours.display}. No spam, no auto-mailers - just a consultant.
       </p>
     </div>
   );
