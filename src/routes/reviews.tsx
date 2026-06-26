@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { reviews, aggregate } from "@/data/reviews";
+import { loadTestimonials, calcAggregate } from "@/lib/testimonials";
 import { ArrowRight, MessageCircle, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SITE } from "@/config/site";
@@ -39,6 +41,9 @@ export const Route = createFileRoute("/reviews")({
 });
 
 function ReviewsPage() {
+  const [items] = useState(() => loadTestimonials());
+  const agg = calcAggregate(items);
+
   return (
     <>
       {/* Dark hero with aggregate score */}
@@ -66,11 +71,11 @@ function ReviewsPage() {
                 ))}
               </div>
               <div className="mt-3 font-display text-5xl font-semibold text-navy-fg">
-                {aggregate.average}
+                {agg.average}
                 <span className="ml-1 text-2xl text-navy-fg/40">/ 5</span>
               </div>
               <div className="mt-2 text-sm text-navy-fg/55">
-                From {aggregate.count} verified trips
+                From {agg.count} verified trips
               </div>
               <div className="mt-5 border-t border-navy-fg/10 pt-4 text-xs text-navy-fg/40">
                 Trustpilot / Feefo score pending - ask us for references directly.
@@ -83,7 +88,7 @@ function ReviewsPage() {
       {/* Reviews grid */}
       <section className="container-page py-14 md:py-20">
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {reviews.map((r) => (
+          {items.map((r) => (
             <figure
               key={r.id}
               className="flex flex-col rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
