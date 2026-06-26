@@ -36,14 +36,13 @@ export function Hero() {
           </div>
 
           <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-tight text-navy-fg sm:text-5xl md:text-[3.25rem] text-balance">
-            Custom made Holidays,{" "}
-            <span className="text-gold">to Every</span>{" "}
-            Traveller's Need
+            Tailor-Made Holidays,{" "}
+            <span className="text-gold">Built Around</span>{" "}
+            You
           </h1>
 
           <p className="mt-4 max-w-lg text-sm leading-relaxed text-navy-fg/75 md:text-base">
-            Premium long haul flights, family escapes, and corporate travel 
-            solutions crafted by a dedicated travel consultant.
+            Premium long-haul flights, family escapes and corporate travel, all crafted by a dedicated UK travel consultant who knows your trip inside out.
           </p>
 
           {/* Primary + secondary CTAs */}

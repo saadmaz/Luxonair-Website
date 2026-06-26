@@ -17,9 +17,8 @@ export function FinalCTA() {
               Your journey starts with a simple conversation.
             </h2>
             <p className="mt-3 max-w-xl text-navy-fg/70">
-              Let us know your destination, travel dates, and budget, and we'll begin creating an
-              experience tailored to you. A dedicated travel consultant will be in touch within 4
-              working hours.
+              Tell us where you want to go, when you want to travel, and what matters most to you.
+              A dedicated travel consultant will be in touch the same day to start building your trip.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3 md:justify-end">

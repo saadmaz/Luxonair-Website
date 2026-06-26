@@ -17,7 +17,7 @@ export function WhyLuxonair() {
     {
       icon: ShieldCheck,
       title: "Fully Protected",
-      body: "ATOL and IATA memberships — all legitimately held.",
+      body: "ATOL and IATA accredited, so your money and your trip are both covered.",
     },
   ];
 
@@ -33,17 +33,16 @@ export function WhyLuxonair() {
               Why Book with Luxe on Air?
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-navy-fg/75 font-normal">
-              At Luxe on Air, we believe booking travel should be simple, personal, and stress-free.
-              Whether you're travelling for business, planning a family holiday, or treating yourself
-              to a premium cabin experience, we're here to make every journey as smooth as possible.
+              At Luxe on Air, booking travel should feel simple, personal and genuinely exciting.
+              Whether you're heading away on business, planning the family holiday, or treating yourself
+              to a premium cabin, we're here to make the whole process as enjoyable as the trip itself.
             </p>
             <p className="mt-3 text-sm leading-relaxed text-navy-fg/75 font-normal">
-              We take the time to understand your travel plans and recommend options that match your
-              budget, schedule, and preferences — tailored recommendations backed by genuine customer care.
+              We take the time to understand your plans and come back with options that actually fit,
+              matched to your budget, schedule and preferences, with honest advice along the way.
             </p>
             <p className="mt-3 text-sm leading-relaxed text-navy-fg/60 font-normal italic">
-              You're not just booking a trip — you're choosing a travel partner dedicated to making
-              every journey exceptional.
+              You're not just booking a trip. You're choosing a travel partner who cares about every detail, from the first quote to the moment you land back home.
             </p>
             <Button asChild className="mt-8 bg-gold text-gold-foreground hover:bg-gold/90">
               <Link to="/about">Learn about us</Link>

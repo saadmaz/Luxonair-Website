@@ -55,7 +55,7 @@ export const holidayTypes: HolidayType[] = [
   {
     slug: "all-inclusive",
     name: "All-Inclusive",
-    tagline: "Unmatched all-inclusive experiences — whether you're a beach lover, adventure seeker, or culture fanatic.",
+    tagline: "Unmatched all-inclusive experiences, whether you're a beach lover, adventure seeker, or culture fanatic.",
     summary:
       "Premium all-inclusive resorts in the Caribbean, Indian Ocean and Mediterranean. Drinks, dining, and watersports included - tipping covered.",
     heroImage: img("1505228395891-9a51e7e86bf6"),

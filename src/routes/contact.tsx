@@ -131,7 +131,7 @@ function ContactPage() {
                 <div>
                   <div className="text-sm font-semibold">Rapid response guarantee</div>
                   <div className="mt-1 text-xs text-muted-foreground">
-                    We reply promptly during opening hours — Mon–Fri 09:00–18:00 and Sat–Sun 10:00–17:00 GMT. Outside hours, first thing next morning.
+                    We reply promptly during opening hours: Mon–Fri 09:00–18:00 and Sat–Sun 10:00–17:00 GMT. Outside of these hours, we'll be in touch first thing the next morning.
                   </div>
                 </div>
               </div>

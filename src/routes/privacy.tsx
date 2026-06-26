@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { User, Database, Settings, Share2, Globe, Clock, ShieldCheck, Cookie, Baby, RefreshCw, Phone } from "lucide-react";
 import { SITE } from "@/config/site";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
       { title: "Privacy Policy | Luxe on Air" },
-      { name: "description", content: "How Luxeonair LTD collects, uses and protects your personal data in accordance with UK GDPR." },
+      { name: "description", content: "How Luxeonair LTD collects, uses and protects your personal data in line with UK GDPR. Learn what we collect, why we collect it, and your rights." },
       { name: "robots", content: "index, follow" },
     ],
     links: [{ rel: "canonical", href: "https://www.luxeonair.com/privacy" }],
@@ -14,18 +15,18 @@ export const Route = createFileRoute("/privacy")({
 });
 
 const TOC = [
-  { id: "who-we-are", label: "1. Who We Are" },
-  { id: "data-we-collect", label: "2. Data We Collect" },
-  { id: "how-we-use", label: "3. How We Use Your Data" },
-  { id: "legal-basis", label: "4. Legal Basis" },
-  { id: "who-we-share", label: "5. Who We Share With" },
-  { id: "international-transfers", label: "6. International Transfers" },
-  { id: "retention", label: "7. Retention Periods" },
-  { id: "your-rights", label: "8. Your Rights" },
-  { id: "cookies", label: "9. Cookies" },
-  { id: "children", label: "10. Children's Privacy" },
-  { id: "changes", label: "11. Changes to This Policy" },
-  { id: "contact-dpo", label: "12. Contact Us" },
+  { id: "who-we-are",           icon: User,        label: "1. Who We Are" },
+  { id: "data-we-collect",      icon: Database,    label: "2. Data We Collect" },
+  { id: "how-we-use",           icon: Settings,    label: "3. How We Use Your Data" },
+  { id: "legal-basis",          icon: ShieldCheck, label: "4. Legal Basis" },
+  { id: "who-we-share",         icon: Share2,      label: "5. Who We Share With" },
+  { id: "international",        icon: Globe,       label: "6. International Transfers" },
+  { id: "retention",            icon: Clock,       label: "7. Retention Periods" },
+  { id: "your-rights",          icon: ShieldCheck, label: "8. Your Rights" },
+  { id: "cookies",              icon: Cookie,      label: "9. Cookies" },
+  { id: "children",             icon: Baby,        label: "10. Children's Privacy" },
+  { id: "changes",              icon: RefreshCw,   label: "11. Policy Changes" },
+  { id: "contact",              icon: Phone,       label: "12. Contact Us" },
 ];
 
 function PrivacyPage() {
@@ -39,301 +40,309 @@ function PrivacyPage() {
             Privacy Policy
           </h1>
           <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
-            We respect your privacy. This policy explains what personal data we collect, why we collect it, and your rights under UK GDPR.
+            Your data is yours. This policy explains exactly what we collect when you use our services, why we need it, and what you can do about it.
           </p>
-          <p className="mt-3 text-xs text-navy-fg/40">Last updated: June 2026</p>
+          <div className="mt-5 flex flex-wrap gap-3 text-xs text-navy-fg/40">
+            <span className="rounded-full border border-navy-fg/15 px-3 py-1">Last updated: June 2026</span>
+            <span className="rounded-full border border-navy-fg/15 px-3 py-1">UK GDPR compliant</span>
+            <span className="rounded-full border border-navy-fg/15 px-3 py-1">ICO registered</span>
+          </div>
         </div>
       </section>
 
       <div className="container-page py-12 md:py-16">
-        <div className="grid gap-10 lg:grid-cols-[260px_1fr]">
+        <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
 
           {/* Sticky TOC */}
           <aside className="hidden lg:block">
             <div className="sticky top-8 rounded-2xl border border-border bg-card p-5 shadow-sm">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">Contents</p>
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">Jump to section</p>
               <nav className="space-y-0.5">
                 {TOC.map((item) => (
                   <a
                     key={item.id}
                     href={`#${item.id}`}
-                    className="block rounded-md px-2.5 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                    className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                   >
+                    <item.icon className="h-3 w-3 shrink-0 text-gold/60" />
                     {item.label}
                   </a>
                 ))}
               </nav>
+              <div className="mt-5 border-t border-border pt-4 space-y-2">
+                <a href="/terms" className="flex items-center gap-2 text-xs text-primary hover:underline">
+                  <ShieldCheck className="h-3 w-3" /> View Terms &amp; Conditions
+                </a>
+                <a href="https://ico.org.uk/make-a-complaint/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground hover:underline">
+                  <Globe className="h-3 w-3" /> ICO Complaints
+                </a>
+              </div>
             </div>
           </aside>
 
           {/* Content */}
           <div className="space-y-10 text-sm leading-relaxed">
 
-            {/* Intro */}
-            <div className="rounded-2xl border border-gold/30 bg-gold/5 p-6">
-              <p className="text-sm text-muted-foreground">
-                <strong className="text-foreground">LUXEONAIR LTD</strong> (&ldquo;Luxeonair&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) is committed to protecting your personal data. This Privacy Policy explains how we collect, use, disclose and safeguard information about you when you use our website or services, in compliance with the UK General Data Protection Regulation (UK GDPR) and the Data Protection Act 2018.
+            {/* Intro card */}
+            <div className="rounded-2xl border border-gold/25 bg-gold/5 p-6">
+              <p className="text-sm text-foreground/80">
+                <strong className="text-foreground">LUXEONAIR LTD</strong> is committed to protecting your personal data. This Privacy Policy explains how we collect, use, share and safeguard information about you when you use our website or book travel with us, in full compliance with the UK General Data Protection Regulation (UK GDPR) and the Data Protection Act 2018.
               </p>
             </div>
 
-            <Section id="who-we-are" number="1" title="Who We Are">
+            <Section id="who-we-are" number="1" icon={User} title="Who We Are">
               <p>The data controller responsible for your personal data is:</p>
               <div className="mt-4 rounded-xl border border-border bg-card p-5">
                 <p className="font-semibold text-foreground">LUXEONAIR LTD</p>
                 <p className="mt-1 text-muted-foreground">{SITE.address}</p>
-                <p className="mt-1">
-                  Email:{" "}
-                  <a href={`mailto:${SITE.email}`} className="text-primary hover:underline">{SITE.email}</a>
-                </p>
-                <p>
-                  Phone:{" "}
-                  <a href={`tel:${SITE.phone.tel}`} className="text-primary hover:underline">{SITE.phone.display}</a>
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">Company No. 17264512 · Registered in England &amp; Wales</p>
+                <div className="mt-2 space-y-0.5">
+                  <p>Email: <a href={`mailto:${SITE.email}`} className="text-primary hover:underline">{SITE.email}</a></p>
+                  <p>Phone: <a href={`tel:${SITE.phone.tel}`} className="text-primary hover:underline">{SITE.phone.display}</a></p>
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">Company No. 17264512, registered in England &amp; Wales</p>
               </div>
-              <p className="mt-4">If you have any questions about this policy or wish to exercise your rights, please contact us at the address above.</p>
+              <p className="mt-4 text-muted-foreground">If you have any questions about this policy or want to exercise your rights, please use the contact details above.</p>
             </Section>
 
-            <Section id="data-we-collect" number="2" title="Data We Collect">
+            <Section id="data-we-collect" number="2" icon={Database} title="Data We Collect">
               <p>We collect personal data in the following ways:</p>
 
-              <SubHeading>Data you provide directly</SubHeading>
-              <ul className="space-y-1.5 pl-0">
-                <BulletItem><strong>Identity data:</strong> first name, last name, date of birth</BulletItem>
-                <BulletItem><strong>Contact data:</strong> email address, telephone number, postal address</BulletItem>
-                <BulletItem><strong>Travel data:</strong> passport number, nationality, travel preferences, dietary requirements, seat preferences</BulletItem>
-                <BulletItem><strong>Payment data:</strong> payment card details and billing address (processed securely — we do not store full card details)</BulletItem>
-                <BulletItem><strong>Special category data:</strong> health or medical conditions, disabilities, dietary requirements related to religion or belief — only where you volunteer this and it is necessary to arrange your travel</BulletItem>
-                <BulletItem><strong>Communications data:</strong> any correspondence you send us via email, phone or our contact form</BulletItem>
-              </ul>
-
-              <SubHeading>Data collected automatically</SubHeading>
-              <ul className="space-y-1.5 pl-0">
-                <BulletItem><strong>Technical data:</strong> IP address, browser type and version, time zone, operating system</BulletItem>
-                <BulletItem><strong>Usage data:</strong> pages visited, links clicked, referral source, session duration</BulletItem>
-                <BulletItem><strong>Cookie data:</strong> see Clause 9 for full details</BulletItem>
-              </ul>
-
-              <SubHeading>Data from third parties</SubHeading>
-              <ul className="space-y-1.5 pl-0">
-                <BulletItem>Travel suppliers and airlines may provide updated information about your bookings</BulletItem>
-                <BulletItem>Credit reference or fraud prevention agencies where necessary</BulletItem>
-              </ul>
-            </Section>
-
-            <Section id="how-we-use" number="3" title="How We Use Your Data">
-              <p>We use your personal data for the following purposes:</p>
-
               <div className="mt-4 space-y-3">
-                <PurposeRow
-                  purpose="Making and managing your booking"
-                  detail="Processing your travel arrangements, communicating booking confirmations, sending travel documents and providing pre-departure information."
+                <DataRow
+                  title="Identity & contact data"
+                  items={["Full name and date of birth", "Email address and telephone number", "Postal address"]}
                 />
-                <PurposeRow
-                  purpose="Providing customer support"
-                  detail="Responding to your enquiries, handling complaints, and supporting you during your trip."
+                <DataRow
+                  title="Travel data"
+                  items={["Passport number and nationality", "Travel preferences, seat preferences and dietary requirements", "Booking history and trip details"]}
                 />
-                <PurposeRow
-                  purpose="Processing payments"
-                  detail="Collecting deposits and balances, issuing refunds, and preventing fraudulent transactions."
+                <DataRow
+                  title="Payment data"
+                  items={["Payment card details and billing address (processed securely; we do not store full card numbers)", "Bank transfer details where relevant"]}
                 />
-                <PurposeRow
-                  purpose="Legal and regulatory obligations"
-                  detail="Providing information to border control, customs, immigration and other public authorities as required by law. Complying with ATOL obligations."
+                <DataRow
+                  title="Special category data"
+                  items={["Health or medical conditions and disabilities", "Dietary requirements related to religion or belief", "Only collected where you volunteer it and it is necessary to arrange your travel"]}
+                  highlight
                 />
-                <PurposeRow
-                  purpose="Marketing communications"
-                  detail="Sending you information about our services, travel offers and destination content — only where you have given consent or we have a legitimate interest and you have not opted out."
-                />
-                <PurposeRow
-                  purpose="Improving our services"
-                  detail="Analysing usage patterns to improve our website and services. Conducting customer satisfaction surveys."
-                />
-                <PurposeRow
-                  purpose="Fraud prevention and security"
-                  detail="Detecting, investigating and preventing fraudulent transactions and other illegal activities."
+                <DataRow
+                  title="Technical & usage data"
+                  items={["IP address, browser type and version", "Pages visited, links clicked and session duration", "Cookie data (see Clause 9)"]}
                 />
               </div>
-
-              <p className="mt-4 text-xs text-muted-foreground">We will only use your personal data for the purposes for which we collected it, unless we reasonably consider that we need to use it for another reason compatible with the original purpose.</p>
             </Section>
 
-            <Section id="legal-basis" number="4" title="Legal Basis for Processing">
-              <p>Under UK GDPR, we rely on the following lawful bases:</p>
-              <ul className="mt-3 space-y-3 pl-0">
-                <li className="list-none rounded-xl border border-border bg-card p-4">
-                  <p className="font-semibold text-foreground">Performance of a contract</p>
-                  <p className="mt-1 text-muted-foreground text-xs">Processing is necessary to perform the contract we have with you — including making your booking, issuing tickets and providing travel services.</p>
-                </li>
-                <li className="list-none rounded-xl border border-border bg-card p-4">
-                  <p className="font-semibold text-foreground">Legal obligation</p>
-                  <p className="mt-1 text-muted-foreground text-xs">Processing is necessary to comply with our legal and regulatory obligations — including ATOL requirements, HMRC reporting and disclosure to border authorities.</p>
-                </li>
-                <li className="list-none rounded-xl border border-border bg-card p-4">
-                  <p className="font-semibold text-foreground">Legitimate interests</p>
-                  <p className="mt-1 text-muted-foreground text-xs">Processing is necessary for our legitimate business interests (such as fraud prevention, improving our services, and direct marketing to existing customers), where these are not overridden by your rights and interests.</p>
-                </li>
-                <li className="list-none rounded-xl border border-border bg-card p-4">
-                  <p className="font-semibold text-foreground">Consent</p>
-                  <p className="mt-1 text-muted-foreground text-xs">Where we process special category data (health, dietary, disability information) or send marketing to new contacts, we rely on your explicit consent. You may withdraw consent at any time.</p>
-                </li>
+            <Section id="how-we-use" number="3" icon={Settings} title="How We Use Your Data">
+              <p>We use your personal data only for the following clearly defined purposes:</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {[
+                  { title: "Making & managing your booking", detail: "Processing your travel arrangements, sending booking confirmations, issuing tickets and providing pre-departure information." },
+                  { title: "Customer support", detail: "Responding to your enquiries, handling complaints and supporting you during your trip or on your return." },
+                  { title: "Processing payments", detail: "Collecting deposits and balances, processing refunds and detecting fraudulent transactions." },
+                  { title: "Legal & regulatory compliance", detail: "Providing information to border control, customs, immigration authorities and other bodies as required by law, including ATOL obligations." },
+                  { title: "Travel inspiration & offers", detail: "Sending you curated travel ideas and member-only deals only where you have given consent or where we have a legitimate interest you have not opted out of." },
+                  { title: "Improving our services", detail: "Analysing how our website is used, running customer satisfaction surveys and improving the overall experience." },
+                ].map((p) => (
+                  <div key={p.title} className="rounded-xl border border-border bg-card p-4">
+                    <p className="font-semibold text-foreground text-sm">{p.title}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{p.detail}</p>
+                  </div>
+                ))}
+              </div>
+            </Section>
+
+            <Section id="legal-basis" number="4" icon={ShieldCheck} title="Legal Basis for Processing">
+              <p>Under UK GDPR, we must have a lawful reason for processing your personal data. We rely on the following:</p>
+              <div className="mt-4 space-y-3">
+                {[
+                  {
+                    basis: "Performance of a contract",
+                    detail: "Most of our processing is necessary to perform the contract we have with you, including making your booking, issuing tickets and delivering your travel services.",
+                    tag: "Core processing",
+                  },
+                  {
+                    basis: "Legal obligation",
+                    detail: "Some processing is required to meet legal and regulatory obligations, including ATOL requirements, HMRC reporting and disclosure to border control authorities.",
+                    tag: "Required by law",
+                  },
+                  {
+                    basis: "Legitimate interests",
+                    detail: "Fraud prevention, improving our services and direct marketing to existing customers, where these interests are not overridden by your rights and freedoms.",
+                    tag: "Balanced interests",
+                  },
+                  {
+                    basis: "Consent",
+                    detail: "Where we process special category data (health, disability or dietary information) or send marketing to new contacts, we rely on your explicit consent. You can withdraw this at any time.",
+                    tag: "Opt-in only",
+                  },
+                ].map((l) => (
+                  <div key={l.basis} className="flex gap-4 rounded-xl border border-border bg-card p-4">
+                    <div className="mt-0.5 flex h-6 shrink-0 items-center">
+                      <span className="rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-semibold text-gold">{l.tag}</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">{l.basis}</p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">{l.detail}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Section>
+
+            <Section id="who-we-share" number="5" icon={Share2} title="Who We Share Your Data With">
+              <p>We share your personal data only to the extent necessary, and only with the following categories of third parties:</p>
+              <ul className="mt-4 space-y-2">
+                <BulletItem><strong>Travel suppliers:</strong> airlines, hotels, cruise operators, car hire companies, transfer providers and tour operators, to fulfil your booking.</BulletItem>
+                <BulletItem><strong>Payment processors:</strong> for secure handling of payment card transactions.</BulletItem>
+                <BulletItem><strong>Regulatory authorities:</strong> Civil Aviation Authority (ATOL), HMRC and other statutory bodies as required by law.</BulletItem>
+                <BulletItem><strong>Border and immigration authorities:</strong> customs and border control agencies as required for international travel, including US CBP for US-bound travel.</BulletItem>
+                <BulletItem><strong>IT and software providers:</strong> providers of our website, email and booking management systems, all bound by data processing agreements.</BulletItem>
+                <BulletItem><strong>Fraud prevention agencies:</strong> to protect against fraudulent transactions.</BulletItem>
+              </ul>
+              <p className="mt-4 rounded-xl border border-border bg-secondary/40 px-4 py-3 text-xs text-muted-foreground">We do not sell, rent or trade your personal data to any third party for their own marketing purposes. We require all third parties to maintain appropriate security and treat your data in accordance with applicable data protection law.</p>
+            </Section>
+
+            <Section id="international" number="6" icon={Globe} title="International Transfers">
+              <p>Your personal data may be transferred to and processed in countries outside the UK and the European Economic Area (EEA), particularly where your travel destination requires it. For example, we are required to disclose certain booking data to US Customs and Border Protection for US-bound travel.</p>
+              <p className="mt-3">Where we transfer your data internationally, we ensure it is protected by at least one of the following:</p>
+              <ul className="mt-3 space-y-1.5">
+                <BulletItem>The recipient country has been deemed to provide adequate data protection by the UK Government.</BulletItem>
+                <BulletItem>We have put in place UK-approved Standard Contractual Clauses with the recipient.</BulletItem>
+                <BulletItem>The transfer is necessary to perform your travel contract (e.g. sharing booking data with a hotel in your destination country).</BulletItem>
               </ul>
             </Section>
 
-            <Section id="who-we-share" number="5" title="Who We Share Your Data With">
-              <p>We share your personal data with the following categories of third parties, only to the extent necessary:</p>
-              <ul className="mt-3 space-y-2 pl-0">
-                <BulletItem><strong>Travel suppliers:</strong> airlines, hotels, cruise operators, car hire companies, transfer providers and tour operators — to fulfil your booking</BulletItem>
-                <BulletItem><strong>Payment processors:</strong> for secure handling of payment card transactions</BulletItem>
-                <BulletItem><strong>Regulatory authorities:</strong> Civil Aviation Authority (ATOL), HMRC, and other statutory bodies as required by law</BulletItem>
-                <BulletItem><strong>Border and immigration authorities:</strong> customs, immigration and border control agencies as required for international travel (including US CBP for US-bound travel)</BulletItem>
-                <BulletItem><strong>IT and software providers:</strong> providers of our website, CRM, email and booking management systems — bound by data processing agreements</BulletItem>
-                <BulletItem><strong>Fraud prevention agencies:</strong> to protect against fraudulent transactions</BulletItem>
-              </ul>
-              <p className="mt-4 text-xs text-muted-foreground">We do not sell, rent or trade your personal data to any third party for their own marketing purposes. We require all third parties to maintain the security of your data and to treat it in accordance with applicable data protection law.</p>
-            </Section>
-
-            <Section id="international-transfers" number="6" title="International Transfers">
-              <p>Your personal data may be transferred to and processed in countries outside the UK and the European Economic Area (EEA), particularly where your travel destination requires it (for example, disclosure to US Customs and Border Protection for travel to the United States).</p>
-              <p className="mt-3">Where we transfer your data outside the UK/EEA, we ensure it is protected by at least one of the following:</p>
-              <ul className="mt-3 space-y-1.5 pl-0">
-                <BulletItem>The country has been deemed to provide adequate data protection by the UK Government</BulletItem>
-                <BulletItem>We have put in place UK-approved Standard Contractual Clauses with the recipient</BulletItem>
-                <BulletItem>The transfer is necessary to perform your travel contract (e.g. passing booking data to a hotel in your destination country)</BulletItem>
-              </ul>
-            </Section>
-
-            <Section id="retention" number="7" title="Retention Periods">
-              <p>We retain personal data only for as long as is necessary for the purposes for which it was collected, including to satisfy legal, accounting or regulatory requirements.</p>
+            <Section id="retention" number="7" icon={Clock} title="Retention Periods">
+              <p>We only keep your personal data for as long as we genuinely need it, taking into account legal, accounting and regulatory requirements.</p>
               <div className="mt-4 overflow-hidden rounded-xl border border-border">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border bg-secondary/60">
-                      <th className="px-5 py-3 text-left font-semibold">Data type</th>
-                      <th className="px-5 py-3 text-left font-semibold">Retention period</th>
+                      <th className="px-5 py-3 text-left font-semibold text-foreground">Data type</th>
+                      <th className="px-5 py-3 text-left font-semibold text-foreground">Kept for</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    <tr>
-                      <td className="px-5 py-3">Booking and travel records</td>
-                      <td className="px-5 py-3 text-muted-foreground">7 years from travel date</td>
-                    </tr>
-                    <tr>
-                      <td className="px-5 py-3">Payment and financial records</td>
-                      <td className="px-5 py-3 text-muted-foreground">7 years (HMRC requirement)</td>
-                    </tr>
-                    <tr>
-                      <td className="px-5 py-3">ATOL certificates and records</td>
-                      <td className="px-5 py-3 text-muted-foreground">5 years after ATOL expiry</td>
-                    </tr>
-                    <tr>
-                      <td className="px-5 py-3">Customer communications</td>
-                      <td className="px-5 py-3 text-muted-foreground">3 years from last contact</td>
-                    </tr>
-                    <tr>
-                      <td className="px-5 py-3">Marketing preferences</td>
-                      <td className="px-5 py-3 text-muted-foreground">Until you unsubscribe or withdraw consent</td>
-                    </tr>
-                    <tr>
-                      <td className="px-5 py-3">Website usage data</td>
-                      <td className="px-5 py-3 text-muted-foreground">26 months</td>
-                    </tr>
+                    {[
+                      ["Booking and travel records", "7 years from travel date"],
+                      ["Payment and financial records", "7 years (HMRC requirement)"],
+                      ["ATOL certificates and records", "5 years after ATOL expiry"],
+                      ["Customer communications", "3 years from last contact"],
+                      ["Marketing preferences", "Until you unsubscribe or withdraw consent"],
+                      ["Website usage data", "26 months"],
+                    ].map(([type, period]) => (
+                      <tr key={type} className="hover:bg-secondary/30 transition-colors">
+                        <td className="px-5 py-3">{type}</td>
+                        <td className="px-5 py-3 text-muted-foreground">{period}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
             </Section>
 
-            <Section id="your-rights" number="8" title="Your Rights">
-              <p>Under UK GDPR, you have the following rights in relation to your personal data:</p>
+            <Section id="your-rights" number="8" icon={ShieldCheck} title="Your Rights">
+              <p>Under UK GDPR, you have the following rights over your personal data. You can exercise any of these by contacting us at <a href={`mailto:${SITE.email}`} className="text-primary hover:underline">{SITE.email}</a>. We will respond within one month and may need to verify your identity first.</p>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 {[
                   { title: "Right to access", desc: "Request a copy of the personal data we hold about you (Subject Access Request)." },
-                  { title: "Right to rectification", desc: "Request correction of any inaccurate or incomplete personal data." },
-                  { title: "Right to erasure", desc: "Request deletion of your personal data where we no longer have a lawful basis to hold it." },
-                  { title: "Right to restriction", desc: "Request that we restrict the processing of your data in certain circumstances." },
-                  { title: "Right to data portability", desc: "Receive your data in a structured, machine-readable format and transfer it to another organisation." },
-                  { title: "Right to object", desc: "Object to processing based on legitimate interests or for direct marketing purposes." },
-                  { title: "Right to withdraw consent", desc: "Withdraw consent at any time where we rely on consent as the legal basis — without affecting prior processing." },
+                  { title: "Right to rectification", desc: "Ask us to correct any inaccurate or incomplete information we hold." },
+                  { title: "Right to erasure", desc: "Ask us to delete your data where we no longer have a lawful reason to hold it." },
+                  { title: "Right to restriction", desc: "Ask us to limit how we process your data in certain circumstances." },
+                  { title: "Right to portability", desc: "Receive your data in a structured format and transfer it to another organisation." },
+                  { title: "Right to object", desc: "Object to processing based on legitimate interests, or to direct marketing at any time." },
+                  { title: "Right to withdraw consent", desc: "Withdraw consent at any time where we rely on it as our legal basis, without affecting prior processing." },
                   { title: "Right to complain", desc: "Lodge a complaint with the Information Commissioner's Office (ICO) at ico.org.uk." },
                 ].map((r) => (
                   <div key={r.title} className="rounded-xl border border-border bg-card p-4">
-                    <p className="font-semibold text-foreground text-sm">{r.title}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">{r.desc}</p>
+                    <div className="flex items-start gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
+                      <div>
+                        <p className="font-semibold text-foreground text-sm">{r.title}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">{r.desc}</p>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
-              <p className="mt-5 text-muted-foreground">To exercise any of these rights, please contact us at{" "}
-                <a href={`mailto:${SITE.email}`} className="text-primary hover:underline">{SITE.email}</a>. We will respond within one month. We may need to verify your identity before processing your request.
-              </p>
-              <p className="mt-3 text-muted-foreground">To make a complaint to the ICO:{" "}
-                <a href="https://ico.org.uk/make-a-complaint/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">ico.org.uk/make-a-complaint</a>{" "}
-                or call 0303 123 1113.
+              <p className="mt-5 text-muted-foreground text-xs">
+                To complain to the ICO: <a href="https://ico.org.uk/make-a-complaint/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">ico.org.uk/make-a-complaint</a> or call 0303 123 1113.
               </p>
             </Section>
 
-            <Section id="cookies" number="9" title="Cookies">
-              <p>Our website uses cookies — small text files placed on your device — to make the site work, to understand how it is used, and to improve your experience.</p>
-
+            <Section id="cookies" number="9" icon={Cookie} title="Cookies">
+              <p>Our website uses cookies, small text files stored on your device, to make the site work correctly, understand how it is used, and improve your experience.</p>
               <div className="mt-4 space-y-3">
-                <CookieRow
-                  type="Strictly necessary"
-                  examples="Session management, security tokens, shopping cart"
-                  basis="These are essential for the site to function and cannot be disabled."
-                />
-                <CookieRow
-                  type="Performance &amp; analytics"
-                  examples="Page load times, popular pages, error tracking"
-                  basis="Help us understand how visitors interact with the site. Enabled with your consent."
-                />
-                <CookieRow
-                  type="Functional"
-                  examples="Remembering your preferences, language settings"
-                  basis="Improve the experience by remembering choices you make. Enabled with your consent."
-                />
-                <CookieRow
-                  type="Marketing"
-                  examples="Advertising network cookies for retargeting"
-                  basis="Only placed with your explicit consent via our cookie banner."
-                />
+                {[
+                  {
+                    type: "Strictly necessary",
+                    tag: "Always on",
+                    examples: "Session management, security tokens",
+                    note: "Essential for the site to function. Cannot be disabled.",
+                    tagColor: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
+                  },
+                  {
+                    type: "Performance & analytics",
+                    tag: "Consent required",
+                    examples: "Page load times, popular pages, error tracking",
+                    note: "Help us understand how visitors use the site. Enabled with your consent.",
+                    tagColor: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
+                  },
+                  {
+                    type: "Functional",
+                    tag: "Consent required",
+                    examples: "Language settings, remembered preferences",
+                    note: "Improve your experience by remembering choices you make.",
+                    tagColor: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
+                  },
+                  {
+                    type: "Marketing",
+                    tag: "Opt-in only",
+                    examples: "Advertising networks, retargeting",
+                    note: "Only placed with your explicit consent via our cookie banner.",
+                    tagColor: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300",
+                  },
+                ].map((c) => (
+                  <div key={c.type} className="rounded-xl border border-border bg-card p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="font-semibold text-foreground">{c.type}</p>
+                      <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${c.tagColor}`}>{c.tag}</span>
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground"><span className="font-medium text-foreground/70">Examples:</span> {c.examples}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{c.note}</p>
+                  </div>
+                ))}
               </div>
-
-              <p className="mt-4 text-xs text-muted-foreground">You can manage or withdraw your cookie consent at any time via your browser settings or our cookie preference centre. Disabling strictly necessary cookies may affect site functionality.</p>
+              <p className="mt-4 text-xs text-muted-foreground">You can manage or withdraw your cookie preferences at any time via your browser settings or our cookie preference centre. Disabling strictly necessary cookies may affect how the site works.</p>
             </Section>
 
-            <Section id="children" number="10" title="Children's Privacy">
-              <p>Our services are not directed to children under the age of 18. We do not knowingly collect personal data from anyone under 18 without the consent of a parent or guardian. When minors are included in a booking, their data is provided and consented to by the adult lead passenger on the booking. If you believe we have inadvertently collected data about a child without proper consent, please contact us immediately.</p>
+            <Section id="children" number="10" icon={Baby} title="Children's Privacy">
+              <p>Our services are not directed at children under 18. We do not knowingly collect personal data from anyone under 18 without the consent of a parent or guardian. Where minors are included in a booking, their data is provided and consented to by the adult lead passenger. If you believe we have inadvertently collected data about a child without proper consent, please contact us immediately so we can address it.</p>
             </Section>
 
-            <Section id="changes" number="11" title="Changes to This Policy">
-              <p>We may update this Privacy Policy from time to time. The &ldquo;Last updated&rdquo; date at the top of this page will reflect any changes. Where changes are material, we will notify you by email or by a prominent notice on our website. We encourage you to review this policy periodically.</p>
+            <Section id="changes" number="11" icon={RefreshCw} title="Changes to This Policy">
+              <p>We may update this Privacy Policy from time to time as our services evolve or legal requirements change. The &ldquo;Last updated&rdquo; date at the top of this page will always reflect the most recent version. Where changes are material, we will let you know by email or by a prominent notice on our website. We encourage you to review this page periodically.</p>
             </Section>
 
-            <Section id="contact-dpo" number="12" title="Contact Us">
-              <p>If you have questions, concerns or requests regarding this Privacy Policy or how we handle your personal data, please contact us:</p>
+            <Section id="contact" number="12" icon={Phone} title="Contact Us">
+              <p>Questions, concerns or requests about your data are always welcome. Please reach out to us directly:</p>
               <div className="mt-4 rounded-xl border border-border bg-card p-5">
-                <p className="font-semibold text-foreground">LUXEONAIR LTD — Data Privacy</p>
+                <p className="font-semibold text-foreground">LUXEONAIR LTD, Data Privacy</p>
                 <p className="mt-2 text-muted-foreground">{SITE.address}</p>
-                <p className="mt-1">
-                  Email:{" "}
-                  <a href={`mailto:${SITE.email}`} className="text-primary hover:underline">{SITE.email}</a>
-                </p>
-                <p>
-                  Phone:{" "}
-                  <a href={`tel:${SITE.phone.tel}`} className="text-primary hover:underline">{SITE.phone.display}</a>
-                </p>
+                <div className="mt-2 space-y-0.5">
+                  <p>Email: <a href={`mailto:${SITE.email}`} className="text-primary hover:underline">{SITE.email}</a></p>
+                  <p>Phone: <a href={`tel:${SITE.phone.tel}`} className="text-primary hover:underline">{SITE.phone.display}</a></p>
+                </div>
               </div>
               <p className="mt-4 text-muted-foreground">
-                If you are not satisfied with our response, you have the right to lodge a complaint with the{" "}
-                <strong>Information Commissioner&apos;s Office (ICO)</strong>:{" "}
-                <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">ico.org.uk</a>{" "}
-                · Tel: 0303 123 1113.
+                If you are not satisfied with our response, you have the right to contact the <strong>Information Commissioner's Office (ICO)</strong> directly: <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">ico.org.uk</a>, telephone: 0303 123 1113.
               </p>
             </Section>
 
-            {/* Cross-link to T&C */}
-            <div className="rounded-2xl border border-border bg-card p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">Related</p>
-              <p className="mt-2 text-sm">
+            {/* Cross-link */}
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-2">Related</p>
+              <p className="text-sm text-muted-foreground">
                 This Privacy Policy should be read alongside our{" "}
                 <a href="/terms" className="text-primary font-medium hover:underline">Terms &amp; Conditions</a>, which govern your bookings with Luxeonair.
               </p>
@@ -346,24 +355,19 @@ function PrivacyPage() {
   );
 }
 
-function Section({ id, number, title, children }: { id: string; number?: string; title: string; children: React.ReactNode }) {
+function Section({ id, number, icon: Icon, title, children }: { id: string; number: string; icon: React.ElementType; title: string; children: React.ReactNode }) {
   return (
     <section id={id} className="scroll-mt-6">
-      <div className="mb-4 flex items-baseline gap-3 border-b border-border pb-3">
-        {number && (
-          <span className="shrink-0 rounded-full bg-gold/10 px-2.5 py-0.5 text-xs font-semibold text-gold">
-            {number}
-          </span>
-        )}
+      <div className="mb-4 flex items-center gap-3 border-b border-border pb-3">
+        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-navy">
+          <Icon className="h-3.5 w-3.5 text-gold" />
+        </span>
         <h2 className="font-display text-xl font-semibold">{title}</h2>
+        <span className="ml-auto text-xs text-muted-foreground">{number}</span>
       </div>
       <div className="text-sm text-foreground/80 leading-relaxed">{children}</div>
     </section>
   );
-}
-
-function SubHeading({ children }: { children: React.ReactNode }) {
-  return <p className="mt-4 mb-1 font-semibold text-foreground">{children}</p>;
 }
 
 function BulletItem({ children }: { children: React.ReactNode }) {
@@ -375,24 +379,18 @@ function BulletItem({ children }: { children: React.ReactNode }) {
   );
 }
 
-function PurposeRow({ purpose, detail }: { purpose: string; detail: string }) {
+function DataRow({ title, items, highlight }: { title: string; items: string[]; highlight?: boolean }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-border bg-card p-4">
-      <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-gold" />
-      <div>
-        <p className="font-semibold text-foreground">{purpose}</p>
-        <p className="mt-0.5 text-xs text-muted-foreground">{detail}</p>
-      </div>
-    </div>
-  );
-}
-
-function CookieRow({ type, examples, basis }: { type: string; examples: string; basis: string }) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-4">
-      <p className="font-semibold text-foreground text-sm">{type}</p>
-      <p className="mt-1 text-xs text-muted-foreground"><span className="font-medium text-foreground/70">Examples:</span> {examples}</p>
-      <p className="mt-0.5 text-xs text-muted-foreground">{basis}</p>
+    <div className={`rounded-xl border p-4 ${highlight ? "border-amber-200 bg-amber-50/50 dark:border-amber-900/40 dark:bg-amber-950/20" : "border-border bg-card"}`}>
+      <p className="font-semibold text-foreground text-sm">{title}</p>
+      <ul className="mt-2 space-y-1">
+        {items.map((item) => (
+          <li key={item} className="flex items-start gap-2 text-xs text-muted-foreground">
+            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-gold/60" />
+            {item}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
