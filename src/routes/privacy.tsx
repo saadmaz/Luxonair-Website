@@ -214,8 +214,8 @@ function PrivacyPage() {
 
             <Section id="retention" number="7" icon={Clock} title="Retention Periods">
               <p>We only keep your personal data for as long as we genuinely need it, taking into account legal, accounting and regulatory requirements.</p>
-              <div className="mt-4 overflow-hidden rounded-xl border border-border">
-                <table className="w-full text-sm">
+              <div className="mt-4 overflow-x-auto rounded-xl border border-border">
+                <table className="w-full min-w-[400px] text-sm">
                   <thead>
                     <tr className="border-b border-border bg-secondary/60">
                       <th className="px-5 py-3 text-left font-semibold text-foreground">Data type</th>

@@ -49,7 +49,7 @@ function BlogIndex() {
               src={feature.heroImage}
               alt={feature.title}
               loading="lazy"
-              className="h-full min-h-64 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="h-full min-h-40 w-full object-cover transition-transform duration-700 group-hover:scale-105 sm:min-h-64"
             />
           </div>
           <div className="flex flex-col justify-center p-7 md:p-10">

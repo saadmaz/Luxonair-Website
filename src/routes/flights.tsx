@@ -35,7 +35,7 @@ function FlightsPage() {
     <>
       {/* Hero */}
       <section className="bg-navy text-navy-fg">
-        <div className="container-page py-20 md:py-28">
+        <div className="container-page py-14 md:py-24">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
             Premium flights
           </p>
@@ -179,7 +179,8 @@ function FlightsPage() {
           Prices are per person, return, from UK departure airports. Actual fares depend on dates and
           availability - get a quote for a live price.
         </p>
-        <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+        <div className="mt-8 overflow-x-auto">
+        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm min-w-[520px]">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/50">
@@ -220,6 +221,7 @@ function FlightsPage() {
               ))}
             </tbody>
           </table>
+        </div>
         </div>
         <p className="mt-3 text-xs text-muted-foreground">
           All prices are indicative and subject to availability. Fares confirmed at quote stage.

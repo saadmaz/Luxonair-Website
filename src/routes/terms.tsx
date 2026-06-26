@@ -290,8 +290,8 @@ function TermsPage() {
 
             <Clause id="service-charges" number="20" title="Service Charges">
               <p>The following administration charges may apply:</p>
-              <div className="mt-4 overflow-hidden rounded-xl border border-border">
-                <table className="w-full text-sm">
+              <div className="mt-4 overflow-x-auto rounded-xl border border-border">
+                <table className="w-full min-w-[360px] text-sm">
                   <thead>
                     <tr className="border-b border-border bg-secondary/60">
                       <th className="px-5 py-3 text-left font-semibold text-foreground">Service</th>

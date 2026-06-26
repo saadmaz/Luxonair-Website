@@ -35,7 +35,7 @@ function HolidaysPage() {
     <>
       {/* Hero */}
       <section className="bg-navy text-navy-fg">
-        <div className="container-page py-20 md:py-28">
+        <div className="container-page py-14 md:py-24">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
             Holidays from the UK
           </p>

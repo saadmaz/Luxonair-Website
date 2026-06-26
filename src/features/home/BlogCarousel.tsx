@@ -46,7 +46,7 @@ export function BlogCarousel() {
       </div>
 
       {/* Carousel wrapper — padded to create space for the outer arrows */}
-      <div className="mx-auto max-w-[1100px] px-12 md:px-16">
+      <div className="mx-auto max-w-[1100px] px-4 sm:px-8 md:px-12">
         <div className="relative">
           {/* ── Card ─────────────────────────────────────────────────────── */}
           <div
@@ -69,7 +69,7 @@ export function BlogCarousel() {
               </div>
 
               {/* Text panel */}
-              <div className="flex flex-col justify-center bg-[#042045] px-7 py-6 md:w-[46%] md:shrink-0 md:px-10 lg:px-12 lg:py-8">
+              <div className="flex flex-col justify-center bg-[#042045] px-4 py-5 sm:px-7 sm:py-6 md:w-[46%] md:shrink-0 md:px-10 lg:px-12 lg:py-8">
                 <span className="inline-flex w-fit rounded-full bg-white/10 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-white/60">
                   {post.category}
                 </span>
@@ -118,11 +118,11 @@ export function BlogCarousel() {
             </div>
           </div>
 
-          {/* ── Arrow buttons — sit outside the card in the px-12/px-16 gutter ── */}
+          {/* ── Arrow buttons — overlay card edges on mobile, outside gutter on md+ ── */}
           <button
             onClick={prev}
             aria-label="Previous article"
-            className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 -ml-3 flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all hover:border-gray-300 hover:shadow-lg dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+            className="absolute top-1/2 -translate-y-1/2 left-2 md:left-0 md:-translate-x-full md:-ml-3 flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white/90 shadow-md transition-all hover:border-gray-300 hover:shadow-lg dark:border-white/10 dark:bg-navy/80 dark:hover:bg-white/10"
           >
             <ChevronLeft className="h-5 w-5 text-gray-700 dark:text-white" />
           </button>
@@ -130,7 +130,7 @@ export function BlogCarousel() {
           <button
             onClick={next}
             aria-label="Next article"
-            className="absolute right-0 top-1/2 translate-x-full -translate-y-1/2 ml-3 flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all hover:border-gray-300 hover:shadow-lg dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+            className="absolute top-1/2 -translate-y-1/2 right-2 md:right-0 md:translate-x-full md:ml-3 flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white/90 shadow-md transition-all hover:border-gray-300 hover:shadow-lg dark:border-white/10 dark:bg-navy/80 dark:hover:bg-white/10"
           >
             <ChevronRight className="h-5 w-5 text-gray-700 dark:text-white" />
           </button>
