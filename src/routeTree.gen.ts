@@ -9,9 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as QuoteRouteImport } from './routes/quote'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as HolidaysRouteImport } from './routes/holidays'
 import { Route as HolidayTypesRouteImport } from './routes/holiday-types'
 import { Route as FlightsRouteImport } from './routes/flights'
@@ -42,6 +44,11 @@ import { Route as AdminDestinationsRouteImport } from './routes/admin.destinatio
 import { Route as AdminDealsRouteImport } from './routes/admin.deals'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -55,6 +62,11 @@ const ReviewsRoute = ReviewsRouteImport.update({
 const QuoteRoute = QuoteRouteImport.update({
   id: '/quote',
   path: '/quote',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HolidaysRoute = HolidaysRouteImport.update({
@@ -215,9 +227,11 @@ export interface FileRoutesByFullPath {
   '/flights': typeof FlightsRoute
   '/holiday-types': typeof HolidayTypesRouteWithChildren
   '/holidays': typeof HolidaysRoute
+  '/privacy': typeof PrivacyRoute
   '/quote': typeof QuoteRoute
   '/reviews': typeof ReviewsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/deals': typeof AdminDealsRoute
   '/admin/destinations': typeof AdminDestinationsRoute
@@ -245,9 +259,11 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/flights': typeof FlightsRoute
   '/holidays': typeof HolidaysRoute
+  '/privacy': typeof PrivacyRoute
   '/quote': typeof QuoteRoute
   '/reviews': typeof ReviewsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/deals': typeof AdminDealsRoute
   '/admin/destinations': typeof AdminDestinationsRoute
@@ -280,9 +296,11 @@ export interface FileRoutesById {
   '/flights': typeof FlightsRoute
   '/holiday-types': typeof HolidayTypesRouteWithChildren
   '/holidays': typeof HolidaysRoute
+  '/privacy': typeof PrivacyRoute
   '/quote': typeof QuoteRoute
   '/reviews': typeof ReviewsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/deals': typeof AdminDealsRoute
   '/admin/destinations': typeof AdminDestinationsRoute
@@ -316,9 +334,11 @@ export interface FileRouteTypes {
     | '/flights'
     | '/holiday-types'
     | '/holidays'
+    | '/privacy'
     | '/quote'
     | '/reviews'
     | '/sitemap.xml'
+    | '/terms'
     | '/admin/blog'
     | '/admin/deals'
     | '/admin/destinations'
@@ -346,9 +366,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/flights'
     | '/holidays'
+    | '/privacy'
     | '/quote'
     | '/reviews'
     | '/sitemap.xml'
+    | '/terms'
     | '/admin/blog'
     | '/admin/deals'
     | '/admin/destinations'
@@ -380,9 +402,11 @@ export interface FileRouteTypes {
     | '/flights'
     | '/holiday-types'
     | '/holidays'
+    | '/privacy'
     | '/quote'
     | '/reviews'
     | '/sitemap.xml'
+    | '/terms'
     | '/admin/blog'
     | '/admin/deals'
     | '/admin/destinations'
@@ -415,13 +439,22 @@ export interface RootRouteChildren {
   FlightsRoute: typeof FlightsRoute
   HolidayTypesRoute: typeof HolidayTypesRouteWithChildren
   HolidaysRoute: typeof HolidaysRoute
+  PrivacyRoute: typeof PrivacyRoute
   QuoteRoute: typeof QuoteRoute
   ReviewsRoute: typeof ReviewsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermsRoute: typeof TermsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -441,6 +474,13 @@ declare module '@tanstack/react-router' {
       path: '/quote'
       fullPath: '/quote'
       preLoaderRoute: typeof QuoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/holidays': {
@@ -733,9 +773,11 @@ const rootRouteChildren: RootRouteChildren = {
   FlightsRoute: FlightsRoute,
   HolidayTypesRoute: HolidayTypesRouteWithChildren,
   HolidaysRoute: HolidaysRoute,
+  PrivacyRoute: PrivacyRoute,
   QuoteRoute: QuoteRoute,
   ReviewsRoute: ReviewsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

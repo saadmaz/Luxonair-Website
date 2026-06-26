@@ -88,6 +88,8 @@ export function Footer() {
             <li><FooterLink to="/contact">Contact</FooterLink></li>
             <li><FooterLink to="/faq">FAQ</FooterLink></li>
             <li><FooterLink to="/quote">Get a Quote</FooterLink></li>
+            <li><FooterLink to="/terms">Terms &amp; Conditions</FooterLink></li>
+            <li><FooterLink to="/privacy">Privacy Policy</FooterLink></li>
           </ul>
         </div>
 
@@ -155,7 +157,11 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-navy-fg/10">
         <div className="container-page flex flex-col items-start justify-between gap-2 py-5 text-xs text-navy-fg/40 sm:flex-row sm:items-center">
-          <span>© 2026 Luxe on Air Travel</span>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span>© 2026 Luxe on Air Travel</span>
+            <Link to="/terms" className="transition-colors hover:text-navy-fg/70">Terms &amp; Conditions</Link>
+            <Link to="/privacy" className="transition-colors hover:text-navy-fg/70">Privacy Policy</Link>
+          </div>
           <span>
             Designed and developed by{" "}
             <a
