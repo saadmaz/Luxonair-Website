@@ -8,7 +8,7 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact Our London Travel Team | Luxe on Air" },
-      { name: "description", content: "Speak directly with a named UK travel consultant — no queue, no call centre. Call +44 7577 002702, WhatsApp, or email hello@luxeonair.com. We reply within 4 working hours." },
+      { name: "description", content: "Speak directly with a named UK travel consultant — no queue, no call centre. Call +44 7448 009739, WhatsApp, or email hello@luxeonair.com. We reply within 4 working hours." },
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Contact Luxe on Air | Speak to a UK Travel Consultant" },
       { property: "og:description", content: "Phone, WhatsApp or email a named consultant in London. No queues. No call centres. Reply within 4 working hours, Mon–Fri." },

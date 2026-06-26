@@ -6,11 +6,11 @@
 export const SITE = {
   phone: {
     /** Human-readable display string (used in UI copy) */
-    display: "07577 002702",
+    display: "+44 7448 009739",
     /** E.164 format for tel: links */
-    tel: "+447577002702",
+    tel: "+447448009739",
     /** Digits only, no +, for wa.me links */
-    whatsapp: "447577002702",
+    whatsapp: "447448009739",
   },
   email: "hello@luxonair.com",
   address: "London, United Kingdom",

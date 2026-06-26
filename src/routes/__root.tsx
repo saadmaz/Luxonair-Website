@@ -95,7 +95,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "url": "https://www.luxeonair.com",
               "logo": "https://www.luxeonair.com/Logo/Main%20Logo.png",
               "description": "London-based luxury travel agency crafting bespoke long-haul holidays, family escapes and corporate travel programmes from the UK. ATOL and ABTA protected. One dedicated consultant per trip.",
-              "telephone": "+447577002702",
+              "telephone": "+447448009739",
               "email": "hello@luxeonair.com",
               "address": {
                 "@type": "PostalAddress",
