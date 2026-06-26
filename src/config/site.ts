@@ -12,7 +12,7 @@ export const SITE = {
     /** Digits only, no +, for wa.me links */
     whatsapp: "447448009739",
   },
-  email: "hello@luxonair.com",
+  email: "info@luxeonair.co.uk",
   address: "London, United Kingdom",
   registration: "00000000",           // TODO: Companies House registration number
 

@@ -29,10 +29,10 @@ export function Header() {
             </a>
             <span className="hidden text-navy-fg/30 sm:block">|</span>
             <a
-              href="mailto:hello@luxonair.com"
+              href={`mailto:${SITE.email}`}
               className="hidden items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold sm:flex"
             >
-              <Mail className="h-3 w-3" /> hello@luxonair.com
+              <Mail className="h-3 w-3" /> {SITE.email}
             </a>
           </div>
           <div className="flex items-center gap-1.5 text-navy-fg/60">

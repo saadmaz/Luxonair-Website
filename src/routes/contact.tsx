@@ -8,7 +8,7 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact Our London Travel Team | Luxe on Air" },
-      { name: "description", content: "Speak directly with a named UK travel consultant — no queue, no call centre. Call +44 7448 009739, WhatsApp, or email hello@luxeonair.com. We reply within 4 working hours." },
+      { name: "description", content: "Speak directly with a named UK travel consultant — no queue, no call centre. Call +44 7448 009739, WhatsApp, or email info@luxeonair.co.uk. We reply within 4 working hours." },
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Contact Luxe on Air | Speak to a UK Travel Consultant" },
       { property: "og:description", content: "Phone, WhatsApp or email a named consultant in London. No queues. No call centres. Reply within 4 working hours, Mon–Fri." },
@@ -45,12 +45,12 @@ function ContactPage() {
           body: JSON.stringify({ _subject: `Contact form - ${data.topic ?? "General"}`, ...data }),
         });
         if (!res.ok) {
-          setSubmitError("Submission failed - please email us at hello@luxonair.com or call directly.");
+          setSubmitError("Submission failed - please email us at info@luxeonair.co.uk or call directly.");
           setSubmitting(false);
           return;
         }
       } catch {
-        setSubmitError("Network error - please email us at hello@luxonair.com or call directly.");
+        setSubmitError("Network error - please email us at info@luxeonair.co.uk or call directly.");
         setSubmitting(false);
         return;
       }

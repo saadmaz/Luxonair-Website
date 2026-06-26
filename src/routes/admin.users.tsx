@@ -11,8 +11,8 @@ type Role = "Super Admin" | "Admin" | "Editor";
 type User = { id: number; name: string; email: string; role: Role; lastLogin: string; status: "Active" | "Inactive" };
 
 const initialUsers: User[] = [
-  { id: 1, name: "Admin", email: "admin@luxonair.com", role: "Super Admin", lastLogin: "20 Jun 2025, 13:45", status: "Active" },
-  { id: 2, name: "Saad Mazhar", email: "hello@luxonair.com", role: "Admin", lastLogin: "19 Jun 2025, 09:12", status: "Active" },
+  { id: 1, name: "Admin", email: "info@luxeonair.co.uk", role: "Super Admin", lastLogin: "20 Jun 2025, 13:45", status: "Active" },
+  { id: 2, name: "Saad Mazhar", email: "info@luxeonair.co.uk", role: "Admin", lastLogin: "19 Jun 2025, 09:12", status: "Active" },
 ];
 
 const inputCls = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#042045] focus:bg-white focus:ring-2 focus:ring-[#042045]/10";
