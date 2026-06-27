@@ -1,9 +1,8 @@
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
+import { drizzle } from "drizzle-orm/mysql2";
+import { createPool } from "mysql2/promise";
 import * as schema from "./schema";
 
-const url = process.env.DATABASE_URL;
-const sql = neon(url ?? "");
-export const db = drizzle(sql, { schema });
+const pool = createPool(process.env.DATABASE_URL ?? "");
+export const db = drizzle(pool, { schema, mode: "default" });
 
 export * from "./schema";

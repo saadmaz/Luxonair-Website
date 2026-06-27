@@ -1,7 +1,7 @@
-import { boolean, integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, int, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
-export const enquiries = pgTable("enquiries", {
-  id: serial("id").primaryKey(),
+export const enquiries = mysqlTable("enquiries", {
+  id: int("id").autoincrement().primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
@@ -13,21 +13,21 @@ export const enquiries = pgTable("enquiries", {
   flexibility: text("flexibility"),
   departDate: text("depart_date"),
   returnDate: text("return_date"),
-  nights: integer("nights").notNull(),
+  nights: int("nights").notNull(),
   departAirport: text("depart_airport").notNull(),
   cabinClass: text("cabin_class").notNull(),
   directOnly: text("direct_only"),
   preferredAirlines: text("preferred_airlines"),
-  adults: integer("adults").notNull(),
-  children: integer("children").notNull().default(0),
+  adults: int("adults").notNull(),
+  children: int("children").notNull().default(0),
   budget: text("budget").notNull(),
   notes: text("notes"),
-  status: text("status").notNull().default("new"), // new | in_progress | responded
+  status: text("status").notNull().default("new"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const contacts = pgTable("contacts", {
-  id: serial("id").primaryKey(),
+export const contacts = mysqlTable("contacts", {
+  id: int("id").autoincrement().primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone"),
@@ -37,9 +37,9 @@ export const contacts = pgTable("contacts", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const subscribers = pgTable("subscribers", {
-  id: serial("id").primaryKey(),
-  email: text("email").notNull().unique(),
+export const subscribers = mysqlTable("subscribers", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
