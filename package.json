@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build && nitro build && node -e \"const fs=require('fs'); fs.cpSync('.output/server','dist/server',{recursive:true,force:true}); fs.writeFileSync('dist/server/server.js','import\\\"./index.mjs\\\";\\n')\"",
+    "build": "vite build && nitro build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
-    "start": "node dist/server/index.mjs",
+    "start": "node .output/server/index.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
     "db:generate": "drizzle-kit generate",
