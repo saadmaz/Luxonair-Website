@@ -35,27 +35,28 @@ function ContactPage() {
     setSubmitError("");
 
     const data = Object.fromEntries(new FormData(e.currentTarget));
-    const formspreeId = SITE.formspree.contact;
 
-    if (formspreeId) {
-      try {
-        const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ _subject: `Contact form - ${data.topic ?? "General"}`, ...data }),
-        });
-        if (!res.ok) {
-          setSubmitError("Submission failed - please email us at info@luxeonair.co.uk or call directly.");
-          setSubmitting(false);
-          return;
-        }
-      } catch {
-        setSubmitError("Network error - please email us at info@luxeonair.co.uk or call directly.");
+    try {
+      const res = await fetch("/api/contacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          phone: data.phone || undefined,
+          topic: data.topic || undefined,
+          message: data.message,
+        }),
+      });
+      if (!res.ok) {
+        setSubmitError("Submission failed - please email us at info@luxeonair.co.uk or call directly.");
         setSubmitting(false);
         return;
       }
-    } else {
-      console.log("[Luxonair contact - configure SITE.formspree.contact to transmit]", data);
+    } catch {
+      setSubmitError("Network error - please email us at info@luxeonair.co.uk or call directly.");
+      setSubmitting(false);
+      return;
     }
 
     setSubmitting(false);

@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Clock, CheckCircle2, Circle, ChevronDown, Pencil, Trash2 } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Clock, CheckCircle2, Circle, ChevronDown, Pencil, Trash2, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose,
 } from "@/components/ui/dialog";
+import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/enquiries")({
   component: AdminEnquiriesPage,
@@ -19,16 +21,47 @@ type Enquiry = {
   budget: string; status: Status; received: string; notes: string;
 };
 
-const initialData: Enquiry[] = [
-  { id: 1, name: "James Thornton", email: "j.thornton@email.com", phone: "+44 7700 900123", destination: "Maldives", region: "Indian Ocean", tripType: "Honeymoon", travelDate: "Aug 2025", nights: 7, adults: 2, children: 0, budget: "££££", status: "New", received: "20 Jun 2025", notes: "Interested in overwater villa with private pool." },
-  { id: 2, name: "Sarah Mitchell", email: "sarah.m@gmail.com", phone: "+44 7700 900456", destination: "Dubai", region: "Middle East", tripType: "Family", travelDate: "Sep 2025", nights: 5, adults: 2, children: 2, budget: "£££", status: "Responded", received: "19 Jun 2025", notes: "" },
-  { id: 3, name: "Oliver Chen", email: "o.chen@outlook.com", phone: "+44 7700 900789", destination: "Japan", region: "Asia", tripType: "Luxury", travelDate: "Oct 2025", nights: 12, adults: 2, children: 0, budget: "£££", status: "In Progress", received: "18 Jun 2025", notes: "Wants ryokan experience near Fuji." },
-  { id: 4, name: "Emma Patel", email: "emma.p@email.com", phone: "+44 7700 900321", destination: "Bali", region: "Asia", tripType: "Family", travelDate: "Dec 2025", nights: 10, adults: 2, children: 3, budget: "££", status: "New", received: "17 Jun 2025", notes: "School holiday departure needed." },
-  { id: 5, name: "William Fraser", email: "w.fraser@corp.com", phone: "+44 7700 900654", destination: "New York", region: "Americas", tripType: "Business", travelDate: "Jul 2025", nights: 4, adults: 1, children: 0, budget: "££££", status: "Responded", received: "16 Jun 2025", notes: "Corporate account, single invoice billing." },
-  { id: 6, name: "Amelia Johansson", email: "amelia.j@email.com", phone: "+44 7700 900987", destination: "Seychelles", region: "Indian Ocean", tripType: "Honeymoon", travelDate: "Jan 2026", nights: 14, adults: 2, children: 0, budget: "£££££", status: "New", received: "15 Jun 2025", notes: "" },
-  { id: 7, name: "Ravi Kapoor", email: "ravi.k@email.com", phone: "+44 7700 900111", destination: "Santorini", region: "Europe", tripType: "Couples", travelDate: "Sep 2025", nights: 7, adults: 2, children: 0, budget: "£££", status: "In Progress", received: "14 Jun 2025", notes: "Anniversary trip, caldera view preferred." },
-  { id: 8, name: "Claire Beaumont", email: "claire.b@email.com", phone: "+44 7700 900222", destination: "Antigua", region: "Caribbean", tripType: "Family", travelDate: "Oct 2025", nights: 10, adults: 2, children: 2, budget: "£££", status: "New", received: "13 Jun 2025", notes: "October half-term, kids club required." },
-];
+type DbEnquiry = {
+  id: number; name: string; email: string; phone: string;
+  destination: string; region: string | null; tripType: string;
+  dateMode: string; departWindow: string | null; departDate: string | null;
+  nights: number; adults: number; children: number;
+  budget: string; status: string; notes: string | null; createdAt: string;
+};
+
+function dbStatusToUI(s: string): Status {
+  if (s === "in_progress") return "In Progress";
+  if (s === "responded") return "Responded";
+  return "New";
+}
+
+function uiStatusToDb(s: Status): string {
+  if (s === "In Progress") return "in_progress";
+  if (s === "Responded") return "responded";
+  return "new";
+}
+
+function toUIEnquiry(row: DbEnquiry): Enquiry {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
+    destination: row.destination,
+    region: row.region ?? "",
+    tripType: row.tripType,
+    travelDate: row.departDate ?? row.departWindow ?? "",
+    nights: row.nights,
+    adults: row.adults,
+    children: row.children,
+    budget: row.budget,
+    status: dbStatusToUI(row.status),
+    received: new Date(row.createdAt).toLocaleDateString("en-GB", {
+      day: "numeric", month: "short", year: "numeric",
+    }),
+    notes: row.notes ?? "",
+  };
+}
 
 const statusConfig: Record<Status, { className: string; icon: typeof Circle }> = {
   New: { className: "bg-blue-50 text-blue-700 ring-blue-200", icon: Circle },
@@ -49,11 +82,40 @@ const inputCls = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 
 const labelCls = "block text-sm font-medium text-gray-700 mb-1";
 
 function AdminEnquiriesPage() {
-  const [items, setItems] = useState<Enquiry[]>(initialData);
+  const qc = useQueryClient();
   const [filter, setFilter] = useState<Status | "All">("All");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [editItem, setEditItem] = useState<Enquiry | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+
+  const { data: items = [], isLoading } = useQuery({
+    queryKey: ["enquiries"],
+    queryFn: () => api.get<DbEnquiry[]>("/api/enquiries").then((rows) => rows.map(toUIEnquiry)),
+  });
+
+  const updateStatus = useMutation({
+    mutationFn: ({ id, status }: { id: number; status: Status }) =>
+      api.patch(`/api/enquiries/${id}`, { status: uiStatusToDb(status) }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["enquiries"] }),
+  });
+
+  const saveEdit = useMutation({
+    mutationFn: (e: Enquiry) =>
+      api.patch(`/api/enquiries/${e.id}`, {
+        status: uiStatusToDb(e.status),
+        notes: e.notes,
+      }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["enquiries"] }); setEditItem(null); },
+  });
+
+  const deleteEnquiry = useMutation({
+    mutationFn: (id: number) => api.delete(`/api/enquiries/${id}`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["enquiries"] });
+      setDeleteId(null);
+      if (expandedId === deleteId) setExpandedId(null);
+    },
+  });
 
   const filtered = filter === "All" ? items : items.filter((e) => e.status === filter);
   const counts = {
@@ -63,21 +125,13 @@ function AdminEnquiriesPage() {
     Responded: items.filter((e) => e.status === "Responded").length,
   };
 
-  const updateStatus = (id: number, status: Status) =>
-    setItems((prev) => prev.map((e) => (e.id === id ? { ...e, status } : e)));
-
-  const saveEdit = () => {
-    if (!editItem) return;
-    setItems((prev) => prev.map((e) => (e.id === editItem.id ? editItem : e)));
-    setEditItem(null);
-  };
-
-  const confirmDelete = () => {
-    if (deleteId == null) return;
-    setItems((prev) => prev.filter((e) => e.id !== deleteId));
-    setDeleteId(null);
-    if (expandedId === deleteId) setExpandedId(null);
-  };
+  if (isLoading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 lg:p-8">
@@ -133,7 +187,7 @@ function AdminEnquiriesPage() {
                     <td className="px-4 py-4">
                       <select
                         value={e.status}
-                        onChange={(ev) => updateStatus(e.id, ev.target.value as Status)}
+                        onChange={(ev) => updateStatus.mutate({ id: e.id, status: ev.target.value as Status })}
                         className="rounded-lg border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-700 outline-none focus:border-[#042045] focus:ring-1 focus:ring-[#042045]/20 cursor-pointer"
                       >
                         <option>New</option>
@@ -222,7 +276,13 @@ function AdminEnquiriesPage() {
           )}
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
-            <button onClick={saveEdit} className="rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90">Save changes</button>
+            <button
+              onClick={() => editItem && saveEdit.mutate(editItem)}
+              disabled={saveEdit.isPending}
+              className="rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90 disabled:opacity-60"
+            >
+              {saveEdit.isPending ? "Saving…" : "Save changes"}
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -234,7 +294,13 @@ function AdminEnquiriesPage() {
           <p className="text-sm text-gray-500">This will remove the enquiry from the dashboard. This action cannot be undone.</p>
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
-            <button onClick={confirmDelete} className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Delete</button>
+            <button
+              onClick={() => deleteId !== null && deleteEnquiry.mutate(deleteId)}
+              disabled={deleteEnquiry.isPending}
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+            >
+              {deleteEnquiry.isPending ? "Deleting…" : "Delete"}
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

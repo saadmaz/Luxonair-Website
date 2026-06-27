@@ -151,44 +151,42 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
       ? `${form.departDate}${form.returnDate ? ` → ${form.returnDate}` : ""}`
       : `${form.departWindow} (${form.flexibility})`;
 
-    const formspreeId = SITE.formspree.quote;
-    if (formspreeId) {
-      try {
-        const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({
-            _subject: `Quote enquiry - ${form.destination}`,
-            destination: form.destination,
-            region: form.region,
-            tripType: form.tripType,
-            dates: departInfo,
-            nights: form.nights,
-            departAirport: form.departAirport,
-            cabinClass: form.cabinClass,
-            directOnly: form.directOnly,
-            preferredAirlines: form.preferredAirlines,
-            adults: form.adults,
-            children: form.children,
-            budget: form.budget,
-            name: form.name,
-            email: form.email,
-            phone: form.phone,
-            notes: form.notes,
-          }),
-        });
-        if (!res.ok) {
-          setSubmitError("Submission failed - please try WhatsApp or email us directly.");
-          setSubmitting(false);
-          return;
-        }
-      } catch {
-        setSubmitError("Network error - please try WhatsApp or email us directly.");
+    try {
+      const res = await fetch("/api/enquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          destination: form.destination,
+          region: form.region || undefined,
+          tripType: form.tripType,
+          dateMode: form.dateMode,
+          departWindow: form.departWindow || undefined,
+          flexibility: form.flexibility || undefined,
+          departDate: form.departDate || undefined,
+          returnDate: form.returnDate || undefined,
+          nights: Number(form.nights),
+          departAirport: form.departAirport,
+          cabinClass: form.cabinClass,
+          directOnly: form.directOnly || undefined,
+          preferredAirlines: form.preferredAirlines || undefined,
+          adults: Number(form.adults),
+          children: Number(form.children),
+          budget: form.budget,
+          notes: form.notes || undefined,
+        }),
+      });
+      if (!res.ok) {
+        setSubmitError("Submission failed - please try WhatsApp or email us directly.");
         setSubmitting(false);
         return;
       }
-    } else {
-      console.log("[Luxonair lead - configure SITE.formspree.quote to transmit]", form);
+    } catch {
+      setSubmitError("Network error - please try WhatsApp or email us directly.");
+      setSubmitting(false);
+      return;
     }
 
     setSubmitting(false);

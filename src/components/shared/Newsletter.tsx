@@ -19,26 +19,21 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
     setSubmitting(true);
     setError("");
 
-    const formspreeId = SITE.formspree.newsletter;
-    if (formspreeId) {
-      try {
-        const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ email, _subject: "Newsletter sign-up" }),
-        });
-        if (!res.ok) {
-          setError("Couldn't subscribe - please try again or email us.");
-          setSubmitting(false);
-          return;
-        }
-      } catch {
-        setError("Network error - please try again.");
+    try {
+      const res = await fetch("/api/subscribers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) {
+        setError("Couldn't subscribe - please try again or email us.");
         setSubmitting(false);
         return;
       }
-    } else {
-      console.log("[Luxonair newsletter - configure SITE.formspree.newsletter to transmit]", email);
+    } catch {
+      setError("Network error - please try again.");
+      setSubmitting(false);
+      return;
     }
 
     setSubmitting(false);

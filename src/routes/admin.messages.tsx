@@ -1,8 +1,10 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Mail, MailOpen, Trash2 } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Mail, MailOpen, Trash2, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/messages")({
   component: AdminMessagesPage,
@@ -13,34 +15,70 @@ type Message = {
   body: string; received: string; read: boolean;
 };
 
-const initialData: Message[] = [
-  { id: 1, name: "Priya Nair", email: "priya.n@email.com", subject: "Group booking for 12 people", body: "Hi, we are planning a family reunion in the Maldives for 12 adults and 4 children next Easter. Could you help with group pricing and villa arrangements?", received: "20 Jun 2025", read: false },
-  { id: 2, name: "Tom Bradley", email: "t.bradley@firm.co.uk", subject: "Corporate account enquiry", body: "We are a 50-person professional services firm based in London. We travel frequently to Dubai and New York. Interested in setting up a corporate account with single invoice billing.", received: "19 Jun 2025", read: false },
-  { id: 3, name: "Laura Santos", email: "l.santos@gmail.com", subject: "Honeymoon planning - Bora Bora", body: "Looking to plan our honeymoon to Bora Bora in February 2026. Budget is flexible for the right experience. Can you send options with business class flights from Heathrow?", received: "18 Jun 2025", read: false },
-  { id: 4, name: "David Kim", email: "d.kim@outlook.com", subject: "Japan trip assistance", body: "We are a couple who would love help planning a Japan trip for cherry blossom season (late March / early April 2026). 10–14 nights. Business class preferred.", received: "17 Jun 2025", read: true },
-  { id: 5, name: "Fatima Al-Hassan", email: "f.alhassan@email.com", subject: "Safari and beach combination", body: "Looking for a two-week trip combining a Kenya safari with a beach stay in Zanzibar. Two adults. Interested in luxury lodges.", received: "15 Jun 2025", read: true },
-  { id: 6, name: "George Whitfield", email: "g.whitfield@corp.com", subject: "Feedback - excellent service", body: "Just returned from our Dubai trip arranged by Luxeonair. The chauffeur was on time, the hotel was perfect, and the consultant's assistance during our flight delay was invaluable. Thank you.", received: "12 Jun 2025", read: true },
-];
+type DbContact = {
+  id: number; name: string; email: string;
+  phone: string | null; topic: string | null; message: string;
+  read: boolean; createdAt: string;
+};
+
+function toUIMessage(row: DbContact): Message {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    subject: row.topic ?? "Contact form message",
+    body: row.message,
+    received: new Date(row.createdAt).toLocaleDateString("en-GB", {
+      day: "numeric", month: "short", year: "numeric",
+    }),
+    read: row.read,
+  };
+}
 
 function AdminMessagesPage() {
-  const [items, setItems] = useState<Message[]>(initialData);
+  const qc = useQueryClient();
   const [selected, setSelected] = useState<number | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+
+  const { data: items = [], isLoading } = useQuery({
+    queryKey: ["contacts"],
+    queryFn: () => api.get<DbContact[]>("/api/contacts").then((rows) => rows.map(toUIMessage)),
+  });
+
+  const markRead = useMutation({
+    mutationFn: (id: number) => api.patch(`/api/contacts/${id}`, { read: true }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["contacts"] }),
+  });
+
+  const deleteMsg = useMutation({
+    mutationFn: (id: number) => api.delete(`/api/contacts/${id}`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["contacts"] });
+      setDeleteId(null);
+      if (selected === deleteId) setSelected(null);
+    },
+  });
 
   const selectedMsg = items.find((m) => m.id === selected);
   const unread = items.filter((m) => !m.read).length;
 
   const open = (id: number) => {
     setSelected(id);
-    setItems((prev) => prev.map((m) => (m.id === id ? { ...m, read: true } : m)));
+    const msg = items.find((m) => m.id === id);
+    if (msg && !msg.read) markRead.mutate(id);
   };
 
   const confirmDelete = () => {
-    if (deleteId == null) return;
-    setItems((prev) => prev.filter((m) => m.id !== deleteId));
-    if (selected === deleteId) setSelected(null);
-    setDeleteId(null);
+    if (deleteId != null) deleteMsg.mutate(deleteId);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 lg:p-8">
@@ -58,7 +96,7 @@ function AdminMessagesPage() {
         <div className={cn("flex w-full flex-col divide-y divide-gray-100 overflow-y-auto md:w-80 md:border-r md:border-gray-100", selected !== null && "hidden md:flex")}>
           {items.length === 0 && (
             <div className="flex flex-1 items-center justify-center p-8 text-center">
-              <p className="text-sm text-gray-400">No messages</p>
+              <p className="text-sm text-gray-400">No messages yet</p>
             </div>
           )}
           {items.map((m) => (
@@ -111,7 +149,13 @@ function AdminMessagesPage() {
           <p className="text-sm text-gray-500">This will permanently remove the message. This cannot be undone.</p>
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
-            <button onClick={confirmDelete} className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Delete</button>
+            <button
+              onClick={confirmDelete}
+              disabled={deleteMsg.isPending}
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+            >
+              {deleteMsg.isPending ? "Deleting…" : "Delete"}
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

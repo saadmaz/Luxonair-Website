@@ -24,8 +24,23 @@ function AdminLoginPage() {
     }
 
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    localStorage.setItem("lx_admin", "1");
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
+        setError(body.error ?? "Invalid credentials.");
+        setLoading(false);
+        return;
+      }
+    } catch {
+      setError("Network error - please try again.");
+      setLoading(false);
+      return;
+    }
     navigate({ to: "/admin" });
     setLoading(false);
   };

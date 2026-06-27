@@ -1,5 +1,6 @@
 ﻿import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   LayoutDashboard, FileText, MessageSquare, LogOut,
   Menu, X, MapPin, Tag, Sun, BookOpen, Star, HelpCircle,
@@ -54,7 +55,6 @@ const navSections = [
 function AdminLayoutRoute() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
-  const [authed, setAuthed] = useState<boolean | null>(null);
 
   // Mobile drawer
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -90,17 +90,28 @@ function AdminLayoutRoute() {
   };
 
   const isLoginPage = pathname === "/admin/login";
+  const queryClient = useQueryClient();
+
+  const { data: authed, isLoading: authLoading } = useQuery({
+    queryKey: ["auth", "me"],
+    queryFn: async () => {
+      const res = await fetch("/api/auth/me");
+      return res.ok;
+    },
+    enabled: !isLoginPage,
+    retry: false,
+    staleTime: 5 * 60 * 1000,
+  });
 
   useEffect(() => {
-    if (isLoginPage) { setAuthed(false); return; }
-    const ok = typeof window !== "undefined" && localStorage.getItem("lx_admin") === "1";
-    setAuthed(ok);
-    if (!ok) navigate({ to: "/admin/login" });
-  }, [isLoginPage, navigate]);
+    if (!isLoginPage && authed === false) {
+      navigate({ to: "/admin/login" });
+    }
+  }, [authed, isLoginPage, navigate]);
 
   if (isLoginPage) return <Outlet />;
 
-  if (authed === null) {
+  if (authLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#f1f4f8]">
         <div className="h-5 w-5 animate-spin rounded-full border-[2.5px] border-[#042045] border-t-transparent" />
@@ -110,8 +121,9 @@ function AdminLayoutRoute() {
 
   if (!authed) return null;
 
-  const handleLogout = () => {
-    localStorage.removeItem("lx_admin");
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    queryClient.clear();
     navigate({ to: "/admin/login" });
   };
 
