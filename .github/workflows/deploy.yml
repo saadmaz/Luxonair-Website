@@ -40,10 +40,19 @@ jobs:
             dist/ \
             ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}:${{ secrets.HOSTINGER_APP_PATH }}/dist/
 
+      - name: Upload config files to Hostinger
+        run: |
+          rsync -avz \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.HOSTINGER_PORT }} -o StrictHostKeyChecking=no" \
+            ecosystem.config.cjs package.json \
+            ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}:${{ secrets.HOSTINGER_APP_PATH }}/
+
       - name: Restart Node.js app on Hostinger
+        env:
+          APP_PATH: ${{ secrets.HOSTINGER_APP_PATH }}
         run: |
           ssh -i ~/.ssh/deploy_key \
               -p ${{ secrets.HOSTINGER_PORT }} \
               -o StrictHostKeyChecking=no \
               ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }} \
-              "pm2 reload all 2>/dev/null || echo 'Restart via hPanel required'"
+              "cd '$APP_PATH' && (pm2 startOrRestart ecosystem.config.cjs --env production && pm2 save) 2>/dev/null || echo 'PM2 not available — restart the app via hPanel -> Node.js'"
