@@ -51,16 +51,16 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "atol-explained",
-    title: "ATOL, ABTA, IATA: what UK travellers actually need to know",
+    title: "ATOL and IATA: what UK travellers actually need to know",
     excerpt:
-      "Three acronyms, three different protections. A plain-English guide before you pay a deposit.",
+      "Two key accreditations, two different assurances. A plain-English guide before you pay a deposit.",
     category: "Guides",
     author: "Luxeonair Editorial",
     date: "2026-02-08",
     readMinutes: 4,
     heroImage: img("1488085061387-422e29b40080"),
     content: [
-      { body: "ATOL covers package holidays that include a flight. ABTA covers the agency itself for non-flight elements. IATA is an airline-industry accreditation, not a consumer protection." },
+      { body: "ATOL covers package holidays that include a flight, protecting you if the company collapses before or during your trip. IATA is an airline-industry accreditation that signals professional standards, not a consumer protection scheme." },
       { heading: "What to check before paying", body: "Ask for the ATOL number, confirm it on the CAA register, and require a written ATOL Certificate within 24 hours of paying any deposit." },
     ],
   },

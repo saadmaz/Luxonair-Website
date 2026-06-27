@@ -152,7 +152,6 @@ Fields that must be populated before go-live (currently set to empty strings, wh
 | `social.linkedin` | LinkedIn URL | Icon hidden in footer |
 | `social.youtube` | YouTube channel URL | Icon hidden in footer |
 | `accreditation.atol` | ATOL membership number | Membership number not displayed |
-| `accreditation.abta` | ABTA membership number | Membership number not displayed |
 | `accreditation.iata` | IATA code | Code not displayed |
 | `registration` | Companies House registration number | Not displayed |
 
@@ -223,7 +222,7 @@ From `src/config/site.ts` (explicit `// TODO` comments):
 
 - `SITE.registration` - Companies House registration number is `"00000000"` (placeholder).
 - `SITE.formspree.quote`, `.contact`, `.newsletter` - all empty; forms run in demo/console mode.
-- `SITE.accreditation.atol`, `.abta`, `.iata` - all empty; accreditation section shows descriptions instead of real membership numbers.
+- `SITE.accreditation.atol`, `.iata` - all empty; accreditation section shows descriptions instead of real membership numbers.
 - `SITE.social.*` - all four social links are empty strings; icons are conditionally hidden.
 
 From `src/routes/sitemap[.]xml.ts`:
