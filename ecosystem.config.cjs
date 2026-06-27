@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'luxonair',
-      script: './dist/server/server.js',
+      script: './.output/server/index.mjs',
       instances: 1,
       exec_mode: 'fork',
       env_production: {
