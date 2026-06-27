@@ -1,14 +1,13 @@
-name: Deploy to Hostinger
+name: Build Check
 
 on:
   push:
     branches: [main]
-  workflow_dispatch: # allows manual trigger from GitHub UI → Actions tab
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment: production
 
     steps:
       - name: Checkout code
@@ -17,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
@@ -25,34 +24,3 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -p ${{ secrets.HOSTINGER_PORT }} ${{ secrets.HOSTINGER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
-
-      - name: Upload dist to Hostinger
-        run: |
-          rsync -avz --delete \
-            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.HOSTINGER_PORT }} -o StrictHostKeyChecking=no" \
-            dist/ \
-            ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}:${{ secrets.HOSTINGER_APP_PATH }}/dist/
-
-      - name: Upload config files to Hostinger
-        run: |
-          rsync -avz \
-            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.HOSTINGER_PORT }} -o StrictHostKeyChecking=no" \
-            ecosystem.config.cjs package.json \
-            ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}:${{ secrets.HOSTINGER_APP_PATH }}/
-
-      - name: Restart Node.js app on Hostinger
-        env:
-          APP_PATH: ${{ secrets.HOSTINGER_APP_PATH }}
-        run: |
-          ssh -i ~/.ssh/deploy_key \
-              -p ${{ secrets.HOSTINGER_PORT }} \
-              -o StrictHostKeyChecking=no \
-              ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }} \
-              "cd '$APP_PATH' && (pm2 startOrRestart ecosystem.config.cjs --env production && pm2 save) 2>/dev/null || echo 'PM2 not available — restart the app via hPanel -> Node.js'"
