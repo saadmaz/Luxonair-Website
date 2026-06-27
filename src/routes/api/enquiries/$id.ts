@@ -13,15 +13,15 @@ export const APIRoute = createAPIFileRoute("/api/enquiries/$id")({
       notes?: string;
     };
 
-    const [row] = await db
+    await db
       .update(enquiries)
       .set({
         ...(body.status !== undefined && { status: body.status }),
         ...(body.notes !== undefined && { notes: body.notes }),
       })
-      .where(eq(enquiries.id, id))
-      .returning();
+      .where(eq(enquiries.id, id));
 
+    const [row] = await db.select().from(enquiries).where(eq(enquiries.id, id));
     if (!row) return Response.json({ error: "Not found" }, { status: 404 });
     return Response.json(row);
   },

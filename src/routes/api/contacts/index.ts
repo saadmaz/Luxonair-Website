@@ -28,18 +28,15 @@ export const APIRoute = createAPIFileRoute("/api/contacts")({
       return Response.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const [row] = await db
-      .insert(contacts)
-      .values({
-        name: body.name,
-        email: body.email,
-        phone: body.phone ?? null,
-        topic: body.topic ?? null,
-        message: body.message,
-        read: false,
-      })
-      .returning();
+    await db.insert(contacts).values({
+      name: body.name,
+      email: body.email,
+      phone: body.phone ?? null,
+      topic: body.topic ?? null,
+      message: body.message,
+      read: false,
+    });
 
-    return Response.json(row, { status: 201 });
+    return Response.json({ ok: true }, { status: 201 });
   },
 });
