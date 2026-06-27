@@ -29,7 +29,7 @@ export function Footer() {
             />
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-navy-fg/60">
-            UK-based travel specialists for premium long-haul, family escapes and corporate trips. Tailor-made itineraries, account-managed by a single consultant.
+            UK based travel specialist for premium long haul flights, family escapes and corporate trips. Custom made itineraries, handled and managed by a dedicated consultants.
           </p>
 
           {/* Social icons - only rendered when URLs are configured */}
