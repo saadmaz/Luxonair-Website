@@ -43,33 +43,30 @@ export const APIRoute = createAPIFileRoute("/api/enquiries")({
       return Response.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const [row] = await db
-      .insert(enquiries)
-      .values({
-        name: body.name,
-        email: body.email,
-        phone: body.phone,
-        destination: body.destination,
-        region: body.region ?? null,
-        tripType: body.tripType,
-        dateMode: body.dateMode,
-        departWindow: body.departWindow ?? null,
-        flexibility: body.flexibility ?? null,
-        departDate: body.departDate ?? null,
-        returnDate: body.returnDate ?? null,
-        nights: body.nights,
-        departAirport: body.departAirport,
-        cabinClass: body.cabinClass,
-        directOnly: body.directOnly ?? null,
-        preferredAirlines: body.preferredAirlines ?? null,
-        adults: body.adults,
-        children: body.children ?? 0,
-        budget: body.budget,
-        notes: body.notes ?? null,
-        status: "new",
-      })
-      .returning();
+    await db.insert(enquiries).values({
+      name: body.name,
+      email: body.email,
+      phone: body.phone,
+      destination: body.destination,
+      region: body.region ?? null,
+      tripType: body.tripType,
+      dateMode: body.dateMode,
+      departWindow: body.departWindow ?? null,
+      flexibility: body.flexibility ?? null,
+      departDate: body.departDate ?? null,
+      returnDate: body.returnDate ?? null,
+      nights: body.nights,
+      departAirport: body.departAirport,
+      cabinClass: body.cabinClass,
+      directOnly: body.directOnly ?? null,
+      preferredAirlines: body.preferredAirlines ?? null,
+      adults: body.adults,
+      children: body.children ?? 0,
+      budget: body.budget,
+      notes: body.notes ?? null,
+      status: "new",
+    });
 
-    return Response.json(row, { status: 201 });
+    return Response.json({ ok: true }, { status: 201 });
   },
 });

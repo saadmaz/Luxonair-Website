@@ -10,12 +10,12 @@ export const APIRoute = createAPIFileRoute("/api/contacts/$id")({
     const id = Number(params.id);
     const body = (await request.json()) as { read?: boolean };
 
-    const [row] = await db
+    await db
       .update(contacts)
       .set({ ...(body.read !== undefined && { read: body.read }) })
-      .where(eq(contacts.id, id))
-      .returning();
+      .where(eq(contacts.id, id));
 
+    const [row] = await db.select().from(contacts).where(eq(contacts.id, id));
     if (!row) return Response.json({ error: "Not found" }, { status: 404 });
     return Response.json(row);
   },

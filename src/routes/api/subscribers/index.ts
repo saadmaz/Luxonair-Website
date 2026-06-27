@@ -23,14 +23,12 @@ export const APIRoute = createAPIFileRoute("/api/subscribers")({
     }
 
     try {
-      const [row] = await db
+      await db
         .insert(subscribers)
         .values({ email: body.email.trim().toLowerCase() })
-        .onConflictDoNothing()
-        .returning();
+        .onDuplicateKeyUpdate({ set: { email: body.email.trim().toLowerCase() } });
 
-      // onConflictDoNothing returns undefined if the email already exists
-      return Response.json(row ?? { email: body.email }, { status: 201 });
+      return Response.json({ email: body.email }, { status: 201 });
     } catch {
       return Response.json({ error: "Could not subscribe" }, { status: 500 });
     }
