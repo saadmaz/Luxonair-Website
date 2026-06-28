@@ -4,6 +4,7 @@ import { db, contacts } from "../../../../db/index";
 import { requireAuth } from "@/server/auth";
 import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
 import { contactSchema } from "@/server/validate";
+import { sendContactAlert } from "@/server/email";
 
 export const APIRoute = createAPIFileRoute("/api/contacts")({
   GET: async ({ request }) => {
@@ -29,6 +30,10 @@ export const APIRoute = createAPIFileRoute("/api/contacts")({
 
     const { name, email, phone, topic, message } = parsed.data;
     await db.insert(contacts).values({ name, email, phone: phone ?? null, topic: topic ?? null, message, read: false });
+
+    sendContactAlert({ name, email, phone, topic, message }).catch((err) =>
+      console.error("[email] contact alert failed:", err)
+    );
 
     return Response.json({ ok: true }, { status: 201 });
   },

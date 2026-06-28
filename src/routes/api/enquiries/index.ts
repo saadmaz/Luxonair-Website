@@ -4,6 +4,7 @@ import { db, enquiries } from "../../../../db/index";
 import { requireAuth } from "@/server/auth";
 import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
 import { enquirySchema } from "@/server/validate";
+import { sendEnquiryAlert } from "@/server/email";
 
 export const APIRoute = createAPIFileRoute("/api/enquiries")({
   GET: async ({ request }) => {
@@ -51,6 +52,9 @@ export const APIRoute = createAPIFileRoute("/api/enquiries")({
       notes: d.notes ?? null,
       status: "new",
     });
+
+    // Fire-and-forget — DB insert is the source of truth; email failure must not break the response
+    sendEnquiryAlert(d).catch((err) => console.error("[email] enquiry alert failed:", err));
 
     return Response.json({ ok: true }, { status: 201 });
   },
