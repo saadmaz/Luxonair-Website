@@ -1,61 +1,67 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, Pencil, Trash2 } from "lucide-react";
-import { holidayTypes as initialHolidays } from "@/data/holidayTypes";
-import type { HolidayType } from "@/types/holiday-type";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/holidays")({
   component: AdminHolidaysPage,
 });
 
-type HolidayItem = HolidayType & { _id: string };
-
-const toItem = (h: HolidayType): HolidayItem => ({ ...h, _id: h.slug });
+type DbHoliday = {
+  id: number;
+  slug: string;
+  name: string;
+  tagline: string;
+  summary: string;
+  heroImage: string;
+  bullets: string[];
+  destinationSlugs: string[];
+};
 
 const inputCls = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#042045] focus:bg-white focus:ring-2 focus:ring-[#042045]/10";
 const labelCls = "block text-sm font-medium text-gray-700 mb-1";
 
-const emptyForm = { slug: "", name: "", tagline: "", summary: "", heroImage: "", bullets: ["", "", "", ""], destinationSlugs: [] as string[] };
-
-type FormState = typeof emptyForm;
-
-const itemToForm = (h: HolidayItem): FormState => ({
-  slug: h.slug, name: h.name, tagline: h.tagline, summary: h.summary,
-  heroImage: h.heroImage,
-  bullets: [...h.bullets, "", "", "", ""].slice(0, 4) as string[],
-  destinationSlugs: [...h.destinationSlugs] as string[],
-});
+const emptyForm = { slug: "", name: "", tagline: "", summary: "", heroImage: "", bullets: ["", "", "", ""] as string[], destinationSlugs: [] as string[] };
 
 function AdminHolidaysPage() {
-  const [items, setItems] = useState<HolidayItem[]>(initialHolidays.map(toItem));
+  const qc = useQueryClient();
   const [modal, setModal] = useState<"add" | "edit" | null>(null);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [form, setForm] = useState<FormState>(emptyForm);
-  const [editId, setEditId] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [form, setForm] = useState(emptyForm);
+  const [editId, setEditId] = useState<number | null>(null);
 
-  const openAdd = () => { setForm(emptyForm); setModal("add"); };
-  const openEdit = (item: HolidayItem) => { setEditId(item._id); setForm(itemToForm(item)); setModal("edit"); };
+  const { data: items = [], isLoading } = useQuery({
+    queryKey: ["holidays"],
+    queryFn: () => api.get<DbHoliday[]>("/api/holidays"),
+  });
 
-  const handleSave = () => {
-    const bullets = (form.bullets as string[]).filter((b) => b.trim()) as readonly string[];
-    if (modal === "add") {
-      const id = form.slug || String(Date.now());
-      setItems((prev) => [...prev, { ...form, bullets, _id: id }]);
-    } else if (editId) {
-      setItems((prev) => prev.map((i) => i._id === editId ? { ...form, bullets, _id: editId } : i));
-    }
-    setModal(null);
-  };
-  const confirmDelete = () => {
-    if (!deleteId) return;
-    setItems((prev) => prev.filter((i) => i._id !== deleteId));
-    setDeleteId(null);
+  const saveMut = useMutation({
+    mutationFn: (data: typeof emptyForm) => {
+      const payload = { ...data, bullets: data.bullets.filter((b) => b.trim()) };
+      return editId !== null
+        ? api.patch(`/api/holidays/${editId}`, payload)
+        : api.post("/api/holidays", payload);
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["holidays"] }); setModal(null); },
+  });
+
+  const deleteMut = useMutation({
+    mutationFn: (id: number) => api.delete(`/api/holidays/${id}`),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["holidays"] }); setDeleteId(null); },
+  });
+
+  const openAdd = () => { setForm(emptyForm); setEditId(null); setModal("add"); };
+  const openEdit = (h: DbHoliday) => {
+    setEditId(h.id);
+    setForm({ slug: h.slug, name: h.name, tagline: h.tagline, summary: h.summary, heroImage: h.heroImage, bullets: [...(h.bullets as string[]), "", "", "", ""].slice(0, 4), destinationSlugs: [...(h.destinationSlugs as string[])] });
+    setModal("edit");
   };
 
   const setBullet = (index: number, value: string) => {
-    const next = [...(form.bullets as string[])];
+    const next = [...form.bullets];
     next[index] = value;
     setForm({ ...form, bullets: next });
   };
@@ -72,37 +78,41 @@ function AdminHolidaysPage() {
         </button>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {items.map((h) => (
-          <div key={h._id} className="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
-            <div className="relative h-36 overflow-hidden bg-gray-100">
-              {h.heroImage && <img src={h.heroImage} alt={h.name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />}
-              <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
-              <div className="absolute bottom-3 left-3">
-                <p className="text-lg font-bold text-white">{h.name}</p>
+      {isLoading ? (
+        <div className="flex h-40 items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-gray-300" /></div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {items.map((h) => (
+            <div key={h.id} className="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+              <div className="relative h-36 overflow-hidden bg-gray-100">
+                {h.heroImage && <img src={h.heroImage} alt={h.name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />}
+                <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-3 left-3">
+                  <p className="text-lg font-bold text-white">{h.name}</p>
+                </div>
               </div>
-            </div>
-            <div className="p-4">
-              <p className="text-xs font-medium text-[#042045]/70 italic">"{h.tagline}"</p>
-              <p className="mt-2 line-clamp-2 text-xs text-gray-500">{h.summary}</p>
-              <div className="mt-3 space-y-1">
-                {(h.bullets as string[]).map((b) => (
-                  <div key={b} className="flex items-center gap-1.5 text-xs text-gray-600">
-                    <span className="h-1 w-1 rounded-full bg-[#042045]/40 shrink-0" />{b}
+              <div className="p-4">
+                <p className="text-xs font-medium text-[#042045]/70 italic">"{h.tagline}"</p>
+                <p className="mt-2 line-clamp-2 text-xs text-gray-500">{h.summary}</p>
+                <div className="mt-3 space-y-1">
+                  {(h.bullets as string[]).filter(Boolean).map((b) => (
+                    <div key={b} className="flex items-center gap-1.5 text-xs text-gray-600">
+                      <span className="h-1 w-1 rounded-full bg-[#042045]/40 shrink-0" />{b}
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
+                  <span className="text-xs text-gray-400">{(h.destinationSlugs as string[]).length} destination{(h.destinationSlugs as string[]).length !== 1 ? "s" : ""} linked</span>
+                  <div className="flex items-center gap-1.5">
+                    <button onClick={() => openEdit(h)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-gray-50 hover:text-gray-600"><Pencil className="h-3.5 w-3.5" /></button>
+                    <button onClick={() => setDeleteId(h.id)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"><Trash2 className="h-3.5 w-3.5" /></button>
                   </div>
-                ))}
-              </div>
-              <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
-                <span className="text-xs text-gray-400">{h.destinationSlugs.length} destination{h.destinationSlugs.length !== 1 ? "s" : ""} linked</span>
-                <div className="flex items-center gap-1.5">
-                  <button onClick={() => openEdit(h)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-gray-50 hover:text-gray-600"><Pencil className="h-3.5 w-3.5" /></button>
-                  <button onClick={() => setDeleteId(h._id)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"><Trash2 className="h-3.5 w-3.5" /></button>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Add / Edit modal */}
       <Dialog open={modal !== null} onOpenChange={(o) => !o && setModal(null)}>
@@ -119,15 +129,18 @@ function AdminHolidaysPage() {
               <label className={labelCls}>Bullet points (up to 4)</label>
               <div className="space-y-2">
                 {[0, 1, 2, 3].map((i) => (
-                  <input key={i} className={inputCls} placeholder={`Bullet ${i + 1}`} value={(form.bullets as string[])[i] ?? ""} onChange={(e) => setBullet(i, e.target.value)} />
+                  <input key={i} className={inputCls} placeholder={`Bullet ${i + 1}`} value={form.bullets[i] ?? ""} onChange={(e) => setBullet(i, e.target.value)} />
                 ))}
               </div>
             </div>
             <ImageUpload label="Hero image" value={form.heroImage} onChange={(url) => setForm({ ...form, heroImage: url })} />
           </div>
+          {saveMut.error && <p className="text-sm text-red-600">{(saveMut.error as Error).message}</p>}
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
-            <button onClick={handleSave} className="rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90">Save</button>
+            <button onClick={() => saveMut.mutate(form)} disabled={saveMut.isPending} className="inline-flex items-center gap-2 rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90 disabled:opacity-60">
+              {saveMut.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}Save
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -139,7 +152,9 @@ function AdminHolidaysPage() {
           <p className="text-sm text-gray-500">This will remove the category from the site.</p>
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
-            <button onClick={confirmDelete} className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Delete</button>
+            <button onClick={() => deleteId !== null && deleteMut.mutate(deleteId)} disabled={deleteMut.isPending} className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60">
+              {deleteMut.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}Delete
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

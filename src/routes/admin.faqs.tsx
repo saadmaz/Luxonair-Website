@@ -1,85 +1,95 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, Pencil, Trash2, ChevronDown } from "lucide-react";
-import { loadFaqs, persistFaqs } from "@/lib/faqs";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Plus, Pencil, Trash2, ChevronDown, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/faqs")({
   component: AdminFaqsPage,
 });
 
-type FaqItem = { id: string; q: string; a: string };
-type FaqGroup = { id: string; title: string; items: FaqItem[] };
-
-const toGroups = (): FaqGroup[] =>
-  loadFaqs().map((g, gi) => ({
-    id: `g${gi}`,
-    title: g.title,
-    items: g.items.map((item, ii) => ({ id: `g${gi}i${ii}`, q: item.q, a: item.a })),
-  }));
+type DbFaqItem = { id: number; faqGroupId: number; question: string; answer: string; sortOrder: number };
+type DbFaqGroup = { id: number; title: string; sortOrder: number; items: DbFaqItem[] };
 
 const inputCls = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#042045] focus:bg-white focus:ring-2 focus:ring-[#042045]/10";
 const labelCls = "block text-sm font-medium text-gray-700 mb-1";
 
 function AdminFaqsPage() {
-  const [groups, setGroups] = useState<FaqGroup[]>(toGroups());
-  const [openKey, setOpenKey] = useState<string | null>(null);
+  const qc = useQueryClient();
+  const [openKey, setOpenKey] = useState<number | null>(null);
 
   // Question modal
-  const [qModal, setQModal] = useState<{ mode: "add" | "edit"; groupId: string; itemId?: string } | null>(null);
+  const [qModal, setQModal] = useState<{ mode: "add" | "edit"; groupId: number; itemId?: number } | null>(null);
   const [qForm, setQForm] = useState({ q: "", a: "" });
 
   // Category modal
-  const [catModal, setCatModal] = useState<{ mode: "add" | "edit"; groupId?: string } | null>(null);
+  const [catModal, setCatModal] = useState<{ mode: "add" | "edit"; groupId?: number } | null>(null);
   const [catForm, setCatForm] = useState("");
 
   // Delete states
-  const [deleteItem, setDeleteItem] = useState<{ groupId: string; itemId: string } | null>(null);
-  const [deleteGroup, setDeleteGroup] = useState<string | null>(null);
+  const [deleteItem, setDeleteItem] = useState<number | null>(null);
+  const [deleteGroup, setDeleteGroup] = useState<number | null>(null);
+
+  const { data: groups = [], isLoading } = useQuery({
+    queryKey: ["faqs"],
+    queryFn: () => api.get<DbFaqGroup[]>("/api/faqs"),
+  });
 
   const totalFaqs = groups.reduce((s, g) => s + g.items.length, 0);
 
-  const sync = (next: FaqGroup[]) => {
-    setGroups(next);
-    persistFaqs(next.map(({ title, items }) => ({ title, items: items.map(({ q, a }) => ({ q, a })) })));
-  };
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["faqs"] });
 
-  // Question handlers
-  const openAddQ = (groupId: string) => { setQForm({ q: "", a: "" }); setQModal({ mode: "add", groupId }); };
-  const openEditQ = (groupId: string, item: FaqItem) => { setQForm({ q: item.q, a: item.a }); setQModal({ mode: "edit", groupId, itemId: item.id }); };
+  // Group mutations
+  const addGroupMut = useMutation({
+    mutationFn: (title: string) => api.post("/api/faqs", { title }),
+    onSuccess: () => { invalidate(); setCatModal(null); },
+  });
+  const editGroupMut = useMutation({
+    mutationFn: ({ id, title }: { id: number; title: string }) => api.patch(`/api/faq-groups/${id}`, { title }),
+    onSuccess: () => { invalidate(); setCatModal(null); },
+  });
+  const deleteGroupMut = useMutation({
+    mutationFn: (id: number) => api.delete(`/api/faq-groups/${id}`),
+    onSuccess: () => { invalidate(); setDeleteGroup(null); },
+  });
+
+  // Item mutations
+  const addItemMut = useMutation({
+    mutationFn: ({ groupId, q, a }: { groupId: number; q: string; a: string }) =>
+      api.post("/api/faq-items", { faqGroupId: groupId, question: q, answer: a }),
+    onSuccess: () => { invalidate(); setQModal(null); },
+  });
+  const editItemMut = useMutation({
+    mutationFn: ({ id, q, a }: { id: number; q: string; a: string }) =>
+      api.patch(`/api/faq-items/${id}`, { question: q, answer: a }),
+    onSuccess: () => { invalidate(); setQModal(null); },
+  });
+  const deleteItemMut = useMutation({
+    mutationFn: (id: number) => api.delete(`/api/faq-items/${id}`),
+    onSuccess: () => { invalidate(); setDeleteItem(null); },
+  });
+
+  // Handlers
+  const openAddQ = (groupId: number) => { setQForm({ q: "", a: "" }); setQModal({ mode: "add", groupId }); };
+  const openEditQ = (groupId: number, item: DbFaqItem) => { setQForm({ q: item.question, a: item.answer }); setQModal({ mode: "edit", groupId, itemId: item.id }); };
   const saveQ = () => {
     if (!qModal) return;
-    sync(groups.map((g) => {
-      if (g.id !== qModal.groupId) return g;
-      if (qModal.mode === "add") return { ...g, items: [...g.items, { id: `q${Date.now()}`, ...qForm }] };
-      return { ...g, items: g.items.map((i) => i.id === qModal.itemId ? { ...i, ...qForm } : i) };
-    }));
-    setQModal(null);
-  };
-  const confirmDeleteQ = () => {
-    if (!deleteItem) return;
-    sync(groups.map((g) => g.id === deleteItem.groupId ? { ...g, items: g.items.filter((i) => i.id !== deleteItem.itemId) } : g));
-    setDeleteItem(null);
+    if (qModal.mode === "add") addItemMut.mutate({ groupId: qModal.groupId, q: qForm.q, a: qForm.a });
+    else if (qModal.itemId) editItemMut.mutate({ id: qModal.itemId, q: qForm.q, a: qForm.a });
   };
 
-  // Category handlers
   const openAddCat = () => { setCatForm(""); setCatModal({ mode: "add" }); };
-  const openEditCat = (g: FaqGroup) => { setCatForm(g.title); setCatModal({ mode: "edit", groupId: g.id }); };
+  const openEditCat = (g: DbFaqGroup) => { setCatForm(g.title); setCatModal({ mode: "edit", groupId: g.id }); };
   const saveCat = () => {
     if (!catModal) return;
-    if (catModal.mode === "add") {
-      sync([...groups, { id: `g${Date.now()}`, title: catForm, items: [] }]);
-    } else if (catModal.groupId) {
-      sync(groups.map((g) => g.id === catModal.groupId ? { ...g, title: catForm } : g));
-    }
-    setCatModal(null);
+    if (catModal.mode === "add") addGroupMut.mutate(catForm);
+    else if (catModal.groupId) editGroupMut.mutate({ id: catModal.groupId, title: catForm });
   };
-  const confirmDeleteGroup = () => {
-    if (!deleteGroup) return;
-    sync(groups.filter((g) => g.id !== deleteGroup));
-    setDeleteGroup(null);
-  };
+
+  const qSaving = addItemMut.isPending || editItemMut.isPending;
+  const catSaving = addGroupMut.isPending || editGroupMut.isPending;
 
   return (
     <div className="p-6 lg:p-8">
@@ -98,52 +108,55 @@ function AdminFaqsPage() {
         </div>
       </div>
 
-      <div className="space-y-4">
-        {groups.map((group) => (
-          <div key={group.id} className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-            <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50/60 px-6 py-3.5">
-              <div className="flex items-center gap-3">
-                <h2 className="font-semibold text-gray-900">{group.title}</h2>
-                <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-600">{group.items.length}</span>
+      {isLoading ? (
+        <div className="flex h-40 items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-gray-300" /></div>
+      ) : (
+        <div className="space-y-4">
+          {groups.map((group) => (
+            <div key={group.id} className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+              <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50/60 px-6 py-3.5">
+                <div className="flex items-center gap-3">
+                  <h2 className="font-semibold text-gray-900">{group.title}</h2>
+                  <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-600">{group.items.length}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => openEditCat(group)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-white hover:text-gray-600"><Pencil className="h-3.5 w-3.5" /></button>
+                  <button onClick={() => setDeleteGroup(group.id)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"><Trash2 className="h-3.5 w-3.5" /></button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <button onClick={() => openEditCat(group)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-white hover:text-gray-600"><Pencil className="h-3.5 w-3.5" /></button>
-                <button onClick={() => setDeleteGroup(group.id)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"><Trash2 className="h-3.5 w-3.5" /></button>
+
+              <div className="divide-y divide-gray-100">
+                {group.items.map((item) => {
+                  const isOpen = openKey === item.id;
+                  return (
+                    <div key={item.id}>
+                      <button onClick={() => setOpenKey(isOpen ? null : item.id)} className="flex w-full items-center justify-between px-6 py-4 text-left transition-colors hover:bg-gray-50/60">
+                        <span className="pr-6 text-sm font-medium text-gray-800">{item.question}</span>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <button onClick={(e) => { e.stopPropagation(); openEditQ(group.id, item); }} className="rounded-lg border border-gray-200 p-1 text-gray-300 hover:bg-white hover:text-gray-600"><Pencil className="h-3 w-3" /></button>
+                          <button onClick={(e) => { e.stopPropagation(); setDeleteItem(item.id); }} className="rounded-lg border border-gray-200 p-1 text-gray-300 hover:bg-red-50 hover:text-red-500"><Trash2 className="h-3 w-3" /></button>
+                          <ChevronDown className={cn("h-4 w-4 text-gray-400 transition-transform", isOpen && "rotate-180")} />
+                        </div>
+                      </button>
+                      {isOpen && (
+                        <div className="border-t border-gray-100 bg-blue-50/30 px-6 py-4">
+                          <p className="text-sm leading-relaxed text-gray-600">{item.answer}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="border-t border-gray-100 px-6 py-3">
+                <button onClick={() => openAddQ(group.id)} className="flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-[#042045]">
+                  <Plus className="h-3.5 w-3.5" />Add question to "{group.title}"
+                </button>
               </div>
             </div>
-
-            <div className="divide-y divide-gray-100">
-              {group.items.map((item) => {
-                const key = item.id;
-                const isOpen = openKey === key;
-                return (
-                  <div key={key}>
-                    <button onClick={() => setOpenKey(isOpen ? null : key)} className="flex w-full items-center justify-between px-6 py-4 text-left transition-colors hover:bg-gray-50/60">
-                      <span className="pr-6 text-sm font-medium text-gray-800">{item.q}</span>
-                      <div className="flex shrink-0 items-center gap-2">
-                        <button onClick={(e) => { e.stopPropagation(); openEditQ(group.id, item); }} className="rounded-lg border border-gray-200 p-1 text-gray-300 hover:bg-white hover:text-gray-600"><Pencil className="h-3 w-3" /></button>
-                        <button onClick={(e) => { e.stopPropagation(); setDeleteItem({ groupId: group.id, itemId: item.id }); }} className="rounded-lg border border-gray-200 p-1 text-gray-300 hover:bg-red-50 hover:text-red-500"><Trash2 className="h-3 w-3" /></button>
-                        <ChevronDown className={cn("h-4 w-4 text-gray-400 transition-transform", isOpen && "rotate-180")} />
-                      </div>
-                    </button>
-                    {isOpen && (
-                      <div className="border-t border-gray-100 bg-blue-50/30 px-6 py-4">
-                        <p className="text-sm leading-relaxed text-gray-600">{item.a}</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="border-t border-gray-100 px-6 py-3">
-              <button onClick={() => openAddQ(group.id)} className="flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-[#042045]">
-                <Plus className="h-3.5 w-3.5" />Add question to "{group.title}"
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Question modal */}
       <Dialog open={qModal !== null} onOpenChange={(o) => !o && setQModal(null)}>
@@ -153,7 +166,7 @@ function AdminFaqsPage() {
             {qModal?.mode === "add" && (
               <div>
                 <label className={labelCls}>Category</label>
-                <select className={inputCls} value={qModal?.groupId} onChange={(e) => setQModal((m) => m ? { ...m, groupId: e.target.value } : m)}>
+                <select className={inputCls} value={qModal.groupId} onChange={(e) => setQModal((m) => m ? { ...m, groupId: Number(e.target.value) } : m)}>
                   {groups.map((g) => <option key={g.id} value={g.id}>{g.title}</option>)}
                 </select>
               </div>
@@ -163,7 +176,9 @@ function AdminFaqsPage() {
           </div>
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
-            <button onClick={saveQ} className="rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90">Save</button>
+            <button onClick={saveQ} disabled={qSaving} className="inline-flex items-center gap-2 rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90 disabled:opacity-60">
+              {qSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}Save
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -175,7 +190,9 @@ function AdminFaqsPage() {
           <div className="py-2"><label className={labelCls}>Category name</label><input className={inputCls} value={catForm} onChange={(e) => setCatForm(e.target.value)} /></div>
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
-            <button onClick={saveCat} className="rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90">Save</button>
+            <button onClick={saveCat} disabled={catSaving} className="inline-flex items-center gap-2 rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90 disabled:opacity-60">
+              {catSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}Save
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -187,7 +204,9 @@ function AdminFaqsPage() {
           <p className="text-sm text-gray-500">This FAQ entry will be removed.</p>
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
-            <button onClick={confirmDeleteQ} className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Delete</button>
+            <button onClick={() => deleteItem !== null && deleteItemMut.mutate(deleteItem)} disabled={deleteItemMut.isPending} className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60">
+              {deleteItemMut.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}Delete
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -199,7 +218,9 @@ function AdminFaqsPage() {
           <p className="text-sm text-gray-500">This will delete the category and all its questions.</p>
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
-            <button onClick={confirmDeleteGroup} className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Delete</button>
+            <button onClick={() => deleteGroup !== null && deleteGroupMut.mutate(deleteGroup)} disabled={deleteGroupMut.isPending} className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60">
+              {deleteGroupMut.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}Delete
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
