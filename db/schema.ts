@@ -1,4 +1,4 @@
-import { boolean, int, json, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { boolean, index, int, json, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 export const enquiries = mysqlTable("enquiries", {
   id: int("id").autoincrement().primaryKey(),
@@ -24,7 +24,10 @@ export const enquiries = mysqlTable("enquiries", {
   notes: text("notes"),
   status: text("status").notNull().default("new"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  index("enquiries_status_idx").on(t.createdAt),
+  index("enquiries_created_at_idx").on(t.createdAt),
+]);
 
 export const contacts = mysqlTable("contacts", {
   id: int("id").autoincrement().primaryKey(),
@@ -35,13 +38,18 @@ export const contacts = mysqlTable("contacts", {
   message: text("message").notNull(),
   read: boolean("read").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  index("contacts_read_idx").on(t.read),
+  index("contacts_created_at_idx").on(t.createdAt),
+]);
 
 export const subscribers = mysqlTable("subscribers", {
   id: int("id").autoincrement().primaryKey(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  index("subscribers_created_at_idx").on(t.createdAt),
+]);
 
 export type Enquiry = typeof enquiries.$inferSelect;
 export type Contact = typeof contacts.$inferSelect;
@@ -61,7 +69,9 @@ export const blogPosts = mysqlTable("blog_posts", {
   heroImage: text("hero_image").notNull(),
   content: json("content").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  index("blog_posts_date_idx").on(t.date),
+]);
 
 export const destinations = mysqlTable("destinations", {
   id: int("id").autoincrement().primaryKey(),
@@ -80,7 +90,10 @@ export const destinations = mysqlTable("destinations", {
   itinerary: json("itinerary").notNull(),
   highlights: json("highlights").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  index("destinations_region_idx").on(t.region),
+  index("destinations_budget_band_idx").on(t.budgetBand),
+]);
 
 export const deals = mysqlTable("deals", {
   id: varchar("id", { length: 100 }).primaryKey(),
@@ -96,7 +109,9 @@ export const deals = mysqlTable("deals", {
   image: text("image").notNull(),
   blurb: text("blurb").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  index("deals_expires_idx").on(t.expires),
+]);
 
 export const testimonials = mysqlTable("testimonials", {
   id: int("id").autoincrement().primaryKey(),
@@ -106,14 +121,18 @@ export const testimonials = mysqlTable("testimonials", {
   date: varchar("date", { length: 10 }).notNull(),
   body: text("body").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  index("testimonials_created_at_idx").on(t.createdAt),
+]);
 
 export const faqGroups = mysqlTable("faq_groups", {
   id: int("id").autoincrement().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   sortOrder: int("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  index("faq_groups_sort_order_idx").on(t.sortOrder),
+]);
 
 export const faqItems = mysqlTable("faq_items", {
   id: int("id").autoincrement().primaryKey(),
@@ -122,7 +141,10 @@ export const faqItems = mysqlTable("faq_items", {
   answer: text("answer").notNull(),
   sortOrder: int("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  index("faq_items_group_id_idx").on(t.faqGroupId),
+  index("faq_items_sort_order_idx").on(t.sortOrder),
+]);
 
 export const holidayTypes = mysqlTable("holiday_types", {
   id: int("id").autoincrement().primaryKey(),
