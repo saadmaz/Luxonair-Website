@@ -115,8 +115,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
                 {
                   "@type": "OpeningHoursSpecification",
                   "dayOfWeek": ["Saturday","Sunday"],
-                  "opens": "10:00",
-                  "closes": "17:00"
+                  "opens": "09:00",
+                  "closes": "16:00"
                 }
               ],
               "priceRange": "£££",

@@ -13,7 +13,7 @@ interface SectionHeaderProps {
 // Any route or feature can import this without duplicating Tailwind classes.
 export function SectionHeader({ eyebrow, title, cta }: SectionHeaderProps) {
   return (
-    <div className="flex items-end justify-between gap-6">
+    <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
       <div className="max-w-xl">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">{eyebrow}</p>
         <h2 className="mt-2 font-display text-3xl font-semibold sm:text-4xl text-balance">
@@ -23,7 +23,7 @@ export function SectionHeader({ eyebrow, title, cta }: SectionHeaderProps) {
       {cta && (
         <Link
           to={cta.to}
-          className="hidden shrink-0 items-center gap-1 text-sm font-medium hover:text-primary sm:inline-flex"
+          className="inline-flex shrink-0 items-center gap-1 text-sm font-medium hover:text-primary"
         >
           {cta.label} <ArrowRight className="h-4 w-4" />
         </Link>

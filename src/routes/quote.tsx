@@ -58,10 +58,10 @@ function QuotePage() {
   };
 
   return (
-    <div className="container-page grid gap-12 py-12 lg:grid-cols-[1fr_1.4fr] md:py-20">
-      <aside>
+    <div className="container-page grid gap-8 py-10 lg:grid-cols-[1fr_1.4fr] md:py-16 lg:py-20 lg:gap-12">
+      <aside className="order-last lg:order-first">
         <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Get a quote</p>
-        <h1 className="mt-2 font-display text-4xl font-semibold text-balance sm:text-5xl">
+        <h1 className="mt-2 font-display text-3xl font-semibold text-balance sm:text-4xl lg:text-5xl">
           Four short steps. One human reply.
         </h1>
         <p className="mt-4 text-muted-foreground">
