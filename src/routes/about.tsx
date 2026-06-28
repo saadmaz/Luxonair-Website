@@ -44,14 +44,14 @@ function AboutPage() {
 
       {/* Stats */}
       <section className="border-b border-border">
-        <div className="container-page grid gap-6 py-12 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="container-page grid grid-cols-2 gap-3 py-10 sm:gap-6 sm:py-12 lg:grid-cols-4">
           {[
             { icon: Globe2, value: SITE.stats.trips, label: "Trips delivered" },
             { icon: Users, value: SITE.stats.repeatRate, label: "Repeat traveller rate" },
             { icon: Award, value: SITE.stats.years, label: "Years operating" },
             { icon: Briefcase, value: SITE.stats.corporate, label: "Corporate accounts" },
           ].map(({ icon: Icon, value, label }) => (
-            <div key={label} className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
+            <div key={label} className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm sm:gap-4 sm:p-6">
               <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary/8 text-gold">
                 <Icon className="h-5 w-5" />
               </span>

@@ -9,7 +9,7 @@ export function FinalCTA() {
   return (
     <section className="container-page py-12 md:py-16">
       <div className="relative overflow-hidden rounded-2xl bg-navy text-navy-fg shadow-xl">
-        <div className="px-8 py-10 sm:px-12 md:px-16 md:py-12">
+        <div className="px-5 py-8 sm:px-8 sm:py-10 md:px-16 md:py-12">
 
         <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center md:gap-12">
           <div>
@@ -21,15 +21,15 @@ export function FinalCTA() {
               A dedicated travel consultant will be in touch the same day to start building your trip.
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-3 md:justify-end">
-            <Button asChild size="lg" className="bg-gold text-gold-foreground hover:bg-gold/90">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center md:justify-end">
+            <Button asChild size="lg" className="w-full bg-gold text-gold-foreground hover:bg-gold/90 sm:w-auto">
               <Link to="/quote">Start a quote</Link>
             </Button>
             <Button
               asChild
               size="lg"
               variant="outline"
-              className="border-navy-fg/30 bg-transparent text-navy-fg hover:bg-navy-fg/10"
+              className="w-full border-navy-fg/30 bg-transparent text-navy-fg hover:bg-navy-fg/10 sm:w-auto"
             >
               <a
                 href={`https://wa.me/${SITE.phone.whatsapp}`}

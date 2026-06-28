@@ -150,7 +150,7 @@ function ContactPage() {
           </aside>
 
           {/* Right: form */}
-          <div className="rounded-2xl border border-border bg-card p-7 shadow-sm md:p-10">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-7 md:p-10">
             {done ? (
               <div className="flex flex-col items-center justify-center py-10 text-center">
                 <CheckCircle2 className="h-12 w-12 text-gold" />

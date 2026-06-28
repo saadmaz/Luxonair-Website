@@ -154,8 +154,8 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="border-t border-navy-fg/10">
+      {/* Bottom bar — pb-16 clears the fixed StickyMobileCTA on mobile */}
+      <div className="border-t border-navy-fg/10 pb-16 md:pb-0">
         <div className="container-page py-5 text-xs text-navy-fg/50">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2">

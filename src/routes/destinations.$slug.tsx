@@ -88,9 +88,9 @@ function DestinationDetail() {
         </div>
       </div>
 
-      <div className="container-page grid gap-12 py-12 lg:grid-cols-[1.4fr_1fr] md:py-20">
+      <div className="container-page grid gap-8 py-10 lg:grid-cols-[1.4fr_1fr] md:py-16 lg:py-20 lg:gap-12">
         <div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {d.gallery.map((g, i) => (
               <img key={i} src={g} alt={`${d.name} gallery ${i + 1}`} loading="lazy" className="aspect-[4/3] rounded-lg object-cover" />
             ))}
@@ -125,7 +125,7 @@ function DestinationDetail() {
           </p>
         </div>
 
-        <aside className="lg:sticky lg:top-24 lg:self-start">
+        <aside className="order-first lg:order-last lg:sticky lg:top-24 lg:self-start">
           <div className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-baseline justify-between">
               <span className="text-sm text-muted-foreground">From</span>

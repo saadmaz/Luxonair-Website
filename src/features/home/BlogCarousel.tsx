@@ -122,17 +122,17 @@ export function BlogCarousel() {
           <button
             onClick={prev}
             aria-label="Previous article"
-            className="absolute top-1/2 -translate-y-1/2 left-2 md:left-0 md:-translate-x-full md:-ml-3 flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white/90 shadow-md transition-all hover:border-gray-300 hover:shadow-lg dark:border-white/10 dark:bg-navy/80 dark:hover:bg-white/10"
+            className="absolute top-18 left-2 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white/90 shadow-md transition-all hover:border-gray-300 hover:shadow-lg md:top-1/2 md:-translate-y-1/2 md:left-0 md:-translate-x-full md:-ml-3 md:h-11 md:w-11 dark:border-white/10 dark:bg-navy/80 dark:hover:bg-white/10"
           >
-            <ChevronLeft className="h-5 w-5 text-gray-700 dark:text-white" />
+            <ChevronLeft className="h-4 w-4 text-gray-700 md:h-5 md:w-5 dark:text-white" />
           </button>
 
           <button
             onClick={next}
             aria-label="Next article"
-            className="absolute top-1/2 -translate-y-1/2 right-2 md:right-0 md:translate-x-full md:ml-3 flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white/90 shadow-md transition-all hover:border-gray-300 hover:shadow-lg dark:border-white/10 dark:bg-navy/80 dark:hover:bg-white/10"
+            className="absolute top-18 right-2 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white/90 shadow-md transition-all hover:border-gray-300 hover:shadow-lg md:top-1/2 md:-translate-y-1/2 md:right-0 md:translate-x-full md:ml-3 md:h-11 md:w-11 dark:border-white/10 dark:bg-navy/80 dark:hover:bg-white/10"
           >
-            <ChevronRight className="h-5 w-5 text-gray-700 dark:text-white" />
+            <ChevronRight className="h-4 w-4 text-gray-700 md:h-5 md:w-5 dark:text-white" />
           </button>
         </div>
 
