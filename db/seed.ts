@@ -5,7 +5,6 @@
  * Usage:
  *   npx tsx db/seed.ts
  */
-import "dotenv/config";
 import { count } from "drizzle-orm";
 import {
   db,
