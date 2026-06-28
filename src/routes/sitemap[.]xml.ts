@@ -1,15 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { destinations } from "@/data/destinations";
-import { holidayTypes } from "@/data/holidayTypes";
-import { blogPosts } from "@/data/blog";
+import { getDestinations, getHolidayTypes, getPublishedBlogPosts } from "@/server/queries";
 
-const BASE_URL = "";
+const BASE_URL = "https://www.luxeonair.co.uk";
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
+        const [dests, types, posts] = await Promise.all([
+          getDestinations(),
+          getHolidayTypes(),
+          getPublishedBlogPosts(),
+        ]);
+
         const entries = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/destinations", changefreq: "weekly", priority: "0.9" },
@@ -21,12 +25,14 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/quote", changefreq: "monthly", priority: "0.8" },
           { path: "/contact", changefreq: "monthly", priority: "0.6" },
           { path: "/about", changefreq: "monthly", priority: "0.6" },
-          ...destinations.map((d) => ({ path: `/destinations/${d.slug}`, changefreq: "monthly", priority: "0.7" })),
-          ...holidayTypes.map((h) => ({ path: `/holiday-types/${h.slug}`, changefreq: "monthly", priority: "0.7" })),
-          ...blogPosts.map((p) => ({ path: `/blog/${p.slug}`, changefreq: "monthly", priority: "0.6" })),
+          ...dests.map((d) => ({ path: `/destinations/${d.slug}`, changefreq: "monthly", priority: "0.7" })),
+          ...types.map((h) => ({ path: `/holiday-types/${h.slug}`, changefreq: "monthly", priority: "0.7" })),
+          ...posts.map((p) => ({ path: `/blog/${p.slug}`, changefreq: "monthly", priority: "0.6" })),
         ];
-        const urls = entries.map((e) =>
-          `  <url>\n    <loc>${BASE_URL}${e.path}</loc>\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`
+
+        const urls = entries.map(
+          (e) =>
+            `  <url>\n    <loc>${BASE_URL}${e.path}</loc>\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`
         );
         const xml = [
           `<?xml version="1.0" encoding="UTF-8"?>`,
@@ -34,7 +40,13 @@ export const Route = createFileRoute("/sitemap.xml")({
           ...urls,
           `</urlset>`,
         ].join("\n");
-        return new Response(xml, { headers: { "Content-Type": "application/xml", "Cache-Control": "public, max-age=3600" } });
+
+        return new Response(xml, {
+          headers: {
+            "Content-Type": "application/xml",
+            "Cache-Control": "public, max-age=3600",
+          },
+        });
       },
     },
   },
