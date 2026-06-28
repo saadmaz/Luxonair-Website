@@ -22,7 +22,7 @@ export const Route = createFileRoute("/quote")({
   head: () => ({
     meta: [
       { title: "Get a Free Holiday Quote | 4 Steps | Luxeonair" },
-      { name: "description", content: "Four quick steps. A dedicated UK travel consultant reviews your brief and replies within 4 working hours. Mon–Fri 09:00–18:00, Sat–Sun 10:00–17:00 GMT. ATOL protected. No obligation, no spam." },
+      { name: "description", content: "Four quick steps. A dedicated UK travel consultant reviews your brief and replies within 4 working hours. Mon–Fri 09:00–18:00, Sat–Sun 09:00–16:00 GMT. ATOL protected. No obligation, no spam." },
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Get a Free Holiday Quote | Luxeonair" },
       { property: "og:description", content: "Four quick steps. A UK consultant replies within 4 working hours. ATOL protected. No obligation, no spam." },
@@ -68,7 +68,7 @@ function QuotePage() {
           We don't auto-route, auto-quote, or pass you to a call centre. Your enquiry lands with a consultant who builds the trip and stays with you through it.
         </p>
         <ul className="mt-8 space-y-4 text-sm">
-          <Row icon={Clock} title="Rapid response" body="Mon–Fri 09:00–18:00 · Sat–Sun 10:00–17:00 GMT. Outside hours, first thing next morning." />
+          <Row icon={Clock} title="Rapid response" body="Mon–Fri 09:00–18:00 · Sat–Sun 09:00–16:00 GMT. Outside hours, first thing next morning." />
           <Row icon={ShieldCheck} title="ATOL-protected" body="Where flights are included. Membership numbers shown on About page." />
           <Row icon={Phone} title="Or call us" body={`${SITE.phone.display} - direct to a consultant, never a queue.`} href={`tel:${SITE.phone.tel}`} />
           <Row icon={MessageCircle} title="WhatsApp" body="Send the same details on WhatsApp if you prefer." href={`https://wa.me/${SITE.phone.whatsapp}`} />
