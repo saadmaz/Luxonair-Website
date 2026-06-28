@@ -1,9 +1,10 @@
 ﻿import { createFileRoute, Link } from "@tanstack/react-router";
-import { deals } from "@/data/deals";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock, Tag } from "lucide-react";
+import { getDeals } from "@/server/queries";
 
 export const Route = createFileRoute("/deals")({
+  loader: async () => getDeals(),
   head: () => ({
     meta: [
       { title: "Holiday Deals & Exclusive Travel Offers | Luxeonair" },
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/deals")({
 });
 
 function DealsPage() {
+  const deals = Route.useLoaderData();
   return (
     <>
       {/* Dark hero header */}

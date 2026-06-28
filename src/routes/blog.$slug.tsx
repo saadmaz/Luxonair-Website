@@ -1,9 +1,9 @@
 ﻿import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { findPost } from "@/data/blog";
+import { getBlogPostBySlug } from "@/server/queries";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
-    const p = findPost(params.slug);
+  loader: async ({ params }) => {
+    const p = await getBlogPostBySlug({ data: params.slug });
     if (!p) throw notFound();
     return p;
   },
@@ -75,7 +75,7 @@ function PostPage() {
       </header>
       <img src={p.heroImage} alt={p.title} className="mt-10 aspect-video w-full rounded-2xl object-cover" />
       <div className="mx-auto mt-10 max-w-3xl space-y-6 text-base leading-relaxed text-foreground">
-        {p.content.map((b: { heading?: string; body: string }, i: number) => (
+        {(p.content as { heading?: string; body: string }[]).map((b, i) => (
           <div key={i}>
             {b.heading && <h2 className="mt-8 font-display text-2xl font-semibold">{b.heading}</h2>}
             <p className="mt-3 text-muted-foreground">{b.body}</p>

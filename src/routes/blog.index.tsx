@@ -1,8 +1,9 @@
 ﻿import { createFileRoute, Link } from "@tanstack/react-router";
-import { blogPosts } from "@/data/blog";
 import { ArrowRight, Clock } from "lucide-react";
+import { getPublishedBlogPosts } from "@/server/queries";
 
 export const Route = createFileRoute("/blog/")({
+  loader: async () => getPublishedBlogPosts(),
   head: () => ({
     meta: [
       { title: "Travel Journal | Expert Guides & Destination Notes | Luxeonair" },
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/blog/")({
 });
 
 function BlogIndex() {
+  const blogPosts = Route.useLoaderData();
   const [feature, ...rest] = blogPosts;
   return (
     <>

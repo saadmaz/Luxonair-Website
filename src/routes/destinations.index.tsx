@@ -1,10 +1,11 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { destinations, regions, tripTypes, budgetBands } from "@/data/destinations";
 import { DestinationCard } from "@/components/shared/DestinationCard";
 import { SlidersHorizontal } from "lucide-react";
+import { getDestinations } from "@/server/queries";
 
 export const Route = createFileRoute("/destinations/")({
+  loader: async () => getDestinations(),
   head: () => ({
     meta: [
       { title: "Luxury Holiday Destinations from the UK | Luxeonair" },
@@ -23,19 +24,24 @@ export const Route = createFileRoute("/destinations/")({
 });
 
 function DestinationsList() {
+  const destinations = Route.useLoaderData();
   const [region, setRegion] = useState<string>("All");
   const [trip, setTrip] = useState<string>("All");
   const [budget, setBudget] = useState<string>("All");
+
+  const regions = useMemo(() => [...new Set(destinations.map((d) => d.region))].sort(), [destinations]);
+  const tripTypes = useMemo(() => [...new Set(destinations.flatMap((d) => d.tripType as string[]))].sort(), [destinations]);
+  const budgetBands = useMemo(() => [...new Set(destinations.map((d) => d.budgetBand))].sort(), [destinations]);
 
   const filtered = useMemo(
     () =>
       destinations.filter(
         (d) =>
           (region === "All" || d.region === region) &&
-          (trip === "All" || d.tripType.includes(trip as never)) &&
+          (trip === "All" || (d.tripType as string[]).includes(trip)) &&
           (budget === "All" || d.budgetBand === budget)
       ),
-    [region, trip, budget]
+    [destinations, region, trip, budget]
   );
 
   return (
@@ -70,24 +76,9 @@ function DestinationsList() {
             </div>
           </div>
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-6">
-            <Filter
-              label="Region"
-              value={region}
-              setValue={setRegion}
-              options={["All", ...regions]}
-            />
-            <Filter
-              label="Trip type"
-              value={trip}
-              setValue={setTrip}
-              options={["All", ...tripTypes]}
-            />
-            <Filter
-              label="Budget"
-              value={budget}
-              setValue={setBudget}
-              options={["All", ...budgetBands]}
-            />
+            <Filter label="Region" value={region} setValue={setRegion} options={["All", ...regions]} />
+            <Filter label="Trip type" value={trip} setValue={setTrip} options={["All", ...tripTypes]} />
+            <Filter label="Budget" value={budget} setValue={setBudget} options={["All", ...budgetBands]} />
           </div>
         </div>
 
@@ -99,7 +90,7 @@ function DestinationsList() {
         ) : (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((d) => (
-              <DestinationCard key={d.slug} d={d} />
+              <DestinationCard key={d.slug} d={d as never} />
             ))}
           </div>
         )}
@@ -108,22 +99,10 @@ function DestinationsList() {
   );
 }
 
-function Filter({
-  label,
-  value,
-  setValue,
-  options,
-}: {
-  label: string;
-  value: string;
-  setValue: (v: string) => void;
-  options: readonly string[];
-}) {
+function Filter({ label, value, setValue, options }: { label: string; value: string; setValue: (v: string) => void; options: string[] }) {
   return (
     <div className="grid gap-1.5 sm:gap-2">
-      <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </span>
+      <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
       <div className="flex gap-1.5 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-x-visible sm:pb-0">
         {options.map((o) => (
           <button

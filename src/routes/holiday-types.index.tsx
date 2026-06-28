@@ -1,8 +1,9 @@
 ﻿import { createFileRoute, Link } from "@tanstack/react-router";
-import { holidayTypes } from "@/data/holidayTypes";
 import { ArrowRight } from "lucide-react";
+import { getHolidayTypes } from "@/server/queries";
 
 export const Route = createFileRoute("/holiday-types/")({
+  loader: async () => getHolidayTypes(),
   head: () => ({
     meta: [
       { title: "Types of Holiday | Beach, Honeymoon, Family & Luxury | Luxeonair" },
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/holiday-types/")({
 });
 
 function HolidayTypesIndex() {
+  const holidayTypes = Route.useLoaderData();
   return (
     <>
       {/* Dark hero */}

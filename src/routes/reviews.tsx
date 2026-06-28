@@ -1,48 +1,56 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { reviews, aggregate } from "@/data/reviews";
-import { loadTestimonials, calcAggregate } from "@/lib/testimonials";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, MessageCircle, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SITE } from "@/config/site";
+import { getTestimonials } from "@/server/queries";
 
 export const Route = createFileRoute("/reviews")({
-  head: () => ({
-    meta: [
-      { title: `Client Reviews & Testimonials | ${aggregate.average}★ from ${aggregate.count} Trips | Luxeonair` },
-      { name: "description", content: `${aggregate.average}/5 from ${aggregate.count} verified trips. Unedited reviews from Luxeonair clients covering honeymoons, family holidays, corporate travel and long-haul escapes.` },
-      { name: "robots", content: "index, follow" },
-      { property: "og:title", content: `Client Reviews | ${aggregate.average}/5 from ${aggregate.count} Verified Trips | Luxeonair` },
-      { property: "og:description", content: `${aggregate.average}/5 from ${aggregate.count} verified trips — honeymoons, family holidays, corporate travel and long-haul escapes. Unedited.` },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.luxeonair.co.uk/reviews" },
-      { name: "twitter:title", content: `Luxeonair Reviews | ${aggregate.average}/5 from ${aggregate.count} Trips` },
-      { name: "twitter:description", content: `Unedited client reviews — ${aggregate.average}/5 from ${aggregate.count} verified trips. Honeymoons, family holidays and corporate travel.` },
-    ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/reviews" }],
-    scripts: [{
-      type: "application/ld+json",
-      children: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        "@id": "https://www.luxeonair.co.uk/#organization",
-        "name": "Luxeonair",
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": aggregate.average,
-          "reviewCount": aggregate.count,
-          "bestRating": "5",
-          "worstRating": "1"
-        }
-      }),
-    }],
-  }),
+  loader: async () => getTestimonials(),
+  head: ({ loaderData }) => {
+    const items = loaderData ?? [];
+    const average = items.length
+      ? +(items.reduce((s, r) => s + r.rating, 0) / items.length).toFixed(1)
+      : 5.0;
+    const count = items.length || 6;
+    return {
+      meta: [
+        { title: `Client Reviews & Testimonials | ${average}★ from ${count} Trips | Luxeonair` },
+        { name: "description", content: `${average}/5 from ${count} verified trips. Unedited reviews from Luxeonair clients covering honeymoons, family holidays, corporate travel and long-haul escapes.` },
+        { name: "robots", content: "index, follow" },
+        { property: "og:title", content: `Client Reviews | ${average}/5 from ${count} Verified Trips | Luxeonair` },
+        { property: "og:description", content: `${average}/5 from ${count} verified trips — honeymoons, family holidays, corporate travel and long-haul escapes. Unedited.` },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: "https://www.luxeonair.co.uk/reviews" },
+        { name: "twitter:title", content: `Luxeonair Reviews | ${average}/5 from ${count} Trips` },
+        { name: "twitter:description", content: `Unedited client reviews — ${average}/5 from ${count} verified trips. Honeymoons, family holidays and corporate travel.` },
+      ],
+      links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/reviews" }],
+      scripts: [{
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          "@id": "https://www.luxeonair.co.uk/#organization",
+          "name": "Luxeonair",
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": average,
+            "reviewCount": count,
+            "bestRating": "5",
+            "worstRating": "1"
+          }
+        }),
+      }],
+    };
+  },
   component: ReviewsPage,
 });
 
 function ReviewsPage() {
-  const [items] = useState(() => loadTestimonials());
-  const agg = calcAggregate(items);
+  const items = Route.useLoaderData();
+  const average = items.length
+    ? +(items.reduce((s, r) => s + r.rating, 0) / items.length).toFixed(1)
+    : 0;
 
   return (
     <>
@@ -51,9 +59,7 @@ function ReviewsPage() {
         <div className="container-page py-16 md:py-24">
           <div className="grid gap-10 md:grid-cols-[1.4fr_1fr] md:items-end">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-                Reviews
-              </p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Reviews</p>
               <h1 className="mt-3 font-display text-4xl font-semibold text-navy-fg sm:text-5xl text-balance">
                 Real travellers. Unedited words.
               </h1>
@@ -71,11 +77,11 @@ function ReviewsPage() {
                 ))}
               </div>
               <div className="mt-3 font-display text-5xl font-semibold text-navy-fg">
-                {agg.average}
+                {average}
                 <span className="ml-1 text-2xl text-navy-fg/40">/ 5</span>
               </div>
               <div className="mt-2 text-sm text-navy-fg/55">
-                From {agg.count} verified trips
+                From {items.length} verified trips
               </div>
               <div className="mt-5 border-t border-navy-fg/10 pt-4 text-xs text-navy-fg/40">
                 Trustpilot / Feefo score pending - ask us for references directly.
@@ -95,10 +101,7 @@ function ReviewsPage() {
             >
               <div className="flex gap-0.5 text-gold">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-4 w-4 ${i < r.rating ? "fill-current" : "opacity-25"}`}
-                  />
+                  <Star key={i} className={`h-4 w-4 ${i < r.rating ? "fill-current" : "opacity-25"}`} />
                 ))}
               </div>
               <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-muted-foreground">
@@ -108,10 +111,7 @@ function ReviewsPage() {
                 <span className="text-sm font-medium text-foreground">{r.author}</span>
                 <div className="mt-0.5 text-xs text-muted-foreground">
                   {r.trip} ·{" "}
-                  {new Date(r.date).toLocaleDateString("en-GB", {
-                    month: "long",
-                    year: "numeric",
-                  })}
+                  {new Date(r.date).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}
                 </div>
               </figcaption>
             </figure>
@@ -124,24 +124,14 @@ function ReviewsPage() {
         <div className="rounded-2xl bg-navy px-8 py-10 text-navy-fg md:px-12">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
-              <h2 className="font-display text-2xl font-semibold">
-                Ready to write your own review?
-              </h2>
-              <p className="mt-2 text-sm text-navy-fg/70">
-                Start with a free quote - a consultant replies within 4 working hours.
-              </p>
+              <h2 className="font-display text-2xl font-semibold">Ready to write your own review?</h2>
+              <p className="mt-2 text-sm text-navy-fg/70">Start with a free quote - a consultant replies within 4 working hours.</p>
             </div>
             <div className="flex flex-wrap gap-3 shrink-0">
               <Button asChild className="bg-gold text-gold-foreground hover:bg-gold/90">
-                <Link to="/quote">
-                  Start a quote <ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
+                <Link to="/quote">Start a quote <ArrowRight className="ml-1 h-4 w-4" /></Link>
               </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="border-navy-fg/30 bg-transparent text-navy-fg hover:bg-navy-fg/10"
-              >
+              <Button asChild variant="outline" className="border-navy-fg/30 bg-transparent text-navy-fg hover:bg-navy-fg/10">
                 <a href={`https://wa.me/${SITE.phone.whatsapp}`} target="_blank" rel="noopener noreferrer">
                   <MessageCircle className="mr-1.5 h-4 w-4" /> WhatsApp
                 </a>

@@ -1,31 +1,36 @@
-﻿import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { findHolidayType, holidayTypes } from "@/data/holidayTypes";
-import { destinations } from "@/data/destinations";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { DestinationCard } from "@/components/shared/DestinationCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check } from "lucide-react";
+import { getHolidayTypeBySlug, getDestinations } from "@/server/queries";
 
 export const Route = createFileRoute("/holiday-types/$slug")({
-  loader: ({ params }) => {
-    const h = findHolidayType(params.slug);
-    if (!h) throw notFound();
-    return h;
+  loader: async ({ params }) => {
+    const [holidayType, allDests] = await Promise.all([
+      getHolidayTypeBySlug({ data: params.slug }),
+      getDestinations(),
+    ]);
+    if (!holidayType) throw notFound();
+    const destinationSlugs = holidayType.destinationSlugs as string[];
+    const linkedDestinations = allDests.filter((d) => destinationSlugs.includes(d.slug));
+    return { holidayType, linkedDestinations };
   },
   head: ({ loaderData, params }) => {
-    if (!loaderData) return { meta: [{ title: "Holiday Type | Luxeonair" }] };
+    const h = loaderData?.holidayType;
+    if (!h) return { meta: [{ title: "Holiday Type | Luxeonair" }] };
     return {
       meta: [
-        { title: `${loaderData.name} Holidays from the UK | Tailor-Made | Luxeonair` },
-        { name: "description", content: `${loaderData.tagline}. Handcrafted ${loaderData.name.toLowerCase()} holidays departing the UK — ATOL protected, one dedicated consultant from first quote to return gate.` },
+        { title: `${h.name} Holidays from the UK | Tailor-Made | Luxeonair` },
+        { name: "description", content: `${h.tagline}. Handcrafted ${h.name.toLowerCase()} holidays departing the UK — ATOL protected, one dedicated consultant from first quote to return gate.` },
         { name: "robots", content: "index, follow" },
-        { property: "og:title", content: `${loaderData.name} Holidays from the UK | Luxeonair` },
-        { property: "og:description", content: `${loaderData.tagline}. Tailor-made, ATOL protected, departing UK airports.` },
-        { property: "og:image", content: loaderData.heroImage },
+        { property: "og:title", content: `${h.name} Holidays from the UK | Luxeonair` },
+        { property: "og:description", content: `${h.tagline}. Tailor-made, ATOL protected, departing UK airports.` },
+        { property: "og:image", content: h.heroImage },
         { property: "og:type", content: "website" },
         { property: "og:url", content: `https://www.luxeonair.co.uk/holiday-types/${params.slug}` },
-        { name: "twitter:title", content: `${loaderData.name} Holidays | Luxeonair` },
-        { name: "twitter:description", content: `${loaderData.tagline}. Tailor-made from the UK, ATOL protected.` },
-        { name: "twitter:image", content: loaderData.heroImage },
+        { name: "twitter:title", content: `${h.name} Holidays | Luxeonair` },
+        { name: "twitter:description", content: `${h.tagline}. Tailor-made from the UK, ATOL protected.` },
+        { name: "twitter:image", content: h.heroImage },
       ],
       links: [{ rel: "canonical", href: `https://www.luxeonair.co.uk/holiday-types/${params.slug}` }],
     };
@@ -40,8 +45,9 @@ export const Route = createFileRoute("/holiday-types/$slug")({
 });
 
 function HolidayTypePage() {
-  const h = Route.useLoaderData();
-  const matches = destinations.filter((d) => h.destinationSlugs.includes(d.slug));
+  const { holidayType: h, linkedDestinations } = Route.useLoaderData();
+  const bullets = h.bullets as string[];
+
   return (
     <>
       <section className="relative">
@@ -52,7 +58,9 @@ function HolidayTypePage() {
           <h1 className="mt-2 font-display text-4xl font-semibold sm:text-6xl text-balance">{h.name}</h1>
           <p className="mt-4 max-w-2xl text-lg text-navy-fg/90">{h.tagline}</p>
           <Button asChild size="lg" className="mt-6 bg-gold text-gold-foreground hover:bg-gold/90">
-            <Link to="/quote" search={{ tripType: h.name }}>Start a {h.name.toLowerCase()} quote <ArrowRight className="ml-1 h-4 w-4" /></Link>
+            <Link to="/quote" search={{ tripType: h.name }}>
+              Start a {h.name.toLowerCase()} quote <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
           </Button>
         </div>
       </section>
@@ -64,7 +72,7 @@ function HolidayTypePage() {
             <p className="mt-4 text-muted-foreground">{h.summary}</p>
           </div>
           <ul className="space-y-3">
-            {h.bullets.map((b: string) => (
+            {bullets.map((b) => (
               <li key={b} className="flex items-start gap-2 rounded-lg border border-border bg-card p-3 text-sm">
                 <Check className="mt-0.5 h-4 w-4 text-gold" /> {b}
               </li>
@@ -73,16 +81,16 @@ function HolidayTypePage() {
         </div>
       </section>
 
-      {matches.length > 0 && (
+      {linkedDestinations.length > 0 && (
         <section className="container-page py-12 md:py-16">
-          <h2 className="font-display text-2xl font-semibold sm:text-3xl">Popular {h.name.toLowerCase()} destinations</h2>
+          <h2 className="font-display text-2xl font-semibold sm:text-3xl">
+            Popular {h.name.toLowerCase()} destinations
+          </h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {matches.map((d) => <DestinationCard key={d.slug} d={d} />)}
+            {linkedDestinations.map((d) => <DestinationCard key={d.slug} d={d as never} />)}
           </div>
         </section>
       )}
     </>
   );
 }
-
-void holidayTypes;
