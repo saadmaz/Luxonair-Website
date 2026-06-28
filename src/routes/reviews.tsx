@@ -15,17 +15,17 @@ export const Route = createFileRoute("/reviews")({
       { property: "og:title", content: `Client Reviews | ${aggregate.average}/5 from ${aggregate.count} Verified Trips | Luxeonair` },
       { property: "og:description", content: `${aggregate.average}/5 from ${aggregate.count} verified trips — honeymoons, family holidays, corporate travel and long-haul escapes. Unedited.` },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.luxeonair.com/reviews" },
+      { property: "og:url", content: "https://www.luxeonair.co.uk/reviews" },
       { name: "twitter:title", content: `Luxeonair Reviews | ${aggregate.average}/5 from ${aggregate.count} Trips` },
       { name: "twitter:description", content: `Unedited client reviews — ${aggregate.average}/5 from ${aggregate.count} verified trips. Honeymoons, family holidays and corporate travel.` },
     ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.com/reviews" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/reviews" }],
     scripts: [{
       type: "application/ld+json",
       children: JSON.stringify({
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
-        "@id": "https://www.luxeonair.com/#organization",
+        "@id": "https://www.luxeonair.co.uk/#organization",
         "name": "Luxeonair",
         "aggregateRating": {
           "@type": "AggregateRating",

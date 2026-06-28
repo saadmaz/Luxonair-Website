@@ -21,11 +21,11 @@ export const Route = createFileRoute("/flights")({
       { property: "og:title", content: "Business & First Class Flights from the UK | Luxeonair" },
       { property: "og:description", content: "Compare business and first class fares across BA, Virgin, Emirates & Qatar. One consultant, one invoice. No booking fee." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.luxeonair.com/flights" },
+      { property: "og:url", content: "https://www.luxeonair.co.uk/flights" },
       { name: "twitter:title", content: "Business & First Class Flights | Luxeonair" },
       { name: "twitter:description", content: "Independent fare search across BA, Virgin Atlantic, Emirates & Qatar. One consultant, one invoice. No fee." },
     ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.com/flights" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/flights" }],
   }),
   component: FlightsPage,
 });

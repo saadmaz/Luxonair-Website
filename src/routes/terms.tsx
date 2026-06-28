@@ -9,7 +9,7 @@ export const Route = createFileRoute("/terms")({
       { name: "description", content: "Booking conditions for Luxeonair LTD. Covers ATOL protection, flight bookings, cancellation policy, payments and your rights as a UK travel customer." },
       { name: "robots", content: "index, follow" },
     ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.com/terms" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/terms" }],
   }),
   component: TermsPage,
 });

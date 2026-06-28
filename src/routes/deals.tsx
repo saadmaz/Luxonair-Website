@@ -12,11 +12,11 @@ export const Route = createFileRoute("/deals")({
       { property: "og:title", content: "Holiday Deals & Exclusive Travel Offers | Luxeonair" },
       { property: "og:description", content: "Curated UK-departing deals — limited availability. Business class, beach and family holidays confirmed by a real consultant." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.luxeonair.com/deals" },
+      { property: "og:url", content: "https://www.luxeonair.co.uk/deals" },
       { name: "twitter:title", content: "Holiday Deals & Exclusive Offers | Luxeonair" },
       { name: "twitter:description", content: "Hand-picked UK-departing deals. Limited availability. Business class, beach and family. Confirmed by a consultant." },
     ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.com/deals" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/deals" }],
   }),
   component: DealsPage,
 });

@@ -11,11 +11,11 @@ export const Route = createFileRoute("/blog/")({
       { property: "og:title", content: "Travel Journal | Expert Guides & Destination Notes | Luxeonair" },
       { property: "og:description", content: "Field-tested destination guides and corporate travel essays from consultants who fly the routes they sell." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.luxeonair.com/blog" },
+      { property: "og:url", content: "https://www.luxeonair.co.uk/blog" },
       { name: "twitter:title", content: "Luxeonair Travel Journal | Expert Guides & Notes" },
       { name: "twitter:description", content: "Destination guides, business class tips and family travel notes from consultants who fly the routes they sell." },
     ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.com/blog" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/blog" }],
   }),
   component: BlogIndex,
 });

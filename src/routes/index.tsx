@@ -24,12 +24,12 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Luxeonair | Tailor-Made Luxury Travel from the UK" },
       { property: "og:description", content: "Bespoke long-haul holidays, family escapes and corporate trips from the UK. One consultant. ATOL protected. Quote in minutes." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.luxeonair.com/" },
+      { property: "og:url", content: "https://www.luxeonair.co.uk/" },
       { name: "twitter:title", content: "Luxeonair | Tailor-Made Luxury Travel from the UK" },
       { name: "twitter:description", content: "Bespoke long-haul holidays & corporate trips from the UK. ATOL protected. A consultant replies to every quote within 4 hours." },
     ],
     links: [
-      { rel: "canonical", href: "https://www.luxeonair.com/" },
+      { rel: "canonical", href: "https://www.luxeonair.co.uk/" },
       {
         // Preload the hero background so it's ready before the above-the-fold paint
         rel: "preload",
