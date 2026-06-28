@@ -11,11 +11,11 @@ export const Route = createFileRoute("/contact")({
       { name: "description", content: "Speak directly with a named UK travel consultant — no queue, no call centre. Call +44 7448 009739, WhatsApp, or email info@luxeonair.co.uk. We reply within 4 working hours." },
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Contact Luxeonair | Speak to a UK Travel Consultant" },
-      { property: "og:description", content: "Phone, WhatsApp or email a named consultant in London. No queues. No call centres. Reply within 4 working hours, Mon–Fri." },
+      { property: "og:description", content: "Phone, WhatsApp or email a named consultant in London. No queues. No call centres. Rapid response, Mon–Fri." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.com/contact" },
       { name: "twitter:title", content: "Contact Luxeonair | UK Travel Consultants" },
-      { name: "twitter:description", content: "Call, WhatsApp or email a named London travel consultant. No queues. Reply within 4 working hours." },
+      { name: "twitter:description", content: "Call, WhatsApp or email a named London travel consultant. No queues. Rapid response." },
     ],
     links: [
       { rel: "canonical", href: "https://www.luxeonair.com/contact" },
