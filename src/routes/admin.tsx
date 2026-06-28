@@ -1,4 +1,5 @@
-﻿import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
+﻿import { createFileRoute, Outlet, Link, useNavigate, useRouterState, redirect } from "@tanstack/react-router";
+import { getAdminSession } from "@/server/queries";
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -10,6 +11,11 @@ import {
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin")({
+  beforeLoad: async ({ location }) => {
+    if (location.pathname === "/admin/login") return;
+    const session = await getAdminSession();
+    if (!session) throw redirect({ to: "/admin/login" });
+  },
   component: AdminLayoutRoute,
 });
 

@@ -2,68 +2,53 @@ import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { desc } from "drizzle-orm";
 import { db, enquiries } from "../../../../db/index";
 import { requireAuth } from "@/server/auth";
+import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
+import { enquirySchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/enquiries")({
-  // Admin: list all enquiries newest first
   GET: async ({ request }) => {
     await requireAuth(request);
-    const rows = await db
-      .select()
-      .from(enquiries)
-      .orderBy(desc(enquiries.createdAt));
+    const rows = await db.select().from(enquiries).orderBy(desc(enquiries.createdAt));
     return Response.json(rows);
   },
 
-  // Public: submit a new quote enquiry
   POST: async ({ request }) => {
-    const body = (await request.json()) as {
-      name: string;
-      email: string;
-      phone: string;
-      destination: string;
-      region?: string;
-      tripType: string;
-      dateMode: string;
-      departWindow?: string;
-      flexibility?: string;
-      departDate?: string;
-      returnDate?: string;
-      nights: number;
-      departAirport: string;
-      cabinClass: string;
-      directOnly?: string;
-      preferredAirlines?: string;
-      adults: number;
-      children: number;
-      budget: string;
-      notes?: string;
-    };
+    // 5 submissions per 10 minutes per IP
+    const ip = getClientIp(request);
+    const rl = checkRateLimit(`enquiry:${ip}`, 5, 10 * 60 * 1000);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfter);
 
-    if (!body.name || !body.email || !body.destination) {
-      return Response.json({ error: "Missing required fields" }, { status: 400 });
+    const raw = await request.json().catch(() => null);
+    const parsed = enquirySchema.safeParse(raw);
+    if (!parsed.success) {
+      return Response.json(
+        { error: "Invalid request", issues: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      );
     }
 
+    const d = parsed.data;
     await db.insert(enquiries).values({
-      name: body.name,
-      email: body.email,
-      phone: body.phone,
-      destination: body.destination,
-      region: body.region ?? null,
-      tripType: body.tripType,
-      dateMode: body.dateMode,
-      departWindow: body.departWindow ?? null,
-      flexibility: body.flexibility ?? null,
-      departDate: body.departDate ?? null,
-      returnDate: body.returnDate ?? null,
-      nights: body.nights,
-      departAirport: body.departAirport,
-      cabinClass: body.cabinClass,
-      directOnly: body.directOnly ?? null,
-      preferredAirlines: body.preferredAirlines ?? null,
-      adults: body.adults,
-      children: body.children ?? 0,
-      budget: body.budget,
-      notes: body.notes ?? null,
+      name: d.name,
+      email: d.email,
+      phone: d.phone,
+      destination: d.destination,
+      region: d.region ?? null,
+      tripType: d.tripType,
+      dateMode: d.dateMode,
+      departWindow: d.departWindow ?? null,
+      flexibility: d.flexibility ?? null,
+      departDate: d.departDate ?? null,
+      returnDate: d.returnDate ?? null,
+      nights: d.nights,
+      departAirport: d.departAirport,
+      cabinClass: d.cabinClass,
+      directOnly: d.directOnly ?? null,
+      preferredAirlines: d.preferredAirlines ?? null,
+      adults: d.adults,
+      children: d.children,
+      budget: d.budget,
+      notes: d.notes ?? null,
       status: "new",
     });
 

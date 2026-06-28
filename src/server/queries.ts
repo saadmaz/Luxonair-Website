@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getWebRequest } from "@tanstack/react-start/server";
 import { asc, count, desc, eq } from "drizzle-orm";
+import { getSession } from "./auth";
 import {
   db,
   blogPosts,
@@ -95,3 +97,8 @@ export const getDashboardStats = createServerFn({ method: "GET" }).handler(async
 });
 
 export type FaqNested = Awaited<ReturnType<typeof getFaqsNested>>[number];
+
+export const getAdminSession = createServerFn({ method: "GET" }).handler(async () => {
+  const req = getWebRequest();
+  return await getSession(req);
+});

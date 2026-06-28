@@ -21,7 +21,7 @@ export async function verifyToken(token: string) {
 
 export function makeSessionCookie(token: string) {
   const maxAge = 7 * 24 * 60 * 60; // 7 days in seconds
-  return `lx_session=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${maxAge}${process.env.NODE_ENV === "production" ? "; Secure" : ""}`;
+  return `lx_session=${token}; HttpOnly; Path=/; SameSite=Strict; Max-Age=${maxAge}${process.env.NODE_ENV === "production" ? "; Secure" : ""}`;
 }
 
 export function clearSessionCookie() {
