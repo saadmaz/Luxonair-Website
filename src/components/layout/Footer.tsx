@@ -18,9 +18,9 @@ export function Footer() {
   return (
     <footer className="bg-navy text-navy-fg">
       {/* Main footer grid */}
-      <div className="container-page grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-5">
+      <div className="container-page grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-5 lg:gap-12 lg:py-16">
         {/* Brand column */}
-        <div className="lg:col-span-2">
+        <div className="sm:col-span-2 lg:col-span-2">
           <Link to="/" className="flex items-center">
             <img
               src="/Logo/White%20Logo.png"
@@ -94,7 +94,7 @@ export function Footer() {
         </div>
 
         {/* Contact + Newsletter column */}
-        <div>
+        <div className="sm:col-span-2 lg:col-span-1">
           <h4 className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-gold">
             Get in Touch
           </h4>
@@ -156,23 +156,29 @@ export function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-navy-fg/10">
-        <div className="container-page flex flex-col items-start justify-between gap-2 py-5 text-xs text-navy-fg/40 sm:flex-row sm:items-center">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            <span>© 2026 Luxeonair Travel</span>
-            <Link to="/terms" className="transition-colors hover:text-navy-fg/70">Terms &amp; Conditions</Link>
-            <Link to="/privacy" className="transition-colors hover:text-navy-fg/70">Privacy Policy</Link>
+        <div className="container-page py-5 text-xs text-navy-fg/50">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+              <span className="text-navy-fg/40">© 2026 Luxeonair Travel</span>
+              <Link to="/terms" className="text-navy-fg/70 underline underline-offset-2 transition-colors hover:text-gold">
+                Terms &amp; Conditions
+              </Link>
+              <Link to="/privacy" className="text-navy-fg/70 underline underline-offset-2 transition-colors hover:text-gold">
+                Privacy Policy
+              </Link>
+            </div>
+            <span className="text-navy-fg/40">
+              Designed and developed by{" "}
+              <a
+                href="https://lasarmedia.online"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-navy-fg/60 underline underline-offset-2 transition-colors hover:text-gold"
+              >
+                LASAR MEDIA
+              </a>
+            </span>
           </div>
-          <span>
-            Designed and developed by{" "}
-            <a
-              href="https://lasarmedia.online"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-navy-fg/60 underline underline-offset-2 transition-colors hover:text-gold"
-            >
-              LASAR MEDIA
-            </a>
-          </span>
         </div>
       </div>
     </footer>

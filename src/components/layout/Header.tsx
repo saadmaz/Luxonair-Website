@@ -19,13 +19,13 @@ export function Header() {
     <header className="sticky top-0 z-40">
       {/* Top announcement bar */}
       <div className="bg-navy text-navy-fg">
-        <div className="container-page flex h-9 items-center justify-between text-xs">
-          <div className="flex items-center gap-4">
+        <div className="container-page flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-2 text-xs">
+          <div className="flex items-center gap-3">
             <a
               href={`tel:${SITE.phone.tel}`}
               className="flex items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold"
             >
-              <Phone className="h-3 w-3" /> {SITE.phone.display}
+              <Phone className="h-3 w-3 shrink-0" /> {SITE.phone.display}
             </a>
             <span className="hidden text-navy-fg/30 sm:block">|</span>
             <a
@@ -36,8 +36,9 @@ export function Header() {
             </a>
           </div>
           <div className="flex items-center gap-1.5 text-navy-fg/60">
-            <Clock className="h-3 w-3" />
-            <span>{SITE.hours.display}</span>
+            <Clock className="h-3 w-3 shrink-0" />
+            <span className="hidden sm:inline">{SITE.hours.display}</span>
+            <span className="sm:hidden">Mon–Fri 9–6 · Sat–Sun 9–4 GMT</span>
           </div>
         </div>
       </div>
