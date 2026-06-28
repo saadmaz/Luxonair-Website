@@ -17,9 +17,9 @@ export const SITE = {
 
   hours: {
     weekday: { days: "Mon–Fri", open: "09:00", close: "18:00" },
-    weekend: { days: "Sat–Sun", open: "10:00", close: "17:00" },
+    weekend: { days: "Sat–Sun", open: "09:00", close: "16:00" },
     /** Short one-liner for UI copy */
-    display: "Mon–Fri 09:00–18:00 · Sat–Sun 10:00–17:00 GMT",
+    display: "Mon–Fri 09:00–18:00 · Sat–Sun 09:00–16:00 GMT",
   },
   registration: "00000000",           // TODO: Companies House registration number
 

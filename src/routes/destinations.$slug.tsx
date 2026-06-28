@@ -140,7 +140,7 @@ function DestinationDetail() {
                 <MessageCircle className="mr-1 h-4 w-4" /> WhatsApp a consultant
               </a>
             </Button>
-            <p className="mt-3 text-center text-xs text-muted-foreground">Rapid response · Mon–Fri 09:00–18:00 · Sat–Sun 10:00–17:00 GMT</p>
+            <p className="mt-3 text-center text-xs text-muted-foreground">Rapid response · Mon–Fri 09:00–18:00 · Sat–Sun 09:00–16:00 GMT</p>
           </div>
         </aside>
       </div>
