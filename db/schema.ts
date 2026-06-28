@@ -1,4 +1,4 @@
-import { boolean, int, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { boolean, int, json, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 export const enquiries = mysqlTable("enquiries", {
   id: int("id").autoincrement().primaryKey(),
@@ -46,3 +46,108 @@ export const subscribers = mysqlTable("subscribers", {
 export type Enquiry = typeof enquiries.$inferSelect;
 export type Contact = typeof contacts.$inferSelect;
 export type Subscriber = typeof subscribers.$inferSelect;
+
+// ─── Content tables ───────────────────────────────────────────────────────────
+
+export const blogPosts = mysqlTable("blog_posts", {
+  id: int("id").autoincrement().primaryKey(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  title: text("title").notNull(),
+  excerpt: text("excerpt").notNull(),
+  category: varchar("category", { length: 50 }).notNull(),
+  author: varchar("author", { length: 255 }).notNull(),
+  date: varchar("date", { length: 10 }).notNull(),
+  readMinutes: int("read_minutes").notNull().default(5),
+  heroImage: text("hero_image").notNull(),
+  content: json("content").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const destinations = mysqlTable("destinations", {
+  id: int("id").autoincrement().primaryKey(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  name: text("name").notNull(),
+  country: varchar("country", { length: 255 }).notNull(),
+  region: varchar("region", { length: 50 }).notNull(),
+  tripType: json("trip_type").notNull(),
+  budgetBand: varchar("budget_band", { length: 10 }).notNull(),
+  fromPrice: int("from_price").notNull(),
+  durationNights: int("duration_nights").notNull(),
+  heroImage: text("hero_image").notNull(),
+  gallery: json("gallery").notNull(),
+  tagline: text("tagline").notNull(),
+  summary: text("summary").notNull(),
+  itinerary: json("itinerary").notNull(),
+  highlights: json("highlights").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const deals = mysqlTable("deals", {
+  id: varchar("id", { length: 100 }).primaryKey(),
+  title: text("title").notNull(),
+  destinationSlug: varchar("destination_slug", { length: 255 }).notNull(),
+  region: varchar("region", { length: 100 }).notNull(),
+  nights: int("nights").notNull(),
+  board: varchar("board", { length: 50 }).notNull(),
+  fromPrice: int("from_price").notNull(),
+  oldPrice: int("old_price"),
+  badge: varchar("badge", { length: 50 }).notNull(),
+  expires: varchar("expires", { length: 10 }).notNull(),
+  image: text("image").notNull(),
+  blurb: text("blurb").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const testimonials = mysqlTable("testimonials", {
+  id: int("id").autoincrement().primaryKey(),
+  author: varchar("author", { length: 255 }).notNull(),
+  trip: varchar("trip", { length: 255 }).notNull(),
+  rating: int("rating").notNull().default(5),
+  date: varchar("date", { length: 10 }).notNull(),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const faqGroups = mysqlTable("faq_groups", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  sortOrder: int("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const faqItems = mysqlTable("faq_items", {
+  id: int("id").autoincrement().primaryKey(),
+  faqGroupId: int("faq_group_id").notNull(),
+  question: text("question").notNull(),
+  answer: text("answer").notNull(),
+  sortOrder: int("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const holidayTypes = mysqlTable("holiday_types", {
+  id: int("id").autoincrement().primaryKey(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  name: varchar("name", { length: 255 }).notNull(),
+  tagline: text("tagline").notNull(),
+  summary: text("summary").notNull(),
+  heroImage: text("hero_image").notNull(),
+  bullets: json("bullets").notNull(),
+  destinationSlugs: json("destination_slugs").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const adminUsers = mysqlTable("admin_users", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type Destination = typeof destinations.$inferSelect;
+export type Deal = typeof deals.$inferSelect;
+export type Testimonial = typeof testimonials.$inferSelect;
+export type FaqGroup = typeof faqGroups.$inferSelect;
+export type FaqItem = typeof faqItems.$inferSelect;
+export type HolidayType = typeof holidayTypes.$inferSelect;
+export type AdminUser = typeof adminUsers.$inferSelect;
