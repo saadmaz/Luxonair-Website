@@ -16,7 +16,7 @@ export function SectionHeader({ eyebrow, title, cta }: SectionHeaderProps) {
     <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
       <div className="max-w-xl">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">{eyebrow}</p>
-        <h2 className="mt-2 font-display text-3xl font-semibold sm:text-4xl text-balance">
+        <h2 className="mt-2 font-display text-2xl font-semibold sm:text-3xl md:text-4xl text-balance">
           {title}
         </h2>
       </div>

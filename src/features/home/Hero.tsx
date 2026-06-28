@@ -30,32 +30,32 @@ export function Hero() {
       </div>
 
       {/* Main content - grows to fill the viewport height above the search widget */}
-      <div className="container-page flex flex-1 flex-col justify-center pb-3 pt-6 md:pb-4 md:pt-8">
+      <div className="container-page flex flex-1 flex-col justify-center pb-3 pt-5 md:pb-4 md:pt-8">
         <div className="max-w-3xl">
           {/* Eyebrow */}
           <div className="flex items-center gap-3">
-            <div className="h-px w-10 bg-gold/60" />
-            <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-gold/75">
+            <div className="h-px w-8 bg-gold/60 sm:w-10" />
+            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold/75 sm:text-[11px] sm:tracking-[0.35em]">
               UK Travel Specialists
             </p>
           </div>
 
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-tight text-navy-fg sm:text-5xl md:text-[3.25rem] text-balance">
+          <h1 className="mt-3 font-display text-[2.1rem] font-semibold leading-[1.08] tracking-tight text-navy-fg sm:mt-4 sm:text-5xl md:text-[3.25rem] text-balance">
             Tailor-Made Holidays,{" "}
             <span className="text-gold">Built Around</span>{" "}
             You
           </h1>
 
-          <p className="mt-4 max-w-lg text-sm leading-relaxed text-navy-fg/75 md:text-base">
+          <p className="mt-3 max-w-lg text-sm leading-relaxed text-navy-fg/75 md:mt-4 md:text-base">
             Premium long-haul flights, family escapes and corporate travel, all crafted by a dedicated UK travel consultant who knows your trip inside out.
           </p>
 
           {/* Primary + secondary CTAs */}
-          <div className="mt-5 flex flex-wrap items-center gap-4">
+          <div className="mt-4 flex flex-wrap items-center gap-3 sm:mt-5 sm:gap-4">
             <Button
               asChild
               size="lg"
-              className="h-11 bg-gold px-7 text-sm font-semibold text-gold-foreground shadow-xl shadow-gold/25 hover:bg-gold/90"
+              className="h-11 bg-gold px-6 text-sm font-semibold text-gold-foreground shadow-xl shadow-gold/25 hover:bg-gold/90 sm:px-7"
             >
               <Link to="/quote">
                 Start a quote <ArrowRight className="ml-2 h-4 w-4" />
@@ -69,8 +69,8 @@ export function Hero() {
             </Link>
           </div>
 
-          {/* Trust micro-strip */}
-          <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2">
+          {/* Trust micro-strip — 2×2 grid on mobile, single row on sm+ */}
+          <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1.5 sm:mt-5 sm:flex sm:flex-wrap sm:gap-x-6 sm:gap-y-2">
             {[
               { icon: ShieldCheck, label: "ATOL Protected" },
               { icon: Star,        label: "4.9★ avg rating" },
@@ -78,7 +78,7 @@ export function Hero() {
               { icon: Users,       label: "500+ trips" },
             ].map(({ icon: Icon, label }) => (
               <span key={label} className="flex items-center gap-1.5 text-xs text-navy-fg/55">
-                <Icon className="h-3.5 w-3.5 text-teal/70" />
+                <Icon className="h-3.5 w-3.5 shrink-0 text-teal/70" />
                 {label}
               </span>
             ))}

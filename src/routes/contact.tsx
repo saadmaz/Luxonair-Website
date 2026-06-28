@@ -67,9 +67,9 @@ function ContactPage() {
     <>
       {/* Dark hero */}
       <section className="bg-navy text-navy-fg">
-        <div className="container-page py-16 md:py-20">
+        <div className="container-page py-10 md:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Contact</p>
-          <h1 className="mt-3 max-w-2xl font-display text-4xl font-semibold text-navy-fg sm:text-5xl text-balance">
+          <h1 className="mt-3 max-w-2xl font-display text-3xl font-semibold text-navy-fg sm:text-5xl text-balance">
             Travel advice, tailored to you.
           </h1>
           <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
@@ -79,10 +79,10 @@ function ContactPage() {
           </p>
 
           {/* Quick contact chips */}
-          <div className="mt-7 flex flex-wrap gap-3">
+          <div className="mt-6 flex gap-2.5 overflow-x-auto pb-0.5 sm:flex-wrap sm:overflow-x-visible sm:pb-0 sm:gap-3">
             <a
               href={`tel:${SITE.phone.tel}`}
-              className="inline-flex items-center gap-2 rounded-full border border-navy-fg/20 bg-navy-fg/5 px-4 py-2 text-sm text-navy-fg/80 transition-colors hover:border-gold hover:text-gold"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-navy-fg/20 bg-navy-fg/5 px-3.5 py-2 text-sm text-navy-fg/80 transition-colors hover:border-gold hover:text-gold sm:px-4"
             >
               <Phone className="h-3.5 w-3.5" /> Call us
             </a>
@@ -90,13 +90,13 @@ function ContactPage() {
               href={`https://wa.me/${SITE.phone.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-navy-fg/20 bg-navy-fg/5 px-4 py-2 text-sm text-navy-fg/80 transition-colors hover:border-gold hover:text-gold"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-navy-fg/20 bg-navy-fg/5 px-3.5 py-2 text-sm text-navy-fg/80 transition-colors hover:border-gold hover:text-gold sm:px-4"
             >
               <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
             </a>
             <a
               href={`mailto:${SITE.email}`}
-              className="inline-flex items-center gap-2 rounded-full border border-navy-fg/20 bg-navy-fg/5 px-4 py-2 text-sm text-navy-fg/80 transition-colors hover:border-gold hover:text-gold"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-navy-fg/20 bg-navy-fg/5 px-3.5 py-2 text-sm text-navy-fg/80 transition-colors hover:border-gold hover:text-gold sm:px-4"
             >
               <Mail className="h-3.5 w-3.5" /> Email us
             </a>

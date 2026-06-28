@@ -67,9 +67,9 @@ function PackageForm() {
     <form
       action="/quote"
       method="get"
-      className="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr_auto] lg:items-end"
+      className="grid grid-cols-2 gap-2.5 p-4 sm:gap-3 sm:p-5 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr_auto] lg:items-end"
     >
-      <Field label="Where to?" className="sm:col-span-2 lg:col-span-1">
+      <Field label="Where to?" className="col-span-2 lg:col-span-1">
         <input
           name="destination"
           placeholder="Maldives, Tokyo, anywhere warm"
@@ -96,7 +96,7 @@ function PackageForm() {
       <Button
         type="submit"
         size="lg"
-        className="h-11 w-full bg-gold text-gold-foreground hover:bg-gold/90 sm:col-span-2 lg:col-span-1 lg:w-auto"
+        className="col-span-2 h-11 w-full bg-gold text-gold-foreground hover:bg-gold/90 lg:col-span-1 lg:w-auto"
       >
         Get a quote
       </Button>
@@ -109,7 +109,7 @@ function FlightForm() {
     <form
       action="/quote"
       method="get"
-      className="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] lg:items-end"
+      className="grid grid-cols-2 gap-2.5 p-4 sm:gap-3 sm:p-5 lg:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] lg:items-end"
     >
       <input type="hidden" name="tripType" value="Flight only" />
       <Field label="From">
@@ -135,7 +135,7 @@ function FlightForm() {
       <Button
         type="submit"
         size="lg"
-        className="h-11 w-full bg-gold text-gold-foreground hover:bg-gold/90 sm:col-span-2 lg:col-span-1 lg:w-auto"
+        className="col-span-2 h-11 w-full bg-gold text-gold-foreground hover:bg-gold/90 lg:col-span-1 lg:w-auto"
       >
         Get a quote
       </Button>

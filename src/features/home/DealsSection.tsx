@@ -9,7 +9,7 @@ export function DealsSection() {
   const top = deals.slice(0, 3);
 
   return (
-    <section className="container-page py-16 md:py-24">
+    <section className="container-page py-10 md:py-20">
       <SectionHeader
         eyebrow="Limited deals"
         title="Held by a consultant, not an algorithm."
@@ -21,7 +21,7 @@ export function DealsSection() {
             key={d.id}
             className="group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-xl"
           >
-            <div className="relative aspect-16/10 w-full overflow-hidden">
+            <div className="relative aspect-video w-full overflow-hidden bg-muted sm:aspect-16/10">
               <img
                 src={d.image}
                 alt={d.title}

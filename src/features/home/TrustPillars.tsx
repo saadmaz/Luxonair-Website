@@ -12,15 +12,15 @@ export function TrustPillars() {
 
   return (
     <section className="border-b border-border">
-      <div className="container-page grid gap-6 py-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="container-page grid grid-cols-2 gap-x-4 gap-y-5 py-8 sm:gap-6 lg:grid-cols-4 lg:py-10">
         {items.map(({ icon: Icon, label, note }) => (
-          <div key={label} className="flex items-start gap-3">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary/8 text-gold">
-              <Icon className="h-5 w-5" />
+          <div key={label} className="flex items-start gap-2.5 sm:gap-3">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/8 text-gold sm:h-11 sm:w-11">
+              <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
             </span>
             <div>
-              <div className="text-sm font-semibold">{label}</div>
-              <div className="text-xs text-muted-foreground">{note}</div>
+              <div className="text-xs font-semibold leading-tight sm:text-sm">{label}</div>
+              <div className="mt-0.5 text-[11px] leading-snug text-muted-foreground sm:text-xs">{note}</div>
             </div>
           </div>
         ))}

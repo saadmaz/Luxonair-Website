@@ -8,13 +8,13 @@ export function SocialProof() {
   const featured = reviews.slice(0, 3);
 
   return (
-    <section className="container-page py-16 md:py-24">
+    <section className="container-page py-10 md:py-20">
       <SectionHeader
         eyebrow="Why travellers stay"
         title="Real reviews. Unedited words."
         cta={{ label: "All reviews", to: "/reviews" }}
       />
-      <div className="mt-10 grid gap-6 md:grid-cols-3">
+      <div className="mt-8 grid gap-5 sm:grid-cols-2 md:grid-cols-3">
         {featured.map((r) => (
           <figure
             key={r.id}

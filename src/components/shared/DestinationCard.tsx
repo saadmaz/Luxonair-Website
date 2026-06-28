@@ -10,7 +10,7 @@ export function DestinationCard({ d }: { d: Destination }) {
       params={{ slug: d.slug }}
       className="group overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
     >
-      <div className="aspect-4/3 overflow-hidden">
+      <div className="aspect-video overflow-hidden bg-muted sm:aspect-4/3">
         <img
           src={d.heroImage}
           alt={`${d.name} - ${d.country}`}

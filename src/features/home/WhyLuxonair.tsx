@@ -23,7 +23,7 @@ export function WhyLuxonair() {
 
   return (
     <section className="bg-navy text-navy-fg">
-      <div className="container-page py-16 md:py-24">
+      <div className="container-page py-10 md:py-20">
         <div className="grid gap-12 md:grid-cols-2 md:items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
@@ -48,9 +48,9 @@ export function WhyLuxonair() {
               <Link to="/about">Learn about us</Link>
             </Button>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {features.map(({ icon: Icon, title, body }, i) => (
-              <div key={title} className={`rounded-2xl border border-navy-fg/10 bg-navy-fg/5 p-5${i === features.length - 1 && features.length % 2 !== 0 ? " sm:col-span-2" : ""}`}>
+              <div key={title} className={`rounded-2xl border border-navy-fg/10 bg-navy-fg/5 p-4 sm:p-5${i === features.length - 1 && features.length % 2 !== 0 ? " col-span-2" : ""}`}>
                 <Icon className="h-5 w-5 text-gold" />
                 <h3 className="mt-3 text-sm font-semibold text-navy-fg">{title}</h3>
                 <p className="mt-1 text-xs leading-relaxed text-navy-fg/55">{body}</p>

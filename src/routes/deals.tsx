@@ -26,14 +26,14 @@ function DealsPage() {
     <>
       {/* Dark hero header */}
       <section className="bg-navy text-navy-fg">
-        <div className="container-page py-16 md:py-20">
+        <div className="container-page py-10 md:py-16">
           <div className="flex items-center gap-2.5">
             <Tag className="h-4 w-4 text-gold" />
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
               Exclusive deals
             </p>
           </div>
-          <h1 className="mt-3 max-w-2xl font-display text-4xl font-semibold text-navy-fg sm:text-5xl text-balance">
+          <h1 className="mt-3 max-w-2xl font-display text-3xl font-semibold text-navy-fg sm:text-5xl text-balance">
             Curated, time-limited, never auto-generated.
           </h1>
           <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
@@ -52,7 +52,7 @@ function DealsPage() {
               className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-xl"
             >
               {/* Image */}
-              <div className="relative aspect-16/10 w-full overflow-hidden">
+              <div className="relative aspect-video w-full overflow-hidden bg-muted sm:aspect-16/10">
                 <img
                   src={d.image}
                   alt={d.title}

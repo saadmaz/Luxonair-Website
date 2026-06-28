@@ -43,10 +43,10 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
   if (variant === "section") {
     return (
       <section className="border-y border-border bg-navy text-navy-fg">
-        <div className="container-page grid gap-8 py-14 md:grid-cols-[1.4fr_1fr] md:items-center md:py-20">
+        <div className="container-page grid gap-8 py-10 md:grid-cols-[1.4fr_1fr] md:items-center md:py-16">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-navy-fg/60">Newsletter</p>
-            <h2 className="mt-2 font-display text-3xl font-semibold sm:text-4xl text-balance">
+            <h2 className="mt-2 font-display text-2xl font-semibold sm:text-4xl text-balance">
               Curated inspiration. <span className="text-gold">Exclusive offers.</span>
             </h2>
             <p className="mt-3 max-w-lg text-navy-fg/80">
