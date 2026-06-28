@@ -11,11 +11,11 @@ export function StatsStrip() {
 
   return (
     <div className="border-y border-border bg-card shadow-sm">
-      <div className="container-page grid grid-cols-2 gap-6 py-10 lg:grid-cols-4">
+      <div className="container-page grid grid-cols-2 gap-4 py-8 sm:gap-6 lg:grid-cols-4 lg:py-10">
         {stats.map((s) => (
           <div key={s.label} className="text-center">
-            <div className="font-display text-3xl font-semibold text-gold">{s.value}</div>
-            <div className="mt-1 text-sm text-muted-foreground">{s.label}</div>
+            <div className="font-display text-2xl font-semibold text-gold sm:text-3xl">{s.value}</div>
+            <div className="mt-1 text-xs text-muted-foreground sm:text-sm">{s.label}</div>
           </div>
         ))}
       </div>

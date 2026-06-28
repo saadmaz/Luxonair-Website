@@ -19,7 +19,7 @@ export function Header() {
     <header className="sticky top-0 z-40">
       {/* Top announcement bar */}
       <div className="bg-navy text-navy-fg">
-        <div className="container-page flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-2 text-xs">
+        <div className="container-page flex items-center justify-between gap-x-4 py-1.5 text-xs">
           <div className="flex items-center gap-3">
             <a
               href={`tel:${SITE.phone.tel}`}

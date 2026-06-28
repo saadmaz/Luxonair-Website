@@ -35,9 +35,9 @@ export function BlogCarousel() {
   const post = blogPosts[current];
 
   return (
-    <section className="py-10 md:py-14">
+    <section className="py-8 md:py-12">
       {/* Section header stays inside the page container */}
-      <div className="container-page mb-6">
+      <div className="container-page mb-5 sm:mb-6">
         <SectionHeader
           eyebrow="From the journal"
           title="Guides, insights & destination notes."
@@ -118,11 +118,11 @@ export function BlogCarousel() {
             </div>
           </div>
 
-          {/* ── Arrow buttons — overlay card edges on mobile, outside gutter on md+ ── */}
+          {/* ── Arrow buttons — centred in the mobile image strip (h-40 = 160px), outside on md+ ── */}
           <button
             onClick={prev}
             aria-label="Previous article"
-            className="absolute top-18 left-2 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white/90 shadow-md transition-all hover:border-gray-300 hover:shadow-lg md:top-1/2 md:-translate-y-1/2 md:left-0 md:-translate-x-full md:-ml-3 md:h-11 md:w-11 dark:border-white/10 dark:bg-navy/80 dark:hover:bg-white/10"
+            className="absolute left-2 top-20 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white/90 shadow-md transition-all hover:border-gray-300 hover:shadow-lg md:left-0 md:top-1/2 md:-translate-x-full md:-ml-3 md:h-11 md:w-11 dark:border-white/10 dark:bg-navy/80 dark:hover:bg-white/10"
           >
             <ChevronLeft className="h-4 w-4 text-gray-700 md:h-5 md:w-5 dark:text-white" />
           </button>
@@ -130,7 +130,7 @@ export function BlogCarousel() {
           <button
             onClick={next}
             aria-label="Next article"
-            className="absolute top-18 right-2 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white/90 shadow-md transition-all hover:border-gray-300 hover:shadow-lg md:top-1/2 md:-translate-y-1/2 md:right-0 md:translate-x-full md:ml-3 md:h-11 md:w-11 dark:border-white/10 dark:bg-navy/80 dark:hover:bg-white/10"
+            className="absolute right-2 top-20 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white/90 shadow-md transition-all hover:border-gray-300 hover:shadow-lg md:right-0 md:top-1/2 md:translate-x-full md:ml-3 md:h-11 md:w-11 dark:border-white/10 dark:bg-navy/80 dark:hover:bg-white/10"
           >
             <ChevronRight className="h-4 w-4 text-gray-700 md:h-5 md:w-5 dark:text-white" />
           </button>

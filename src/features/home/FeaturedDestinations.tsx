@@ -6,7 +6,7 @@ import { SectionHeader } from "@/components/shared/SectionHeader";
 // Destinations are ordered by the array in data/destinations.ts - reorder there to change this.
 export function FeaturedDestinations() {
   return (
-    <section className="container-page py-16 md:py-24">
+    <section className="container-page py-10 md:py-20">
       <SectionHeader
         eyebrow="Popular destinations"
         title="Itineraries our consultants build most often"

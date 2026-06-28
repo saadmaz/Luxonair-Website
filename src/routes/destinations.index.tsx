@@ -46,7 +46,7 @@ function DestinationsList() {
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
             Destinations
           </p>
-          <h1 className="mt-3 max-w-2xl font-display text-4xl font-semibold text-navy-fg sm:text-5xl text-balance">
+          <h1 className="mt-3 max-w-2xl font-display text-3xl font-semibold text-navy-fg sm:text-5xl text-balance">
             Trips our consultants know inside-out.
           </h1>
           <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
@@ -57,13 +57,19 @@ function DestinationsList() {
       </section>
 
       {/* Filters + grid */}
-      <section className="container-page py-10 md:py-14">
+      <section className="container-page py-8 md:py-14">
         {/* Filter bar */}
-        <div className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5 shadow-sm">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-            <SlidersHorizontal className="h-3.5 w-3.5" /> Filter by
+        <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm sm:gap-5 sm:p-5">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+              <SlidersHorizontal className="h-3.5 w-3.5" /> Filter by
+            </div>
+            <div className="text-sm text-muted-foreground">
+              <span className="font-semibold text-foreground">{filtered.length}</span>
+              <span className="hidden sm:inline"> of {destinations.length} destinations</span>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-6">
             <Filter
               label="Region"
               value={region}
@@ -82,10 +88,6 @@ function DestinationsList() {
               setValue={setBudget}
               options={["All", ...budgetBands]}
             />
-            <div className="ml-auto self-end text-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">{filtered.length}</span> of{" "}
-              {destinations.length} destinations
-            </div>
           </div>
         </div>
 
@@ -118,17 +120,17 @@ function Filter({
   options: readonly string[];
 }) {
   return (
-    <div className="grid gap-2">
+    <div className="grid gap-1.5 sm:gap-2">
       <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         {label}
       </span>
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex gap-1.5 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-x-visible sm:pb-0">
         {options.map((o) => (
           <button
             key={o}
             type="button"
             onClick={() => setValue(o)}
-            className={`inline-flex items-center rounded-full border px-3 py-1.5 min-h-[2.75rem] text-xs font-medium transition-colors ${
+            className={`inline-flex shrink-0 items-center rounded-full border px-3 py-2 text-xs font-medium transition-colors sm:py-1.5 ${
               value === o
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:bg-muted"
