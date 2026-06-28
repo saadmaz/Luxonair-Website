@@ -27,11 +27,11 @@ export const Route = createFileRoute("/quote")({
       { property: "og:title", content: "Get a Free Holiday Quote | Luxeonair" },
       { property: "og:description", content: "Four quick steps. A UK consultant replies within 4 working hours. ATOL protected. No obligation, no spam." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.luxeonair.com/quote" },
+      { property: "og:url", content: "https://www.luxeonair.co.uk/quote" },
       { name: "twitter:title", content: "Get a Free Holiday Quote | Luxeonair" },
       { name: "twitter:description", content: "Four quick steps. A UK consultant replies within 4 hours. ATOL protected. No obligation." },
     ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.com/quote" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/quote" }],
   }),
   component: QuotePage,
 });

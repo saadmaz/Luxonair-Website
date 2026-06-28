@@ -9,7 +9,7 @@ export const Route = createFileRoute("/privacy")({
       { name: "description", content: "How Luxeonair LTD collects, uses and protects your personal data in line with UK GDPR. Learn what we collect, why we collect it, and your rights." },
       { name: "robots", content: "index, follow" },
     ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.com/privacy" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/privacy" }],
   }),
   component: PrivacyPage,
 });

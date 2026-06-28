@@ -13,11 +13,11 @@ export const Route = createFileRoute("/faq")({
       { property: "og:title", content: "Frequently Asked Questions | Luxeonair Help Centre" },
       { property: "og:description", content: "Answers about ATOL protection, how quotes work, deposits, payments and in-trip support." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.luxeonair.com/faq" },
+      { property: "og:url", content: "https://www.luxeonair.co.uk/faq" },
       { name: "twitter:title", content: "FAQs | Luxeonair Help Centre" },
       { name: "twitter:description", content: "ATOL protection, how quotes work, deposits, payment methods and 24/7 support — all answered." },
     ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.com/faq" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/faq" }],
     scripts: [{
       type: "application/ld+json",
       children: JSON.stringify({

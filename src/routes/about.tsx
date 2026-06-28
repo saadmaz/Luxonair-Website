@@ -12,11 +12,11 @@ export const Route = createFileRoute("/about")({
       { property: "og:title", content: "About Luxeonair | London's Premium Travel Consultants" },
       { property: "og:description", content: "500+ bespoke trips. 78% repeat clients. Ex-airline team, ATOL protected, based in London. One consultant. End-to-end." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.luxeonair.com/about" },
+      { property: "og:url", content: "https://www.luxeonair.co.uk/about" },
       { name: "twitter:title", content: "About Luxeonair | London's Premium Travel Consultants" },
       { name: "twitter:description", content: "500+ trips. 78% repeat clients. Ex-airline consultants, ATOL protected, based in London." },
     ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.com/about" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/about" }],
   }),
   component: AboutPage,
 });

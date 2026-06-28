@@ -90,10 +90,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@graph": [
             {
               "@type": "TravelAgency",
-              "@id": "https://www.luxeonair.com/#organization",
+              "@id": "https://www.luxeonair.co.uk/#organization",
               "name": "Luxeonair",
-              "url": "https://www.luxeonair.com",
-              "logo": "https://www.luxeonair.com/Logo/Main%20Logo.png",
+              "url": "https://www.luxeonair.co.uk",
+              "logo": "https://www.luxeonair.co.uk/Logo/Main%20Logo.png",
               "description": "London-based luxury travel agency crafting bespoke long-haul holidays, family escapes and corporate travel programmes from the UK. ATOL protected. One dedicated consultant per trip.",
               "telephone": "+447448009739",
               "email": "info@luxeonair.co.uk",
@@ -145,17 +145,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             },
             {
               "@type": "WebSite",
-              "@id": "https://www.luxeonair.com/#website",
-              "url": "https://www.luxeonair.com",
+              "@id": "https://www.luxeonair.co.uk/#website",
+              "url": "https://www.luxeonair.co.uk",
               "name": "Luxeonair",
               "description": "Tailor-made luxury travel from the UK",
-              "publisher": { "@id": "https://www.luxeonair.com/#organization" },
+              "publisher": { "@id": "https://www.luxeonair.co.uk/#organization" },
               "inLanguage": "en-GB",
               "potentialAction": {
                 "@type": "SearchAction",
                 "target": {
                   "@type": "EntryPoint",
-                  "urlTemplate": "https://www.luxeonair.com/destinations?q={search_term_string}"
+                  "urlTemplate": "https://www.luxeonair.co.uk/destinations?q={search_term_string}"
                 },
                 "query-input": "required name=search_term_string"
               }

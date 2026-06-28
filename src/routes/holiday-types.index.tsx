@@ -11,11 +11,11 @@ export const Route = createFileRoute("/holiday-types/")({
       { property: "og:title", content: "Types of Holiday | Beach, Honeymoon, Family & Luxury | Luxeonair" },
       { property: "og:description", content: "Beach, honeymoon, family, luxury, city breaks and all-inclusive — every style tailor-made from the UK." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.luxeonair.com/holiday-types" },
+      { property: "og:url", content: "https://www.luxeonair.co.uk/holiday-types" },
       { name: "twitter:title", content: "Types of Holiday | Luxeonair" },
       { name: "twitter:description", content: "Beach, honeymoon, family, luxury & all-inclusive. Every holiday style, tailor-made from the UK." },
     ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.com/holiday-types" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/holiday-types" }],
   }),
   component: HolidayTypesIndex,
 });

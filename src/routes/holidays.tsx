@@ -21,11 +21,11 @@ export const Route = createFileRoute("/holidays")({
       { property: "og:title", content: "Bespoke Tailor-Made Holidays from the UK | Luxeonair" },
       { property: "og:description", content: "Beach, family, honeymoon, luxury & adventure — built around your brief. One consultant, ATOL protected, departing UK airports." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.luxeonair.com/holidays" },
+      { property: "og:url", content: "https://www.luxeonair.co.uk/holidays" },
       { name: "twitter:title", content: "Tailor-Made Holidays from the UK | Luxeonair" },
       { name: "twitter:description", content: "Every holiday built around your brief. Beach, family, honeymoon or adventure. One consultant handles everything." },
     ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.com/holidays" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/holidays" }],
   }),
   component: HolidaysPage,
 });

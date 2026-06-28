@@ -22,20 +22,20 @@ export const Route = createFileRoute("/destinations/$slug")({
           { property: "og:description", content: `${loaderData.tagline}. From £${loaderData.fromPrice}pp. Tailor-made, ATOL protected, departing UK airports.` },
           { property: "og:image", content: loaderData.heroImage },
           { property: "og:type", content: "article" },
-          { property: "og:url", content: `https://www.luxeonair.com/destinations/${params.slug}` },
+          { property: "og:url", content: `https://www.luxeonair.co.uk/destinations/${params.slug}` },
           { name: "twitter:title", content: `${loaderData.name} Holidays | Luxeonair` },
           { name: "twitter:description", content: `${loaderData.tagline}. From £${loaderData.fromPrice}pp for ${loaderData.durationNights} nights. ATOL protected.` },
           { name: "twitter:image", content: loaderData.heroImage },
         ]
       : [],
-    links: [{ rel: "canonical", href: `https://www.luxeonair.com/destinations/${params.slug}` }],
+    links: [{ rel: "canonical", href: `https://www.luxeonair.co.uk/destinations/${params.slug}` }],
     scripts: loaderData
       ? [{
           type: "application/ld+json",
           children: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "TouristTrip",
-            "@id": `https://www.luxeonair.com/destinations/${params.slug}`,
+            "@id": `https://www.luxeonair.co.uk/destinations/${params.slug}`,
             "name": `${loaderData.name} Holiday`,
             "description": loaderData.tagline,
             "image": loaderData.heroImage,
@@ -47,9 +47,9 @@ export const Route = createFileRoute("/destinations/$slug")({
               "priceSpecification": { "@type": "UnitPriceSpecification", "price": loaderData.fromPrice, "priceCurrency": "GBP", "unitText": "per person" },
               "availability": "https://schema.org/InStock",
               "validFrom": new Date().toISOString().split("T")[0],
-              "offeredBy": { "@id": "https://www.luxeonair.com/#organization" }
+              "offeredBy": { "@id": "https://www.luxeonair.co.uk/#organization" }
             },
-            "provider": { "@id": "https://www.luxeonair.com/#organization" },
+            "provider": { "@id": "https://www.luxeonair.co.uk/#organization" },
           }),
         }]
       : [],

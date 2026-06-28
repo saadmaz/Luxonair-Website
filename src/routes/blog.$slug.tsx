@@ -18,35 +18,35 @@ export const Route = createFileRoute("/blog/$slug")({
         { property: "og:description", content: loaderData.excerpt },
         { property: "og:image", content: loaderData.heroImage },
         { property: "og:type", content: "article" },
-        { property: "og:url", content: `https://www.luxeonair.com/blog/${params.slug}` },
+        { property: "og:url", content: `https://www.luxeonair.co.uk/blog/${params.slug}` },
         { name: "twitter:title", content: loaderData.title },
         { name: "twitter:description", content: loaderData.excerpt },
         { name: "twitter:image", content: loaderData.heroImage },
       ],
-      links: [{ rel: "canonical", href: `https://www.luxeonair.com/blog/${params.slug}` }],
+      links: [{ rel: "canonical", href: `https://www.luxeonair.co.uk/blog/${params.slug}` }],
       scripts: [{
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Article",
-          "@id": `https://www.luxeonair.com/blog/${params.slug}`,
+          "@id": `https://www.luxeonair.co.uk/blog/${params.slug}`,
           "headline": loaderData.title,
           "description": loaderData.excerpt,
           "image": loaderData.heroImage,
           "author": {
             "@type": "Organization",
             "name": loaderData.author,
-            "@id": "https://www.luxeonair.com/#organization"
+            "@id": "https://www.luxeonair.co.uk/#organization"
           },
           "publisher": {
             "@type": "Organization",
             "name": "Luxeonair",
-            "@id": "https://www.luxeonair.com/#organization",
-            "logo": { "@type": "ImageObject", "url": "https://www.luxeonair.com/Logo/Main%20Logo.png" }
+            "@id": "https://www.luxeonair.co.uk/#organization",
+            "logo": { "@type": "ImageObject", "url": "https://www.luxeonair.co.uk/Logo/Main%20Logo.png" }
           },
           "datePublished": loaderData.date,
           "dateModified": loaderData.date,
-          "mainEntityOfPage": { "@type": "WebPage", "@id": `https://www.luxeonair.com/blog/${params.slug}` },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": `https://www.luxeonair.co.uk/blog/${params.slug}` },
           "inLanguage": "en-GB",
           "keywords": loaderData.category,
         }),

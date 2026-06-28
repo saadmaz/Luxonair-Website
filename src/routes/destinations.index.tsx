@@ -13,11 +13,11 @@ export const Route = createFileRoute("/destinations/")({
       { property: "og:title", content: "Luxury Holiday Destinations from the UK | Luxeonair" },
       { property: "og:description", content: "Maldives, Dubai, Japan, Antigua & more — tailor-made to your dates and budget. Departing UK airports." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.luxeonair.com/destinations" },
+      { property: "og:url", content: "https://www.luxeonair.co.uk/destinations" },
       { name: "twitter:title", content: "Luxury Holiday Destinations | Luxeonair" },
       { name: "twitter:description", content: "Maldives, Dubai, Japan, Antigua & more. Bespoke UK-departing holidays filtered by region, type and budget." },
     ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.com/destinations" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/destinations" }],
   }),
   component: DestinationsList,
 });
