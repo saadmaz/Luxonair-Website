@@ -7,36 +7,25 @@ const stats = [
 
 export function StatsStrip() {
   return (
-    <div className="relative bg-card">
-      {/* Top gold hairline */}
-      <div className="h-px bg-linear-to-r from-transparent via-gold/50 to-transparent" />
-
-      <div className="container-page">
-        <div className="grid grid-cols-2 lg:grid-cols-4">
-          {stats.map((s, i) => (
-            <div
-              key={s.label}
-              className={[
-                "flex flex-col items-center gap-3 px-6 py-10 text-center",
-                i > 0 ? "border-l border-border" : "",
-                i < 2 ? "border-b border-border lg:border-b-0" : "",
-              ].join(" ")}
-            >
-              <span className="font-display text-4xl font-bold text-gold sm:text-5xl">
-                {s.value}
-              </span>
-              {/* Thin gold rule between number and label */}
-              <span className="block h-px w-8 bg-gold/40" />
-              <span className="text-xs font-medium text-muted-foreground sm:text-sm">
-                {s.label}
-              </span>
-            </div>
-          ))}
-        </div>
+    <div className="bg-navy">
+      <div className="container-page grid grid-cols-2 divide-x divide-white/10 lg:grid-cols-4">
+        {stats.map((s, i) => (
+          <div
+            key={s.label}
+            className={[
+              "flex flex-col items-center gap-1.5 px-4 py-8 text-center",
+              i < 2 ? "border-b border-white/10 lg:border-b-0" : "",
+            ].join(" ")}
+          >
+            <span className="font-display text-3xl font-bold text-gold sm:text-4xl">
+              {s.value}
+            </span>
+            <span className="text-[11px] font-medium tracking-wide text-navy-fg/55 sm:text-xs">
+              {s.label}
+            </span>
+          </div>
+        ))}
       </div>
-
-      {/* Bottom border */}
-      <div className="h-px bg-border" />
     </div>
   );
 }

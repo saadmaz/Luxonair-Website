@@ -25,28 +25,22 @@ const items = [
 
 export function TrustPillars() {
   return (
-    <section className="bg-secondary/30 border-b border-border">
-      <div className="container-page grid grid-cols-1 divide-y divide-border sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4">
+    <section className="border-b border-border bg-card">
+      <div className="container-page grid grid-cols-2 divide-x divide-border lg:grid-cols-4">
         {items.map(({ icon: Icon, label, note }, i) => (
           <div
             key={label}
             className={[
-              "flex items-center gap-4 px-6 py-8",
-              i > 0 ? "sm:border-l sm:border-border" : "",
+              "flex items-center gap-3 px-5 py-6",
+              i < 2 ? "border-b border-border lg:border-b-0" : "",
             ].join(" ")}
           >
-            {/* Gold ring icon */}
-            <span className="relative shrink-0">
-              <span className="grid h-11 w-11 place-items-center rounded-full border border-gold/30 bg-gold/8 text-gold">
-                <Icon className="h-5 w-5" />
-              </span>
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-navy">
+              <Icon className="h-4 w-4 text-gold" />
             </span>
-
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-foreground leading-snug">
-                {label}
-              </p>
-              <p className="mt-0.5 text-[12px] leading-relaxed text-muted-foreground">
+              <p className="text-xs font-semibold text-foreground">{label}</p>
+              <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">
                 {note}
               </p>
             </div>
