@@ -10,39 +10,51 @@ type Testimonial = {
   body: string;
 };
 
-// Pool of Unsplash portrait photos — assigned by index, loops if more testimonials than photos
-const AVATARS = [
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80",
-  "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=100&h=100&q=80",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80",
-  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80",
-  "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=100&h=100&q=80",
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&h=100&q=80",
-  "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=100&h=100&q=80",
-  "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=100&h=100&q=80",
-];
-
 type Row = { id: number | string; author: string; trip: string; rating: number; body: string };
 
-// Positions avatars on a circle centred at (50%, 50%)
-function orbitStyle(angleDeg: number, radiusPx: number): React.CSSProperties {
+// Unsplash portrait photos — loops if DB has more than 8 entries
+const AVATARS = [
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80",
+  "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&h=120&q=80",
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80",
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&h=120&q=80",
+  "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=120&h=120&q=80",
+  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&h=120&q=80",
+  "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=120&h=120&q=80",
+  "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=120&h=120&q=80",
+];
+
+// Ring radii in px — avatars are centred exactly on each ring line
+const OUTER_R = 158;
+const INNER_R = 93;
+const ORBIT_BOX = 360; // container width & height
+
+// Angle positions for up to 5 outer + 3 inner orbiting avatars
+const OUTER_ANGLES = [-68, 17, 102, 178, 258];
+const INNER_ANGLES = [42, 162, 282];
+
+function polar(angleDeg: number, r: number) {
   const rad = (angleDeg * Math.PI) / 180;
-  return {
-    position: "absolute",
-    left: "50%",
-    top: "50%",
-    transform: `translate(calc(-50% + ${Math.cos(rad) * radiusPx}px), calc(-50% + ${Math.sin(rad) * radiusPx}px))`,
-  };
+  return { x: Math.cos(rad) * r, y: Math.sin(rad) * r };
 }
 
-// Outer-ring angles for up to 5 non-active avatars, inner ring for remaining
-const OUTER_ANGLES = [-70, 10, 90, 170, 250];
-const INNER_ANGLES = [30, 150, 270];
-
 export function SocialProof({ testimonials }: { testimonials: Testimonial[] }) {
-  const rows: Row[] = testimonials.length > 0
-    ? testimonials.map((t) => ({ id: t.id, author: t.author, trip: t.trip, rating: t.rating, body: t.body }))
-    : staticReviews.map((r) => ({ id: r.id, author: r.author, trip: r.trip, rating: r.rating, body: r.body }));
+  const rows: Row[] =
+    testimonials.length > 0
+      ? testimonials.map((t) => ({
+          id: t.id,
+          author: t.author,
+          trip: t.trip,
+          rating: t.rating,
+          body: t.body,
+        }))
+      : staticReviews.map((r) => ({
+          id: r.id,
+          author: r.author,
+          trip: r.trip,
+          rating: r.rating,
+          body: r.body,
+        }));
 
   const [current, setCurrent] = useState(0);
   const review = rows[current];
@@ -50,116 +62,164 @@ export function SocialProof({ testimonials }: { testimonials: Testimonial[] }) {
   const prev = () => setCurrent((c) => (c - 1 + rows.length) % rows.length);
   const next = () => setCurrent((c) => (c + 1) % rows.length);
 
-  // All non-active rows positioned on the orbit rings
-  const others = rows
+  // All non-active rows get an orbit position
+  const orbiting = rows
     .map((r, i) => ({ ...r, idx: i }))
-    .filter((_, i) => i !== current);
-
-  const positioned = others.map((r, i) => {
-    const isOuter = i < OUTER_ANGLES.length;
-    const angle  = isOuter ? OUTER_ANGLES[i] : INNER_ANGLES[i - OUTER_ANGLES.length];
-    const radius = isOuter ? 170 : 100;
-    return { ...r, angle, radius };
-  });
+    .filter((_, i) => i !== current)
+    .map((r, slot) => {
+      const isOuter = slot < OUTER_ANGLES.length;
+      const angle = isOuter
+        ? OUTER_ANGLES[slot]
+        : INNER_ANGLES[slot - OUTER_ANGLES.length];
+      const radius = isOuter ? OUTER_R : INNER_R;
+      const size = isOuter ? 50 : 42;
+      const { x, y } = polar(angle ?? 0, radius);
+      return { ...r, x, y, size };
+    });
 
   return (
-    <section className="container-page py-10 md:py-20">
-      <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+    <section className="container-page py-14 md:py-20">
+      <div className="grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
 
-        {/* ── Left: orbital graphic ─────────────────────────────────── */}
-        <div className="flex items-center justify-center">
-          <div className="relative h-95 w-95">
+        {/* ── Left: orbital constellation (desktop) ───────────────────── */}
+        <div className="hidden lg:flex lg:flex-col lg:items-center lg:gap-8">
 
-            {/* Outer grey ring */}
-            <div className="absolute inset-0 rounded-full border-2 border-border/20" />
-            {/* Inner grey ring */}
+          {/* Ring graphic */}
+          <div
+            className="relative shrink-0"
+            style={{ width: ORBIT_BOX, height: ORBIT_BOX }}
+          >
+            {/* Outer ring */}
             <div
-              className="absolute rounded-full border-2 border-border/20"
-              style={{ inset: "calc(50% - 100px)" }}
+              className="pointer-events-none absolute rounded-full border-[1.5px] border-foreground/[0.14]"
+              style={{ inset: `calc(50% - ${OUTER_R}px)` }}
+            />
+            {/* Inner ring */}
+            <div
+              className="pointer-events-none absolute rounded-full border-[1.5px] border-foreground/[0.10]"
+              style={{ inset: `calc(50% - ${INNER_R}px)` }}
             />
 
             {/* Centre avatar — active reviewer */}
             <img
               src={AVATARS[current % AVATARS.length]}
               alt={review.author}
-              className="absolute h-[88px] w-[88px] rounded-full object-cover ring-4 ring-background shadow-lg"
-              style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}
+              className="absolute rounded-full object-cover shadow-xl ring-4 ring-background transition-all duration-300"
+              style={{
+                width: 86,
+                height: 86,
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
             />
 
-            {/* Orbiting avatars */}
-            {positioned.map((r) => (
+            {/* Orbiting avatars — click to switch */}
+            {orbiting.map((r) => (
               <button
                 key={r.id}
                 type="button"
                 onClick={() => setCurrent(r.idx)}
-                style={orbitStyle(r.angle, r.radius)}
-                className="group transition-transform hover:scale-110 focus:outline-none"
-                aria-label={`View review by ${r.author}`}
+                aria-label={`Read review by ${r.author}`}
+                className="group absolute -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+                style={{
+                  left: `calc(50% + ${r.x}px)`,
+                  top: `calc(50% + ${r.y}px)`,
+                }}
               >
                 <img
                   src={AVATARS[r.idx % AVATARS.length]}
                   alt={r.author}
-                  className="h-12 w-12 rounded-full object-cover ring-2 ring-background shadow-md transition-shadow group-hover:ring-gold"
+                  className="rounded-full object-cover shadow-md ring-2 ring-background transition-all duration-200 group-hover:ring-[3px] group-hover:ring-gold"
+                  style={{ width: r.size, height: r.size }}
                 />
               </button>
             ))}
+          </div>
 
-            {/* Bottom stat strip */}
-            <div
-              className="absolute flex items-center gap-3"
-              style={{ bottom: 6, left: "50%", transform: "translateX(-50%)", whiteSpace: "nowrap" }}
-            >
-              <div className="flex -space-x-2.5">
-                {rows.slice(0, 4).map((r, i) => (
-                  <img
-                    key={r.id}
-                    src={AVATARS[i % AVATARS.length]}
-                    alt={r.author}
-                    className="h-9 w-9 rounded-full object-cover ring-2 ring-background"
-                  />
-                ))}
-              </div>
-              <div>
-                <p className="text-sm font-bold text-foreground">500+ Customers</p>
-                <p className="text-xs text-muted-foreground">Worldwide</p>
-              </div>
+          {/* Stat pill — separate from the ring so it never overlaps */}
+          <div className="flex items-center gap-3 rounded-full border border-border bg-background px-5 py-2.5 shadow-sm">
+            <div className="flex -space-x-2.5">
+              {rows.slice(0, 4).map((r, i) => (
+                <img
+                  key={r.id}
+                  src={AVATARS[i % AVATARS.length]}
+                  alt={r.author}
+                  className="h-8 w-8 rounded-full object-cover ring-2 ring-background"
+                />
+              ))}
             </div>
+            <p className="text-sm text-foreground">
+              <span className="font-bold">500+</span>
+              <span className="ml-1 text-muted-foreground">happy travellers</span>
+            </p>
           </div>
         </div>
 
-        {/* ── Right: testimonial content ────────────────────────────── */}
+        {/* ── Right: testimonial content ───────────────────────────────── */}
         <div>
-          <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
-            What Our Travellers Say
-          </h2>
-          <p className="mt-3 max-w-md text-muted-foreground">
-            We go beyond just booking trips — we create unforgettable travel experiences that match your dreams.
-          </p>
 
-          <div className="mt-8">
-            {/* Stars */}
-            <div className="flex gap-1">
-              {Array.from({ length: Math.min(review.rating, 5) }).map((_, i) => (
-                <Star key={i} className="h-5 w-5 fill-gold text-gold" />
+          {/* Mobile avatar strip */}
+          <div className="mb-8 flex items-center gap-3 lg:hidden">
+            <div className="flex -space-x-2.5">
+              {rows.slice(0, 5).map((r, i) => (
+                <img
+                  key={r.id}
+                  src={AVATARS[i % AVATARS.length]}
+                  alt={r.author}
+                  className="h-9 w-9 rounded-full object-cover ring-2 ring-background shadow-sm"
+                />
               ))}
             </div>
-
-            {/* Trip label */}
-            <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-              {review.trip}
+            <p className="text-sm text-muted-foreground">
+              <strong className="text-foreground">500+</strong> happy travellers
             </p>
+          </div>
+
+          {/* Section label + heading */}
+          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-primary">
+            Testimonials
+          </p>
+          <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            What our travellers say
+          </h2>
+          <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
+            Every review below is from a Luxeonair-booked trip. Nothing curated, nothing fabricated.
+          </p>
+
+          {/* Review card */}
+          <div className="mt-8 space-y-4">
+
+            {/* Stars + trip */}
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-1">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`h-5 w-5 ${
+                      i < review.rating
+                        ? "fill-gold text-gold"
+                        : "fill-muted-foreground/20 text-muted-foreground/20"
+                    }`}
+                  />
+                ))}
+              </div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-primary/80">
+                {review.trip}
+              </p>
+            </div>
 
             {/* Quote */}
-            <blockquote className="mt-3 font-display text-xl font-semibold leading-snug text-foreground sm:text-2xl">
+            <blockquote className="font-display text-xl font-semibold leading-snug text-foreground sm:text-2xl lg:text-[1.55rem] lg:leading-snug">
               "{review.body}"
             </blockquote>
 
             {/* Author */}
-            <div className="mt-6 flex items-center gap-3">
+            <div className="flex items-center gap-3 pt-3">
               <img
                 src={AVATARS[current % AVATARS.length]}
                 alt={review.author}
-                className="h-11 w-11 rounded-full object-cover ring-2 ring-border"
+                className="h-12 w-12 rounded-full object-cover shadow ring-2 ring-border"
               />
               <div>
                 <p className="font-semibold text-foreground">{review.author}</p>
@@ -168,28 +228,29 @@ export function SocialProof({ testimonials }: { testimonials: Testimonial[] }) {
             </div>
           </div>
 
-          {/* Prev / Next */}
-          <div className="mt-8 flex items-center gap-3">
+          {/* Navigation */}
+          <div className="mt-7 flex items-center gap-3">
             <button
               type="button"
               onClick={prev}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background transition-colors hover:bg-muted"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:bg-muted"
               aria-label="Previous review"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-4 w-4" />
             </button>
             <button
               type="button"
               onClick={next}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background transition-colors hover:bg-muted"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:bg-muted"
               aria-label="Next review"
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className="h-4 w-4" />
             </button>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm tabular-nums text-muted-foreground">
               {current + 1} / {rows.length}
             </span>
           </div>
+
         </div>
       </div>
     </section>
