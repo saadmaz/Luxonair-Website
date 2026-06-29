@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Plane, Package, ChevronUp, Search } from "lucide-react";
+import "flag-icons/css/flag-icons.min.css";
 
-// ─── Country data with ISO-2 codes for flagcdn.com ───────────────────────────
+// ─── Country data with ISO-2 codes for flag-icons ────────────────────────────
 const COUNTRIES = [
   { name: "Albania",              code: "al" },
   { name: "Antigua & Barbuda",   code: "ag" },
@@ -84,8 +85,14 @@ const COUNTRIES = [
   { name: "Zanzibar",            code: "tz" },
 ].sort((a, b) => a.name.localeCompare(b.name));
 
-function flagUrl(code: string) {
-  return `https://flagcdn.com/24x18/${code}.png`;
+// ─── Inline flag using bundled SVG via flag-icons CSS ────────────────────────
+function Flag({ code, size = 18 }: { code: string; size?: number }) {
+  return (
+    <span
+      className={`fi fi-${code} shrink-0 rounded-sm`}
+      style={{ width: `${Math.round(size * 1.333)}px`, height: `${size}px` }}
+    />
+  );
 }
 
 // ─── Searchable country dropup ────────────────────────────────────────────────
@@ -106,13 +113,19 @@ function CountrySelect({
 
   const selectedCountry = COUNTRIES.find((c) => c.name === selected);
 
-  const filtered = query && !COUNTRIES.find((c) => c.name === query)
-    ? COUNTRIES.filter((c) => c.name.toLowerCase().includes(query.toLowerCase()))
-    : COUNTRIES;
+  const filtered =
+    query && !COUNTRIES.find((c) => c.name === query)
+      ? COUNTRIES.filter((c) =>
+          c.name.toLowerCase().includes(query.toLowerCase())
+        )
+      : COUNTRIES;
 
   useEffect(() => {
     function handler(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
         if (!COUNTRIES.find((c) => c.name === query)) setQuery(selected);
       }
@@ -123,7 +136,10 @@ function CountrySelect({
 
   useEffect(() => {
     function handler(e: KeyboardEvent) {
-      if (e.key === "Escape") { setOpen(false); setQuery(selected); }
+      if (e.key === "Escape") {
+        setOpen(false);
+        setQuery(selected);
+      }
     }
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
@@ -141,13 +157,10 @@ function CountrySelect({
 
       {/* Trigger input */}
       <div className="relative">
-        {/* Show flag when a country is selected and dropdown is closed */}
         {selectedCountry && !open ? (
-          <img
-            src={flagUrl(selectedCountry.code)}
-            alt={selectedCountry.name}
-            className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-auto -translate-y-1/2 rounded-[2px] object-cover shadow-sm"
-          />
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+            <Flag code={selectedCountry.code} size={14} />
+          </span>
         ) : (
           <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
         )}
@@ -158,34 +171,45 @@ function CountrySelect({
           placeholder={placeholder}
           autoComplete="off"
           className="input-field pl-8 pr-8"
-          onFocus={() => { setQuery(""); setOpen(true); }}
-          onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
+          onFocus={() => {
+            setQuery("");
+            setOpen(true);
+          }}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setOpen(true);
+          }}
         />
         <ChevronUp
-          className={`pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground transition-transform ${open ? "" : "rotate-180"}`}
+          className={`pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground transition-transform ${
+            open ? "" : "rotate-180"
+          }`}
         />
       </div>
 
-      {/* Dropup list — opens upward */}
+      {/* Dropup — opens upward */}
       {open && (
-        <div className="absolute bottom-full left-0 z-50 mb-1 max-h-64 w-full overflow-y-auto rounded-xl border border-border bg-background shadow-xl">
+        <div className="absolute bottom-full left-0 z-50 mb-1.5 max-h-64 w-full overflow-y-auto rounded-xl border border-border bg-background shadow-2xl">
           {filtered.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-muted-foreground">No countries found</p>
+            <p className="px-4 py-3 text-sm text-muted-foreground">
+              No countries found
+            </p>
           ) : (
             filtered.map((c) => (
               <button
                 key={c.name + c.code}
                 type="button"
-                onMouseDown={(e) => { e.preventDefault(); pick(c); }}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  pick(c);
+                }}
                 className={`flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors hover:bg-muted ${
-                  selected === c.name ? "bg-muted font-medium text-primary" : "text-foreground"
+                  selected === c.name
+                    ? "bg-muted font-medium text-primary"
+                    : "text-foreground"
                 }`}
               >
-                <img
-                  src={flagUrl(c.code)}
-                  alt={c.name}
-                  className="h-3.5 w-auto shrink-0 rounded-[2px] object-cover shadow-sm"
-                />
+                <Flag code={c.code} size={14} />
                 <span>{c.name}</span>
               </button>
             ))
@@ -203,30 +227,60 @@ export function HeroSearchTabs() {
     <div className="container-page relative z-10">
       <div className="rounded-2xl bg-card shadow-[0_20px_64px_-8px_rgba(4,32,69,0.24)] ring-1 ring-navy/8">
         {/* Tab bar */}
-        <div role="tablist" aria-label="Search type" className="flex gap-1 rounded-t-2xl bg-muted/70 px-4 pt-3">
-          <Tab active={tab === "package"} onClick={() => setTab("package")} icon={Package} panelId="panel-package" tabId="tab-package">
+        <div
+          role="tablist"
+          aria-label="Search type"
+          className="flex gap-1 rounded-t-2xl bg-muted/70 px-4 pt-3"
+        >
+          <Tab
+            active={tab === "package"}
+            onClick={() => setTab("package")}
+            icon={Package}
+            panelId="panel-package"
+            tabId="tab-package"
+          >
             Packages
           </Tab>
-          <Tab active={tab === "flight"} onClick={() => setTab("flight")} icon={Plane} panelId="panel-flight" tabId="tab-flight">
+          <Tab
+            active={tab === "flight"}
+            onClick={() => setTab("flight")}
+            icon={Plane}
+            panelId="panel-flight"
+            tabId="tab-flight"
+          >
             Flights
           </Tab>
         </div>
         {/* Brand accent line */}
         <div className="h-0.5 bg-linear-to-r from-teal via-gold to-aqua opacity-80" />
-        {tab === "package"
-          ? <div id="panel-package" role="tabpanel" aria-labelledby="tab-package"><PackageForm /></div>
-          : <div id="panel-flight" role="tabpanel" aria-labelledby="tab-flight"><FlightForm /></div>
-        }
+        {tab === "package" ? (
+          <div id="panel-package" role="tabpanel" aria-labelledby="tab-package">
+            <PackageForm />
+          </div>
+        ) : (
+          <div id="panel-flight" role="tabpanel" aria-labelledby="tab-flight">
+            <FlightForm />
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 function Tab({
-  active, onClick, icon: Icon, panelId, tabId, children,
+  active,
+  onClick,
+  icon: Icon,
+  panelId,
+  tabId,
+  children,
 }: {
-  active: boolean; onClick: () => void; icon: typeof Plane;
-  panelId: string; tabId: string; children: React.ReactNode;
+  active: boolean;
+  onClick: () => void;
+  icon: typeof Plane;
+  panelId: string;
+  tabId: string;
+  children: React.ReactNode;
 }) {
   return (
     <button
@@ -236,7 +290,9 @@ function Tab({
       aria-controls={panelId}
       onClick={onClick}
       className={`flex items-center gap-2 rounded-t-lg px-5 py-2.5 text-sm font-medium transition-all ${
-        active ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+        active
+          ? "bg-card text-foreground shadow-sm"
+          : "text-muted-foreground hover:text-foreground"
       }`}
     >
       <Icon className="h-4 w-4" /> {children}
@@ -252,7 +308,11 @@ function PackageForm() {
       className="grid grid-cols-2 gap-2.5 p-4 sm:gap-3 sm:p-5 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr_auto] lg:items-end"
     >
       <Field label="Where to?" className="col-span-2 lg:col-span-1">
-        <input name="destination" placeholder="Maldives, Tokyo, anywhere warm" className="input-field" />
+        <input
+          name="destination"
+          placeholder="Maldives, Tokyo, anywhere warm"
+          className="input-field"
+        />
       </Field>
       <Field label="Depart">
         <input name="depart" type="date" className="input-field" />
@@ -271,7 +331,11 @@ function PackageForm() {
           <option>First</option>
         </select>
       </Field>
-      <Button type="submit" size="lg" className="col-span-2 h-11 w-full bg-gold text-gold-foreground hover:bg-gold/90 lg:col-span-1 lg:w-auto">
+      <Button
+        type="submit"
+        size="lg"
+        className="col-span-2 h-11 w-full bg-gold text-gold-foreground hover:bg-gold/90 lg:col-span-1 lg:w-auto"
+      >
         Get a quote
       </Button>
     </form>
@@ -287,7 +351,11 @@ function FlightForm() {
     >
       <input type="hidden" name="tripType" value="Flight only" />
       <Field label="From">
-        <CountrySelect name="from" placeholder="London (any)" defaultValue="United Kingdom" />
+        <CountrySelect
+          name="from"
+          placeholder="London (any)"
+          defaultValue="United Kingdom"
+        />
       </Field>
       <Field label="To">
         <CountrySelect name="destination" placeholder="Where to?" />
@@ -306,14 +374,26 @@ function FlightForm() {
           <option>First</option>
         </select>
       </Field>
-      <Button type="submit" size="lg" className="col-span-2 h-11 w-full bg-gold text-gold-foreground hover:bg-gold/90 lg:col-span-1 lg:w-auto">
+      <Button
+        type="submit"
+        size="lg"
+        className="col-span-2 h-11 w-full bg-gold text-gold-foreground hover:bg-gold/90 lg:col-span-1 lg:w-auto"
+      >
         Get a quote
       </Button>
     </form>
   );
 }
 
-function Field({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
+function Field({
+  label,
+  children,
+  className,
+}: {
+  label: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div className={className}>
       <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
