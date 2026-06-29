@@ -3,20 +3,17 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, MessageCircle, Phone } from "lucide-react";
 import { Newsletter } from "@/components/shared/Newsletter";
 import { PackageCard } from "@/components/shared/PackageCard";
-import { getHolidayTypeBySlug, getDestinations } from "@/server/queries";
+import { findHolidayType } from "@/data/holidayTypes";
+import { destinations } from "@/data/destinations";
 import { holidayPackages } from "@/data/packages";
 import { SITE } from "@/config";
 
 export const Route = createFileRoute("/holiday-types/$slug")({
-  loader: async ({ params }) => {
-    const [holidayType, allDests] = await Promise.all([
-      getHolidayTypeBySlug({ data: params.slug }),
-      getDestinations(),
-    ]);
+  loader: ({ params }) => {
+    const holidayType = findHolidayType(params.slug);
     if (!holidayType) throw notFound();
-    const destinationSlugs = holidayType.destinationSlugs as string[];
-    const linkedDestinations = allDests.filter((d) =>
-      destinationSlugs.includes(d.slug)
+    const linkedDestinations = destinations.filter((d) =>
+      holidayType.destinationSlugs.includes(d.slug)
     );
     const packages = holidayPackages.filter(
       (p) => p.holidayTypeSlug === params.slug
@@ -28,9 +25,7 @@ export const Route = createFileRoute("/holiday-types/$slug")({
     if (!h) return { meta: [{ title: "Holiday Type | Luxeonair" }] };
     return {
       meta: [
-        {
-          title: `${h.name} Holidays from the UK | Tailor-Made | Luxeonair`,
-        },
+        { title: `${h.name} Holidays from the UK | Tailor-Made | Luxeonair` },
         {
           name: "description",
           content: `${h.tagline}. Handcrafted ${h.name.toLowerCase()} holidays departing the UK — ATOL protected, one dedicated consultant from first quote to return gate.`,
@@ -50,10 +45,7 @@ export const Route = createFileRoute("/holiday-types/$slug")({
           property: "og:url",
           content: `https://www.luxeonair.co.uk/holiday-types/${params.slug}`,
         },
-        {
-          name: "twitter:title",
-          content: `${h.name} Holidays | Luxeonair`,
-        },
+        { name: "twitter:title", content: `${h.name} Holidays | Luxeonair` },
         {
           name: "twitter:description",
           content: `${h.tagline}. Tailor-made from the UK, ATOL protected.`,
@@ -81,17 +73,16 @@ export const Route = createFileRoute("/holiday-types/$slug")({
 
 function HolidayTypePage() {
   const { holidayType: h, packages } = Route.useLoaderData();
-  const bullets = h.bullets as string[];
 
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-[500px] items-center md:min-h-[560px]">
+      <section className="relative flex min-h-125 items-center md:min-h-140">
         <div
           className="absolute inset-0 -z-10 bg-cover bg-center"
           style={{ backgroundImage: `url(${h.heroImage})` }}
         />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-navy/80 via-navy/65 to-navy/90" />
+        <div className="absolute inset-0 -z-10 bg-linear-to-b from-navy/80 via-navy/65 to-navy/90" />
 
         <div className="container-page py-20 text-navy-fg md:py-28">
           <h1 className="font-display text-5xl font-bold leading-tight sm:text-6xl md:text-7xl text-balance">
@@ -143,10 +134,8 @@ function HolidayTypePage() {
       <section className="bg-background py-16 md:py-20">
         <div className="container-page max-w-4xl text-center">
           <h2 className="font-display text-3xl font-bold sm:text-4xl md:text-5xl text-balance">
-            Discover{" "}
-            <span className="text-gold">{h.name}</span>{" "}
-            <span className="text-teal">Holidays</span>{" "}
-            in 2026
+            Discover <span className="text-gold">{h.name}</span>{" "}
+            <span className="text-teal">Holidays</span> in 2026
           </h2>
           <p className="mx-auto mt-5 max-w-3xl text-base leading-relaxed text-muted-foreground">
             {h.summary}
@@ -169,7 +158,6 @@ function HolidayTypePage() {
                 <PackageCard key={pkg.id} pkg={pkg} />
               ))}
             </div>
-
             <div className="mt-10 text-center">
               <Button
                 asChild
@@ -210,7 +198,7 @@ function HolidayTypePage() {
             </Button>
           </div>
           <ul className="space-y-3 self-start">
-            {bullets.map((b) => (
+            {h.bullets.map((b) => (
               <li
                 key={b}
                 className="flex items-start gap-3 rounded-xl border border-border bg-card p-4 text-sm shadow-sm"
