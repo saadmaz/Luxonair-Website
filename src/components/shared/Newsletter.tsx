@@ -41,7 +41,7 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
         <div className="relative overflow-hidden rounded-3xl">
           {/* Plane-over-clouds background */}
           <img
-            src="https://images.unsplash.com/photo-1470322339534-a4e28493e653?auto=format&fit=crop&w=2000&q=75"
+            src="public\Clouds Background.jpg"
             alt=""
             aria-hidden="true"
             className="absolute inset-0 h-full w-full object-cover object-center"
