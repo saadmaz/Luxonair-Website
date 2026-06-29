@@ -200,9 +200,9 @@ export function HeroSearchTabs() {
   const [tab, setTab] = useState<"package" | "flight">("package");
   return (
     <div className="container-page relative z-10">
-      <div className="overflow-hidden rounded-2xl bg-card shadow-[0_20px_64px_-8px_rgba(4,32,69,0.24)] ring-1 ring-navy/8">
+      <div className="rounded-2xl bg-card shadow-[0_20px_64px_-8px_rgba(4,32,69,0.24)] ring-1 ring-navy/8">
         {/* Tab bar */}
-        <div role="tablist" aria-label="Search type" className="flex gap-1 bg-muted/70 px-4 pt-3">
+        <div role="tablist" aria-label="Search type" className="flex gap-1 rounded-t-2xl bg-muted/70 px-4 pt-3">
           <Tab active={tab === "package"} onClick={() => setTab("package")} icon={Package} panelId="panel-package" tabId="tab-package">
             Packages
           </Tab>
