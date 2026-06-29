@@ -7,39 +7,36 @@ const stats = [
 
 export function StatsStrip() {
   return (
-    <div className="relative overflow-hidden bg-navy">
-      {/* Thin gold accent line at the very top */}
-      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-gold to-transparent opacity-60" />
+    <div className="relative bg-card">
+      {/* Top gold hairline */}
+      <div className="h-px bg-linear-to-r from-transparent via-gold/50 to-transparent" />
 
-      {/* Subtle radial glow behind the grid */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,oklch(0.695_0.148_72/0.07),transparent)]" />
-
-      <div className="container-page relative">
-        <dl className="grid grid-cols-2 lg:grid-cols-4">
+      <div className="container-page">
+        <div className="grid grid-cols-2 lg:grid-cols-4">
           {stats.map((s, i) => (
             <div
               key={s.label}
               className={[
-                "group flex flex-col items-center gap-1.5 px-4 py-10 text-center",
-                // Vertical dividers
-                i > 0 ? "border-l border-white/8" : "",
-                // Horizontal divider on mobile between row 1 & 2
-                i < 2 ? "border-b border-white/8 lg:border-b-0" : "",
+                "flex flex-col items-center gap-3 px-6 py-10 text-center",
+                i > 0 ? "border-l border-border" : "",
+                i < 2 ? "border-b border-border lg:border-b-0" : "",
               ].join(" ")}
             >
-              <dt className="font-display text-4xl font-bold text-gold transition-transform duration-300 group-hover:scale-105 sm:text-5xl">
+              <span className="font-display text-4xl font-bold text-gold sm:text-5xl">
                 {s.value}
-              </dt>
-              <dd className="text-xs font-medium uppercase tracking-[0.12em] text-navy-fg/55 sm:text-[13px]">
+              </span>
+              {/* Thin gold rule between number and label */}
+              <span className="block h-px w-8 bg-gold/40" />
+              <span className="text-xs font-medium text-muted-foreground sm:text-sm">
                 {s.label}
-              </dd>
+              </span>
             </div>
           ))}
-        </dl>
+        </div>
       </div>
 
-      {/* Thin gold accent line at the bottom */}
-      <div className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-gold to-transparent opacity-40" />
+      {/* Bottom border */}
+      <div className="h-px bg-border" />
     </div>
   );
 }

@@ -25,26 +25,28 @@ const items = [
 
 export function TrustPillars() {
   return (
-    <section className="border-b border-border bg-background">
-      <div className="container-page grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-4">
-        {items.map(({ icon: Icon, label, note }) => (
+    <section className="bg-secondary/30 border-b border-border">
+      <div className="container-page grid grid-cols-1 divide-y divide-border sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4">
+        {items.map(({ icon: Icon, label, note }, i) => (
           <div
             key={label}
-            className="group relative flex items-start gap-4 px-6 py-8 transition-colors hover:bg-secondary/40"
+            className={[
+              "flex items-center gap-4 px-6 py-8",
+              i > 0 ? "sm:border-l sm:border-border" : "",
+            ].join(" ")}
           >
-            {/* Gold left-border accent on hover */}
-            <span className="absolute left-0 top-6 bottom-6 w-0.75 rounded-full bg-gold opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-            {/* Icon container — navy square, gold icon */}
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-navy shadow-sm">
-              <Icon className="h-5 w-5 text-gold" />
+            {/* Gold ring icon */}
+            <span className="relative shrink-0">
+              <span className="grid h-11 w-11 place-items-center rounded-full border border-gold/30 bg-gold/8 text-gold">
+                <Icon className="h-5 w-5" />
+              </span>
             </span>
 
             <div className="min-w-0">
-              <p className="text-sm font-semibold leading-snug text-foreground">
+              <p className="text-sm font-semibold text-foreground leading-snug">
                 {label}
               </p>
-              <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">
+              <p className="mt-0.5 text-[12px] leading-relaxed text-muted-foreground">
                 {note}
               </p>
             </div>
