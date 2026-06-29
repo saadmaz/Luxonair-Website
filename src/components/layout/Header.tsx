@@ -6,14 +6,22 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { ChevronDown, Clock, Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
-import { destinations, regions } from "@/data/destinations";
 import { holidayTypes } from "@/data/holidayTypes";
 import { SITE } from "@/config/site";
+
+const dealCategories = [
+  { label: "Beach Deals",       region: "beach" },
+  { label: "Family Deals",      region: "family" },
+  { label: "City Break Deals",  region: "city-break" },
+  { label: "All Inclusive",     region: "all-inclusive" },
+  { label: "Corporate Deals",   region: "corporate" },
+  { label: "Tailor-Made Deals", region: "tailor-made" },
+];
 
 export function Header() {
   const [open, setOpen] = useState(false);
   // null = no panel open; key names correspond to the two mega-menu panels
-  const [openMenu, setOpenMenu] = useState<null | "destinations" | "holiday">(null);
+  const [openMenu, setOpenMenu] = useState<null | "holiday" | "deals">(null);
 
   return (
     <header className="sticky top-0 z-40">
@@ -56,87 +64,88 @@ export function Header() {
           </Link>
 
           {/* Desktop navigation */}
-          <nav
-            className="hidden items-center gap-5 md:flex"
-            onMouseLeave={() => setOpenMenu(null)}
-          >
+          <nav className="hidden items-center gap-5 md:flex">
             <NavLink to="/about">About us</NavLink>
-            <NavTrigger
-              label="Destinations"
-              active={openMenu === "destinations"}
-              onEnter={() => setOpenMenu("destinations")}
-              panelId="mega-destinations"
-            />
-            <NavTrigger
-              label="Holidays"
-              active={openMenu === "holiday"}
-              onEnter={() => setOpenMenu("holiday")}
-              panelId="mega-holiday"
-            />
-            <NavLink to="/deals">Deals</NavLink>
+
+            {/* Holidays dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setOpenMenu("holiday")}
+              onMouseLeave={() => setOpenMenu(null)}
+            >
+              <div className="inline-flex items-center gap-0.5">
+                <Link
+                  to="/holidays"
+                  className={`text-sm transition-colors ${openMenu === "holiday" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  Holidays
+                </Link>
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform text-muted-foreground ${openMenu === "holiday" ? "rotate-180 text-foreground" : ""}`}
+                />
+              </div>
+              {openMenu === "holiday" && (
+                <div className="absolute left-0 top-full z-50 pt-2">
+                  <div className="min-w-45 rounded-xl border border-border bg-background py-2 shadow-xl">
+                    <ul>
+                      {holidayTypes.map((h) => (
+                        <li key={h.slug}>
+                          <Link
+                            to="/holiday-types/$slug"
+                            params={{ slug: h.slug }}
+                            onClick={() => setOpenMenu(null)}
+                            className="block px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted hover:text-primary"
+                          >
+                            {h.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Deals dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setOpenMenu("deals")}
+              onMouseLeave={() => setOpenMenu(null)}
+            >
+              <div className="inline-flex items-center gap-0.5">
+                <Link
+                  to="/deals"
+                  className={`text-sm transition-colors ${openMenu === "deals" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  Deals
+                </Link>
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform text-muted-foreground ${openMenu === "deals" ? "rotate-180 text-foreground" : ""}`}
+                />
+              </div>
+              {openMenu === "deals" && (
+                <div className="absolute left-0 top-full z-50 pt-2">
+                  <div className="min-w-45 rounded-xl border border-border bg-background py-2 shadow-xl">
+                    <ul>
+                      {dealCategories.map((c) => (
+                        <li key={c.region}>
+                          <Link
+                            to="/deals"
+                            onClick={() => setOpenMenu(null)}
+                            className="block px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted hover:text-primary"
+                          >
+                            {c.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <NavLink to="/blog">Blog</NavLink>
             <NavLink to="/contact">Contact us</NavLink>
-
-            {openMenu === "destinations" && (
-              <MegaPanel id="mega-destinations" onClose={() => setOpenMenu(null)}>
-                <div className="grid grid-cols-2 gap-x-10 gap-y-6 md:grid-cols-3">
-                  {regions.map((r) => {
-                    const list = destinations.filter((d) => d.region === r);
-                    return (
-                      <div key={r}>
-                        <div className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
-                          {r}
-                        </div>
-                        <ul className="mt-3 space-y-2 text-sm">
-                          {list.map((d) => (
-                            <li key={d.slug}>
-                              <Link
-                                to="/destinations/$slug"
-                                params={{ slug: d.slug }}
-                                className="text-muted-foreground transition-colors hover:text-primary"
-                                onClick={() => setOpenMenu(null)}
-                              >
-                                {d.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div className="mt-6 border-t border-border pt-4">
-                  <Link
-                    to="/destinations"
-                    className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-                    onClick={() => setOpenMenu(null)}
-                  >
-                    Browse all destinations →
-                  </Link>
-                </div>
-              </MegaPanel>
-            )}
-
-            {openMenu === "holiday" && (
-              <MegaPanel id="mega-holiday" onClose={() => setOpenMenu(null)}>
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-                  {holidayTypes.map((h) => (
-                    <Link
-                      key={h.slug}
-                      to="/holiday-types/$slug"
-                      params={{ slug: h.slug }}
-                      onClick={() => setOpenMenu(null)}
-                      className="group rounded-xl border border-border bg-card p-4 transition-all hover:border-gold hover:shadow-md"
-                    >
-                      <div className="font-display text-base font-semibold transition-colors group-hover:text-gold">
-                        {h.name}
-                      </div>
-                      <div className="mt-1 text-xs text-muted-foreground">{h.tagline}</div>
-                    </Link>
-                  ))}
-                </div>
-              </MegaPanel>
-            )}
           </nav>
 
           {/* Right actions */}
@@ -161,28 +170,41 @@ export function Header() {
       {open && (
         <div className="border-b border-border bg-background md:hidden">
           <div className="container-page flex flex-col gap-1 py-3">
-            {[
-              { to: "/about", label: "About us" },
-              { to: "/destinations", label: "Destinations" },
-              { to: "/holiday-types", label: "Holidays" },
-              { to: "/deals", label: "Deals" },
-              { to: "/blog", label: "Blog" },
-              { to: "/contact", label: "Contact us" },
-            ].map((n) => (
+            <Link to="/about" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">About us</Link>
+
+            {/* Holidays section */}
+            <Link to="/holidays" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted">Holidays</Link>
+            {holidayTypes.map((h) => (
               <Link
-                key={n.to}
-                to={n.to}
+                key={h.slug}
+                to="/holiday-types/$slug"
+                params={{ slug: h.slug }}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted"
+                className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
               >
-                {n.label}
+                {h.name}
               </Link>
             ))}
+
+            {/* Deals section */}
+            <Link to="/deals" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted">Deals</Link>
+            {dealCategories.map((c) => (
+              <Link
+                key={c.region}
+                to="/deals"
+                onClick={() => setOpen(false)}
+                className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                {c.label}
+              </Link>
+            ))}
+
+            <Link to="/blog" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">Blog</Link>
+            <Link to="/contact" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">Contact us</Link>
+
             <div className="mt-2 border-t border-border pt-2">
               <Button asChild className="w-full">
-                <Link to="/quote" onClick={() => setOpen(false)}>
-                  Get a quote
-                </Link>
+                <Link to="/quote" onClick={() => setOpen(false)}>Get a quote</Link>
               </Button>
             </div>
           </div>
@@ -203,53 +225,4 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   );
 }
 
-function NavTrigger({
-  label,
-  active,
-  onEnter,
-  panelId,
-}: {
-  label: string;
-  active: boolean;
-  onEnter: () => void;
-  panelId: string;
-}) {
-  return (
-    <button
-      type="button"
-      onMouseEnter={onEnter}
-      onFocus={onEnter}
-      onClick={onEnter}
-      aria-expanded={active}
-      aria-controls={active ? panelId : undefined}
-      className={`inline-flex items-center gap-1 whitespace-nowrap text-sm transition-colors ${
-        active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-      }`}
-    >
-      {label}{" "}
-      <ChevronDown
-        className={`h-3.5 w-3.5 transition-transform ${active ? "rotate-180" : ""}`}
-      />
-    </button>
-  );
-}
 
-function MegaPanel({
-  id,
-  children,
-  onClose,
-}: {
-  id: string;
-  children: React.ReactNode;
-  onClose: () => void;
-}) {
-  return (
-    <div
-      id={id}
-      className="absolute left-0 right-0 top-full border-b border-border bg-background shadow-2xl"
-      onMouseLeave={onClose}
-    >
-      <div className="container-page py-8">{children}</div>
-    </div>
-  );
-}
