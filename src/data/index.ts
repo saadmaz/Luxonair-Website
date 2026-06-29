@@ -7,3 +7,4 @@ export * from "./holidayTypes";
 export * from "./reviews";
 export * from "./faq";
 export * from "./flights";
+export * from "./packages";

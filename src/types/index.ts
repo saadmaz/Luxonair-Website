@@ -8,3 +8,4 @@ export type { HolidayType } from "./holiday-type";
 export type { Review } from "./review";
 export type { FaqGroup } from "./faq";
 export type { Airline, FlightRoute } from "./flight";
+export type { HolidayPackage } from "./holiday-package";
