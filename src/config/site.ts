@@ -24,11 +24,10 @@ export const SITE = {
   registration: "00000000",           // TODO: Companies House registration number
 
   social: {
-    // Set to a real URL to show the icon; leave as empty string to hide it
-    facebook: "",
-    instagram: "",
-    linkedin: "",
-    youtube: "",
+    instagram: "",  // TODO: add Instagram URL
+    facebook: "",   // TODO: add Facebook URL
+    tiktok: "",     // TODO: add TikTok URL
+    linkedin: "",   // TODO: add LinkedIn URL
   },
 
   accreditation: {

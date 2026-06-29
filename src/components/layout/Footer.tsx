@@ -2,18 +2,23 @@
 // Social icons are only rendered when a URL is configured in SITE.social -
 // filtering out empty strings keeps the footer clean during pre-launch.
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 import { Newsletter } from "@/components/shared/Newsletter";
 import { SITE } from "@/config/site";
 
+const TikTokIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
+  </svg>
+);
+
 export function Footer() {
-  // Empty-string social URLs are filtered out so icons are hidden until configured
   const socialLinks = [
-    { href: SITE.social.facebook, label: "Facebook", icon: <Facebook className="h-4 w-4" /> },
-    { href: SITE.social.instagram, label: "Instagram", icon: <Instagram className="h-4 w-4" /> },
-    { href: SITE.social.linkedin, label: "LinkedIn", icon: <Linkedin className="h-4 w-4" /> },
-    { href: SITE.social.youtube, label: "YouTube", icon: <Youtube className="h-4 w-4" /> },
-  ].filter((s) => s.href);
+    { href: SITE.social.instagram || "#", label: "Instagram", icon: <Instagram className="h-4 w-4" /> },
+    { href: SITE.social.facebook  || "#", label: "Facebook",  icon: <Facebook  className="h-4 w-4" /> },
+    { href: SITE.social.tiktok    || "#", label: "TikTok",    icon: <TikTokIcon /> },
+    { href: SITE.social.linkedin  || "#", label: "LinkedIn",  icon: <Linkedin  className="h-4 w-4" /> },
+  ];
 
   return (
     <footer className="bg-navy text-navy-fg">
@@ -32,16 +37,14 @@ export function Footer() {
             UK based travel specialist for premium long haul flights, family escapes and corporate trips. Custom made itineraries, handled and managed by a dedicated consultants.
           </p>
 
-          {/* Social icons - only rendered when URLs are configured */}
-          {socialLinks.length > 0 && (
-            <div className="mt-6 flex items-center gap-3">
-              {socialLinks.map((s) => (
-                <SocialLink key={s.label} href={s.href} label={s.label}>
-                  {s.icon}
-                </SocialLink>
-              ))}
-            </div>
-          )}
+          {/* Social icons */}
+          <div className="mt-6 flex items-center gap-3">
+            {socialLinks.map((s) => (
+              <SocialLink key={s.label} href={s.href} label={s.label}>
+                {s.icon}
+              </SocialLink>
+            ))}
+          </div>
 
           {/* Accreditation badges */}
           <div className="mt-6 flex flex-wrap items-center gap-3">
