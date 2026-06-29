@@ -153,5 +153,3 @@ function NewsletterForm({
     </form>
   );
 }
-
- 
