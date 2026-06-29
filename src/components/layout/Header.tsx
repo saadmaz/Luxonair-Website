@@ -1,6 +1,3 @@
-﻿// Sticky site header: announcement bar → main nav bar → mega-panel dropdowns → mobile drawer.
-// Mega panels are shown on hover/focus (desktop) and dismissed on mouse-leave of the nav.
-// The mobile drawer is a full-width overlay toggled by the hamburger button.
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
@@ -10,36 +7,25 @@ import { holidayTypes } from "@/data/holidayTypes";
 import { SITE } from "@/config/site";
 
 const dealCategories = [
-  { label: "Beach Deals",       region: "beach" },
-  { label: "Family Deals",      region: "family" },
-  { label: "City Break Deals",  region: "city-break" },
-  { label: "All Inclusive",     region: "all-inclusive" },
-  { label: "Corporate Deals",   region: "corporate" },
-  { label: "Tailor-Made Deals", region: "tailor-made" },
+  { label: "Cheap Flights",        slug: "cheap-flights" },
+  { label: "Last Minute Holidays", slug: "last-minute" },
+  { label: "Seasonal Offers",      slug: "seasonal" },
 ];
 
 export function Header() {
   const [open, setOpen] = useState(false);
-  // null = no panel open; key names correspond to the two mega-menu panels
-  const [openMenu, setOpenMenu] = useState<null | "holiday" | "deals">(null);
 
   return (
-    <header className="sticky top-0 z-40">
+    <header className="sticky top-0 z-50">
       {/* Top announcement bar */}
       <div className="bg-navy text-navy-fg">
         <div className="container-page flex items-center justify-between gap-x-4 py-1.5 text-xs">
           <div className="flex items-center gap-3">
-            <a
-              href={`tel:${SITE.phone.tel}`}
-              className="flex items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold"
-            >
+            <a href={`tel:${SITE.phone.tel}`} className="flex items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold">
               <Phone className="h-3 w-3 shrink-0" /> {SITE.phone.display}
             </a>
             <span className="hidden text-navy-fg/30 sm:block">|</span>
-            <a
-              href={`mailto:${SITE.email}`}
-              className="hidden items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold sm:flex"
-            >
+            <a href={`mailto:${SITE.email}`} className="hidden items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold sm:flex">
               <Mail className="h-3 w-3" /> {SITE.email}
             </a>
           </div>
@@ -52,96 +38,63 @@ export function Header() {
       </div>
 
       {/* Main navigation bar */}
-      <div className="border-b border-border/60 bg-background/90 backdrop-blur supports-backdrop-filter:bg-background/75">
+      <div className="border-b border-border/60 bg-background/90 backdrop-blur">
         <div className="container-page flex h-16 items-center justify-between gap-4">
           {/* Logo */}
           <Link to="/" className="flex shrink-0 items-center">
-            <img
-              src="/Logo/Main%20Logo.png"
-              alt="Luxeonair"
-              className="h-16 w-auto"
-            />
+            <img src="/Logo/Main%20Logo.png" alt="Luxeonair" className="h-16 w-auto" />
           </Link>
 
           {/* Desktop navigation */}
-          <nav className="hidden items-center gap-5 md:flex">
+          <nav className="hidden items-center gap-6 md:flex">
             <NavLink to="/about">About us</NavLink>
 
             {/* Holidays dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setOpenMenu("holiday")}
-              onMouseLeave={() => setOpenMenu(null)}
-            >
-              <div className="inline-flex items-center gap-0.5">
-                <Link
-                  to="/holidays"
-                  className={`text-sm transition-colors ${openMenu === "holiday" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-                >
+            <div className="group relative">
+              <div className="flex items-center gap-0.5 cursor-pointer">
+                <Link to="/holidays" className="text-sm text-muted-foreground transition-colors hover:text-foreground group-hover:text-foreground">
                   Holidays
                 </Link>
-                <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform text-muted-foreground ${openMenu === "holiday" ? "rotate-180 text-foreground" : ""}`}
-                />
+                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 group-hover:rotate-180 group-hover:text-foreground" />
               </div>
-              {openMenu === "holiday" && (
-                <div className="absolute left-0 top-full z-50 pt-2">
-                  <div className="min-w-45 rounded-xl border border-border bg-background py-2 shadow-xl">
-                    <ul>
-                      {holidayTypes.map((h) => (
-                        <li key={h.slug}>
-                          <Link
-                            to="/holiday-types/$slug"
-                            params={{ slug: h.slug }}
-                            onClick={() => setOpenMenu(null)}
-                            className="block px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted hover:text-primary"
-                          >
-                            {h.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+              {/* Dropdown panel — shown on group hover via CSS */}
+              <div className="invisible absolute left-0 top-full z-50 pt-1 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100">
+                <div className="w-48 rounded-xl border border-border bg-background py-2 shadow-xl">
+                  {holidayTypes.map((h) => (
+                    <Link
+                      key={h.slug}
+                      to="/holiday-types/$slug"
+                      params={{ slug: h.slug }}
+                      className="block px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-muted hover:text-primary"
+                    >
+                      {h.name}
+                    </Link>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
 
             {/* Deals dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setOpenMenu("deals")}
-              onMouseLeave={() => setOpenMenu(null)}
-            >
-              <div className="inline-flex items-center gap-0.5">
-                <Link
-                  to="/deals"
-                  className={`text-sm transition-colors ${openMenu === "deals" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-                >
+            <div className="group relative">
+              <div className="flex items-center gap-0.5 cursor-pointer">
+                <Link to="/deals" className="text-sm text-muted-foreground transition-colors hover:text-foreground group-hover:text-foreground">
                   Deals
                 </Link>
-                <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform text-muted-foreground ${openMenu === "deals" ? "rotate-180 text-foreground" : ""}`}
-                />
+                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 group-hover:rotate-180 group-hover:text-foreground" />
               </div>
-              {openMenu === "deals" && (
-                <div className="absolute left-0 top-full z-50 pt-2">
-                  <div className="min-w-45 rounded-xl border border-border bg-background py-2 shadow-xl">
-                    <ul>
-                      {dealCategories.map((c) => (
-                        <li key={c.region}>
-                          <Link
-                            to="/deals"
-                            onClick={() => setOpenMenu(null)}
-                            className="block px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted hover:text-primary"
-                          >
-                            {c.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+              <div className="invisible absolute left-0 top-full z-50 pt-1 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100">
+                <div className="w-48 rounded-xl border border-border bg-background py-2 shadow-xl">
+                  {dealCategories.map((c) => (
+                    <Link
+                      key={c.slug}
+                      to="/deals"
+                      className="block px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-muted hover:text-primary"
+                    >
+                      {c.label}
+                    </Link>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
 
             <NavLink to="/blog">Blog</NavLink>
@@ -172,29 +125,16 @@ export function Header() {
           <div className="container-page flex flex-col gap-1 py-3">
             <Link to="/about" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">About us</Link>
 
-            {/* Holidays section */}
             <Link to="/holidays" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted">Holidays</Link>
             {holidayTypes.map((h) => (
-              <Link
-                key={h.slug}
-                to="/holiday-types/$slug"
-                params={{ slug: h.slug }}
-                onClick={() => setOpen(false)}
-                className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-              >
+              <Link key={h.slug} to="/holiday-types/$slug" params={{ slug: h.slug }} onClick={() => setOpen(false)} className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
                 {h.name}
               </Link>
             ))}
 
-            {/* Deals section */}
             <Link to="/deals" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted">Deals</Link>
             {dealCategories.map((c) => (
-              <Link
-                key={c.region}
-                to="/deals"
-                onClick={() => setOpen(false)}
-                className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-              >
+              <Link key={c.slug} to="/deals" onClick={() => setOpen(false)} className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
                 {c.label}
               </Link>
             ))}
@@ -224,5 +164,3 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
     </Link>
   );
 }
-
-
