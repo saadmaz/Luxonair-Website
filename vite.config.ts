@@ -13,4 +13,11 @@ export default defineConfig({
     tailwindcss(),
     tsconfigPaths(),
   ],
+  ssr: {
+    external: ["mysql2", "drizzle-orm", "jose"],
+    noExternal: [],
+  },
+  optimizeDeps: {
+    exclude: ["mysql2", "drizzle-orm"],
+  },
 });
