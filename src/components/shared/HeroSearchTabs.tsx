@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Plane, Package, ChevronUp, Search } from "lucide-react";
 import "flag-icons/css/flag-icons.min.css";
+import { DatePicker } from "./DatePicker";
 
 // ─── Country data with ISO-2 codes for flag-icons ────────────────────────────
 const COUNTRIES = [
@@ -315,10 +316,10 @@ function PackageForm() {
         />
       </Field>
       <Field label="Depart">
-        <input name="depart" type="date" className="input-field" />
+        <DatePicker name="depart" placeholder="Departure date" />
       </Field>
       <Field label="Return (optional)">
-        <input name="return" type="date" className="input-field" />
+        <DatePicker name="return" placeholder="Return date (optional)" />
       </Field>
       <Field label="Travellers">
         <input name="travellers" placeholder="2 adults" className="input-field" />
@@ -361,10 +362,10 @@ function FlightForm() {
         <CountrySelect name="destination" placeholder="Where to?" />
       </Field>
       <Field label="Depart">
-        <input name="depart" type="date" className="input-field" />
+        <DatePicker name="depart" placeholder="Departure date" />
       </Field>
       <Field label="Return (optional)">
-        <input name="return" type="date" className="input-field" />
+        <DatePicker name="return" placeholder="Return date (optional)" />
       </Field>
       <Field label="Cabin">
         <select name="cabin" className="input-field">
