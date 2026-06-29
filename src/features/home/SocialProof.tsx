@@ -1,73 +1,57 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
-import { reviews } from "@/data/reviews";
+import { reviews as staticReviews } from "@/data/reviews";
+import type { Testimonial } from "../../db/schema";
 
-// Colour pool for avatar initials bubbles
-const COLOURS = [
-  "bg-[#3b82f6]", // blue
-  "bg-[#8b5cf6]", // purple
-  "bg-[#ec4899]", // pink
-  "bg-[#f97316]", // orange
-  "bg-[#14b8a6]", // teal
-  "bg-[#22c55e]", // green
+// Pool of Unsplash portrait photos — assigned by index, loops if more testimonials than photos
+const AVATARS = [
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80",
+  "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=100&h=100&q=80",
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80",
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80",
+  "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=100&h=100&q=80",
+  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&h=100&q=80",
+  "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=100&h=100&q=80",
+  "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=100&h=100&q=80",
 ];
 
-function InitialsAvatar({
-  name,
-  colourClass,
-  className = "",
-}: {
-  name: string;
-  colourClass: string;
-  className?: string;
-}) {
-  const initials = name
-    .split(/[\s&,]+/)
-    .filter(Boolean)
-    .map((w) => w[0].toUpperCase())
-    .slice(0, 2)
-    .join("");
-  return (
-    <div
-      className={`${colourClass} ${className} flex shrink-0 items-center justify-center rounded-full font-bold text-white ring-2 ring-background`}
-    >
-      {initials}
-    </div>
-  );
-}
+type Row = { id: number | string; author: string; trip: string; rating: number; body: string };
 
-// Positions avatars on a circle centred at (50%, 50%) of the parent
+// Positions avatars on a circle centred at (50%, 50%)
 function orbitStyle(angleDeg: number, radiusPx: number): React.CSSProperties {
   const rad = (angleDeg * Math.PI) / 180;
-  const x = Math.cos(rad) * radiusPx;
-  const y = Math.sin(rad) * radiusPx;
   return {
     position: "absolute",
     left: "50%",
     top: "50%",
-    transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
+    transform: `translate(calc(-50% + ${Math.cos(rad) * radiusPx}px), calc(-50% + ${Math.sin(rad) * radiusPx}px))`,
   };
 }
 
-export function SocialProof() {
+// Outer-ring angles for up to 5 non-active avatars, inner ring for remaining
+const OUTER_ANGLES = [-70, 10, 90, 170, 250];
+const INNER_ANGLES = [30, 150, 270];
+
+export function SocialProof({ testimonials }: { testimonials: Testimonial[] }) {
+  const rows: Row[] = testimonials.length > 0
+    ? testimonials.map((t) => ({ id: t.id, author: t.author, trip: t.trip, rating: t.rating, body: t.body }))
+    : staticReviews.map((r) => ({ id: r.id, author: r.author, trip: r.trip, rating: r.rating, body: r.body }));
+
   const [current, setCurrent] = useState(0);
-  const review = reviews[current];
+  const review = rows[current];
 
-  const prev = () => setCurrent((c) => (c - 1 + reviews.length) % reviews.length);
-  const next = () => setCurrent((c) => (c + 1) % reviews.length);
+  const prev = () => setCurrent((c) => (c - 1 + rows.length) % rows.length);
+  const next = () => setCurrent((c) => (c + 1) % rows.length);
 
-  // Spread non-active avatars evenly around the two orbit rings
-  const others = reviews
-    .map((r, i) => ({ ...r, colour: COLOURS[i % COLOURS.length], origIndex: i }))
+  // All non-active rows positioned on the orbit rings
+  const others = rows
+    .map((r, i) => ({ ...r, idx: i }))
     .filter((_, i) => i !== current);
 
-  const outerAngles = [-60, 20, 110, 200];
-  const innerAngles = [40, 160, 280];
-
   const positioned = others.map((r, i) => {
-    const isOuter = i < outerAngles.length;
-    const angle = isOuter ? outerAngles[i] : innerAngles[i - outerAngles.length];
-    const radius = isOuter ? 175 : 105;
+    const isOuter = i < OUTER_ANGLES.length;
+    const angle  = isOuter ? OUTER_ANGLES[i] : INNER_ANGLES[i - OUTER_ANGLES.length];
+    const radius = isOuter ? 170 : 100;
     return { ...r, angle, radius };
   });
 
@@ -75,24 +59,24 @@ export function SocialProof() {
     <section className="container-page py-10 md:py-20">
       <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
 
-        {/* ── Left: orbital graphic ── */}
+        {/* ── Left: orbital graphic ─────────────────────────────────── */}
         <div className="flex items-center justify-center">
           <div className="relative h-95 w-95">
 
-            {/* Outer ring */}
-            <div className="absolute inset-0 rounded-full border border-border/25" />
-            {/* Inner ring */}
+            {/* Outer grey ring */}
+            <div className="absolute inset-0 rounded-full border-2 border-border/20" />
+            {/* Inner grey ring */}
             <div
-              className="absolute rounded-full border border-border/25"
-              style={{ inset: "calc(50% - 105px)" }}
+              className="absolute rounded-full border-2 border-border/20"
+              style={{ inset: "calc(50% - 100px)" }}
             />
 
-            {/* Centre avatar (active reviewer) */}
-            <InitialsAvatar
-              name={review.author}
-              colourClass={COLOURS[current % COLOURS.length]}
-              className="absolute h-20 w-20 text-xl"
-              style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)" } as React.CSSProperties}
+            {/* Centre avatar — active reviewer */}
+            <img
+              src={AVATARS[current % AVATARS.length]}
+              alt={review.author}
+              className="absolute h-[88px] w-[88px] rounded-full object-cover ring-4 ring-background shadow-lg"
+              style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}
             />
 
             {/* Orbiting avatars */}
@@ -100,15 +84,15 @@ export function SocialProof() {
               <button
                 key={r.id}
                 type="button"
-                onClick={() => setCurrent(r.origIndex)}
+                onClick={() => setCurrent(r.idx)}
                 style={orbitStyle(r.angle, r.radius)}
-                className="transition-transform hover:scale-110 focus:outline-none"
+                className="group transition-transform hover:scale-110 focus:outline-none"
                 aria-label={`View review by ${r.author}`}
               >
-                <InitialsAvatar
-                  name={r.author}
-                  colourClass={r.colour}
-                  className="h-12 w-12 text-xs"
+                <img
+                  src={AVATARS[r.idx % AVATARS.length]}
+                  alt={r.author}
+                  className="h-12 w-12 rounded-full object-cover ring-2 ring-background shadow-md transition-shadow group-hover:ring-gold"
                 />
               </button>
             ))}
@@ -116,15 +100,15 @@ export function SocialProof() {
             {/* Bottom stat strip */}
             <div
               className="absolute flex items-center gap-3"
-              style={{ bottom: 4, left: "50%", transform: "translateX(-50%)", whiteSpace: "nowrap" }}
+              style={{ bottom: 6, left: "50%", transform: "translateX(-50%)", whiteSpace: "nowrap" }}
             >
               <div className="flex -space-x-2.5">
-                {reviews.slice(0, 4).map((r, i) => (
-                  <InitialsAvatar
+                {rows.slice(0, 4).map((r, i) => (
+                  <img
                     key={r.id}
-                    name={r.author}
-                    colourClass={COLOURS[i % COLOURS.length]}
-                    className="h-9 w-9 text-[10px]"
+                    src={AVATARS[i % AVATARS.length]}
+                    alt={r.author}
+                    className="h-9 w-9 rounded-full object-cover ring-2 ring-background"
                   />
                 ))}
               </div>
@@ -136,7 +120,7 @@ export function SocialProof() {
           </div>
         </div>
 
-        {/* ── Right: testimonial content ── */}
+        {/* ── Right: testimonial content ────────────────────────────── */}
         <div>
           <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
             What Our Travellers Say
@@ -146,29 +130,29 @@ export function SocialProof() {
           </p>
 
           <div className="mt-8">
-            {/* Star rating */}
+            {/* Stars */}
             <div className="flex gap-1">
-              {Array.from({ length: review.rating }).map((_, i) => (
+              {Array.from({ length: Math.min(review.rating, 5) }).map((_, i) => (
                 <Star key={i} className="h-5 w-5 fill-gold text-gold" />
               ))}
             </div>
 
             {/* Trip label */}
-            <p className="mt-3 text-sm font-semibold uppercase tracking-wide text-primary">
+            <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
               {review.trip}
             </p>
 
-            {/* Quote body */}
-            <blockquote className="mt-3 text-lg font-semibold leading-relaxed text-foreground sm:text-xl">
+            {/* Quote */}
+            <blockquote className="mt-3 font-display text-xl font-semibold leading-snug text-foreground sm:text-2xl">
               "{review.body}"
             </blockquote>
 
             {/* Author */}
             <div className="mt-6 flex items-center gap-3">
-              <InitialsAvatar
-                name={review.author}
-                colourClass={COLOURS[current % COLOURS.length]}
-                className="h-11 w-11 text-sm"
+              <img
+                src={AVATARS[current % AVATARS.length]}
+                alt={review.author}
+                className="h-11 w-11 rounded-full object-cover ring-2 ring-border"
               />
               <div>
                 <p className="font-semibold text-foreground">{review.author}</p>
@@ -196,7 +180,7 @@ export function SocialProof() {
               <ChevronRight className="h-5 w-5" />
             </button>
             <span className="text-sm text-muted-foreground">
-              {current + 1} / {reviews.length}
+              {current + 1} / {rows.length}
             </span>
           </div>
         </div>

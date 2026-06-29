@@ -2,6 +2,7 @@
 // Each section lives in src/components/home/ and can be edited independently.
 import { createFileRoute } from "@tanstack/react-router";
 import { Newsletter } from "@/components/shared/Newsletter";
+import { getTestimonials } from "@/server/queries";
 import {
   Hero,
   StatsStrip,
@@ -16,6 +17,10 @@ import {
 } from "@/features/home";
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const testimonials = await getTestimonials();
+    return { testimonials };
+  },
   head: () => ({
     meta: [
       { title: "Luxeonair | Tailor-Made Luxury Holidays & Corporate Travel from the UK" },
@@ -42,6 +47,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const { testimonials } = Route.useLoaderData();
   return (
     <>
       <Hero />
@@ -51,7 +57,7 @@ function Home() {
       <HolidayTypeTiles />
       <DealsSection />
       <WhyLuxonair />
-      <SocialProof />
+      <SocialProof testimonials={testimonials} />
       <BlogCarousel />
       <Newsletter variant="section" />
       <FinalCTA />
