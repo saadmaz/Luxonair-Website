@@ -170,7 +170,7 @@ function CountrySelect({
           value={query}
           placeholder={placeholder}
           autoComplete="off"
-          className="input-field pl-8 pr-8"
+          className="input-field pl-10 pr-8"
           onFocus={() => {
             setQuery("");
             setOpen(true);
