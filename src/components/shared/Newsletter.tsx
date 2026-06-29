@@ -1,10 +1,5 @@
-// Newsletter sign-up with two layout variants:
-//   "footer"  - compact, used inside the site Footer
-//   "section" - full-bleed dark panel, used inline on the home page
-//
-// Submits to Formspree if SITE.formspree.newsletter is set; logs to console in demo mode.
 import { useState } from "react";
-import { Loader2, Mail } from "lucide-react";
+import { Loader2, Mail, SendHorizonal } from "lucide-react";
 import { SITE } from "@/config/site";
 
 export function Newsletter({ variant = "footer" }: { variant?: "footer" | "section" }) {
@@ -42,18 +37,62 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
 
   if (variant === "section") {
     return (
-      <section className="border-y border-border bg-navy text-navy-fg">
-        <div className="container-page grid gap-8 py-10 md:grid-cols-[1.4fr_1fr] md:items-center md:py-16">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-navy-fg/60">Newsletter</p>
-            <h2 className="mt-2 font-display text-2xl font-semibold sm:text-4xl text-balance">
-              Curated inspiration. <span className="text-gold">Exclusive offers.</span>
+      <section className="container-page py-10 md:py-16">
+        <div className="relative overflow-hidden rounded-3xl">
+          {/* Plane-over-clouds background */}
+          <img
+            src="https://images.unsplash.com/photo-1470322339534-a4e28493e653?auto=format&fit=crop&w=2000&q=75"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          />
+          {/* Dark overlay — works for both light + dark mode */}
+          <div className="absolute inset-0 bg-navy/65" />
+
+          {/* Content */}
+          <div className="relative px-6 py-14 text-center md:px-16 md:py-20">
+            <h2 className="font-display text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
+              Get <span className="text-gold">exclusive</span>{" "}
+              <span className="text-teal-400">deals</span>
+              <br />
+              straight to your inbox
             </h2>
-            <p className="mt-3 max-w-lg text-navy-fg/80">
-              Be the first to discover luxury escapes, seasonal recommendations, and member-only travel deals, delivered thoughtfully, just twice a month.
+            <p className="mx-auto mt-4 max-w-xl text-sm text-white/70 md:text-base">
+              Join thousands of travellers who get our weekly hand-picked deals, insider tips, and early-bird offers.
             </p>
+
+            {/* Email form */}
+            <div className="mx-auto mt-8 max-w-lg">
+              {done ? (
+                <p className="rounded-2xl bg-white/10 px-6 py-4 text-white">
+                  ✓ Thanks — we'll send a confirmation to <strong>{email}</strong>.
+                </p>
+              ) : (
+                <form onSubmit={handleSubmit}>
+                  <div className="flex items-center rounded-2xl bg-white px-4 py-2 shadow-lg">
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Type Your Email Address"
+                      className="flex-1 bg-transparent py-2 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="ml-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold text-white transition-colors hover:bg-gold/90 disabled:opacity-60"
+                    >
+                      {submitting
+                        ? <Loader2 className="h-4 w-4 animate-spin" />
+                        : <SendHorizonal className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
+                </form>
+              )}
+            </div>
           </div>
-          <NewsletterForm email={email} setEmail={setEmail} done={done} submitting={submitting} error={error} onSubmit={handleSubmit} dark />
         </div>
       </section>
     );
