@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { reviews as staticReviews } from "@/data/reviews";
-import type { Testimonial } from "../../db/schema";
+
+type Testimonial = {
+  id: number;
+  author: string;
+  trip: string;
+  rating: number;
+  body: string;
+};
 
 // Pool of Unsplash portrait photos — assigned by index, loops if more testimonials than photos
 const AVATARS = [

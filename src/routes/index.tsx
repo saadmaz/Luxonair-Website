@@ -18,8 +18,12 @@ import {
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const testimonials = await getTestimonials();
-    return { testimonials };
+    try {
+      const testimonials = await getTestimonials();
+      return { testimonials };
+    } catch {
+      return { testimonials: [] };
+    }
   },
   head: () => ({
     meta: [
