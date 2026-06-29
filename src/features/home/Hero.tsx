@@ -32,14 +32,6 @@ export function Hero() {
       {/* Main content - grows to fill the viewport height above the search widget */}
       <div className="container-page flex flex-1 flex-col justify-center pb-3 pt-5 md:pb-4 md:pt-8">
         <div className="max-w-3xl">
-          {/* Eyebrow */}
-          <div className="flex items-center gap-3">
-            <div className="h-px w-8 bg-gold/60 sm:w-10" />
-            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-gold/75 sm:text-[11px] sm:tracking-[0.35em]">
-              UK Travel Specialists
-            </p>
-          </div>
-
           <h1 className="mt-3 font-display text-[2.1rem] font-semibold leading-[1.08] tracking-tight text-navy-fg sm:mt-4 sm:text-5xl md:text-[3.25rem] text-balance">
             Tailor-Made Holidays,{" "}
             <span className="text-gold">Built Around</span>{" "}
