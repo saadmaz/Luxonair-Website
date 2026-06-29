@@ -51,14 +51,12 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
 
           {/* Content */}
           <div className="relative px-6 py-14 text-center md:px-16 md:py-20">
-            <h2 className="font-display text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
-              Get <span className="text-gold">exclusive</span>{" "}
-              <span className="text-teal-400">deals</span>
-              <br />
-              straight to your inbox
+            <p className="text-xs uppercase tracking-[0.2em] text-white/60">Newsletter</p>
+            <h2 className="mt-2 font-display text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl text-balance">
+              Curated inspiration. <span className="text-gold">Exclusive offers.</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-sm text-white/70 md:text-base">
-              Join thousands of travellers who get our weekly hand-picked deals, insider tips, and early-bird offers.
+              Be the first to discover luxury escapes, seasonal recommendations, and member-only travel deals, delivered thoughtfully, just twice a month.
             </p>
 
             {/* Email form */}
