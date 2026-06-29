@@ -1,90 +1,94 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Plane, Package, ChevronDown, Search } from "lucide-react";
+import { Plane, Package, ChevronUp, Search } from "lucide-react";
 
-// ─── Country data ─────────────────────────────────────────────────────────────
+// ─── Country data with ISO-2 codes for flagcdn.com ───────────────────────────
 const COUNTRIES = [
-  { name: "United Kingdom",        flag: "🇬🇧" },
-  { name: "United States",         flag: "🇺🇸" },
-  { name: "United Arab Emirates",  flag: "🇦🇪" },
-  { name: "France",                flag: "🇫🇷" },
-  { name: "Spain",                 flag: "🇪🇸" },
-  { name: "Italy",                 flag: "🇮🇹" },
-  { name: "Greece",                flag: "🇬🇷" },
-  { name: "Portugal",              flag: "🇵🇹" },
-  { name: "Germany",               flag: "🇩🇪" },
-  { name: "Netherlands",           flag: "🇳🇱" },
-  { name: "Switzerland",           flag: "🇨🇭" },
-  { name: "Austria",               flag: "🇦🇹" },
-  { name: "Turkey",                flag: "🇹🇷" },
-  { name: "Egypt",                 flag: "🇪🇬" },
-  { name: "Morocco",               flag: "🇲🇦" },
-  { name: "South Africa",          flag: "🇿🇦" },
-  { name: "Kenya",                 flag: "🇰🇪" },
-  { name: "Tanzania",              flag: "🇹🇿" },
-  { name: "Maldives",              flag: "🇲🇻" },
-  { name: "Sri Lanka",             flag: "🇱🇰" },
-  { name: "India",                 flag: "🇮🇳" },
-  { name: "Thailand",              flag: "🇹🇭" },
-  { name: "Japan",                 flag: "🇯🇵" },
-  { name: "China",                 flag: "🇨🇳" },
-  { name: "Singapore",             flag: "🇸🇬" },
-  { name: "Indonesia",             flag: "🇮🇩" },
-  { name: "Vietnam",               flag: "🇻🇳" },
-  { name: "Cambodia",              flag: "🇰🇭" },
-  { name: "Philippines",           flag: "🇵🇭" },
-  { name: "Malaysia",              flag: "🇲🇾" },
-  { name: "Hong Kong",             flag: "🇭🇰" },
-  { name: "South Korea",           flag: "🇰🇷" },
-  { name: "Australia",             flag: "🇦🇺" },
-  { name: "New Zealand",           flag: "🇳🇿" },
-  { name: "Canada",                flag: "🇨🇦" },
-  { name: "Mexico",                flag: "🇲🇽" },
-  { name: "Brazil",                flag: "🇧🇷" },
-  { name: "Argentina",             flag: "🇦🇷" },
-  { name: "Peru",                  flag: "🇵🇪" },
-  { name: "Colombia",              flag: "🇨🇴" },
-  { name: "Cuba",                  flag: "🇨🇺" },
-  { name: "Jamaica",               flag: "🇯🇲" },
-  { name: "Barbados",              flag: "🇧🇧" },
-  { name: "Antigua & Barbuda",     flag: "🇦🇬" },
-  { name: "Dominican Republic",    flag: "🇩🇴" },
-  { name: "Bahamas",               flag: "🇧🇸" },
-  { name: "Saint Lucia",           flag: "🇱🇨" },
-  { name: "Trinidad & Tobago",     flag: "🇹🇹" },
-  { name: "Qatar",                 flag: "🇶🇦" },
-  { name: "Saudi Arabia",          flag: "🇸🇦" },
-  { name: "Bahrain",               flag: "🇧🇭" },
-  { name: "Kuwait",                flag: "🇰🇼" },
-  { name: "Oman",                  flag: "🇴🇲" },
-  { name: "Jordan",                flag: "🇯🇴" },
-  { name: "Israel",                flag: "🇮🇱" },
-  { name: "Cyprus",                flag: "🇨🇾" },
-  { name: "Malta",                 flag: "🇲🇹" },
-  { name: "Iceland",               flag: "🇮🇸" },
-  { name: "Norway",                flag: "🇳🇴" },
-  { name: "Sweden",                flag: "🇸🇪" },
-  { name: "Denmark",               flag: "🇩🇰" },
-  { name: "Finland",               flag: "🇫🇮" },
-  { name: "Ireland",               flag: "🇮🇪" },
-  { name: "Croatia",               flag: "🇭🇷" },
-  { name: "Montenegro",            flag: "🇲🇪" },
-  { name: "Albania",               flag: "🇦🇱" },
-  { name: "Georgia",               flag: "🇬🇪" },
-  { name: "Armenia",               flag: "🇦🇲" },
-  { name: "Azerbaijan",            flag: "🇦🇿" },
-  { name: "Pakistan",              flag: "🇵🇰" },
-  { name: "Bangladesh",            flag: "🇧🇩" },
-  { name: "Nepal",                 flag: "🇳🇵" },
-  { name: "Ethiopia",              flag: "🇪🇹" },
-  { name: "Ghana",                 flag: "🇬🇭" },
-  { name: "Nigeria",               flag: "🇳🇬" },
-  { name: "Mauritius",             flag: "🇲🇺" },
-  { name: "Seychelles",            flag: "🇸🇨" },
-  { name: "Zanzibar",              flag: "🇹🇿" },
+  { name: "Albania",              code: "al" },
+  { name: "Antigua & Barbuda",   code: "ag" },
+  { name: "Argentina",           code: "ar" },
+  { name: "Armenia",             code: "am" },
+  { name: "Australia",           code: "au" },
+  { name: "Austria",             code: "at" },
+  { name: "Azerbaijan",          code: "az" },
+  { name: "Bahamas",             code: "bs" },
+  { name: "Bahrain",             code: "bh" },
+  { name: "Bangladesh",          code: "bd" },
+  { name: "Barbados",            code: "bb" },
+  { name: "Brazil",              code: "br" },
+  { name: "Cambodia",            code: "kh" },
+  { name: "Canada",              code: "ca" },
+  { name: "China",               code: "cn" },
+  { name: "Colombia",            code: "co" },
+  { name: "Croatia",             code: "hr" },
+  { name: "Cuba",                code: "cu" },
+  { name: "Cyprus",              code: "cy" },
+  { name: "Denmark",             code: "dk" },
+  { name: "Dominican Republic",  code: "do" },
+  { name: "Egypt",               code: "eg" },
+  { name: "Ethiopia",            code: "et" },
+  { name: "Finland",             code: "fi" },
+  { name: "France",              code: "fr" },
+  { name: "Georgia",             code: "ge" },
+  { name: "Germany",             code: "de" },
+  { name: "Ghana",               code: "gh" },
+  { name: "Greece",              code: "gr" },
+  { name: "Hong Kong",           code: "hk" },
+  { name: "Iceland",             code: "is" },
+  { name: "India",               code: "in" },
+  { name: "Indonesia",           code: "id" },
+  { name: "Ireland",             code: "ie" },
+  { name: "Israel",              code: "il" },
+  { name: "Italy",               code: "it" },
+  { name: "Jamaica",             code: "jm" },
+  { name: "Japan",               code: "jp" },
+  { name: "Jordan",              code: "jo" },
+  { name: "Kenya",               code: "ke" },
+  { name: "Kuwait",              code: "kw" },
+  { name: "Malaysia",            code: "my" },
+  { name: "Maldives",            code: "mv" },
+  { name: "Malta",               code: "mt" },
+  { name: "Mauritius",           code: "mu" },
+  { name: "Mexico",              code: "mx" },
+  { name: "Montenegro",          code: "me" },
+  { name: "Morocco",             code: "ma" },
+  { name: "Nepal",               code: "np" },
+  { name: "Netherlands",         code: "nl" },
+  { name: "New Zealand",         code: "nz" },
+  { name: "Nigeria",             code: "ng" },
+  { name: "Norway",              code: "no" },
+  { name: "Oman",                code: "om" },
+  { name: "Pakistan",            code: "pk" },
+  { name: "Peru",                code: "pe" },
+  { name: "Philippines",         code: "ph" },
+  { name: "Portugal",            code: "pt" },
+  { name: "Qatar",               code: "qa" },
+  { name: "Saint Lucia",         code: "lc" },
+  { name: "Saudi Arabia",        code: "sa" },
+  { name: "Seychelles",          code: "sc" },
+  { name: "Singapore",           code: "sg" },
+  { name: "South Africa",        code: "za" },
+  { name: "South Korea",         code: "kr" },
+  { name: "Spain",               code: "es" },
+  { name: "Sri Lanka",           code: "lk" },
+  { name: "Sweden",              code: "se" },
+  { name: "Switzerland",         code: "ch" },
+  { name: "Tanzania",            code: "tz" },
+  { name: "Thailand",            code: "th" },
+  { name: "Trinidad & Tobago",   code: "tt" },
+  { name: "Turkey",              code: "tr" },
+  { name: "United Arab Emirates",code: "ae" },
+  { name: "United Kingdom",      code: "gb" },
+  { name: "United States",       code: "us" },
+  { name: "Vietnam",             code: "vn" },
+  { name: "Zanzibar",            code: "tz" },
 ].sort((a, b) => a.name.localeCompare(b.name));
 
-// ─── Searchable country dropdown ──────────────────────────────────────────────
+function flagUrl(code: string) {
+  return `https://flagcdn.com/24x18/${code}.png`;
+}
+
+// ─── Searchable country dropup ────────────────────────────────────────────────
 function CountrySelect({
   name,
   placeholder,
@@ -100,38 +104,32 @@ function CountrySelect({
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const filtered = query
+  const selectedCountry = COUNTRIES.find((c) => c.name === selected);
+
+  const filtered = query && !COUNTRIES.find((c) => c.name === query)
     ? COUNTRIES.filter((c) => c.name.toLowerCase().includes(query.toLowerCase()))
     : COUNTRIES;
 
-  // Close on click outside
   useEffect(() => {
     function handler(e: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
-        // Restore selected value if user typed but didn't pick
-        if (!COUNTRIES.find((c) => c.name === query)) {
-          setQuery(selected);
-        }
+        if (!COUNTRIES.find((c) => c.name === query)) setQuery(selected);
       }
     }
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [query, selected]);
 
-  // Close on ESC
   useEffect(() => {
     function handler(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setOpen(false);
-        setQuery(selected);
-      }
+      if (e.key === "Escape") { setOpen(false); setQuery(selected); }
     }
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [selected]);
 
-  function pick(country: { name: string; flag: string }) {
+  function pick(country: { name: string; code: string }) {
     setSelected(country.name);
     setQuery(country.name);
     setOpen(false);
@@ -139,12 +137,20 @@ function CountrySelect({
 
   return (
     <div ref={containerRef} className="relative">
-      {/* Hidden input carries the value for form submission */}
       <input type="hidden" name={name} value={selected} />
 
-      {/* Visible search input */}
+      {/* Trigger input */}
       <div className="relative">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+        {/* Show flag when a country is selected and dropdown is closed */}
+        {selectedCountry && !open ? (
+          <img
+            src={flagUrl(selectedCountry.code)}
+            alt={selectedCountry.name}
+            className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-auto -translate-y-1/2 rounded-[2px] object-cover shadow-sm"
+          />
+        ) : (
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+        )}
         <input
           ref={inputRef}
           type="text"
@@ -152,39 +158,34 @@ function CountrySelect({
           placeholder={placeholder}
           autoComplete="off"
           className="input-field pl-8 pr-8"
-          onFocus={() => {
-            setQuery("");
-            setOpen(true);
-          }}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setOpen(true);
-          }}
+          onFocus={() => { setQuery(""); setOpen(true); }}
+          onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
         />
-        <ChevronDown
-          className={`pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
+        <ChevronUp
+          className={`pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground transition-transform ${open ? "" : "rotate-180"}`}
         />
       </div>
 
-      {/* Dropdown list */}
+      {/* Dropup list — opens upward */}
       {open && (
-        <div className="absolute left-0 top-full z-50 mt-1 max-h-64 w-full overflow-y-auto rounded-xl border border-border bg-background shadow-xl">
+        <div className="absolute bottom-full left-0 z-50 mb-1 max-h-64 w-full overflow-y-auto rounded-xl border border-border bg-background shadow-xl">
           {filtered.length === 0 ? (
             <p className="px-4 py-3 text-sm text-muted-foreground">No countries found</p>
           ) : (
             filtered.map((c) => (
               <button
-                key={c.name}
+                key={c.name + c.code}
                 type="button"
-                onMouseDown={(e) => {
-                  e.preventDefault(); // prevent blur before click registers
-                  pick(c);
-                }}
+                onMouseDown={(e) => { e.preventDefault(); pick(c); }}
                 className={`flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors hover:bg-muted ${
                   selected === c.name ? "bg-muted font-medium text-primary" : "text-foreground"
                 }`}
               >
-                <span className="text-base leading-none">{c.flag}</span>
+                <img
+                  src={flagUrl(c.code)}
+                  alt={c.name}
+                  className="h-3.5 w-auto shrink-0 rounded-[2px] object-cover shadow-sm"
+                />
                 <span>{c.name}</span>
               </button>
             ))
