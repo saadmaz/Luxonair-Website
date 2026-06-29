@@ -87,6 +87,7 @@ export function DatePicker({
               selected={selected}
               onSelect={pick}
               disabled={minDate ? { before: minDate } : undefined}
+              fixedWeeks
               autoFocus
               classNames={{
                 today:
