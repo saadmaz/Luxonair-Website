@@ -89,10 +89,13 @@ export function DatePicker({
               disabled={minDate ? { before: minDate } : undefined}
               fixedWeeks
               autoFocus
-              className="p-2 [--cell-size:1.75rem]"
+              className="p-2 [--cell-size:1.6rem]"
               classNames={{
                 today:
                   "bg-teal/15 text-teal rounded-md font-semibold data-[selected=true]:rounded-md",
+                week: "mt-0.5 flex w-full",
+                weekday: "text-muted-foreground flex-1 select-none rounded-md text-[0.7rem] font-normal",
+                month: "flex w-full flex-col gap-2",
               }}
             />
 
