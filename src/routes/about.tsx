@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Award, Briefcase, Building2, Globe2, Users } from "lucide-react";
 import { SITE } from "@/config/site";
+import { useInView } from "@/hooks/useInView";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -22,6 +23,9 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
+  const [statsRef, statsInView] = useInView<HTMLDivElement>();
+  const [whatRef, whatInView] = useInView<HTMLDivElement>();
+
   return (
     <>
       {/* Dark hero header */}
@@ -43,14 +47,18 @@ function AboutPage() {
 
       {/* Stats */}
       <section className="border-b border-border">
-        <div className="container-page grid grid-cols-2 gap-3 py-8 sm:gap-5 sm:py-10 lg:grid-cols-4">
+        <div ref={statsRef} className="container-page grid grid-cols-2 gap-3 py-8 sm:gap-5 sm:py-10 lg:grid-cols-4">
           {[
             { icon: Globe2, value: SITE.stats.trips, label: "Trips delivered" },
             { icon: Users, value: SITE.stats.repeatRate, label: "Repeat traveller rate" },
             { icon: Award, value: SITE.stats.years, label: "Years operating" },
             { icon: Briefcase, value: SITE.stats.corporate, label: "Corporate accounts" },
-          ].map(({ icon: Icon, value, label }) => (
-            <div key={label} className="flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-4 shadow-sm sm:gap-4 sm:p-6">
+          ].map(({ icon: Icon, value, label }, i) => (
+            <div
+              key={label}
+              className={`flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-4 shadow-sm transition-all duration-500 sm:gap-4 sm:p-6 ${statsInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+              style={{ transitionDelay: `${i * 100}ms` }}
+            >
               <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/8 text-gold sm:h-11 sm:w-11">
                 <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
               </span>
@@ -63,8 +71,8 @@ function AboutPage() {
 
       {/* What we are / aren't */}
       <section className="container-page py-16 md:py-20">
-        <div className="grid gap-10 md:grid-cols-2">
-          <div className="rounded-2xl bg-card border border-border p-8">
+        <div ref={whatRef} className="grid gap-10 md:grid-cols-2">
+          <div className={`rounded-2xl bg-card border border-border p-8 transition-all duration-600 ${whatInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-6"}`}>
             <h2 className="font-display text-2xl font-semibold">What we are</h2>
             <ul className="mt-5 space-y-3">
               <Bullet>UK-registered, independent travel agency.</Bullet>
@@ -73,7 +81,7 @@ function AboutPage() {
               <Bullet>Indicative pricing online, confirmed live by a human.</Bullet>
             </ul>
           </div>
-          <div className="rounded-2xl bg-secondary/50 border border-border p-8">
+          <div className={`rounded-2xl bg-secondary/50 border border-border p-8 transition-all duration-600 ${whatInView ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6"}`} style={{ transitionDelay: "150ms" }}>
             <h2 className="font-display text-2xl font-semibold">What we are not</h2>
             <ul className="mt-5 space-y-3">
               <Bullet>Not a discount aggregator - we don't compete on shouty deal pages.</Bullet>

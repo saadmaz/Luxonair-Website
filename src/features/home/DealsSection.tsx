@@ -2,11 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { deals } from "@/data/deals";
 import { SectionHeader } from "@/components/shared/SectionHeader";
+import { useInView } from "@/hooks/useInView";
 
-// Previews the top 3 deals from data/deals.ts.
-// The full deals list lives at /deals - add more deals there, not here.
 export function DealsSection() {
   const top = deals.slice(0, 3);
+  const [ref, inView] = useInView<HTMLDivElement>();
 
   return (
     <section className="container-page py-10 md:py-20">
@@ -15,11 +15,12 @@ export function DealsSection() {
         title="Held by a consultant, not an algorithm."
         cta={{ label: "All deals", to: "/deals" }}
       />
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {top.map((d) => (
+      <div ref={ref} className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {top.map((d, i) => (
           <article
             key={d.id}
-            className="group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-xl"
+            className={`group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-500 hover:shadow-xl ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            style={{ transitionDelay: `${i * 110}ms` }}
           >
             <div className="relative aspect-video w-full overflow-hidden bg-muted sm:aspect-16/10">
               <img

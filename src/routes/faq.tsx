@@ -62,9 +62,13 @@ function FaqPage() {
                 <details key={i.id} className="group p-5">
                   <summary className="flex cursor-pointer items-start justify-between gap-4 list-none">
                     <span className="font-medium">{i.question}</span>
-                    <span className="mt-1 text-muted-foreground transition-transform group-open:rotate-45">+</span>
+                    <span className="mt-1 text-muted-foreground transition-transform duration-300 group-open:rotate-45">+</span>
                   </summary>
-                  <p className="mt-3 text-sm text-muted-foreground">{i.answer}</p>
+                  <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-in-out group-open:grid-rows-[1fr]">
+                    <div className="overflow-hidden">
+                      <p className="mt-3 text-sm text-muted-foreground">{i.answer}</p>
+                    </div>
+                  </div>
                 </details>
               ))}
             </div>

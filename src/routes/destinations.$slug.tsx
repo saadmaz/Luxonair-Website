@@ -5,6 +5,7 @@ import { ArrowLeft, Check } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
 import { getDestinationBySlug, getDestinations } from "@/server/queries";
+import { useInView } from "@/hooks/useInView";
 
 export const Route = createFileRoute("/destinations/$slug")({
   loader: async ({ params }) => {
@@ -81,11 +82,19 @@ function DestinationDetail() {
   const itinerary = (d.itinerary as { day: string; title: string; detail: string }[]) ?? [];
   const highlights = (d.highlights as string[]) ?? [];
   const tripType = (d.tripType as string[]) ?? [];
+  const [itineraryRef, itineraryInView] = useInView<HTMLDivElement>();
+  const [galleryRef, galleryInView] = useInView<HTMLDivElement>();
+  const [othersRef, othersInView] = useInView<HTMLDivElement>();
 
   return (
     <article>
       <div className="relative h-[55vh] min-h-[380px] w-full overflow-hidden">
-        <img src={d.heroImage} alt={d.name} className="h-full w-full object-cover" />
+        <img
+          src={d.heroImage}
+          alt={d.name}
+          className="h-full w-full object-cover"
+          style={{ animation: "ken-burns 18s ease-out forwards" }}
+        />
         <div className="absolute inset-0 bg-linear-to-t from-navy/85 via-navy/30 to-transparent" />
         <div className="container-page absolute inset-x-0 bottom-0 pb-10 text-navy-fg">
           <Link to="/destinations" className="inline-flex items-center text-xs uppercase tracking-[0.2em] text-navy-fg/80 hover:text-navy-fg">
@@ -106,9 +115,16 @@ function DestinationDetail() {
       <div className="container-page grid gap-8 py-10 lg:grid-cols-[1.4fr_1fr] md:py-16 lg:py-20 lg:gap-12">
         <div>
           {gallery.length > 0 && (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div ref={galleryRef} className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {gallery.map((g, i) => (
-                <img key={i} src={g} alt={`${d.name} gallery ${i + 1}`} loading="lazy" className="aspect-[4/3] rounded-lg object-cover" />
+                <img
+                  key={i}
+                  src={g}
+                  alt={`${d.name} gallery ${i + 1}`}
+                  loading="lazy"
+                  className={`aspect-[4/3] rounded-lg object-cover transition-all duration-500 hover:scale-[1.02] ${galleryInView ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+                  style={{ transitionDelay: `${i * 70}ms` }}
+                />
               ))}
             </div>
           )}
@@ -119,15 +135,21 @@ function DestinationDetail() {
           {itinerary.length > 0 && (
             <>
               <h2 className="mt-10 font-display text-2xl font-semibold">Outline itinerary</h2>
-              <ol className="mt-4 space-y-4">
-                {itinerary.map((s, i) => (
-                  <li key={i} className="rounded-xl border border-border bg-card p-5">
-                    <div className="text-xs uppercase tracking-wider text-gold">{s.day}</div>
-                    <div className="mt-1 font-display text-lg font-semibold">{s.title}</div>
-                    <p className="mt-1 text-sm text-muted-foreground">{s.detail}</p>
-                  </li>
-                ))}
-              </ol>
+              <div ref={itineraryRef}>
+                <ol className="mt-4 space-y-4">
+                  {itinerary.map((s, i) => (
+                    <li
+                      key={i}
+                      className={`rounded-xl border border-border bg-card p-5 transition-all duration-500 ${itineraryInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-6"}`}
+                      style={{ transitionDelay: `${i * 80}ms` }}
+                    >
+                      <div className="text-xs uppercase tracking-wider text-gold">{s.day}</div>
+                      <div className="mt-1 font-display text-lg font-semibold">{s.title}</div>
+                      <p className="mt-1 text-sm text-muted-foreground">{s.detail}</p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
             </>
           )}
 
@@ -173,10 +195,16 @@ function DestinationDetail() {
       {others.length > 0 && (
         <section className="container-page pb-20">
           <h2 className="font-display text-2xl font-semibold">More like this</h2>
-          <div className="mt-6 grid gap-6 sm:grid-cols-3">
-            {others.map((o) => (
-              <Link key={o.slug} to="/destinations/$slug" params={{ slug: o.slug }} className="group">
-                <img src={o.heroImage} alt={o.name} loading="lazy" className="aspect-[4/3] w-full rounded-lg object-cover" />
+          <div ref={othersRef} className="mt-6 grid gap-6 sm:grid-cols-3">
+            {others.map((o, i) => (
+              <Link
+                key={o.slug}
+                to="/destinations/$slug"
+                params={{ slug: o.slug }}
+                className={`group transition-all duration-500 ${othersInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+                style={{ transitionDelay: `${i * 100}ms` }}
+              >
+                <img src={o.heroImage} alt={o.name} loading="lazy" className="aspect-[4/3] w-full rounded-lg object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
                 <div className="mt-3 font-medium">{o.name}</div>
                 <div className="text-sm text-muted-foreground">From £{o.fromPrice.toLocaleString()} pp</div>
               </Link>

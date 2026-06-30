@@ -121,7 +121,7 @@ export function Header() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="border-b border-border bg-background md:hidden">
+        <div className="border-b border-border bg-background md:hidden animate-in fade-in-0 slide-in-from-top-2 duration-200">
           <div className="container-page flex flex-col gap-1 py-3">
             <Link to="/about" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">About us</Link>
 
@@ -158,7 +158,7 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <Link
       to={to}
-      className="text-sm text-muted-foreground transition-colors hover:text-foreground [&.active]:font-medium [&.active]:text-foreground"
+      className="relative text-sm text-muted-foreground transition-colors hover:text-foreground [&.active]:font-medium [&.active]:text-foreground after:absolute after:-bottom-0.5 after:left-0 after:h-[1.5px] after:w-full after:origin-left after:scale-x-0 after:bg-gold after:transition-transform after:duration-200 after:content-[''] hover:after:scale-x-100 [&.active]:after:scale-x-100"
     >
       {children}
     </Link>

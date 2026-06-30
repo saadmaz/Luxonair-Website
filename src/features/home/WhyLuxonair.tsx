@@ -1,8 +1,12 @@
-﻿import { Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Phone, ShieldCheck, Users } from "lucide-react";
+import { useInView } from "@/hooks/useInView";
 
 export function WhyLuxonair() {
+  const [textRef, textInView] = useInView<HTMLDivElement>();
+  const [cardsRef, cardsInView] = useInView<HTMLDivElement>();
+
   const features = [
     {
       icon: Users,
@@ -25,7 +29,10 @@ export function WhyLuxonair() {
     <section className="bg-navy text-navy-fg">
       <div className="container-page py-10 md:py-20">
         <div className="grid gap-12 md:grid-cols-2 md:items-center">
-          <div>
+          <div
+            ref={textRef}
+            className={`transition-all duration-700 ${textInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-6"}`}
+          >
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
               Why Luxeonair
             </p>
@@ -48,9 +55,18 @@ export function WhyLuxonair() {
               <Link to="/about">Learn about us</Link>
             </Button>
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+
+          <div ref={cardsRef} className="grid grid-cols-2 gap-3 sm:gap-4">
             {features.map(({ icon: Icon, title, body }, i) => (
-              <div key={title} className={`rounded-2xl border border-navy-fg/10 bg-navy-fg/5 p-4 sm:p-5${i === features.length - 1 && features.length % 2 !== 0 ? " col-span-2" : ""}`}>
+              <div
+                key={title}
+                className={[
+                  `rounded-2xl border border-navy-fg/10 bg-navy-fg/5 p-4 sm:p-5 transition-all duration-500 hover:border-navy-fg/25 hover:bg-navy-fg/10`,
+                  i === features.length - 1 && features.length % 2 !== 0 ? " col-span-2" : "",
+                  cardsInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
+                ].join(" ")}
+                style={{ transitionDelay: `${i * 120}ms` }}
+              >
                 <Icon className="h-5 w-5 text-gold" />
                 <h3 className="mt-3 text-sm font-semibold text-navy-fg">{title}</h3>
                 <p className="mt-1 text-xs leading-relaxed text-navy-fg/55">{body}</p>

@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { DestinationCard } from "@/components/shared/DestinationCard";
 import { SlidersHorizontal } from "lucide-react";
 import { getDestinations } from "@/server/queries";
+import { useInView } from "@/hooks/useInView";
 
 export const Route = createFileRoute("/destinations/")({
   loader: async () => {
@@ -34,6 +35,7 @@ function DestinationsList() {
   const [region, setRegion] = useState<string>("All");
   const [trip, setTrip] = useState<string>("All");
   const [budget, setBudget] = useState<string>("All");
+  const [gridRef, gridInView] = useInView<HTMLDivElement>();
 
   const regions = useMemo(() => [...new Set(destinations.map((d) => d.region))].sort(), [destinations]);
   const tripTypes = useMemo(() => [...new Set(destinations.flatMap((d) => d.tripType as string[]))].sort(), [destinations]);
@@ -94,9 +96,15 @@ function DestinationsList() {
             No matches. Try widening your filters.
           </p>
         ) : (
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((d) => (
-              <DestinationCard key={d.slug} d={d as never} />
+          <div ref={gridRef} className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((d, i) => (
+              <div
+                key={d.slug}
+                className={`transition-all duration-500 ${gridInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+                style={{ transitionDelay: `${Math.min(i, 8) * 80}ms` }}
+              >
+                <DestinationCard d={d as never} />
+              </div>
             ))}
           </div>
         )}

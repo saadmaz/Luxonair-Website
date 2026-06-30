@@ -2,12 +2,16 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
+import { useInView } from "@/hooks/useInView";
 
-// Full-width CTA banner at the bottom of the home page.
-// WhatsApp href uses SITE.phone.whatsapp (digits-only wa.me format).
 export function FinalCTA() {
+  const [ref, inView] = useInView<HTMLElement>();
+
   return (
-    <section className="container-page py-8 md:py-14">
+    <section
+      ref={ref}
+      className={`container-page py-8 md:py-14 transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+    >
       <div className="relative overflow-hidden rounded-2xl bg-navy text-navy-fg shadow-xl">
         <div className="px-5 py-8 sm:px-8 sm:py-10 md:px-16 md:py-12">
           <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center md:gap-12">
@@ -30,11 +34,7 @@ export function FinalCTA() {
                 variant="outline"
                 className="w-full border-navy-fg/30 bg-transparent text-navy-fg hover:bg-navy-fg/10 sm:w-auto"
               >
-                <a
-                  href={`https://wa.me/${SITE.phone.whatsapp}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={`https://wa.me/${SITE.phone.whatsapp}`} target="_blank" rel="noopener noreferrer">
                   <WhatsAppIcon className="mr-1.5 h-4 w-4" /> WhatsApp us
                 </a>
               </Button>

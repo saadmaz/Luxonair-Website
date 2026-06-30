@@ -127,6 +127,11 @@
   }
 }
 
+@keyframes ken-burns {
+  from { transform: scale(1.04); }
+  to   { transform: scale(1.12); }
+}
+
 @utility text-balance {
   text-wrap: balance;
 }

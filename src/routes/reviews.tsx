@@ -4,6 +4,7 @@ import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { Button } from "@/components/ui/button";
 import { SITE } from "@/config/site";
 import { getTestimonials } from "@/server/queries";
+import { useInView } from "@/hooks/useInView";
 
 export const Route = createFileRoute("/reviews")({
   loader: async () => {
@@ -58,6 +59,8 @@ function ReviewsPage() {
   const average = items.length
     ? +(items.reduce((s, r) => s + r.rating, 0) / items.length).toFixed(1)
     : 0;
+  const [gridRef, gridInView] = useInView<HTMLDivElement>();
+  const [scoreRef, scoreInView] = useInView<HTMLDivElement>();
 
   return (
     <>
@@ -77,7 +80,7 @@ function ReviewsPage() {
             </div>
 
             {/* Score card */}
-            <div className="rounded-2xl border border-navy-fg/15 bg-navy-fg/5 p-7">
+            <div ref={scoreRef} className={`rounded-2xl border border-navy-fg/15 bg-navy-fg/5 p-7 transition-all duration-700 ${scoreInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
               <div className="flex gap-1 text-gold">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} className="h-5 w-5 fill-current" />
@@ -100,11 +103,12 @@ function ReviewsPage() {
 
       {/* Reviews grid */}
       <section className="container-page py-14 md:py-20">
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {items.map((r) => (
+        <div ref={gridRef} className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {items.map((r, idx) => (
             <figure
               key={r.id}
-              className="flex flex-col rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
+              className={`flex flex-col rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-500 hover:shadow-md ${gridInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+              style={{ transitionDelay: `${idx * 80}ms` }}
             >
               <div className="flex gap-0.5 text-gold">
                 {Array.from({ length: 5 }).map((_, i) => (
