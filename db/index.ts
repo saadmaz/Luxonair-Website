@@ -33,4 +33,24 @@ const config = process.env.DATABASE_URL
 const pool = createPool(config);
 export const db = drizzle(pool, { schema, mode: "default" });
 
+export async function runStartupMigrations() {
+  const conn = await pool.getConnection();
+  try {
+    await conn.execute(`
+      CREATE TABLE IF NOT EXISTS \`sessions\` (
+        \`id\` varchar(64) NOT NULL,
+        \`email\` varchar(255) NOT NULL,
+        \`created_at\` timestamp NOT NULL DEFAULT (now()),
+        \`revoked_at\` timestamp,
+        CONSTRAINT \`sessions_id\` PRIMARY KEY(\`id\`)
+      )
+    `);
+    await conn.execute(`
+      CREATE INDEX IF NOT EXISTS \`sessions_email_idx\` ON \`sessions\` (\`email\`)
+    `);
+  } finally {
+    conn.release();
+  }
+}
+
 export * from "./schema";

@@ -4,6 +4,9 @@ import * as Sentry from "@sentry/node";
 import { consumeLastCapturedError } from "./server/error-capture";
 import { renderErrorPage } from "./server/error-page";
 import { handleApiRequest } from "./api-router";
+import { runStartupMigrations } from "../db/index";
+
+runStartupMigrations().catch((e) => console.error("Migration error:", e));
 
 if (process.env.SENTRY_DSN) {
   Sentry.init({
