@@ -45,8 +45,8 @@ export async function handleLogin(request: Request): Promise<Response> {
 
   const normalEmail = email.trim().toLowerCase();
   // Env vars take priority; compiled fallbacks ensure login always works on Hostinger
-  const envEmail  = (process.env.ADMIN_EMAIL  ?? "luxeonair@gmail.com").trim().toLowerCase();
-  const envHash   = (process.env.ADMIN_PASSWORD_HASH ?? "$2b$12$.a8xmNH.mALBk2SBtwcEq.vLSlz2lcfIOrL2Qbbrn7fvCBO6jiRXu").trim();
+  const envEmail  = (process.env.ADMIN_EMAIL  ?? "admin@luxeonair.co.uk").trim().toLowerCase();
+  const envHash   = (process.env.ADMIN_PASSWORD_HASH ?? "$2b$12$x0UT1Wsh6PuCxZ5oXSDSUOgAl.68KnMnyshTOkfjSAPOKry.H9CoK").trim();
   const jwtSecret = (process.env.JWT_SECRET   ?? "e01c36ff4e682f1351c6438c507f6ec3dd2ebdd13fd49e8da395b1aed6f73a379291ecf85e5b290d56a8cfe59fc801a7").trim();
 
   if (normalEmail !== envEmail) return deny();
