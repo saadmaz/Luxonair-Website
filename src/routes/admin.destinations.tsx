@@ -93,6 +93,7 @@ function AdminDestinationsPage() {
       {isLoading ? (
         <div className="flex h-40 items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-gray-300" /></div>
       ) : (
+        <>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {items.map((d) => (
             <div key={d.id} className="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
@@ -128,6 +129,7 @@ function AdminDestinationsPage() {
           ))}
         </div>
         <Pagination page={page} total={total} limit={50} onChange={setPage} className="mt-4" />
+        </>
       )}
 
       {/* Edit / Add modal */}
