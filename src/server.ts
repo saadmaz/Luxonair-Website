@@ -2,7 +2,6 @@ import "./server/error-capture";
 
 import { consumeLastCapturedError } from "./server/error-capture";
 import { renderErrorPage } from "./server/error-page";
-import { handleLogin } from "./server/login-handler";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -41,11 +40,6 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
-      const url = new URL(request.url);
-      if (url.pathname === "/api/auth/login" && request.method === "POST") {
-        return handleLogin(request);
-      }
-
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);

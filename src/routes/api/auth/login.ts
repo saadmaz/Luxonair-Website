@@ -22,8 +22,12 @@ export const APIRoute = createAPIFileRoute("/api/auth/login")({
     const normalEmail = email.trim().toLowerCase();
 
     // ── Path 1: env-var credentials (no DB required) ─────────────────────────
-    const envEmail = (process.env.ADMIN_EMAIL ?? "admin@luxeonair.co.uk").trim().toLowerCase();
-    const envHash  = (process.env.ADMIN_PASSWORD_HASH ?? "$2b$12$x0UT1Wsh6PuCxZ5oXSDSUOgAl.68KnMnyshTOkfjSAPOKry.H9CoK").trim();
+    const envEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+    const envHash  = process.env.ADMIN_PASSWORD_HASH?.trim();
+    if (!envEmail || !envHash) {
+      console.error("ADMIN_EMAIL and ADMIN_PASSWORD_HASH environment variables must be set");
+      return Response.json({ error: "Server misconfiguration" }, { status: 500 });
+    }
 
     if (normalEmail === envEmail) {
       const match = await compare(password, envHash);

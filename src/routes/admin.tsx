@@ -6,9 +6,16 @@ import {
   LayoutDashboard, FileText, MessageSquare, LogOut,
   Menu, X, MapPin, Tag, Sun, BookOpen, Star, HelpCircle,
   UserCog, Mail, Bell, Search, ChevronRight, PanelLeftClose, PanelLeft,
-  FileText as FileTextIcon, Users, MessageCircle, Clock, CheckCircle2, ArrowRight,
+  Users, ArrowRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+type ActivityData = {
+  newEnquiryCount: number;
+  unreadContactCount: number;
+  recentEnquiries: { id: number; name: string; destination: string; createdAt: string; status: string }[];
+  unreadContacts: { id: number; name: string; topic: string | null; createdAt: string; read: boolean }[];
+};
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async ({ location }) => {
@@ -29,8 +36,8 @@ const navSections = [
   {
     label: "Enquiries",
     items: [
-      { to: "/admin/enquiries",    label: "Enquiries",    icon: FileText,       exact: false, badge: "7" },
-      { to: "/admin/messages",     label: "Messages",     icon: MessageSquare,  exact: false, badge: "3", badgeGold: true },
+      { to: "/admin/enquiries",    label: "Enquiries",    icon: FileText,       exact: false },
+      { to: "/admin/messages",     label: "Messages",     icon: MessageSquare,  exact: false },
       { to: "/admin/subscribers",  label: "Subscribers",  icon: Mail,           exact: false },
     ],
   },
@@ -108,6 +115,17 @@ function AdminLayoutRoute() {
     retry: false,
     staleTime: 5 * 60 * 1000,
   });
+
+  const { data: activity } = useQuery<ActivityData>({
+    queryKey: ["activity"],
+    queryFn: () => fetch("/api/activity").then((r) => r.json()),
+    enabled: !isLoginPage && !!authed,
+    refetchInterval: 60 * 1000,
+    staleTime: 30 * 1000,
+  });
+
+  const newEnquiries = activity?.newEnquiryCount ?? 0;
+  const unreadMessages = activity?.unreadContactCount ?? 0;
 
   useEffect(() => {
     if (!isLoginPage && authed === false) {
@@ -227,8 +245,11 @@ function AdminLayoutRoute() {
               <ul className="space-y-px">
                 {section.items.map((item) => {
                   const { to, label, icon: Icon, exact } = item;
-                  const badge     = "badge"     in item ? item.badge     : undefined;
-                  const badgeGold = "badgeGold" in item ? item.badgeGold : false;
+                  const badge =
+                    to === "/admin/enquiries" && newEnquiries > 0 ? String(newEnquiries) :
+                    to === "/admin/messages"  && unreadMessages > 0 ? String(unreadMessages) :
+                    undefined;
+                  const badgeGold = to === "/admin/messages";
                   const active    = exact ? pathname === to : pathname.startsWith(to);
                   return (
                     <li key={to}>

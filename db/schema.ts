@@ -1,4 +1,4 @@
-import { boolean, index, int, json, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { bigint, boolean, index, int, json, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 export const enquiries = mysqlTable("enquiries", {
   id: int("id").autoincrement().primaryKey(),
@@ -156,6 +156,12 @@ export const holidayTypes = mysqlTable("holiday_types", {
   bullets: json("bullets").notNull(),
   destinationSlugs: json("destination_slugs").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const rateLimits = mysqlTable("rate_limits", {
+  key: varchar("key", { length: 255 }).primaryKey(),
+  count: int("count").notNull().default(1),
+  resetAt: bigint("reset_at", { mode: "number" }).notNull(),
 });
 
 export const adminUsers = mysqlTable("admin_users", {
