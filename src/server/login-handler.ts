@@ -2,7 +2,7 @@ import { compare } from "bcryptjs";
 import { SignJWT } from "jose";
 
 const WINDOW_MS = 15 * 60 * 1000;
-const MAX = 5;
+const MAX = 20;
 const limits = new Map<string, { count: number; resetAt: number }>();
 
 function allow(ip: string) {
@@ -46,7 +46,7 @@ export async function handleLogin(request: Request): Promise<Response> {
   const normalEmail = email.trim().toLowerCase();
   // Env vars take priority; compiled fallbacks ensure login always works on Hostinger
   const envEmail  = (process.env.ADMIN_EMAIL  ?? "luxeonair@gmail.com").trim().toLowerCase();
-  const envHash   = (process.env.ADMIN_PASSWORD_HASH ?? "$2b$12$jObDWPR4eRC.GG.UQB4/VOct6GtSkdvyzNoaG5GRE/DYHBzLUF.Ju").trim();
+  const envHash   = (process.env.ADMIN_PASSWORD_HASH ?? "$2b$12$.a8xmNH.mALBk2SBtwcEq.vLSlz2lcfIOrL2Qbbrn7fvCBO6jiRXu").trim();
   const jwtSecret = (process.env.JWT_SECRET   ?? "e01c36ff4e682f1351c6438c507f6ec3dd2ebdd13fd49e8da395b1aed6f73a379291ecf85e5b290d56a8cfe59fc801a7").trim();
 
   if (normalEmail !== envEmail) return deny();
