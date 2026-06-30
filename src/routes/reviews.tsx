@@ -6,7 +6,13 @@ import { SITE } from "@/config/site";
 import { getTestimonials } from "@/server/queries";
 
 export const Route = createFileRoute("/reviews")({
-  loader: async () => getTestimonials(),
+  loader: async () => {
+    try {
+      return await getTestimonials();
+    } catch {
+      return [];
+    }
+  },
   head: ({ loaderData }) => {
     const items = loaderData ?? [];
     const average = items.length
@@ -48,7 +54,7 @@ export const Route = createFileRoute("/reviews")({
 });
 
 function ReviewsPage() {
-  const items = Route.useLoaderData();
+  const items = Route.useLoaderData() ?? [];
   const average = items.length
     ? +(items.reduce((s, r) => s + r.rating, 0) / items.length).toFixed(1)
     : 0;

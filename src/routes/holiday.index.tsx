@@ -3,7 +3,13 @@ import { ArrowRight } from "lucide-react";
 import { getHolidayTypes } from "@/server/queries";
 
 export const Route = createFileRoute("/holiday/")({
-  loader: async () => getHolidayTypes(),
+  loader: async () => {
+    try {
+      return await getHolidayTypes();
+    } catch {
+      return [];
+    }
+  },
   head: () => ({
     meta: [
       { title: "Types of Holiday | Beach, City Break, All Inclusive, Family & More | Luxeonair" },
@@ -22,7 +28,7 @@ export const Route = createFileRoute("/holiday/")({
 });
 
 function HolidayTypesIndex() {
-  const holidayTypes = Route.useLoaderData();
+  const holidayTypes = Route.useLoaderData() ?? [];
   return (
     <>
       {/* Dark hero */}

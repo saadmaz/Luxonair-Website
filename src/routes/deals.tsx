@@ -4,7 +4,13 @@ import { ArrowRight, Clock, Tag } from "lucide-react";
 import { getDeals } from "@/server/queries";
 
 export const Route = createFileRoute("/deals")({
-  loader: async () => getDeals(),
+  loader: async () => {
+    try {
+      return await getDeals();
+    } catch {
+      return [];
+    }
+  },
   head: () => ({
     meta: [
       { title: "Holiday Deals & Exclusive Travel Offers | Luxeonair" },
@@ -23,7 +29,7 @@ export const Route = createFileRoute("/deals")({
 });
 
 function DealsPage() {
-  const deals = Route.useLoaderData();
+  const deals = Route.useLoaderData() ?? [];
   return (
     <>
       {/* Dark hero header */}
@@ -114,11 +120,11 @@ function DealsPage() {
                 <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Clock className="h-3 w-3 shrink-0" />
                   Expires{" "}
-                  {new Date(d.expires).toLocaleDateString("en-GB", {
+                  {d.expires ? new Date(d.expires).toLocaleDateString("en-GB", {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
-                  })}
+                  }) : ""}
                 </p>
               </div>
             </article>

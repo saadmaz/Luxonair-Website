@@ -3,7 +3,13 @@ import { ArrowRight, Clock } from "lucide-react";
 import { getPublishedBlogPosts } from "@/server/queries";
 
 export const Route = createFileRoute("/blog/")({
-  loader: async () => getPublishedBlogPosts(),
+  loader: async () => {
+    try {
+      return await getPublishedBlogPosts();
+    } catch {
+      return [];
+    }
+  },
   head: () => ({
     meta: [
       { title: "Travel Journal | Expert Guides & Destination Notes | Luxeonair" },

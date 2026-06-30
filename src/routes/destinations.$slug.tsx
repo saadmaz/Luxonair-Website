@@ -8,12 +8,17 @@ import { getDestinationBySlug, getDestinations } from "@/server/queries";
 
 export const Route = createFileRoute("/destinations/$slug")({
   loader: async ({ params }) => {
-    const [destination, allDests] = await Promise.all([
-      getDestinationBySlug({ data: params.slug }),
-      getDestinations(),
-    ]);
+    let destination, allDests;
+    try {
+      [destination, allDests] = await Promise.all([
+        getDestinationBySlug({ data: params.slug }),
+        getDestinations(),
+      ]);
+    } catch {
+      throw notFound();
+    }
     if (!destination) throw notFound();
-    const others = allDests.filter((x) => x.slug !== params.slug).slice(0, 3);
+    const others = (allDests ?? []).filter((x) => x.slug !== params.slug).slice(0, 3);
     return { destination, others };
   },
   head: ({ loaderData, params }) => {
@@ -72,10 +77,10 @@ export const Route = createFileRoute("/destinations/$slug")({
 
 function DestinationDetail() {
   const { destination: d, others } = Route.useLoaderData();
-  const gallery = d.gallery as string[];
-  const itinerary = d.itinerary as { day: string; title: string; detail: string }[];
-  const highlights = d.highlights as string[];
-  const tripType = d.tripType as string[];
+  const gallery = (d.gallery as string[]) ?? [];
+  const itinerary = (d.itinerary as { day: string; title: string; detail: string }[]) ?? [];
+  const highlights = (d.highlights as string[]) ?? [];
+  const tripType = (d.tripType as string[]) ?? [];
 
   return (
     <article>

@@ -3,7 +3,12 @@ import { getBlogPostBySlug } from "@/server/queries";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params }) => {
-    const p = await getBlogPostBySlug({ data: params.slug });
+    let p;
+    try {
+      p = await getBlogPostBySlug({ data: params.slug });
+    } catch {
+      throw notFound();
+    }
     if (!p) throw notFound();
     return p;
   },
@@ -71,11 +76,11 @@ function PostPage() {
         <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{p.category} · {p.readMinutes} min read</p>
         <h1 className="mt-3 font-display text-4xl font-semibold sm:text-5xl text-balance">{p.title}</h1>
         <p className="mt-4 text-lg text-muted-foreground">{p.excerpt}</p>
-        <p className="mt-4 text-xs text-muted-foreground">{p.author} · {new Date(p.date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</p>
+        <p className="mt-4 text-xs text-muted-foreground">{p.author}{p.date ? ` · ${new Date(p.date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}` : ""}</p>
       </header>
       <img src={p.heroImage} alt={p.title} className="mt-10 aspect-video w-full rounded-2xl object-cover" />
       <div className="mx-auto mt-10 max-w-3xl space-y-6 text-base leading-relaxed text-foreground">
-        {(p.content as { heading?: string; body: string }[]).map((b, i) => (
+        {(Array.isArray(p.content) ? p.content as { heading?: string; body: string }[] : []).map((b, i) => (
           <div key={i}>
             {b.heading && <h2 className="mt-8 font-display text-2xl font-semibold">{b.heading}</h2>}
             <p className="mt-3 text-muted-foreground">{b.body}</p>

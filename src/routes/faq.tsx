@@ -3,7 +3,13 @@ import { SITE } from "@/config/site";
 import { getFaqsNested } from "@/server/queries";
 
 export const Route = createFileRoute("/faq")({
-  loader: async () => getFaqsNested(),
+  loader: async () => {
+    try {
+      return await getFaqsNested();
+    } catch {
+      return [];
+    }
+  },
   head: ({ loaderData }) => {
     const groups = loaderData ?? [];
     return {
@@ -37,7 +43,7 @@ export const Route = createFileRoute("/faq")({
 });
 
 function FaqPage() {
-  const groups = Route.useLoaderData();
+  const groups = Route.useLoaderData() ?? [];
 
   return (
     <div className="container-page py-8 md:py-16">

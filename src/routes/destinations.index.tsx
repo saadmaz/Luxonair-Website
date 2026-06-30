@@ -5,7 +5,13 @@ import { SlidersHorizontal } from "lucide-react";
 import { getDestinations } from "@/server/queries";
 
 export const Route = createFileRoute("/destinations/")({
-  loader: async () => getDestinations(),
+  loader: async () => {
+    try {
+      return await getDestinations();
+    } catch {
+      return [];
+    }
+  },
   head: () => ({
     meta: [
       { title: "Luxury Holiday Destinations from the UK | Luxeonair" },
@@ -24,7 +30,7 @@ export const Route = createFileRoute("/destinations/")({
 });
 
 function DestinationsList() {
-  const destinations = Route.useLoaderData();
+  const destinations = Route.useLoaderData() ?? [];
   const [region, setRegion] = useState<string>("All");
   const [trip, setTrip] = useState<string>("All");
   const [budget, setBudget] = useState<string>("All");
