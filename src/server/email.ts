@@ -40,7 +40,7 @@ export async function sendEnquiryAlert(d: EnquiryPayload) {
   const html = `
 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a2e">
   <div style="background:#031e3e;padding:20px 24px;border-radius:8px 8px 0 0">
-    <img src="https://www.luxeonair.co.uk/Logo/Main%20Logo.png" alt="Luxeonair" height="28" style="opacity:.9"/>
+    <img src="https://www.luxeonair.co.uk/Logo/main-logo.png" alt="Luxeonair" height="28" style="opacity:.9"/>
   </div>
   <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:24px">
     <h2 style="margin:0 0 4px;font-size:18px;color:#031e3e">New quote enquiry</h2>
@@ -94,7 +94,7 @@ export async function sendContactAlert(d: ContactPayload) {
   const html = `
 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a2e">
   <div style="background:#031e3e;padding:20px 24px;border-radius:8px 8px 0 0">
-    <img src="https://www.luxeonair.co.uk/Logo/Main%20Logo.png" alt="Luxeonair" height="28" style="opacity:.9"/>
+    <img src="https://www.luxeonair.co.uk/Logo/main-logo.png" alt="Luxeonair" height="28" style="opacity:.9"/>
   </div>
   <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:24px">
     <h2 style="margin:0 0 4px;font-size:18px;color:#031e3e">New contact message</h2>

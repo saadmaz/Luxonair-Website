@@ -1,5 +1,5 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
-import { desc } from "drizzle-orm";
+import { count, desc } from "drizzle-orm";
 import { db, subscribers } from "../../../../db/index";
 import { requireAuth } from "@/server/auth";
 import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
@@ -8,6 +8,14 @@ import { subscriberSchema } from "@/server/validate";
 export const APIRoute = createAPIFileRoute("/api/subscribers")({
   GET: async ({ request }) => {
     await requireAuth(request);
+    const url = new URL(request.url);
+    const limit = Number(url.searchParams.get("limit") || "0");
+    const page  = Math.max(1, Number(url.searchParams.get("page") || "1"));
+    if (limit > 0) {
+      const [{ total }] = await db.select({ total: count() }).from(subscribers);
+      const data = await db.select().from(subscribers).orderBy(desc(subscribers.createdAt)).limit(limit).offset((page - 1) * limit);
+      return Response.json({ data, total, page, limit });
+    }
     const rows = await db.select().from(subscribers).orderBy(desc(subscribers.createdAt));
     return Response.json(rows);
   },

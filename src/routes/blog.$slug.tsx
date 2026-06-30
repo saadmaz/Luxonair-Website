@@ -47,7 +47,7 @@ export const Route = createFileRoute("/blog/$slug")({
             "@type": "Organization",
             "name": "Luxeonair",
             "@id": "https://www.luxeonair.co.uk/#organization",
-            "logo": { "@type": "ImageObject", "url": "https://www.luxeonair.co.uk/Logo/Main%20Logo.png" }
+            "logo": { "@type": "ImageObject", "url": "https://www.luxeonair.co.uk/Logo/main-logo.png" }
           },
           "datePublished": loaderData.date,
           "dateModified": loaderData.date,

@@ -1,45 +1,35 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
-import { desc, eq } from "drizzle-orm";
+import { count, desc, eq } from "drizzle-orm";
 import { db, blogPosts } from "../../../../db/index";
 import { requireAuth } from "@/server/auth";
+import { blogPostSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/blog")({
   GET: async ({ request }) => {
     await requireAuth(request);
+    const url = new URL(request.url);
+    const limit = Number(url.searchParams.get("limit") || "0");
+    const page  = Math.max(1, Number(url.searchParams.get("page") || "1"));
+    if (limit > 0) {
+      const [{ total }] = await db.select({ total: count() }).from(blogPosts);
+      const data = await db.select().from(blogPosts).orderBy(desc(blogPosts.createdAt)).limit(limit).offset((page - 1) * limit);
+      return Response.json({ data, total, page, limit });
+    }
     const rows = await db.select().from(blogPosts).orderBy(desc(blogPosts.createdAt));
     return Response.json(rows);
   },
 
   POST: async ({ request }) => {
     await requireAuth(request);
-    const body = (await request.json()) as {
-      slug: string;
-      title: string;
-      excerpt: string;
-      category: string;
-      author: string;
-      date: string;
-      readMinutes: number;
-      heroImage: string;
-      content?: unknown;
-    };
-
-    if (!body.slug || !body.title || !body.excerpt) {
-      return Response.json({ error: "Missing required fields" }, { status: 400 });
+    const raw = await request.json().catch(() => null);
+    const parsed = blogPostSchema.safeParse(raw);
+    if (!parsed.success) {
+      return Response.json({ error: "Invalid request", issues: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
+    const body = parsed.data;
 
     try {
-      await db.insert(blogPosts).values({
-        slug: body.slug,
-        title: body.title,
-        excerpt: body.excerpt,
-        category: body.category ?? "General",
-        author: body.author ?? "Luxeonair",
-        date: body.date ?? new Date().toISOString().slice(0, 10),
-        readMinutes: body.readMinutes ?? 5,
-        heroImage: body.heroImage ?? "",
-        content: body.content ?? {},
-      });
+      await db.insert(blogPosts).values({ ...body, content: body.content ?? {} });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "";
       if (msg.includes("Duplicate") || msg.includes("unique")) {

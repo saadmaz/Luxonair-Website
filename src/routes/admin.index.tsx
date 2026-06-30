@@ -62,7 +62,7 @@ function AdminDashboard() {
   const greeting = now.getHours() < 12 ? "Good morning" : now.getHours() < 17 ? "Good afternoon" : "Good evening";
   const dateStr = now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
-  const { data: enquiries = [] } = useQuery({ queryKey: ["enquiries"], queryFn: () => api.get<DbEnquiry[]>("/api/enquiries") });
+  const { data: enquiries = [], isLoading: enquiriesLoading } = useQuery({ queryKey: ["enquiries"], queryFn: () => api.get<DbEnquiry[]>("/api/enquiries") });
   const { data: contacts = [] } = useQuery({ queryKey: ["contacts"], queryFn: () => api.get<DbContact[]>("/api/contacts") });
   const { data: subscribers = [], isLoading: subsLoading } = useQuery({ queryKey: ["subscribers"], queryFn: () => api.get<DbSubscriber[]>("/api/subscribers") });
 
@@ -71,7 +71,7 @@ function AdminDashboard() {
   const unreadContacts = contacts.filter((c) => !c.read).length;
   const totalSubs = subscribers.length;
 
-  const statsLoading = subsLoading;
+  const statsLoading = subsLoading || enquiriesLoading;
 
   const statCards = [
     { label: "Total Enquiries", value: totalEnquiries, change: `${newEnquiries} new`, positive: true, icon: FileText, accent: "bg-[#042045]", iconBg: "bg-[#042045]/8", iconColor: "text-[#042045]" },
@@ -133,9 +133,13 @@ function AdminDashboard() {
           </button>
         </div>
 
-        {enquiries.length === 0 ? (
+        {enquiriesLoading ? (
+          <div className="flex h-32 items-center justify-center">
+            <Loader2 className="h-5 w-5 animate-spin text-gray-300" />
+          </div>
+        ) : enquiries.length === 0 ? (
           <div className="flex h-32 items-center justify-center text-sm text-gray-400">
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />Loading enquiries…
+            No enquiries yet
           </div>
         ) : (
           <>

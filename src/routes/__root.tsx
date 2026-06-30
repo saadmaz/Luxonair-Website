@@ -81,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preload", as: "style", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" },
       { rel: "icon", href: "/Favicon.png", type: "image/png" },
-      { rel: "apple-touch-icon", href: "/Logo/Main%20Logo.png" },
+      { rel: "apple-touch-icon", href: "/Logo/main-logo.png" },
     ],
     scripts: [
       {
@@ -94,7 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "@id": "https://www.luxeonair.co.uk/#organization",
               "name": "Luxeonair",
               "url": "https://www.luxeonair.co.uk",
-              "logo": "https://www.luxeonair.co.uk/Logo/Main%20Logo.png",
+              "logo": "https://www.luxeonair.co.uk/Logo/main-logo.png",
               "description": "London-based luxury travel agency crafting bespoke long-haul holidays, family escapes and corporate travel programmes from the UK. ATOL protected. One dedicated consultant per trip.",
               "telephone": "+447448009739",
               "email": "info@luxeonair.co.uk",

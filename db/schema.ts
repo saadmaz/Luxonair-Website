@@ -25,7 +25,7 @@ export const enquiries = mysqlTable("enquiries", {
   status: text("status").notNull().default("new"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [
-  index("enquiries_status_idx").on(t.createdAt),
+  index("enquiries_status_idx").on(t.status),
   index("enquiries_created_at_idx").on(t.createdAt),
 ]);
 
@@ -136,7 +136,7 @@ export const faqGroups = mysqlTable("faq_groups", {
 
 export const faqItems = mysqlTable("faq_items", {
   id: int("id").autoincrement().primaryKey(),
-  faqGroupId: int("faq_group_id").notNull(),
+  faqGroupId: int("faq_group_id").notNull().references(() => faqGroups.id, { onDelete: "cascade" }),
   question: text("question").notNull(),
   answer: text("answer").notNull(),
   sortOrder: int("sort_order").notNull().default(0),

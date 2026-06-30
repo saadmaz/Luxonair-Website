@@ -54,7 +54,7 @@ function AdminLoginPage() {
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center gap-4">
           <img
-            src="/Logo/White%20Logo.png"
+            src="/Logo/white-logo.png"
             alt="Luxeonair"
             className="h-10 w-auto opacity-90"
           />

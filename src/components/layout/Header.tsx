@@ -43,7 +43,7 @@ export function Header() {
         <div className="container-page flex h-16 items-center justify-between gap-4">
           {/* Logo */}
           <Link to="/" className="flex shrink-0 items-center">
-            <img src="/Logo/Main%20Logo.png" alt="Luxeonair" className="h-16 w-auto" />
+            <img src="/Logo/main-logo.png" alt="Luxeonair" className="h-16 w-auto" />
           </Link>
 
           {/* Desktop navigation */}

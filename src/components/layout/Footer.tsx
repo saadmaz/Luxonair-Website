@@ -29,7 +29,7 @@ export function Footer() {
         <div className="sm:col-span-2 lg:col-span-2">
           <Link to="/" className="flex items-center">
             <img
-              src="/Logo/White%20Logo.png"
+              src="/Logo/white-logo.png"
               alt="Luxeonair"
               className="h-10 w-auto"
             />

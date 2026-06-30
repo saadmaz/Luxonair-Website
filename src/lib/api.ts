@@ -24,8 +24,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+export type Paged<T> = { data: T[]; total: number; page: number; limit: number };
+
 export const api = {
   get: <T>(path: string) => request<T>(path),
+  getPaged: <T>(path: string, page: number, limit = 50) =>
+    request<Paged<T>>(`${path}${path.includes("?") ? "&" : "?"}page=${page}&limit=${limit}`),
 
   post: <T>(path: string, body: unknown) =>
     request<T>(path, { method: "POST", body: JSON.stringify(body) }),

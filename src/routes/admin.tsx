@@ -186,7 +186,7 @@ function AdminLayoutRoute() {
         )}>
           {/* Logo — hidden in collapsed desktop mode */}
           <img
-            src="/Logo/Main%20Logo.png"
+            src="/Logo/main-logo.png"
             alt="Luxeonair"
             className={cn(
               "h-7 w-auto opacity-90 transition-all duration-300",
@@ -386,9 +386,11 @@ function AdminLayoutRoute() {
                 className="relative flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
               >
                 <Bell className="h-4 w-4" />
-                <span className="absolute right-[7px] top-[7px] h-1.5 w-1.5 rounded-full bg-amber-400 ring-[1.5px] ring-white" />
+                {(newEnquiries > 0 || unreadMessages > 0) && (
+                  <span className="absolute right-[7px] top-[7px] h-1.5 w-1.5 rounded-full bg-amber-400 ring-[1.5px] ring-white" />
+                )}
               </button>
-              {notifOpen && <NotificationsPanel onClose={() => setNotifOpen(false)} navigate={navigate} />}
+              {notifOpen && <NotificationsPanel activity={activity} onClose={() => setNotifOpen(false)} navigate={navigate} />}
             </div>
 
             <div className="h-5 w-px bg-gray-100" />
@@ -502,17 +504,27 @@ function SearchPalette({ onClose, navigate }: { onClose: () => void; navigate: R
 
 // ─── Notifications Panel ─────────────────────────────────────────────────────
 
-const mockNotifications = [
-  { id: 1, icon: FileTextIcon,   iconBg: "bg-blue-50",    iconColor: "text-blue-600",   title: "New enquiry received",        body: "James Thornton — Maldives, Aug 2025",   time: "2 min ago",  to: "/admin/enquiries", read: false },
-  { id: 2, icon: MessageCircle,  iconBg: "bg-amber-50",   iconColor: "text-amber-600",  title: "3 unread messages",           body: "Oldest message from 2 days ago",         time: "1 hr ago",   to: "/admin/messages",  read: false },
-  { id: 3, icon: Users,          iconBg: "bg-violet-50",  iconColor: "text-violet-600", title: "8 new subscribers this week", body: "Total now at 152 subscribers",           time: "3 hrs ago",  to: "/admin/subscribers", read: true },
-  { id: 4, icon: CheckCircle2,   iconBg: "bg-emerald-50", iconColor: "text-emerald-600",title: "Enquiry marked responded",    body: "Sarah Mitchell — Dubai trip",            time: "Yesterday",  to: "/admin/enquiries", read: true },
-  { id: 5, icon: Clock,          iconBg: "bg-rose-50",    iconColor: "text-rose-600",   title: "Follow-up overdue",           body: "Oliver Chen — Japan, no reply in 3 days", time: "2 days ago", to: "/admin/enquiries", read: true },
-];
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins  = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days  = Math.floor(diff / 86400000);
+  if (mins  < 1)  return "just now";
+  if (mins  < 60) return `${mins}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  return `${days}d ago`;
+}
 
-function NotificationsPanel({ onClose, navigate }: { onClose: () => void; navigate: ReturnType<typeof useNavigate> }) {
+function NotificationsPanel({
+  activity,
+  onClose,
+  navigate,
+}: {
+  activity: ActivityData | undefined;
+  onClose: () => void;
+  navigate: ReturnType<typeof useNavigate>;
+}) {
   const ref = useRef<HTMLDivElement>(null);
-  const [notifs, setNotifs] = useState(mockNotifications);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -522,8 +534,11 @@ function NotificationsPanel({ onClose, navigate }: { onClose: () => void; naviga
     return () => document.removeEventListener("mousedown", handler);
   }, [onClose]);
 
-  const unreadCount = notifs.filter((n) => !n.read).length;
-  const markAllRead = () => setNotifs((n) => n.map((x) => ({ ...x, read: true })));
+  const enquiries  = activity?.recentEnquiries  ?? [];
+  const messages   = activity?.unreadContacts   ?? [];
+  const totalUnread = (activity?.newEnquiryCount ?? 0) + (activity?.unreadContactCount ?? 0);
+
+  const hasActivity = enquiries.length > 0 || messages.length > 0;
 
   return (
     <div
@@ -533,48 +548,65 @@ function NotificationsPanel({ onClose, navigate }: { onClose: () => void; naviga
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold text-gray-900">Notifications</span>
-          {unreadCount > 0 && (
+          <span className="text-sm font-bold text-gray-900">Recent activity</span>
+          {totalUnread > 0 && (
             <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-400 px-1.5 text-[10px] font-bold text-white">
-              {unreadCount}
+              {totalUnread}
             </span>
           )}
         </div>
-        {unreadCount > 0 && (
-          <button onClick={markAllRead} className="text-[11px] font-medium text-blue-600 hover:underline">
-            Mark all read
-          </button>
-        )}
       </div>
 
       {/* List */}
       <ul className="max-h-[340px] overflow-y-auto divide-y divide-gray-50" style={{ scrollbarWidth: "none" }}>
-        {notifs.map((n) => {
-          const Icon = n.icon;
-          return (
-            <li key={n.id}>
-              <button
-                onClick={() => { navigate({ to: n.to as "/admin" }); onClose(); }}
-                className={cn(
-                  "flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50",
-                  !n.read && "bg-blue-50/40"
-                )}
-              >
-                <span className={cn("mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl", n.iconBg)}>
-                  <Icon className={cn("h-4 w-4", n.iconColor)} strokeWidth={1.75} />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className={cn("text-[13px] leading-snug", n.read ? "text-gray-600" : "font-semibold text-gray-900")}>
-                    {n.title}
-                  </p>
-                  <p className="mt-0.5 truncate text-[11px] text-gray-400">{n.body}</p>
-                  <p className="mt-1 text-[10px] text-gray-400">{n.time}</p>
-                </div>
-                {!n.read && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500" />}
-              </button>
-            </li>
-          );
-        })}
+        {!hasActivity && (
+          <li className="px-4 py-8 text-center text-sm text-gray-400">No recent activity</li>
+        )}
+
+        {enquiries.map((e) => (
+          <li key={`enq-${e.id}`}>
+            <button
+              onClick={() => { navigate({ to: "/admin/enquiries" }); onClose(); }}
+              className={cn(
+                "flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50",
+                e.status === "new" && "bg-blue-50/40"
+              )}
+            >
+              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-50">
+                <FileText className="h-4 w-4 text-blue-600" strokeWidth={1.75} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className={cn("text-[13px] leading-snug", e.status === "new" ? "font-semibold text-gray-900" : "text-gray-600")}>
+                  New enquiry — {e.destination}
+                </p>
+                <p className="mt-0.5 truncate text-[11px] text-gray-400">{e.name}</p>
+                <p className="mt-1 text-[10px] text-gray-400">{timeAgo(e.createdAt)}</p>
+              </div>
+              {e.status === "new" && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500" />}
+            </button>
+          </li>
+        ))}
+
+        {messages.map((m) => (
+          <li key={`msg-${m.id}`}>
+            <button
+              onClick={() => { navigate({ to: "/admin/messages" }); onClose(); }}
+              className="flex w-full items-start gap-3 bg-amber-50/30 px-4 py-3 text-left transition-colors hover:bg-gray-50"
+            >
+              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-50">
+                <MessageSquare className="h-4 w-4 text-amber-600" strokeWidth={1.75} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-semibold leading-snug text-gray-900">
+                  Message from {m.name}
+                </p>
+                <p className="mt-0.5 truncate text-[11px] text-gray-400">{m.topic ?? "General enquiry"}</p>
+                <p className="mt-1 text-[10px] text-gray-400">{timeAgo(m.createdAt)}</p>
+              </div>
+              <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-amber-400" />
+            </button>
+          </li>
+        ))}
       </ul>
 
       {/* Footer */}
@@ -583,7 +615,7 @@ function NotificationsPanel({ onClose, navigate }: { onClose: () => void; naviga
           onClick={() => { navigate({ to: "/admin/enquiries" }); onClose(); }}
           className="flex w-full items-center justify-center gap-1.5 text-[12px] font-medium text-gray-500 hover:text-gray-800"
         >
-          View all activity <ArrowRight className="h-3.5 w-3.5" />
+          View all enquiries <ArrowRight className="h-3.5 w-3.5" />
         </button>
       </div>
     </div>
