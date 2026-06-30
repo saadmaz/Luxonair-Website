@@ -19,23 +19,34 @@ export const APIRoute = createAPIFileRoute("/api/auth/login")({
     }
 
     const { email, password } = parsed.data;
+    const normalEmail = email.trim().toLowerCase();
 
     const [user] = await db
       .select()
       .from(adminUsers)
-      .where(eq(adminUsers.email, email.trim().toLowerCase()))
+      .where(eq(adminUsers.email, normalEmail))
       .limit(1);
 
-    if (!user) {
+    let authedEmail: string | null = null;
+
+    if (user) {
+      const match = await compare(password, user.passwordHash);
+      if (match) authedEmail = user.email;
+    } else {
+      // Fallback: env-var credentials (used when admin_users table is empty)
+      const envEmail = (process.env.ADMIN_EMAIL ?? "").trim().toLowerCase();
+      const envHash = (process.env.ADMIN_PASSWORD_HASH ?? "").trim();
+      if (envEmail && envHash && normalEmail === envEmail) {
+        const match = await compare(password, envHash);
+        if (match) authedEmail = normalEmail;
+      }
+    }
+
+    if (!authedEmail) {
       return Response.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    const passwordMatch = await compare(password, user.passwordHash);
-    if (!passwordMatch) {
-      return Response.json({ error: "Invalid credentials" }, { status: 401 });
-    }
-
-    const token = await signToken({ email: user.email });
+    const token = await signToken({ email: authedEmail });
 
     return Response.json(
       { ok: true },

@@ -8,6 +8,7 @@
 import { count } from "drizzle-orm";
 import {
   db,
+  adminUsers,
   blogPosts,
   destinations,
   deals,
@@ -441,10 +442,23 @@ async function seedHolidayTypes() {
   console.log("holiday_types: seeded 6 rows.");
 }
 
+// ─── Admin user ───────────────────────────────────────────────────────────────
+
+async function seedAdmin() {
+  if (!(await isEmpty(adminUsers))) { console.log("admin_users: already seeded, skipping."); return; }
+  // Hash of "Luxonair2026!" — change password via phpMyAdmin after first login
+  await db.insert(adminUsers).values({
+    email: "admin@luxeonair.co.uk",
+    passwordHash: "$2b$12$c47qV6vS7xtEUoaBJ1SJF.622LyosDm6XoAvjzbUUXdYQ.ZWFoob.",
+  });
+  console.log("admin_users: seeded 1 row (password: Luxonair2026!)");
+}
+
 // ─── Run ──────────────────────────────────────────────────────────────────────
 
 async function main() {
   console.log("Starting seed...");
+  await seedAdmin();
   await seedBlog();
   await seedDestinations();
   await seedDeals();
