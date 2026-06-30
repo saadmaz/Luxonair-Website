@@ -22,6 +22,13 @@
       "when": 1782834630047,
       "tag": "0002_strong_lyja",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1782835532818,
+      "tag": "0003_fancy_eddie_brock",
+      "breakpoints": true
     }
   ]
 }
