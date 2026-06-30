@@ -40,6 +40,12 @@ function BlogIndex() {
       </section>
 
       <div className="container-page py-12 md:py-16">
+        {!feature ? (
+          <p className="py-20 text-center text-muted-foreground">
+            No articles published yet — check back soon.
+          </p>
+        ) : (
+          <>
         {/* Featured article */}
         <Link
           to="/blog/$slug"
@@ -75,7 +81,7 @@ function BlogIndex() {
         </Link>
 
         {/* Article grid */}
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {rest.length > 0 && <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {rest.map((p) => (
             <Link
               key={p.slug}
@@ -105,7 +111,9 @@ function BlogIndex() {
               </div>
             </Link>
           ))}
-        </div>
+        </div>}
+          </>
+        )}
       </div>
     </>
   );
