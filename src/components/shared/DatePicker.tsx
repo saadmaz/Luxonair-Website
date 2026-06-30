@@ -58,15 +58,15 @@ export function DatePicker({
           sideOffset={6}
         >
           {/* ── Navy brand header ─────────────────────── */}
-          <div className="bg-navy px-5 py-4">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-navy-fg/50">
+          <div className="bg-navy px-4 py-3">
+            <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-navy-fg/50">
               Departure date
             </p>
-            <p className="mt-1 font-display text-xl font-bold text-navy-fg">
+            <p className="mt-0.5 font-display text-base font-bold text-navy-fg">
               {selected ? format(selected, "EEEE, d MMMM") : "Choose a date"}
             </p>
             {selected && (
-              <p className="mt-0.5 text-xs text-gold">
+              <p className="text-[10px] text-gold">
                 {format(selected, "yyyy")}
               </p>
             )}
@@ -89,6 +89,7 @@ export function DatePicker({
               disabled={minDate ? { before: minDate } : undefined}
               fixedWeeks
               autoFocus
+              className="p-2 [--cell-size:1.75rem]"
               classNames={{
                 today:
                   "bg-teal/15 text-teal rounded-md font-semibold data-[selected=true]:rounded-md",
