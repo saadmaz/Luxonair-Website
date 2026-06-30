@@ -7,5 +7,5 @@ export { HolidayTypeTiles } from "./HolidayTypeTiles";
 export { DealsSection } from "./DealsSection";
 export { WhyLuxonair } from "./WhyLuxonair";
 export { SocialProof } from "./SocialProof";
-export { FinalCTA } from "./FinalCta";
+export { FinalCTA } from "./FinalCTA";
 export { BlogCarousel } from "./BlogCarousel";
