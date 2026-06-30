@@ -39,7 +39,7 @@ export function Hero() {
           </h1>
 
           <p className="mt-3 max-w-lg text-sm leading-relaxed text-navy-fg/75 md:mt-4 md:text-base">
-            Long-haul adventures, family getaways, business travel — we handle the lot. One consultant, one point of contact, and genuinely good advice from start to finish.
+            Long-haul adventures, family getaways, business travel. We handle the lot. One consultant, one point of contact, genuinely good advice from start to finish.
           </p>
 
           {/* Primary + secondary CTAs */}

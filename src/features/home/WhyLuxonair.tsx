@@ -7,12 +7,12 @@ export function WhyLuxonair() {
     {
       icon: Users,
       title: "Families & Couples",
-      body: "Family rooms, direct routes, kids clubs — everything that makes a trip actually work for you.",
+      body: "Family rooms, direct routes, kids clubs and everything else that makes a holiday actually work for you.",
     },
     {
       icon: Phone,
       title: "24/7 Support",
-      body: "Not a call centre. A real person who picks up — before, during, and after your trip.",
+      body: "Not a call centre. A real person who picks up before, during and after your trip.",
     },
     {
       icon: ShieldCheck,
@@ -42,7 +42,7 @@ export function WhyLuxonair() {
               matched to your budget, schedule and preferences, with honest advice along the way.
             </p>
             <p className="mt-3 text-sm leading-relaxed text-navy-fg/60 font-normal italic">
-              You're not just booking a trip — you're choosing someone who'll care about it as much as you do, from the first message to the moment you're home.
+              You're not just booking a trip. You're choosing someone who'll care about it as much as you do, from the first message to the moment you're home.
             </p>
             <Button asChild className="mt-8 bg-gold text-gold-foreground hover:bg-gold/90">
               <Link to="/about">Learn about us</Link>

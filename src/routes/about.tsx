@@ -35,7 +35,7 @@ function AboutPage() {
           </h1>
           <p className="mt-5 max-w-2xl text-base text-navy-fg/60 leading-relaxed">
             We're not a platform. We're a team of travel specialists who take the time to
-            actually listen, then build your trip around what you need — not what's easiest to
+            actually listen, then build your trip around what you need, not what's easiest to
             sell. One person handles your booking from the first message to the day you land back.
           </p>
         </div>
@@ -152,8 +152,8 @@ function AboutPage() {
           <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
             <p>
               Whether you need a last-minute business flight, a family holiday that actually works
-              for everyone, or a long-haul trip in Business Class — we'll sort it properly. Not with
-              a script, but with a conversation.
+              for everyone, or a long-haul trip in Business Class, we'll sort it properly. Not with
+              a script, but with a proper conversation.
             </p>
             <p>
               We give you honest advice, we get back to you quickly, and we don't disappear once
@@ -162,12 +162,11 @@ function AboutPage() {
             </p>
             <p>
               Most of our clients come back. We think that says more than any award or badge could.
-              We're building something long-term here — repeat bookings, trusted relationships, and
-              travel that's genuinely stress-free.
+              Repeat clients, genuine relationships, and travel that feels easy from start to finish.
             </p>
             <p>
-              Economy, Premium Economy, Business or First Class — whatever you're after, we'll find
-              you the right option at the right price, and be there if anything changes along the way.
+              Economy, Premium Economy, Business or First Class, whatever you're after, we'll find
+              you the right option at the right price and be there if anything changes along the way.
             </p>
           </div>
         </div>

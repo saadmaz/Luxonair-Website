@@ -56,7 +56,7 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
               Hand-picked deals. <span className="text-gold">Straight to your inbox.</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-sm text-white/70 md:text-base">
-              Twice a month, we send our best travel deals and destination picks to your inbox. No spam, just the good stuff — and you can unsubscribe whenever you like.
+              Twice a month, we send our best travel deals and destination picks to your inbox. No spam, just the good stuff. Unsubscribe whenever you like.
             </p>
 
             {/* Email form */}
