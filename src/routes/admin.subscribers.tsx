@@ -1,10 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Download, Trash2, Plus, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { api } from "@/lib/api";
-import { Pagination } from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/pagination";
 
 export const Route = createFileRoute("/admin/subscribers")({
   component: AdminSubscribersPage,
@@ -167,7 +167,7 @@ function AdminSubscribersPage() {
               disabled={addSubscriber.isPending}
               className="rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90 disabled:opacity-60"
             >
-              {addSubscriber.isPending ? "Adding…" : "Add"}
+              {addSubscriber.isPending ? "Addingâ€¦" : "Add"}
             </button>
           </DialogFooter>
         </DialogContent>
@@ -185,7 +185,7 @@ function AdminSubscribersPage() {
               disabled={deleteSubscriber.isPending}
               className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
             >
-              {deleteSubscriber.isPending ? "Removing…" : "Remove"}
+              {deleteSubscriber.isPending ? "Removingâ€¦" : "Remove"}
             </button>
           </DialogFooter>
         </DialogContent>
