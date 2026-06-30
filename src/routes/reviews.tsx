@@ -4,7 +4,7 @@ import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { Button } from "@/components/ui/button";
 import { SITE } from "@/config/site";
 import { getTestimonials } from "@/server/queries";
-import { useInView } from "@/hooks/useInView";
+import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/reviews")({
   loader: async () => {
@@ -54,13 +54,16 @@ export const Route = createFileRoute("/reviews")({
   component: ReviewsPage,
 });
 
+const reviewCardVariants = {
+  hidden: { opacity: 0, y: 24 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
 function ReviewsPage() {
   const items = Route.useLoaderData() ?? [];
   const average = items.length
     ? +(items.reduce((s, r) => s + r.rating, 0) / items.length).toFixed(1)
     : 0;
-  const [gridRef, gridInView] = useInView<HTMLDivElement>();
-  const [scoreRef, scoreInView] = useInView<HTMLDivElement>();
 
   return (
     <>
@@ -80,7 +83,13 @@ function ReviewsPage() {
             </div>
 
             {/* Score card */}
-            <div ref={scoreRef} className={`rounded-2xl border border-navy-fg/15 bg-navy-fg/5 p-7 transition-all duration-700 ${scoreInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <motion.div
+              className="rounded-2xl border border-navy-fg/15 bg-navy-fg/5 p-7"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.6 }}
+            >
               <div className="flex gap-1 text-gold">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} className="h-5 w-5 fill-current" />
@@ -96,19 +105,25 @@ function ReviewsPage() {
               <div className="mt-5 border-t border-navy-fg/10 pt-4 text-xs text-navy-fg/40">
                 Trustpilot / Feefo score pending - ask us for references directly.
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Reviews grid */}
       <section className="container-page py-14 md:py-20">
-        <div ref={gridRef} className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {items.map((r, idx) => (
-            <figure
+        <motion.div
+          className="grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-40px" }}
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+        >
+          {items.map((r) => (
+            <motion.figure
               key={r.id}
-              className={`flex flex-col rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-500 hover:shadow-md ${gridInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
-              style={{ transitionDelay: `${idx * 80}ms` }}
+              variants={reviewCardVariants}
+              className="flex flex-col rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
             >
               <div className="flex gap-0.5 text-gold">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -125,9 +140,9 @@ function ReviewsPage() {
                   {new Date(r.date).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}
                 </div>
               </figcaption>
-            </figure>
+            </motion.figure>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* Bottom CTA */}

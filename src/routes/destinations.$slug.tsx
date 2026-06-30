@@ -5,7 +5,7 @@ import { ArrowLeft, Check } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
 import { getDestinationBySlug, getDestinations } from "@/server/queries";
-import { useInView } from "@/hooks/useInView";
+import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/destinations/$slug")({
   loader: async ({ params }) => {
@@ -82,9 +82,6 @@ function DestinationDetail() {
   const itinerary = (d.itinerary as { day: string; title: string; detail: string }[]) ?? [];
   const highlights = (d.highlights as string[]) ?? [];
   const tripType = (d.tripType as string[]) ?? [];
-  const [itineraryRef, itineraryInView] = useInView<HTMLDivElement>();
-  const [galleryRef, galleryInView] = useInView<HTMLDivElement>();
-  const [othersRef, othersInView] = useInView<HTMLDivElement>();
 
   return (
     <article>
@@ -115,18 +112,24 @@ function DestinationDetail() {
       <div className="container-page grid gap-8 py-10 lg:grid-cols-[1.4fr_1fr] md:py-16 lg:py-20 lg:gap-12">
         <div>
           {gallery.length > 0 && (
-            <div ref={galleryRef} className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <motion.div
+              className="grid grid-cols-2 gap-3 sm:grid-cols-3"
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: "-40px" }}
+              variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07 } } }}
+            >
               {gallery.map((g, i) => (
-                <img
+                <motion.img
                   key={i}
                   src={g}
                   alt={`${d.name} gallery ${i + 1}`}
                   loading="lazy"
-                  className={`aspect-[4/3] rounded-lg object-cover transition-all duration-500 hover:scale-[1.02] ${galleryInView ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
-                  style={{ transitionDelay: `${i * 70}ms` }}
+                  className="aspect-[4/3] rounded-lg object-cover transition-transform duration-300 hover:scale-[1.02]"
+                  variants={{ hidden: { opacity: 0, scale: 0.95 }, show: { opacity: 1, scale: 1, transition: { duration: 0.45 } } }}
                 />
               ))}
-            </div>
+            </motion.div>
           )}
 
           <h2 className="mt-12 font-display text-2xl font-semibold">Overview</h2>
@@ -135,21 +138,25 @@ function DestinationDetail() {
           {itinerary.length > 0 && (
             <>
               <h2 className="mt-10 font-display text-2xl font-semibold">Outline itinerary</h2>
-              <div ref={itineraryRef}>
-                <ol className="mt-4 space-y-4">
-                  {itinerary.map((s, i) => (
-                    <li
-                      key={i}
-                      className={`rounded-xl border border-border bg-card p-5 transition-all duration-500 ${itineraryInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-6"}`}
-                      style={{ transitionDelay: `${i * 80}ms` }}
-                    >
-                      <div className="text-xs uppercase tracking-wider text-gold">{s.day}</div>
-                      <div className="mt-1 font-display text-lg font-semibold">{s.title}</div>
-                      <p className="mt-1 text-sm text-muted-foreground">{s.detail}</p>
-                    </li>
-                  ))}
-                </ol>
-              </div>
+              <motion.ol
+                className="mt-4 space-y-4"
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: "-40px" }}
+                variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+              >
+                {itinerary.map((s, i) => (
+                  <motion.li
+                    key={i}
+                    variants={{ hidden: { opacity: 0, x: -24 }, show: { opacity: 1, x: 0, transition: { duration: 0.45 } } }}
+                    className="rounded-xl border border-border bg-card p-5"
+                  >
+                    <div className="text-xs uppercase tracking-wider text-gold">{s.day}</div>
+                    <div className="mt-1 font-display text-lg font-semibold">{s.title}</div>
+                    <p className="mt-1 text-sm text-muted-foreground">{s.detail}</p>
+                  </motion.li>
+                ))}
+              </motion.ol>
             </>
           )}
 
@@ -195,21 +202,30 @@ function DestinationDetail() {
       {others.length > 0 && (
         <section className="container-page pb-20">
           <h2 className="font-display text-2xl font-semibold">More like this</h2>
-          <div ref={othersRef} className="mt-6 grid gap-6 sm:grid-cols-3">
-            {others.map((o, i) => (
-              <Link
+          <motion.div
+            className="mt-6 grid gap-6 sm:grid-cols-3"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-40px" }}
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
+          >
+            {others.map((o) => (
+              <motion.div
                 key={o.slug}
-                to="/destinations/$slug"
-                params={{ slug: o.slug }}
-                className={`group transition-all duration-500 ${othersInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
-                style={{ transitionDelay: `${i * 100}ms` }}
+                variants={{ hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
               >
-                <img src={o.heroImage} alt={o.name} loading="lazy" className="aspect-[4/3] w-full rounded-lg object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
-                <div className="mt-3 font-medium">{o.name}</div>
-                <div className="text-sm text-muted-foreground">From £{o.fromPrice.toLocaleString()} pp</div>
-              </Link>
+                <Link
+                  to="/destinations/$slug"
+                  params={{ slug: o.slug }}
+                  className="group block"
+                >
+                  <img src={o.heroImage} alt={o.name} loading="lazy" className="aspect-[4/3] w-full rounded-lg object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                  <div className="mt-3 font-medium">{o.name}</div>
+                  <div className="text-sm text-muted-foreground">From £{o.fromPrice.toLocaleString()} pp</div>
+                </Link>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
       )}
 

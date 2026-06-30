@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { regions, tripTypes, budgetBands } from "@/data/destinations";
 import { SITE } from "@/config/site";
 
@@ -199,10 +200,20 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
       : `${form.departWindow} (${form.flexibility})`;
 
     return (
-      <div className="rounded-2xl border border-border bg-card p-8 text-center">
-        <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-primary text-primary-foreground">
+      <motion.div
+        className="rounded-2xl border border-border bg-card p-8 text-center"
+        initial={{ opacity: 0, scale: 0.97 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <motion.div
+          className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-primary text-primary-foreground"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 22, delay: 0.15 }}
+        >
           <Check className="h-6 w-6" />
-        </div>
+        </motion.div>
         <h2 className="mt-5 font-display text-2xl font-semibold">Thank you, {form.name.split(" ")[0] || "traveller"}.</h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
           Your enquiry is with our consultants. <strong className="text-foreground">A specialist will reply within 4 working hours</strong> ({SITE.hours.display}) by email and, if requested, WhatsApp.
@@ -214,7 +225,7 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
           <Row k="Travellers" v={`${form.adults} adult${form.adults === "1" ? "" : "s"}${Number(form.children) ? `, ${form.children} child` : ""}`} />
           <Row k="Budget" v={`${form.budget} (${form.nights} nights)`} />
         </div>
-      </div>
+      </motion.div>
     );
   }
 
@@ -223,7 +234,15 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
   return (
     <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
       <Stepper current={step} />
-      <div className="mt-6">
+      <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={step}
+        initial={{ opacity: 0, x: 18 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -18 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className="mt-6"
+      >
 
         {/* ── Step 0: Where ── */}
         {step === 0 && (
@@ -376,7 +395,8 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
             </Field>
           </div>
         )}
-      </div>
+      </motion.div>
+      </AnimatePresence>
 
       {submitError && (
         <p className="mt-4 rounded-md bg-destructive/10 px-4 py-2.5 text-sm text-destructive">{submitError}</p>

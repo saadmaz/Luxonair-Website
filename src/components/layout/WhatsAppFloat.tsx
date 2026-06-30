@@ -3,6 +3,7 @@
 // requiring any user interaction.
 import { SITE } from "@/config/site";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
+import { motion } from "framer-motion";
 
 export function WhatsAppFloat() {
   return (
@@ -16,9 +17,14 @@ export function WhatsAppFloat() {
     >
       <span className="relative flex h-14 w-14">
         <span className="absolute inset-0 animate-ping rounded-full bg-[#25D366] opacity-25" />
-        <span className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-2xl transition-all duration-200 hover:scale-110 hover:bg-[#128C7E]">
+        <motion.span
+          className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-2xl"
+          whileHover={{ scale: 1.12, backgroundColor: "#128C7E" }}
+          whileTap={{ scale: 0.92 }}
+          transition={{ type: "spring", stiffness: 400, damping: 20 }}
+        >
           <WhatsAppIcon className="h-7 w-7" />
-        </span>
+        </motion.span>
       </span>
     </a>
   );

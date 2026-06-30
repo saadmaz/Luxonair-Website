@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { reviews as staticReviews } from "@/data/reviews";
 
 type Testimonial = {
@@ -41,16 +42,9 @@ export function SocialProof({ testimonials }: { testimonials: Testimonial[] }) {
       : staticReviews.map((r) => ({ id: r.id, author: r.author, trip: r.trip, rating: r.rating, body: r.body }));
 
   const [current, setCurrent] = useState(0);
-  const [visible, setVisible] = useState(true);
 
-  const switchTo = (idx: number) => {
-    if (idx === current) return;
-    setVisible(false);
-    setTimeout(() => { setCurrent(idx); setVisible(true); }, 220);
-  };
-
-  const prev = () => switchTo((current - 1 + rows.length) % rows.length);
-  const next = () => switchTo((current + 1) % rows.length);
+  const prev = () => setCurrent((c) => (c - 1 + rows.length) % rows.length);
+  const next = () => setCurrent((c) => (c + 1) % rows.length);
 
   const review = rows[current];
 
@@ -78,7 +72,7 @@ export function SocialProof({ testimonials }: { testimonials: Testimonial[] }) {
               style={{ inset: `calc(50% - ${OUTER_R}px)` }}
             />
             <div
-              className="pointer-events-none absolute rounded-full border-[1.5px] border-foreground/[0.10]"
+              className="pointer-events-none absolute rounded-full border-[1.5px] border-foreground/[0.10]`"
               style={{ inset: `calc(50% - ${INNER_R}px)` }}
             />
 
@@ -93,7 +87,7 @@ export function SocialProof({ testimonials }: { testimonials: Testimonial[] }) {
               <button
                 key={r.id}
                 type="button"
-                onClick={() => switchTo(r.idx)}
+                onClick={() => setCurrent(r.idx)}
                 aria-label={`Read review by ${r.author}`}
                 className="group absolute -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
                 style={{ left: `calc(50% + ${r.x}px)`, top: `calc(50% + ${r.y}px)` }}
@@ -142,39 +136,45 @@ export function SocialProof({ testimonials }: { testimonials: Testimonial[] }) {
             Every review below is from a Luxeonair-booked trip. Nothing curated, nothing fabricated.
           </p>
 
-          {/* Review card — fades when switching */}
-          <div
-            className="mt-8 space-y-4 transition-opacity duration-200"
-            style={{ opacity: visible ? 1 : 0 }}
-          >
-            <div className="flex flex-col gap-2">
-              <div className="flex gap-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-5 w-5 ${i < review.rating ? "fill-gold text-gold" : "fill-muted-foreground/20 text-muted-foreground/20"}`}
-                  />
-                ))}
+          {/* Review card — AnimatePresence fade when switching */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={current}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+              className="mt-8 space-y-4"
+            >
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-5 w-5 ${i < review.rating ? "fill-gold text-gold" : "fill-muted-foreground/20 text-muted-foreground/20"}`}
+                    />
+                  ))}
+                </div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-primary/80">{review.trip}</p>
               </div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-primary/80">{review.trip}</p>
-            </div>
 
-            <blockquote className="font-display text-xl font-semibold leading-snug text-foreground sm:text-2xl lg:text-[1.55rem] lg:leading-snug">
-              "{review.body}"
-            </blockquote>
+              <blockquote className="font-display text-xl font-semibold leading-snug text-foreground sm:text-2xl lg:text-[1.55rem] lg:leading-snug">
+                "{review.body}"
+              </blockquote>
 
-            <div className="flex items-center gap-3 pt-3">
-              <img
-                src={AVATARS[current % AVATARS.length]}
-                alt={review.author}
-                className="h-12 w-12 rounded-full object-cover shadow ring-2 ring-border"
-              />
-              <div>
-                <p className="font-semibold text-foreground">{review.author}</p>
-                <p className="text-sm text-muted-foreground">{review.trip}</p>
+              <div className="flex items-center gap-3 pt-3">
+                <img
+                  src={AVATARS[current % AVATARS.length]}
+                  alt={review.author}
+                  className="h-12 w-12 rounded-full object-cover shadow ring-2 ring-border"
+                />
+                <div>
+                  <p className="font-semibold text-foreground">{review.author}</p>
+                  <p className="text-sm text-muted-foreground">{review.trip}</p>
+                </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </AnimatePresence>
 
           <div className="mt-7 flex items-center gap-3">
             <button

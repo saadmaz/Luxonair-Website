@@ -2,11 +2,19 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { deals } from "@/data/deals";
 import { SectionHeader } from "@/components/shared/SectionHeader";
-import { useInView } from "@/hooks/useInView";
+import { motion, type Variants } from "framer-motion";
+
+const container: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12 } },
+};
+const card: Variants = {
+  hidden: { opacity: 0, y: 32 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.55, ease: "easeOut" } },
+};
 
 export function DealsSection() {
   const top = deals.slice(0, 3);
-  const [ref, inView] = useInView<HTMLDivElement>();
 
   return (
     <section className="container-page py-10 md:py-20">
@@ -15,12 +23,18 @@ export function DealsSection() {
         title="Held by a consultant, not an algorithm."
         cta={{ label: "All deals", to: "/deals" }}
       />
-      <div ref={ref} className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {top.map((d, i) => (
-          <article
+      <motion.div
+        className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        variants={container}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-40px" }}
+      >
+        {top.map((d) => (
+          <motion.article
             key={d.id}
-            className={`group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-500 hover:shadow-xl ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-            style={{ transitionDelay: `${i * 110}ms` }}
+            variants={card}
+            className="group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-xl"
           >
             <div className="relative aspect-video w-full overflow-hidden bg-muted sm:aspect-16/10">
               <img
@@ -56,15 +70,13 @@ export function DealsSection() {
                   </div>
                 </div>
                 <Button asChild size="sm" className="bg-gold text-gold-foreground hover:bg-gold/90">
-                  <Link to="/quote" search={{ destination: d.title }}>
-                    Quote
-                  </Link>
+                  <Link to="/quote" search={{ destination: d.title }}>Quote</Link>
                 </Button>
               </div>
             </div>
-          </article>
+          </motion.article>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }

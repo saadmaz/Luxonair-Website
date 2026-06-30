@@ -2,15 +2,16 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
-import { useInView } from "@/hooks/useInView";
+import { motion } from "framer-motion";
 
 export function FinalCTA() {
-  const [ref, inView] = useInView<HTMLElement>();
-
   return (
-    <section
-      ref={ref}
-      className={`container-page py-8 md:py-14 transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+    <motion.section
+      className="container-page py-8 md:py-14"
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <div className="relative overflow-hidden rounded-2xl bg-navy text-navy-fg shadow-xl">
         <div className="px-5 py-8 sm:px-8 sm:py-10 md:px-16 md:py-12">
@@ -42,6 +43,6 @@ export function FinalCTA() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

@@ -13,6 +13,7 @@ import {
   ScriptOnce,
 } from "@tanstack/react-router";
 import { type ReactNode } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 import appCss from "../styles/globals.css?url";
 import { Header } from "@/components/layout/Header";
@@ -208,9 +209,19 @@ function RootComponent() {
             Skip to content
           </a>
           <Header />
-          <main id="main-content" className="flex-1 pb-16 md:pb-0">
-            <Outlet />
-          </main>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.main
+              key={pathname}
+              id="main-content"
+              className="flex-1 pb-16 md:pb-0"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+            >
+              <Outlet />
+            </motion.main>
+          </AnimatePresence>
           <Footer />
           <StickyMobileCTA />
           <WhatsAppFloat />

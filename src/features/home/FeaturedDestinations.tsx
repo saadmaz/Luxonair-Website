@@ -1,11 +1,18 @@
 import { destinations } from "@/data/destinations";
 import { DestinationCard } from "@/components/shared/DestinationCard";
 import { SectionHeader } from "@/components/shared/SectionHeader";
-import { useInView } from "@/hooks/useInView";
+import { motion, type Variants } from "framer-motion";
+
+const container: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1 } },
+};
+const item: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.55, ease: "easeOut" } },
+};
 
 export function FeaturedDestinations() {
-  const [ref, inView] = useInView<HTMLDivElement>();
-
   return (
     <section className="container-page py-10 md:py-20">
       <SectionHeader
@@ -13,17 +20,19 @@ export function FeaturedDestinations() {
         title="Itineraries our consultants build most often"
         cta={{ label: "All destinations", to: "/destinations" }}
       />
-      <div ref={ref} className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {destinations.slice(0, 4).map((d, i) => (
-          <div
-            key={d.slug}
-            className={`transition-all duration-600 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-            style={{ transitionDelay: `${i * 100}ms` }}
-          >
+      <motion.div
+        className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+        variants={container}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-40px" }}
+      >
+        {destinations.slice(0, 4).map((d) => (
+          <motion.div key={d.slug} variants={item}>
             <DestinationCard d={d} />
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }

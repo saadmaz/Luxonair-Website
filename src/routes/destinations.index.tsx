@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { DestinationCard } from "@/components/shared/DestinationCard";
 import { SlidersHorizontal } from "lucide-react";
 import { getDestinations } from "@/server/queries";
-import { useInView } from "@/hooks/useInView";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const Route = createFileRoute("/destinations/")({
   loader: async () => {
@@ -30,12 +30,16 @@ export const Route = createFileRoute("/destinations/")({
   component: DestinationsList,
 });
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 24 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.45 } },
+};
+
 function DestinationsList() {
   const destinations = Route.useLoaderData() ?? [];
   const [region, setRegion] = useState<string>("All");
   const [trip, setTrip] = useState<string>("All");
   const [budget, setBudget] = useState<string>("All");
-  const [gridRef, gridInView] = useInView<HTMLDivElement>();
 
   const regions = useMemo(() => [...new Set(destinations.map((d) => d.region))].sort(), [destinations]);
   const tripTypes = useMemo(() => [...new Set(destinations.flatMap((d) => d.tripType as string[]))].sort(), [destinations]);
@@ -51,6 +55,8 @@ function DestinationsList() {
       ),
     [destinations, region, trip, budget]
   );
+
+  const gridKey = `${region}-${trip}-${budget}`;
 
   return (
     <>
@@ -91,23 +97,33 @@ function DestinationsList() {
         </div>
 
         {/* Results */}
-        {filtered.length === 0 ? (
-          <p className="mt-16 text-center text-muted-foreground">
-            No matches. Try widening your filters.
-          </p>
-        ) : (
-          <div ref={gridRef} className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((d, i) => (
-              <div
-                key={d.slug}
-                className={`transition-all duration-500 ${gridInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
-                style={{ transitionDelay: `${Math.min(i, 8) * 80}ms` }}
-              >
-                <DestinationCard d={d as never} />
-              </div>
-            ))}
-          </div>
-        )}
+        <AnimatePresence mode="wait">
+          {filtered.length === 0 ? (
+            <motion.p
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mt-16 text-center text-muted-foreground"
+            >
+              No matches. Try widening your filters.
+            </motion.p>
+          ) : (
+            <motion.div
+              key={gridKey}
+              className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+              variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+              initial="hidden"
+              animate="show"
+            >
+              {filtered.map((d) => (
+                <motion.div key={d.slug} variants={cardVariants}>
+                  <DestinationCard d={d as never} />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </section>
     </>
   );

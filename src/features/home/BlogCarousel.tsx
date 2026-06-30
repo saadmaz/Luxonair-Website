@@ -1,33 +1,37 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, ArrowRight, Clock } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { blogPosts } from "@/data/blog";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { cn } from "@/lib/utils";
 
+const slideVariants = {
+  enter: (d: number) => ({ opacity: 0, x: d * 50 }),
+  center: { opacity: 1, x: 0 },
+  exit:  (d: number) => ({ opacity: 0, x: d * -50 }),
+};
+
 export function BlogCarousel() {
   const [current, setCurrent] = useState(0);
-  const [animating, setAnimating] = useState(false);
+  const [direction, setDirection] = useState(1);
   const total = blogPosts.length;
 
   const goTo = useCallback(
-    (index: number) => {
-      if (index === current || animating) return;
-      setAnimating(true);
-      setTimeout(() => {
-        setCurrent(index);
-        setAnimating(false);
-      }, 250);
+    (index: number, dir?: number) => {
+      if (index === current) return;
+      setDirection(dir ?? (index > current ? 1 : -1));
+      setCurrent(index);
     },
-    [current, animating]
+    [current]
   );
 
-  const prev = () => goTo((current - 1 + total) % total);
-  const next = () => goTo((current + 1) % total);
+  const prev = () => goTo((current - 1 + total) % total, -1);
+  const next = () => goTo((current + 1) % total, 1);
 
   useEffect(() => {
     const id = setInterval(() => {
-      goTo((current + 1) % total);
+      goTo((current + 1) % total, 1);
     }, 7000);
     return () => clearInterval(id);
   }, [current, goTo, total]);
@@ -49,73 +53,76 @@ export function BlogCarousel() {
       <div className="mx-auto max-w-[1100px] px-4 sm:px-8 md:px-12">
         <div className="relative">
           {/* ── Card ─────────────────────────────────────────────────────── */}
-          <div
-            className={cn(
-              "overflow-hidden rounded-xl shadow-xl transition-opacity duration-250",
-              animating ? "opacity-0" : "opacity-100"
-            )}
-            style={{ minHeight: 0 }}
-          >
-            <div className="flex h-full flex-col md:flex-row md:h-[320px] lg:h-[360px]">
-
-              {/* Mobile: image strip across the top */}
-              <div className="relative h-40 w-full shrink-0 md:hidden">
-                <img
-                  src={post.heroImage}
-                  alt={post.title}
-                  className="h-full w-full object-cover"
-                />
-                <div className="absolute inset-0 bg-linear-to-b from-transparent to-black/30" />
-              </div>
-
-              {/* Text panel */}
-              <div className="flex flex-col justify-center bg-[#042045] px-4 py-5 sm:px-7 sm:py-6 md:w-[46%] md:shrink-0 md:px-10 lg:px-12 lg:py-8">
-                <span className="inline-flex w-fit rounded-full bg-white/10 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-white/60">
-                  {post.category}
-                </span>
-
-                <h3 className="mt-3 font-display text-lg font-semibold leading-snug text-white md:text-xl lg:text-[1.35rem]">
-                  {post.title}
-                </h3>
-
-                <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-white/55 md:line-clamp-3 md:text-sm">
-                  {post.excerpt}
-                </p>
-
-                <div className="mt-3 flex items-center gap-1.5 text-[11px] text-white/35">
-                  <Clock className="h-3 w-3" />
-                  <span>{post.readMinutes} min read</span>
-                  <span className="mx-0.5">·</span>
-                  <span>
-                    {new Date(post.date).toLocaleDateString("en-GB", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </span>
+          <div className="overflow-hidden rounded-xl shadow-xl" style={{ minHeight: 0 }}>
+            <AnimatePresence custom={direction} mode="wait">
+              <motion.div
+                key={current}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
+                className="flex h-full flex-col md:flex-row md:h-[320px] lg:h-[360px]"
+              >
+                {/* Mobile: image strip across the top */}
+                <div className="relative h-40 w-full shrink-0 md:hidden">
+                  <img
+                    src={post.heroImage}
+                    alt={post.title}
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-b from-transparent to-black/30" />
                 </div>
 
-                <Link
-                  to="/blog/$slug"
-                  params={{ slug: post.slug }}
-                  className="mt-5 inline-flex w-fit items-center gap-2 rounded-lg border border-white/20 px-4 py-2 text-xs font-semibold text-white transition-all hover:border-white/40 hover:bg-white/10"
-                >
-                  Read article <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
+                {/* Text panel */}
+                <div className="flex flex-col justify-center bg-[#042045] px-4 py-5 sm:px-7 sm:py-6 md:w-[46%] md:shrink-0 md:px-10 lg:px-12 lg:py-8">
+                  <span className="inline-flex w-fit rounded-full bg-white/10 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-white/60">
+                    {post.category}
+                  </span>
 
-              {/* Image panel — desktop only */}
-              <div className="relative hidden flex-1 overflow-hidden md:block">
-                <img
-                  key={post.slug}
-                  src={post.heroImage}
-                  alt={post.title}
-                  className="h-full w-full object-cover"
-                />
-                {/* Blend edge between text and image */}
-                <div className="absolute inset-y-0 left-0 w-20 bg-linear-to-r from-[#042045] to-transparent" />
-              </div>
-            </div>
+                  <h3 className="mt-3 font-display text-lg font-semibold leading-snug text-white md:text-xl lg:text-[1.35rem]">
+                    {post.title}
+                  </h3>
+
+                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-white/55 md:line-clamp-3 md:text-sm">
+                    {post.excerpt}
+                  </p>
+
+                  <div className="mt-3 flex items-center gap-1.5 text-[11px] text-white/35">
+                    <Clock className="h-3 w-3" />
+                    <span>{post.readMinutes} min read</span>
+                    <span className="mx-0.5">·</span>
+                    <span>
+                      {new Date(post.date).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
+
+                  <Link
+                    to="/blog/$slug"
+                    params={{ slug: post.slug }}
+                    className="mt-5 inline-flex w-fit items-center gap-2 rounded-lg border border-white/20 px-4 py-2 text-xs font-semibold text-white transition-all hover:border-white/40 hover:bg-white/10"
+                  >
+                    Read article <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+
+                {/* Image panel — desktop only */}
+                <div className="relative hidden flex-1 overflow-hidden md:block">
+                  <img
+                    src={post.heroImage}
+                    alt={post.title}
+                    className="h-full w-full object-cover"
+                  />
+                  {/* Blend edge between text and image */}
+                  <div className="absolute inset-y-0 left-0 w-20 bg-linear-to-r from-[#042045] to-transparent" />
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* ── Arrow buttons — centred in the mobile image strip (h-40 = 160px), outside on md+ ── */}

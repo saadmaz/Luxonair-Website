@@ -5,6 +5,7 @@ import { ChevronDown, Clock, Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
 import { holidayTypes } from "@/data/holidayTypes";
 import { SITE } from "@/config/site";
+import { AnimatePresence, motion } from "framer-motion";
 
 const dealCategories = [
   { label: "Cheap Flights",        slug: "cheap-flights" },
@@ -120,36 +121,45 @@ export function Header() {
       </div>
 
       {/* Mobile menu */}
-      {open && (
-        <div className="border-b border-border bg-background md:hidden animate-in fade-in-0 slide-in-from-top-2 duration-200">
-          <div className="container-page flex flex-col gap-1 py-3">
-            <Link to="/about" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">About us</Link>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="border-b border-border bg-background md:hidden"
+          >
+            <div className="container-page flex flex-col gap-1 py-3">
+              <Link to="/about" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">About us</Link>
 
-            <Link to="/holidays" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted">Holidays</Link>
-            {holidayTypes.map((h) => (
-              <Link key={h.slug} to="/holiday/$slug" params={{ slug: h.slug }} onClick={() => setOpen(false)} className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
-                {h.name}
-              </Link>
-            ))}
+              <Link to="/holidays" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted">Holidays</Link>
+              {holidayTypes.map((h) => (
+                <Link key={h.slug} to="/holiday/$slug" params={{ slug: h.slug }} onClick={() => setOpen(false)} className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
+                  {h.name}
+                </Link>
+              ))}
 
-            <Link to="/deals" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted">Deals</Link>
-            {dealCategories.map((c) => (
-              <Link key={c.slug} to="/deals" onClick={() => setOpen(false)} className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
-                {c.label}
-              </Link>
-            ))}
+              <Link to="/deals" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted">Deals</Link>
+              {dealCategories.map((c) => (
+                <Link key={c.slug} to="/deals" onClick={() => setOpen(false)} className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
+                  {c.label}
+                </Link>
+              ))}
 
-            <Link to="/blog" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">Blog</Link>
-            <Link to="/contact" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">Contact us</Link>
+              <Link to="/blog" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">Blog</Link>
+              <Link to="/contact" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">Contact us</Link>
 
-            <div className="mt-2 border-t border-border pt-2">
-              <Button asChild className="w-full">
-                <Link to="/quote" onClick={() => setOpen(false)}>Get a quote</Link>
-              </Button>
+              <div className="mt-2 border-t border-border pt-2">
+                <Button asChild className="w-full">
+                  <Link to="/quote" onClick={() => setOpen(false)}>Get a quote</Link>
+                </Button>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

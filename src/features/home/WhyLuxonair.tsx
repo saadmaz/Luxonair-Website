@@ -1,41 +1,39 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Phone, ShieldCheck, Users } from "lucide-react";
-import { useInView } from "@/hooks/useInView";
+import { motion, type Variants } from "framer-motion";
+
+const fadeLeft: Variants = {
+  hidden: { opacity: 0, x: -30 },
+  show:   { opacity: 1, x: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
+const cardContainer: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12 } },
+};
+const cardItem: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+};
 
 export function WhyLuxonair() {
-  const [textRef, textInView] = useInView<HTMLDivElement>();
-  const [cardsRef, cardsInView] = useInView<HTMLDivElement>();
-
   const features = [
-    {
-      icon: Users,
-      title: "Families & Couples",
-      body: "Family rooms, direct routes, kids clubs and everything else that makes a holiday actually work for you.",
-    },
-    {
-      icon: Phone,
-      title: "24/7 Support",
-      body: "Not a call centre. A real person who picks up before, during and after your trip.",
-    },
-    {
-      icon: ShieldCheck,
-      title: "Fully Protected",
-      body: "ATOL and IATA accredited, so your money and your trip are both covered.",
-    },
+    { icon: Users,      title: "Families & Couples",  body: "Family rooms, direct routes, kids clubs and everything else that makes a holiday actually work for you." },
+    { icon: Phone,      title: "24/7 Support",         body: "Not a call centre. A real person who picks up before, during and after your trip." },
+    { icon: ShieldCheck,title: "Fully Protected",      body: "ATOL and IATA accredited, so your money and your trip are both covered." },
   ];
 
   return (
     <section className="bg-navy text-navy-fg">
       <div className="container-page py-10 md:py-20">
         <div className="grid gap-12 md:grid-cols-2 md:items-center">
-          <div
-            ref={textRef}
-            className={`transition-all duration-700 ${textInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-6"}`}
+          <motion.div
+            variants={fadeLeft}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-60px" }}
           >
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-              Why Luxeonair
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Why Luxeonair</p>
             <h2 className="mt-3 font-display text-3xl font-semibold leading-snug text-navy-fg sm:text-4xl text-balance">
               Travel the way it should be.
             </h2>
@@ -54,25 +52,27 @@ export function WhyLuxonair() {
             <Button asChild className="mt-8 bg-gold text-gold-foreground hover:bg-gold/90">
               <Link to="/about">Learn about us</Link>
             </Button>
-          </div>
+          </motion.div>
 
-          <div ref={cardsRef} className="grid grid-cols-2 gap-3 sm:gap-4">
+          <motion.div
+            className="grid grid-cols-2 gap-3 sm:gap-4"
+            variants={cardContainer}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-60px" }}
+          >
             {features.map(({ icon: Icon, title, body }, i) => (
-              <div
+              <motion.div
                 key={title}
-                className={[
-                  `rounded-2xl border border-navy-fg/10 bg-navy-fg/5 p-4 sm:p-5 transition-all duration-500 hover:border-navy-fg/25 hover:bg-navy-fg/10`,
-                  i === features.length - 1 && features.length % 2 !== 0 ? " col-span-2" : "",
-                  cardsInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
-                ].join(" ")}
-                style={{ transitionDelay: `${i * 120}ms` }}
+                variants={cardItem}
+                className={`rounded-2xl border border-navy-fg/10 bg-navy-fg/5 p-4 sm:p-5 transition-colors hover:border-navy-fg/25 hover:bg-navy-fg/10${i === features.length - 1 && features.length % 2 !== 0 ? " col-span-2" : ""}`}
               >
                 <Icon className="h-5 w-5 text-gold" />
                 <h3 className="mt-3 text-sm font-semibold text-navy-fg">{title}</h3>
                 <p className="mt-1 text-xs leading-relaxed text-navy-fg/55">{body}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
