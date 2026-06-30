@@ -21,36 +21,30 @@ export const APIRoute = createAPIFileRoute("/api/auth/login")({
     const { email, password } = parsed.data;
     const normalEmail = email.trim().toLowerCase();
 
+    // ── Path 1: env-var credentials (no DB required) ─────────────────────────
+    const envEmail = (process.env.ADMIN_EMAIL ?? "").trim().toLowerCase();
+    const envHash  = (process.env.ADMIN_PASSWORD_HASH ?? "").trim();
+
+    if (envEmail && envHash && normalEmail === envEmail) {
+      const match = await compare(password, envHash);
+      if (!match) return Response.json({ error: "Invalid credentials" }, { status: 401 });
+      const token = await signToken({ email: envEmail });
+      return Response.json({ ok: true }, { headers: { "Set-Cookie": makeSessionCookie(token) } });
+    }
+
+    // ── Path 2: database lookup ───────────────────────────────────────────────
     const [user] = await db
       .select()
       .from(adminUsers)
       .where(eq(adminUsers.email, normalEmail))
       .limit(1);
 
-    let authedEmail: string | null = null;
+    if (!user) return Response.json({ error: "Invalid credentials" }, { status: 401 });
 
-    if (user) {
-      const match = await compare(password, user.passwordHash);
-      if (match) authedEmail = user.email;
-    } else {
-      // Fallback: env-var credentials (used when admin_users table is empty)
-      const envEmail = (process.env.ADMIN_EMAIL ?? "").trim().toLowerCase();
-      const envHash = (process.env.ADMIN_PASSWORD_HASH ?? "").trim();
-      if (envEmail && envHash && normalEmail === envEmail) {
-        const match = await compare(password, envHash);
-        if (match) authedEmail = normalEmail;
-      }
-    }
+    const match = await compare(password, user.passwordHash);
+    if (!match) return Response.json({ error: "Invalid credentials" }, { status: 401 });
 
-    if (!authedEmail) {
-      return Response.json({ error: "Invalid credentials" }, { status: 401 });
-    }
-
-    const token = await signToken({ email: authedEmail });
-
-    return Response.json(
-      { ok: true },
-      { headers: { "Set-Cookie": makeSessionCookie(token) } }
-    );
+    const token = await signToken({ email: user.email });
+    return Response.json({ ok: true }, { headers: { "Set-Cookie": makeSessionCookie(token) } });
   },
 });
