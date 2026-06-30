@@ -92,7 +92,7 @@ function HolidaysPage() {
             </h2>
           </div>
           <Link
-            to="/holiday-types"
+            to="/holiday"
             className="hidden shrink-0 items-center gap-1 text-sm font-medium hover:text-primary sm:inline-flex"
           >
             View all types <ArrowRight className="h-4 w-4" />
@@ -103,7 +103,7 @@ function HolidaysPage() {
           {holidayTypes.map((h) => (
             <Link
               key={h.slug}
-              to="/holiday-types/$slug"
+              to="/holiday/$slug"
               params={{ slug: h.slug }}
               className="group relative overflow-hidden rounded-2xl shadow-md"
             >

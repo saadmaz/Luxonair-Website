@@ -75,7 +75,7 @@ export function Footer() {
           </h4>
           <ul className="space-y-2.5 text-sm text-navy-fg/60">
             <li><FooterLink to="/destinations">Destinations</FooterLink></li>
-            <li><FooterLink to="/holiday-types">Holiday Types</FooterLink></li>
+            <li><FooterLink to="/holiday">Holiday Types</FooterLink></li>
             <li><FooterLink to="/deals">Deals & Offers</FooterLink></li>
             <li><FooterLink to="/blog">Travel Blog</FooterLink></li>
             <li><FooterLink to="/reviews">Reviews</FooterLink></li>

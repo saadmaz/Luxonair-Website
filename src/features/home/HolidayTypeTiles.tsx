@@ -11,13 +11,13 @@ export function HolidayTypeTiles() {
         <SectionHeader
           eyebrow="Holiday types"
           title="Find a holiday that best suits you."
-          cta={{ label: "All types", to: "/holiday-types" }}
+          cta={{ label: "All types", to: "/holiday" }}
         />
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {holidayTypes.map((h) => (
             <Link
               key={h.slug}
-              to="/holiday-types/$slug"
+              to="/holiday/$slug"
               params={{ slug: h.slug }}
               className="group relative overflow-hidden rounded-2xl shadow-md"
             >

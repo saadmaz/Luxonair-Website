@@ -15,7 +15,7 @@ import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as QuoteRouteImport } from './routes/quote'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as HolidaysRouteImport } from './routes/holidays'
-import { Route as HolidayTypesRouteImport } from './routes/holiday-types'
+import { Route as HolidayRouteImport } from './routes/holiday'
 import { Route as FlightsRouteImport } from './routes/flights'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DestinationsRouteImport } from './routes/destinations'
@@ -25,11 +25,11 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as HolidayTypesIndexRouteImport } from './routes/holiday-types.index'
+import { Route as HolidayIndexRouteImport } from './routes/holiday.index'
 import { Route as DestinationsIndexRouteImport } from './routes/destinations.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as HolidayTypesSlugRouteImport } from './routes/holiday-types.$slug'
+import { Route as HolidaySlugRouteImport } from './routes/holiday.$slug'
 import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
@@ -74,9 +74,9 @@ const HolidaysRoute = HolidaysRouteImport.update({
   path: '/holidays',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HolidayTypesRoute = HolidayTypesRouteImport.update({
-  id: '/holiday-types',
-  path: '/holiday-types',
+const HolidayRoute = HolidayRouteImport.update({
+  id: '/holiday',
+  path: '/holiday',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FlightsRoute = FlightsRouteImport.update({
@@ -124,10 +124,10 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HolidayTypesIndexRoute = HolidayTypesIndexRouteImport.update({
+const HolidayIndexRoute = HolidayIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => HolidayTypesRoute,
+  getParentRoute: () => HolidayRoute,
 } as any)
 const DestinationsIndexRoute = DestinationsIndexRouteImport.update({
   id: '/',
@@ -144,10 +144,10 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const HolidayTypesSlugRoute = HolidayTypesSlugRouteImport.update({
+const HolidaySlugRoute = HolidaySlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
-  getParentRoute: () => HolidayTypesRoute,
+  getParentRoute: () => HolidayRoute,
 } as any)
 const DestinationsSlugRoute = DestinationsSlugRouteImport.update({
   id: '/$slug',
@@ -225,7 +225,7 @@ export interface FileRoutesByFullPath {
   '/destinations': typeof DestinationsRouteWithChildren
   '/faq': typeof FaqRoute
   '/flights': typeof FlightsRoute
-  '/holiday-types': typeof HolidayTypesRouteWithChildren
+  '/holiday': typeof HolidayRouteWithChildren
   '/holidays': typeof HolidaysRoute
   '/privacy': typeof PrivacyRoute
   '/quote': typeof QuoteRoute
@@ -245,11 +245,11 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AdminUsersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
-  '/holiday-types/$slug': typeof HolidayTypesSlugRoute
+  '/holiday/$slug': typeof HolidaySlugRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/destinations/': typeof DestinationsIndexRoute
-  '/holiday-types/': typeof HolidayTypesIndexRoute
+  '/holiday/': typeof HolidayIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -277,11 +277,11 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AdminUsersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
-  '/holiday-types/$slug': typeof HolidayTypesSlugRoute
+  '/holiday/$slug': typeof HolidaySlugRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
   '/destinations': typeof DestinationsIndexRoute
-  '/holiday-types': typeof HolidayTypesIndexRoute
+  '/holiday': typeof HolidayIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -294,7 +294,7 @@ export interface FileRoutesById {
   '/destinations': typeof DestinationsRouteWithChildren
   '/faq': typeof FaqRoute
   '/flights': typeof FlightsRoute
-  '/holiday-types': typeof HolidayTypesRouteWithChildren
+  '/holiday': typeof HolidayRouteWithChildren
   '/holidays': typeof HolidaysRoute
   '/privacy': typeof PrivacyRoute
   '/quote': typeof QuoteRoute
@@ -314,11 +314,11 @@ export interface FileRoutesById {
   '/admin/users': typeof AdminUsersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
-  '/holiday-types/$slug': typeof HolidayTypesSlugRoute
+  '/holiday/$slug': typeof HolidaySlugRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/destinations/': typeof DestinationsIndexRoute
-  '/holiday-types/': typeof HolidayTypesIndexRoute
+  '/holiday/': typeof HolidayIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -332,7 +332,7 @@ export interface FileRouteTypes {
     | '/destinations'
     | '/faq'
     | '/flights'
-    | '/holiday-types'
+    | '/holiday'
     | '/holidays'
     | '/privacy'
     | '/quote'
@@ -352,11 +352,11 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/blog/$slug'
     | '/destinations/$slug'
-    | '/holiday-types/$slug'
+    | '/holiday/$slug'
     | '/admin/'
     | '/blog/'
     | '/destinations/'
-    | '/holiday-types/'
+    | '/holiday/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -384,11 +384,11 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/blog/$slug'
     | '/destinations/$slug'
-    | '/holiday-types/$slug'
+    | '/holiday/$slug'
     | '/admin'
     | '/blog'
     | '/destinations'
-    | '/holiday-types'
+    | '/holiday'
   id:
     | '__root__'
     | '/'
@@ -400,7 +400,7 @@ export interface FileRouteTypes {
     | '/destinations'
     | '/faq'
     | '/flights'
-    | '/holiday-types'
+    | '/holiday'
     | '/holidays'
     | '/privacy'
     | '/quote'
@@ -420,11 +420,11 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/blog/$slug'
     | '/destinations/$slug'
-    | '/holiday-types/$slug'
+    | '/holiday/$slug'
     | '/admin/'
     | '/blog/'
     | '/destinations/'
-    | '/holiday-types/'
+    | '/holiday/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -437,7 +437,7 @@ export interface RootRouteChildren {
   DestinationsRoute: typeof DestinationsRouteWithChildren
   FaqRoute: typeof FaqRoute
   FlightsRoute: typeof FlightsRoute
-  HolidayTypesRoute: typeof HolidayTypesRouteWithChildren
+  HolidayRoute: typeof HolidayRouteWithChildren
   HolidaysRoute: typeof HolidaysRoute
   PrivacyRoute: typeof PrivacyRoute
   QuoteRoute: typeof QuoteRoute
@@ -490,11 +490,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HolidaysRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/holiday-types': {
-      id: '/holiday-types'
-      path: '/holiday-types'
-      fullPath: '/holiday-types'
-      preLoaderRoute: typeof HolidayTypesRouteImport
+    '/holiday': {
+      id: '/holiday'
+      path: '/holiday'
+      fullPath: '/holiday'
+      preLoaderRoute: typeof HolidayRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/flights': {
@@ -560,12 +560,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/holiday-types/': {
-      id: '/holiday-types/'
+    '/holiday/': {
+      id: '/holiday/'
       path: '/'
-      fullPath: '/holiday-types/'
-      preLoaderRoute: typeof HolidayTypesIndexRouteImport
-      parentRoute: typeof HolidayTypesRoute
+      fullPath: '/holiday/'
+      preLoaderRoute: typeof HolidayIndexRouteImport
+      parentRoute: typeof HolidayRoute
     }
     '/destinations/': {
       id: '/destinations/'
@@ -588,12 +588,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/holiday-types/$slug': {
-      id: '/holiday-types/$slug'
+    '/holiday/$slug': {
+      id: '/holiday/$slug'
       path: '/$slug'
-      fullPath: '/holiday-types/$slug'
-      preLoaderRoute: typeof HolidayTypesSlugRouteImport
-      parentRoute: typeof HolidayTypesRoute
+      fullPath: '/holiday/$slug'
+      preLoaderRoute: typeof HolidaySlugRouteImport
+      parentRoute: typeof HolidayRoute
     }
     '/destinations/$slug': {
       id: '/destinations/$slug'
@@ -747,19 +747,18 @@ const DestinationsRouteWithChildren = DestinationsRoute._addFileChildren(
   DestinationsRouteChildren,
 )
 
-interface HolidayTypesRouteChildren {
-  HolidayTypesSlugRoute: typeof HolidayTypesSlugRoute
-  HolidayTypesIndexRoute: typeof HolidayTypesIndexRoute
+interface HolidayRouteChildren {
+  HolidaySlugRoute: typeof HolidaySlugRoute
+  HolidayIndexRoute: typeof HolidayIndexRoute
 }
 
-const HolidayTypesRouteChildren: HolidayTypesRouteChildren = {
-  HolidayTypesSlugRoute: HolidayTypesSlugRoute,
-  HolidayTypesIndexRoute: HolidayTypesIndexRoute,
+const HolidayRouteChildren: HolidayRouteChildren = {
+  HolidaySlugRoute: HolidaySlugRoute,
+  HolidayIndexRoute: HolidayIndexRoute,
 }
 
-const HolidayTypesRouteWithChildren = HolidayTypesRoute._addFileChildren(
-  HolidayTypesRouteChildren,
-)
+const HolidayRouteWithChildren =
+  HolidayRoute._addFileChildren(HolidayRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -771,7 +770,7 @@ const rootRouteChildren: RootRouteChildren = {
   DestinationsRoute: DestinationsRouteWithChildren,
   FaqRoute: FaqRoute,
   FlightsRoute: FlightsRoute,
-  HolidayTypesRoute: HolidayTypesRouteWithChildren,
+  HolidayRoute: HolidayRouteWithChildren,
   HolidaysRoute: HolidaysRoute,
   PrivacyRoute: PrivacyRoute,
   QuoteRoute: QuoteRoute,

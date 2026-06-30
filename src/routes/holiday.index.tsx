@@ -2,7 +2,7 @@
 import { ArrowRight } from "lucide-react";
 import { getHolidayTypes } from "@/server/queries";
 
-export const Route = createFileRoute("/holiday-types/")({
+export const Route = createFileRoute("/holiday/")({
   loader: async () => getHolidayTypes(),
   head: () => ({
     meta: [
@@ -12,11 +12,11 @@ export const Route = createFileRoute("/holiday-types/")({
       { property: "og:title", content: "Types of Holiday | Beach, City Break, Family & More | Luxeonair" },
       { property: "og:description", content: "Beach, city breaks, all-inclusive, theme parks, family & multi-city — every style tailor-made from the UK." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.luxeonair.co.uk/holiday-types" },
+      { property: "og:url", content: "https://www.luxeonair.co.uk/holiday" },
       { name: "twitter:title", content: "Types of Holiday | Luxeonair" },
       { name: "twitter:description", content: "Beach, city breaks, all-inclusive, family & more. Every holiday style, tailor-made from the UK." },
     ],
-    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/holiday-types" }],
+    links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/holiday" }],
   }),
   component: HolidayTypesIndex,
 });
@@ -47,7 +47,7 @@ function HolidayTypesIndex() {
           {holidayTypes.map((h) => (
             <Link
               key={h.slug}
-              to="/holiday-types/$slug"
+              to="/holiday/$slug"
               params={{ slug: h.slug }}
               className="group relative overflow-hidden rounded-2xl shadow-md"
             >

@@ -9,7 +9,7 @@ import { destinations } from "@/data/destinations";
 import { holidayPackages } from "@/data/packages";
 import { SITE } from "@/config";
 
-export const Route = createFileRoute("/holiday-types/$slug")({
+export const Route = createFileRoute("/holiday/$slug")({
   loader: ({ params }) => {
     const holidayType = findHolidayType(params.slug);
     if (!holidayType) throw notFound();
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/holiday-types/$slug")({
         { property: "og:type", content: "website" },
         {
           property: "og:url",
-          content: `https://www.luxeonair.co.uk/holiday-types/${params.slug}`,
+          content: `https://www.luxeonair.co.uk/holiday/${params.slug}`,
         },
         { name: "twitter:title", content: `${h.name} Holidays | Luxeonair` },
         {
@@ -56,7 +56,7 @@ export const Route = createFileRoute("/holiday-types/$slug")({
       links: [
         {
           rel: "canonical",
-          href: `https://www.luxeonair.co.uk/holiday-types/${params.slug}`,
+          href: `https://www.luxeonair.co.uk/holiday/${params.slug}`,
         },
       ],
     };
@@ -65,7 +65,7 @@ export const Route = createFileRoute("/holiday-types/$slug")({
   notFoundComponent: () => (
     <div className="container-page py-20">
       <h1 className="font-display text-3xl">Not found</h1>
-      <Link to="/holiday-types" className="mt-4 inline-flex text-primary">
+      <Link to="/holiday" className="mt-4 inline-flex text-primary">
         Back to holiday types
       </Link>
     </div>

@@ -63,7 +63,7 @@ export function Header() {
                   {holidayTypes.map((h) => (
                     <Link
                       key={h.slug}
-                      to="/holiday-types/$slug"
+                      to="/holiday/$slug"
                       params={{ slug: h.slug }}
                       className="block px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-muted hover:text-primary"
                     >
@@ -127,7 +127,7 @@ export function Header() {
 
             <Link to="/holidays" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted">Holidays</Link>
             {holidayTypes.map((h) => (
-              <Link key={h.slug} to="/holiday-types/$slug" params={{ slug: h.slug }} onClick={() => setOpen(false)} className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
+              <Link key={h.slug} to="/holiday/$slug" params={{ slug: h.slug }} onClick={() => setOpen(false)} className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
                 {h.name}
               </Link>
             ))}

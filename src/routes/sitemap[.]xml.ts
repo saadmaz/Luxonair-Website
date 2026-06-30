@@ -17,7 +17,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         const entries = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/destinations", changefreq: "weekly", priority: "0.9" },
-          { path: "/holiday-types", changefreq: "monthly", priority: "0.8" },
+          { path: "/holiday", changefreq: "monthly", priority: "0.8" },
           { path: "/deals", changefreq: "weekly", priority: "0.9" },
           { path: "/blog", changefreq: "weekly", priority: "0.7" },
           { path: "/reviews", changefreq: "monthly", priority: "0.6" },
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/contact", changefreq: "monthly", priority: "0.6" },
           { path: "/about", changefreq: "monthly", priority: "0.6" },
           ...dests.map((d) => ({ path: `/destinations/${d.slug}`, changefreq: "monthly", priority: "0.7" })),
-          ...types.map((h) => ({ path: `/holiday-types/${h.slug}`, changefreq: "monthly", priority: "0.7" })),
+          ...types.map((h) => ({ path: `/holiday/${h.slug}`, changefreq: "monthly", priority: "0.7" })),
           ...posts.map((p) => ({ path: `/blog/${p.slug}`, changefreq: "monthly", priority: "0.6" })),
         ];
 
