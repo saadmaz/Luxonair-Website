@@ -5,7 +5,7 @@ import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { api } from "@/lib/api";
-import { Pagination } from "@/components/ui/pagination";
+import { Pagination } from "@/components/ui/Pagination";
 
 export const Route = createFileRoute("/admin/holidays")({
   component: AdminHolidaysPage,

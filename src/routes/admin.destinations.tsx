@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogC
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { Pagination } from "@/components/ui/pagination";
+import { Pagination } from "@/components/ui/Pagination";
 
 export const Route = createFileRoute("/admin/destinations")({
   component: AdminDestinationsPage,

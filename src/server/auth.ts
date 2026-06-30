@@ -22,7 +22,7 @@ export async function signToken(payload: JwtPayload) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpiresIn("7d")
+    .setExpirationTime("7d")
     .sign(getSecret());
 }
 
