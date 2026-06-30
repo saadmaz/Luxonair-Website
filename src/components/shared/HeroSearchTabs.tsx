@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Plane, Package, ChevronUp, Search } from "lucide-react";
+import { Plane, Package, ChevronUp, ChevronDown, Search } from "lucide-react";
 import "flag-icons/css/flag-icons.min.css";
 import { DatePicker } from "./DatePicker";
 
@@ -325,12 +325,7 @@ function PackageForm() {
         <input name="travellers" placeholder="2 adults" className="input-field" />
       </Field>
       <Field label="Cabin">
-        <select name="cabin" className="input-field">
-          <option>Economy</option>
-          <option>Premium economy</option>
-          <option>Business</option>
-          <option>First</option>
-        </select>
+        <CabinSelect name="cabin" />
       </Field>
       <Button
         type="submit"
@@ -368,12 +363,7 @@ function FlightForm() {
         <DatePicker name="return" placeholder="Return date (optional)" />
       </Field>
       <Field label="Cabin">
-        <select name="cabin" className="input-field">
-          <option>Economy</option>
-          <option>Premium economy</option>
-          <option>Business</option>
-          <option>First</option>
-        </select>
+        <CabinSelect name="cabin" />
       </Field>
       <Button
         type="submit"
@@ -383,6 +373,23 @@ function FlightForm() {
         Get a quote
       </Button>
     </form>
+  );
+}
+
+function CabinSelect({ name }: { name: string }) {
+  return (
+    <div className="relative">
+      <select
+        name={name}
+        className="input-field appearance-none pr-8"
+      >
+        <option>Economy</option>
+        <option>Premium economy</option>
+        <option>Business</option>
+        <option>First</option>
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+    </div>
   );
 }
 
