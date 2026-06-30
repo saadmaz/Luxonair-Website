@@ -31,10 +31,14 @@ jobs:
       - name: Deploy to Hostinger via SSH
         if: github.ref == 'refs/heads/main'
         uses: appleboy/ssh-action@v1
+        env:
+          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+          ADMIN_PASSWORD_HASH: ${{ secrets.ADMIN_PASSWORD_HASH }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          envs: ADMIN_USERNAME,ADMIN_PASSWORD_HASH
           script: |
             set -e
             cd ${{ secrets.APP_PATH }}
@@ -42,4 +46,11 @@ jobs:
             npm ci --omit=dev
             npm run build
             npm run db:push
+            # Update admin credentials in .env from GitHub Secrets
+            if [ -n "$ADMIN_USERNAME" ]; then
+              sed -i "s|^ADMIN_USERNAME=.*|ADMIN_USERNAME=${ADMIN_USERNAME}|" .env || echo "ADMIN_USERNAME=${ADMIN_USERNAME}" >> .env
+            fi
+            if [ -n "$ADMIN_PASSWORD_HASH" ]; then
+              sed -i "s|^ADMIN_PASSWORD_HASH=.*|ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}|" .env || echo "ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}" >> .env
+            fi
             pm2 reload ecosystem.config.cjs --update-env
