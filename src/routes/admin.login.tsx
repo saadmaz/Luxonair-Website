@@ -1,6 +1,6 @@
 ﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { Eye, EyeOff, AlertCircle, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, AlertCircle, User, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/admin/login")({
   component: AdminLoginPage,
@@ -8,7 +8,7 @@ export const Route = createFileRoute("/admin/login")({
 
 function AdminLoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail]       = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw]     = useState(false);
   const [error, setError]       = useState("");
@@ -18,8 +18,8 @@ function AdminLoginPage() {
     e.preventDefault();
     setError("");
 
-    if (!email.trim() || !password.trim()) {
-      setError("Please enter your email and password.");
+    if (!username.trim() || !password.trim()) {
+      setError("Please enter your username and password.");
       return;
     }
 
@@ -28,7 +28,7 @@ function AdminLoginPage() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password }),
+        body: JSON.stringify({ username: username.trim(), password }),
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
@@ -46,6 +46,7 @@ function AdminLoginPage() {
   };
 
   const clearError = () => { if (error) setError(""); };
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#031e3e] px-4">
@@ -74,20 +75,20 @@ function AdminLoginPage() {
 
           <form onSubmit={handleSubmit} noValidate className="px-8 py-6 space-y-4">
 
-            {/* Email */}
+            {/* Username */}
             <div className="space-y-1.5">
-              <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-[0.1em] text-gray-500">
-                Email address
+              <label htmlFor="username" className="block text-xs font-semibold uppercase tracking-[0.1em] text-gray-500">
+                Username
               </label>
               <div className="relative">
-                <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                 <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => { setEmail(e.target.value); clearError(); }}
-                  placeholder="you@luxonair.com"
-                  autoComplete="email"
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => { setUsername(e.target.value); clearError(); }}
+                  placeholder="Enter your username"
+                  autoComplete="username"
                   className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none transition-all focus:border-[#031e3e] focus:bg-white focus:ring-2 focus:ring-[#031e3e]/10"
                 />
               </div>

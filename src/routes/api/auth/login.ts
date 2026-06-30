@@ -18,22 +18,22 @@ export const APIRoute = createAPIFileRoute("/api/auth/login")({
       return Response.json({ error: "Invalid request" }, { status: 400 });
     }
 
-    const { email, password } = parsed.data;
-    const normalEmail = email.trim().toLowerCase();
+    const { username, password } = parsed.data;
+    const normalUsername = username.trim().toLowerCase();
 
     // ── Path 1: env-var credentials (no DB required) ─────────────────────────
-    const envEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
-    const envHash  = process.env.ADMIN_PASSWORD_HASH?.trim();
-    if (!envEmail || !envHash) {
-      console.error("ADMIN_EMAIL and ADMIN_PASSWORD_HASH environment variables must be set");
+    const envUsername = process.env.ADMIN_USERNAME?.trim().toLowerCase();
+    const envHash     = process.env.ADMIN_PASSWORD_HASH?.trim();
+    if (!envUsername || !envHash) {
+      console.error("ADMIN_USERNAME and ADMIN_PASSWORD_HASH environment variables must be set");
       return Response.json({ error: "Server misconfiguration" }, { status: 500 });
     }
 
-    if (normalEmail === envEmail) {
+    if (normalUsername === envUsername) {
       const match = await compare(password, envHash);
       if (!match) return Response.json({ error: "Invalid credentials" }, { status: 401 });
-      const sid = await createSession(envEmail);
-      const token = await signToken({ email: envEmail, sid });
+      const sid = await createSession(envUsername);
+      const token = await signToken({ email: envUsername, sid });
       return Response.json({ ok: true }, { headers: { "Set-Cookie": makeSessionCookie(token) } });
     }
 
@@ -41,7 +41,7 @@ export const APIRoute = createAPIFileRoute("/api/auth/login")({
     const [user] = await db
       .select()
       .from(adminUsers)
-      .where(eq(adminUsers.email, normalEmail))
+      .where(eq(adminUsers.email, normalUsername))
       .limit(1);
 
     if (!user) return Response.json({ error: "Invalid credentials" }, { status: 401 });
