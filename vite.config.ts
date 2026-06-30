@@ -7,9 +7,6 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 export default defineConfig({
   plugins: [
     ...tanstackStart({
-      tsr: {
-        routeFileIgnorePattern: /\/api\//,
-      },
       server: { entry: "server" },
     }),
     react(),
