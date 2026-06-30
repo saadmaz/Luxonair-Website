@@ -164,6 +164,15 @@ export const rateLimits = mysqlTable("rate_limits", {
   resetAt: bigint("reset_at", { mode: "number" }).notNull(),
 });
 
+export const sessions = mysqlTable("sessions", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  email: varchar("email", { length: 255 }).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  revokedAt: timestamp("revoked_at"),
+}, (t) => [
+  index("sessions_email_idx").on(t.email),
+]);
+
 export const adminUsers = mysqlTable("admin_users", {
   id: int("id").autoincrement().primaryKey(),
   email: varchar("email", { length: 255 }).notNull().unique(),
@@ -178,4 +187,5 @@ export type Testimonial = typeof testimonials.$inferSelect;
 export type FaqGroup = typeof faqGroups.$inferSelect;
 export type FaqItem = typeof faqItems.$inferSelect;
 export type HolidayType = typeof holidayTypes.$inferSelect;
+export type Session = typeof sessions.$inferSelect;
 export type AdminUser = typeof adminUsers.$inferSelect;

@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogC
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { Pagination } from "@/components/ui/Pagination";
 
 export const Route = createFileRoute("/admin/destinations")({
   component: AdminDestinationsPage,
@@ -45,10 +46,13 @@ function AdminDestinationsPage() {
   const [form, setForm] = useState(emptyForm);
   const [editId, setEditId] = useState<number | null>(null);
 
-  const { data: items = [], isLoading } = useQuery({
-    queryKey: ["destinations"],
-    queryFn: () => api.get<DbDestination[]>("/api/destinations"),
+  const [page, setPage] = useState(1);
+  const { data: result, isLoading } = useQuery({
+    queryKey: ["destinations", page],
+    queryFn: () => api.getPaged<DbDestination>("/api/destinations", page),
   });
+  const items = result?.data ?? [];
+  const total = result?.total ?? 0;
 
   const saveMut = useMutation({
     mutationFn: (data: typeof emptyForm) =>
@@ -79,7 +83,7 @@ function AdminDestinationsPage() {
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Destinations</h1>
-          <p className="mt-1 text-sm text-gray-500">{items.length} destinations on the site.</p>
+          <p className="mt-1 text-sm text-gray-500">{total} destinations on the site.</p>
         </div>
         <button onClick={openAdd} className="inline-flex items-center gap-2 rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#042045]/90">
           <Plus className="h-4 w-4" />Add destination
@@ -123,6 +127,7 @@ function AdminDestinationsPage() {
             </div>
           ))}
         </div>
+        <Pagination page={page} total={total} limit={50} onChange={setPage} className="mt-4" />
       )}
 
       {/* Edit / Add modal */}

@@ -5,6 +5,7 @@ import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { api } from "@/lib/api";
+import { Pagination } from "@/components/ui/Pagination";
 
 export const Route = createFileRoute("/admin/holidays")({
   component: AdminHolidaysPage,
@@ -33,10 +34,13 @@ function AdminHolidaysPage() {
   const [form, setForm] = useState(emptyForm);
   const [editId, setEditId] = useState<number | null>(null);
 
-  const { data: items = [], isLoading } = useQuery({
-    queryKey: ["holidays"],
-    queryFn: () => api.get<DbHoliday[]>("/api/holidays"),
+  const [page, setPage] = useState(1);
+  const { data: result, isLoading } = useQuery({
+    queryKey: ["holidays", page],
+    queryFn: () => api.getPaged<DbHoliday>("/api/holidays", page),
   });
+  const items = result?.data ?? [];
+  const total = result?.total ?? 0;
 
   const saveMut = useMutation({
     mutationFn: (data: typeof emptyForm) => {
@@ -112,6 +116,7 @@ function AdminHolidaysPage() {
             </div>
           ))}
         </div>
+        <Pagination page={page} total={total} limit={50} onChange={setPage} className="mt-4" />
       )}
 
       {/* Add / Edit modal */}

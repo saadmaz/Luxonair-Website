@@ -5,6 +5,7 @@ import { Plus, Pencil, Trash2, Tag, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { api } from "@/lib/api";
+import { Pagination } from "@/components/ui/Pagination";
 
 export const Route = createFileRoute("/admin/deals")({
   component: AdminDealsPage,
@@ -45,10 +46,13 @@ function AdminDealsPage() {
   const [form, setForm] = useState(emptyForm);
   const [editId, setEditId] = useState<string | null>(null);
 
-  const { data: items = [], isLoading } = useQuery({
-    queryKey: ["deals"],
-    queryFn: () => api.get<DbDeal[]>("/api/deals"),
+  const [page, setPage] = useState(1);
+  const { data: result, isLoading } = useQuery({
+    queryKey: ["deals", page],
+    queryFn: () => api.getPaged<DbDeal>("/api/deals", page),
   });
+  const items = result?.data ?? [];
+  const total = result?.total ?? 0;
 
   const saveMut = useMutation({
     mutationFn: (data: typeof emptyForm) => {
@@ -152,6 +156,7 @@ function AdminDealsPage() {
               </div>
             ))}
           </div>
+        <Pagination page={page} total={total} limit={50} onChange={setPage} />
         </div>
       )}
 

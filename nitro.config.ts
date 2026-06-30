@@ -16,6 +16,9 @@ export default {
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
         "Content-Security-Policy": [
           "default-src 'self'",
+          // 'unsafe-inline' required by TanStack Start inline hydration scripts.
+          // Migrate to 'strict-dynamic' + per-request nonces when TanStack Start
+          // supports ScriptOnce nonce injection.
           "script-src 'self' 'unsafe-inline'",
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
           "img-src 'self' data: https://images.unsplash.com",

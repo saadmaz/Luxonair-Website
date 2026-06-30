@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Download, Trash2, Plus, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { api } from "@/lib/api";
+import { Pagination } from "@/components/ui/Pagination";
 
 export const Route = createFileRoute("/admin/subscribers")({
   component: AdminSubscribersPage,
@@ -33,10 +34,13 @@ function AdminSubscribersPage() {
   const [newEmail, setNewEmail] = useState("");
   const [addError, setAddError] = useState("");
 
-  const { data: items = [], isLoading } = useQuery({
-    queryKey: ["subscribers"],
-    queryFn: () => api.get<DbSubscriber[]>("/api/subscribers").then((rows) => rows.map(toUISubscriber)),
+  const [page, setPage] = useState(1);
+  const { data: result, isLoading } = useQuery({
+    queryKey: ["subscribers", page],
+    queryFn: () => api.getPaged<DbSubscriber>("/api/subscribers", page),
   });
+  const items = (result?.data ?? []).map(toUISubscriber);
+  const total = result?.total ?? 0;
 
   const addSubscriber = useMutation({
     mutationFn: (email: string) => api.post("/api/subscribers", { email }),
@@ -84,7 +88,7 @@ function AdminSubscribersPage() {
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Subscribers</h1>
-          <p className="mt-1 text-sm text-gray-500">{items.length} newsletter subscribers.</p>
+          <p className="mt-1 text-sm text-gray-500">{total} newsletter subscribers.</p>
         </div>
         <div className="flex gap-2">
           <button onClick={handleExport} className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
@@ -136,6 +140,7 @@ function AdminSubscribersPage() {
             </div>
           ))}
         </div>
+        <Pagination page={page} total={total} limit={50} onChange={setPage} />
       </div>
 
       {/* Add modal */}

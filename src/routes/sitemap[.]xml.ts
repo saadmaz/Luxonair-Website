@@ -14,25 +14,29 @@ export const Route = createFileRoute("/sitemap.xml")({
           getPublishedBlogPosts(),
         ]);
 
-        const entries = [
-          { path: "/", changefreq: "weekly", priority: "1.0" },
-          { path: "/destinations", changefreq: "weekly", priority: "0.9" },
-          { path: "/holiday", changefreq: "monthly", priority: "0.8" },
-          { path: "/deals", changefreq: "weekly", priority: "0.9" },
-          { path: "/blog", changefreq: "weekly", priority: "0.7" },
-          { path: "/reviews", changefreq: "monthly", priority: "0.6" },
-          { path: "/faq", changefreq: "monthly", priority: "0.5" },
-          { path: "/quote", changefreq: "monthly", priority: "0.8" },
-          { path: "/contact", changefreq: "monthly", priority: "0.6" },
-          { path: "/about", changefreq: "monthly", priority: "0.6" },
-          ...dests.map((d) => ({ path: `/destinations/${d.slug}`, changefreq: "monthly", priority: "0.7" })),
-          ...types.map((h) => ({ path: `/holiday/${h.slug}`, changefreq: "monthly", priority: "0.7" })),
-          ...posts.map((p) => ({ path: `/blog/${p.slug}`, changefreq: "monthly", priority: "0.6" })),
+        const today = new Date().toISOString().split("T")[0];
+        const lastmod = (d: string | Date) => new Date(d).toISOString().split("T")[0];
+
+        type Entry = { path: string; changefreq: string; priority: string; lastmod: string };
+        const entries: Entry[] = [
+          { path: "/", changefreq: "weekly", priority: "1.0", lastmod: today },
+          { path: "/destinations", changefreq: "weekly", priority: "0.9", lastmod: today },
+          { path: "/holiday", changefreq: "monthly", priority: "0.8", lastmod: today },
+          { path: "/deals", changefreq: "weekly", priority: "0.9", lastmod: today },
+          { path: "/blog", changefreq: "weekly", priority: "0.7", lastmod: today },
+          { path: "/reviews", changefreq: "monthly", priority: "0.6", lastmod: today },
+          { path: "/faq", changefreq: "monthly", priority: "0.5", lastmod: today },
+          { path: "/quote", changefreq: "monthly", priority: "0.8", lastmod: today },
+          { path: "/contact", changefreq: "monthly", priority: "0.6", lastmod: today },
+          { path: "/about", changefreq: "monthly", priority: "0.6", lastmod: today },
+          ...dests.map((d) => ({ path: `/destinations/${d.slug}`, changefreq: "monthly", priority: "0.7", lastmod: lastmod(d.createdAt) })),
+          ...types.map((h) => ({ path: `/holiday/${h.slug}`, changefreq: "monthly", priority: "0.7", lastmod: lastmod(h.createdAt) })),
+          ...posts.map((p) => ({ path: `/blog/${p.slug}`, changefreq: "monthly", priority: "0.6", lastmod: lastmod(p.createdAt) })),
         ];
 
         const urls = entries.map(
           (e) =>
-            `  <url>\n    <loc>${BASE_URL}${e.path}</loc>\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`
+            `  <url>\n    <loc>${BASE_URL}${e.path}</loc>\n    <lastmod>${e.lastmod}</lastmod>\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`
         );
         const xml = [
           `<?xml version="1.0" encoding="UTF-8"?>`,

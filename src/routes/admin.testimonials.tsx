@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Pencil, Trash2, Star, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { api } from "@/lib/api";
+import { Pagination } from "@/components/ui/Pagination";
 
 export const Route = createFileRoute("/admin/testimonials")({
   component: AdminTestimonialsPage,
@@ -67,10 +68,13 @@ function AdminTestimonialsPage() {
   const [form, setForm] = useState(emptyForm);
   const [editId, setEditId] = useState<number | null>(null);
 
-  const { data: items = [], isLoading } = useQuery({
-    queryKey: ["testimonials"],
-    queryFn: () => api.get<DbTestimonial[]>("/api/testimonials"),
+  const [page, setPage] = useState(1);
+  const { data: result, isLoading } = useQuery({
+    queryKey: ["testimonials", page],
+    queryFn: () => api.getPaged<DbTestimonial>("/api/testimonials", page),
   });
+  const items = result?.data ?? [];
+  const total = result?.total ?? 0;
 
   const saveMut = useMutation({
     mutationFn: (data: typeof emptyForm) =>
@@ -165,6 +169,7 @@ function AdminTestimonialsPage() {
               </div>
             ))}
           </div>
+        <Pagination page={page} total={total} limit={50} onChange={setPage} />
         </>
       )}
 

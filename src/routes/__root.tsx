@@ -15,6 +15,7 @@ import {
 import { type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
+import * as Sentry from "@sentry/react";
 import appCss from "../styles/globals.css?url";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -42,6 +43,7 @@ function NotFoundComponent() {
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
+  Sentry.captureException(error);
   const router = useRouter();
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background px-4">
@@ -72,6 +74,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_GB" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: "https://www.luxeonair.co.uk/og-default.jpg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { name: "twitter:image", content: "https://www.luxeonair.co.uk/og-default.jpg" },
       { name: "theme-color", content: "#042045" },
     ],
     links: [
