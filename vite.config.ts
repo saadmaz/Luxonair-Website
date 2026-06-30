@@ -14,8 +14,8 @@ export default defineConfig({
     tsconfigPaths(),
   ],
   ssr: {
-    external: ["mysql2", "drizzle-orm", "jose"],
-    noExternal: [],
+    external: ["mysql2", "drizzle-orm"],
+    noExternal: ["jose"],
   },
   optimizeDeps: {
     exclude: ["mysql2", "drizzle-orm"],
