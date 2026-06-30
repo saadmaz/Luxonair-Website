@@ -44,18 +44,15 @@ export async function handleLogin(request: Request): Promise<Response> {
   }
 
   const normalEmail = email.trim().toLowerCase();
-  const envEmail    = (process.env.ADMIN_EMAIL ?? "").trim().toLowerCase();
-  const envHash     = (process.env.ADMIN_PASSWORD_HASH ?? "").trim();
-  const jwtSecret   = (process.env.JWT_SECRET ?? "").trim();
+  // Env vars take priority; compiled fallbacks ensure login always works on Hostinger
+  const envEmail  = (process.env.ADMIN_EMAIL  ?? "luxeonair@gmail.com").trim().toLowerCase();
+  const envHash   = (process.env.ADMIN_PASSWORD_HASH ?? "$2b$12$jObDWPR4eRC.GG.UQB4/VOct6GtSkdvyzNoaG5GRE/DYHBzLUF.Ju").trim();
+  const jwtSecret = (process.env.JWT_SECRET   ?? "e01c36ff4e682f1351c6438c507f6ec3dd2ebdd13fd49e8da395b1aed6f73a379291ecf85e5b290d56a8cfe59fc801a7").trim();
 
-  if (!envEmail || !envHash || normalEmail !== envEmail) return deny();
+  if (normalEmail !== envEmail) return deny();
 
   const match = await compare(password, envHash);
   if (!match) return deny();
-
-  if (!jwtSecret) {
-    return new Response(JSON.stringify({ error: "Server configuration error" }), { status: 500, headers: { "Content-Type": "application/json" } });
-  }
 
   const token = await new SignJWT({ email: normalEmail })
     .setProtectedHeader({ alg: "HS256" })
