@@ -53,10 +53,10 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
           <div className="relative px-6 py-14 text-center md:px-16 md:py-20">
             <p className="text-xs uppercase tracking-[0.2em] text-white/60">Newsletter</p>
             <h2 className="mt-2 font-display text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl text-balance">
-              Curated inspiration. <span className="text-gold">Exclusive offers.</span>
+              Hand-picked deals. <span className="text-gold">Straight to your inbox.</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-sm text-white/70 md:text-base">
-              Be the first to discover luxury escapes, seasonal recommendations, and member-only travel deals, delivered thoughtfully, just twice a month.
+              Twice a month, we send our best travel deals and destination picks to your inbox. No spam, just the good stuff — and you can unsubscribe whenever you like.
             </p>
 
             {/* Email form */}

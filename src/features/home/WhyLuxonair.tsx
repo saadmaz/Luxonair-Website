@@ -7,12 +7,12 @@ export function WhyLuxonair() {
     {
       icon: Users,
       title: "Families & Couples",
-      body: "Direct flights, family suites, kids clubs and honeymoon retreats.",
+      body: "Family rooms, direct routes, kids clubs — everything that makes a trip actually work for you.",
     },
     {
       icon: Phone,
       title: "24/7 Support",
-      body: "A named consultant reachable throughout your trip.",
+      body: "Not a call centre. A real person who picks up — before, during, and after your trip.",
     },
     {
       icon: ShieldCheck,
@@ -30,7 +30,7 @@ export function WhyLuxonair() {
               Why Luxeonair
             </p>
             <h2 className="mt-3 font-display text-3xl font-semibold leading-snug text-navy-fg sm:text-4xl text-balance">
-              Why Book with Luxeonair?
+              Travel the way it should be.
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-navy-fg/75 font-normal">
               At Luxeonair, booking travel should feel simple, personal and genuinely exciting.
@@ -42,7 +42,7 @@ export function WhyLuxonair() {
               matched to your budget, schedule and preferences, with honest advice along the way.
             </p>
             <p className="mt-3 text-sm leading-relaxed text-navy-fg/60 font-normal italic">
-              You're not just booking a trip. You're choosing a travel partner who cares about every detail, from the first quote to the moment you land back home.
+              You're not just booking a trip — you're choosing someone who'll care about it as much as you do, from the first message to the moment you're home.
             </p>
             <Button asChild className="mt-8 bg-gold text-gold-foreground hover:bg-gold/90">
               <Link to="/about">Learn about us</Link>

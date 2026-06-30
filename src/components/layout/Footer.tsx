@@ -34,7 +34,7 @@ export function Footer() {
             />
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-navy-fg/60">
-            UK based travel specialist for premium long haul flights, family escapes and corporate trips. Custom made itineraries, handled and managed by a dedicated consultants.
+            A UK travel specialist for long-haul flights, family holidays and corporate trips. One dedicated consultant handles your booking from first quote to boarding gate.
           </p>
 
           {/* Social icons */}

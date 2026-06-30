@@ -39,7 +39,7 @@ export function Hero() {
           </h1>
 
           <p className="mt-3 max-w-lg text-sm leading-relaxed text-navy-fg/75 md:mt-4 md:text-base">
-            Premium long-haul flights, family escapes and corporate travel, all crafted by a dedicated UK travel consultant who knows your trip inside out.
+            Long-haul adventures, family getaways, business travel — we handle the lot. One consultant, one point of contact, and genuinely good advice from start to finish.
           </p>
 
           {/* Primary + secondary CTAs */}
@@ -66,7 +66,7 @@ export function Hero() {
             {[
               { icon: ShieldCheck, label: "ATOL Protected" },
               { icon: Star,        label: "4.9★ avg rating" },
-              { icon: Clock,       label: "Rapid response" },
+              { icon: Clock,       label: "We reply fast" },
               { icon: Users,       label: "500+ trips" },
             ].map(({ icon: Icon, label }) => (
               <span key={label} className="flex items-center gap-1.5 text-xs text-navy-fg/55">

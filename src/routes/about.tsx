@@ -34,10 +34,9 @@ function AboutPage() {
             Travel designed around you.
           </h1>
           <p className="mt-5 max-w-2xl text-base text-navy-fg/60 leading-relaxed">
-            At Luxeonair, we believe exceptional travel begins with exceptional service. Every
-            journey is planned by a dedicated travel specialist who takes the time to understand
-            your needs, carefully curates your itinerary, and remains your trusted point of contact
-            from planning through to your return home.
+            We're not a platform. We're a team of travel specialists who take the time to
+            actually listen, then build your trip around what you need — not what's easiest to
+            sell. One person handles your booking from the first message to the day you land back.
           </p>
         </div>
       </section>
@@ -142,10 +141,9 @@ function AboutPage() {
             <Building2 className="h-9 w-9 text-gold" />
             <h3 className="mt-5 font-display text-2xl font-semibold">The Luxeonair team</h3>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-              At Luxeonair, our team is passionate about creating exceptional travel experiences.
-              We believe that every journey is unique, which is why we take the time to understand
-              your travel needs and provide personalised solutions that suit your plans, preferences,
-              and budget.
+              We're a small team, and that's the point. Every booking is handled by someone who
+              actually knows your trip — your preferences, your budget, your must-haves — and is
+              reachable when it matters.
             </p>
             <Button asChild className="mt-6 bg-gold text-gold-foreground hover:bg-gold/90">
               <Link to="/quote">Talk to a consultant</Link>
@@ -153,27 +151,23 @@ function AboutPage() {
           </div>
           <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
             <p>
-              Our travel specialists combine industry knowledge with a genuine commitment to customer
-              care. Whether you're arranging a last-minute business trip, planning a luxury holiday,
-              booking a family getaway, or searching for the perfect premium cabin experience, we're
-              here to guide you every step of the way.
+              Whether you need a last-minute business flight, a family holiday that actually works
+              for everyone, or a long-haul trip in Business Class — we'll sort it properly. Not with
+              a script, but with a conversation.
             </p>
             <p>
-              We pride ourselves on delivering honest advice, prompt communication, and a service
-              that puts our clients first. From your initial enquiry through to your return home,
-              our goal is to make your travel experience smooth, enjoyable, and completely
-              stress-free.
+              We give you honest advice, we get back to you quickly, and we don't disappear once
+              the booking's made. From the first enquiry to the moment you're home, there's always
+              someone you can reach.
             </p>
             <p>
-              As a UK-based travel agency, we are dedicated to building long-term relationships with
-              our clients through trust, reliability, and attention to detail. We understand that
-              travel is more than just getting from one place to another — it's about creating
-              experiences, making memories, and travelling with confidence.
+              Most of our clients come back. We think that says more than any award or badge could.
+              We're building something long-term here — repeat bookings, trusted relationships, and
+              travel that's genuinely stress-free.
             </p>
             <p>
-              Whether you're flying in Economy, Premium Economy, Business Class, or First Class, the
-              Luxeonair team is committed to helping you discover the right journey at the right
-              price, backed by professional support whenever you need it.
+              Economy, Premium Economy, Business or First Class — whatever you're after, we'll find
+              you the right option at the right price, and be there if anything changes along the way.
             </p>
           </div>
         </div>
