@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, MessageCircle, Star } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { Button } from "@/components/ui/button";
 import { SITE } from "@/config/site";
 import { getTestimonials } from "@/server/queries";
@@ -133,7 +134,7 @@ function ReviewsPage() {
               </Button>
               <Button asChild variant="outline" className="border-navy-fg/30 bg-transparent text-navy-fg hover:bg-navy-fg/10">
                 <a href={`https://wa.me/${SITE.phone.whatsapp}`} target="_blank" rel="noopener noreferrer">
-                  <MessageCircle className="mr-1.5 h-4 w-4" /> WhatsApp
+                  <WhatsAppIcon className="mr-1.5 h-4 w-4" /> WhatsApp
                 </a>
               </Button>
             </div>

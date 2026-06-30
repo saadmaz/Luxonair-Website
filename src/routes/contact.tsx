@@ -1,7 +1,9 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
+﻿import type React from "react";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Clock, Loader2, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { CheckCircle2, Clock, Loader2, Mail, MapPin, Phone } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
 
 export const Route = createFileRoute("/contact")({
@@ -92,7 +94,7 @@ function ContactPage() {
               rel="noopener noreferrer"
               className="inline-flex shrink-0 items-center gap-2 rounded-full border border-navy-fg/20 bg-navy-fg/5 px-3.5 py-2 text-sm text-navy-fg/80 transition-colors hover:border-gold hover:text-gold sm:px-4"
             >
-              <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
+              <WhatsAppIcon className="h-3.5 w-3.5" /> WhatsApp
             </a>
             <a
               href={`mailto:${SITE.email}`}
@@ -112,7 +114,7 @@ function ContactPage() {
             <ul className="space-y-4">
               <Row icon={Phone} title="Call us" body={SITE.phone.display} />
               <Row
-                icon={MessageCircle}
+                icon={WhatsAppIcon}
                 title="WhatsApp"
                 body={`+${SITE.phone.whatsapp} - text us anything`}
               />
@@ -221,7 +223,7 @@ function Row({
   title,
   body,
 }: {
-  icon: typeof Phone;
+  icon: React.ComponentType<{ className?: string }>;
   title: string;
   body: string;
 }) {

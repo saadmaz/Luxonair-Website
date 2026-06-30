@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { QuoteForm } from "@/components/shared/QuoteForm";
-import { ArrowLeft, Check, MessageCircle } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
 import { getDestinationBySlug, getDestinations } from "@/server/queries";
 
@@ -156,7 +157,7 @@ function DestinationDetail() {
             </Button>
             <Button asChild size="lg" variant="outline" className="mt-2 w-full border-primary/30 hover:border-primary hover:text-primary">
               <a href={`https://wa.me/${SITE.phone.whatsapp}`} target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="mr-1 h-4 w-4" /> WhatsApp a consultant
+                <WhatsAppIcon className="mr-1 h-4 w-4" /> WhatsApp a consultant
               </a>
             </Button>
             <p className="mt-3 text-center text-xs text-muted-foreground">Rapid response · Mon–Fri 09:00–18:00 · Sat–Sun 09:00–16:00 GMT</p>

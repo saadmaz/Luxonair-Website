@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, MessageCircle, Phone } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { Newsletter } from "@/components/shared/Newsletter";
 import { PackageCard } from "@/components/shared/PackageCard";
 import { findHolidayType } from "@/data/holidayTypes";
@@ -123,7 +124,7 @@ function HolidayTypePage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <MessageCircle className="mr-2 h-4 w-4" /> Enquire on WhatsApp
+                <WhatsAppIcon className="mr-2 h-4 w-4" /> Enquire on WhatsApp
               </a>
             </Button>
           </div>

@@ -1,6 +1,8 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
+﻿import type React from "react";
+import { createFileRoute } from "@tanstack/react-router";
 import { QuoteForm } from "@/components/shared/QuoteForm";
-import { Clock, MessageCircle, Phone, ShieldCheck } from "lucide-react";
+import { Clock, Phone, ShieldCheck } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
 
 export const Route = createFileRoute("/quote")({
@@ -71,7 +73,7 @@ function QuotePage() {
           <Row icon={Clock} title="Rapid response" body="Mon–Fri 09:00–18:00 · Sat–Sun 09:00–16:00 GMT. Outside hours, first thing next morning." />
           <Row icon={ShieldCheck} title="ATOL-protected" body="Where flights are included. Membership numbers shown on About page." />
           <Row icon={Phone} title="Or call us" body={`${SITE.phone.display} - direct to a consultant, never a queue.`} href={`tel:${SITE.phone.tel}`} />
-          <Row icon={MessageCircle} title="WhatsApp" body="Send the same details on WhatsApp if you prefer." href={`https://wa.me/${SITE.phone.whatsapp}`} />
+          <Row icon={WhatsAppIcon} title="WhatsApp" body="Send the same details on WhatsApp if you prefer." href={`https://wa.me/${SITE.phone.whatsapp}`} />
         </ul>
       </aside>
       <QuoteForm initialValues={initialValues} />
@@ -79,7 +81,7 @@ function QuotePage() {
   );
 }
 
-function Row({ icon: Icon, title, body, href }: { icon: typeof Clock; title: string; body: string; href?: string }) {
+function Row({ icon: Icon, title, body, href }: { icon: React.ComponentType<{ className?: string }>; title: string; body: string; href?: string }) {
   return (
     <li className="flex items-start gap-3">
       <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-secondary text-gold">

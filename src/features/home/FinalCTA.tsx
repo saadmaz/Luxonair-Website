@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { MessageCircle } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
 
 // Full-width CTA banner at the bottom of the home page.
@@ -35,7 +35,7 @@ export function FinalCTA() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <MessageCircle className="mr-1.5 h-4 w-4" /> WhatsApp us
+                  <WhatsAppIcon className="mr-1.5 h-4 w-4" /> WhatsApp us
                 </a>
               </Button>
             </div>

@@ -1,7 +1,8 @@
 // Three-button bar pinned to the bottom of the screen on mobile (hidden at md+).
 // Provides instant access to call, WhatsApp, and quote without scrolling to the header.
 import { Link } from "@tanstack/react-router";
-import { MessageCircle, Phone, FileText } from "lucide-react";
+import { Phone, FileText } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
 
 export function StickyMobileCTA() {
@@ -22,7 +23,7 @@ export function StickyMobileCTA() {
           className="flex flex-col items-center gap-1 border-x border-border py-2.5 text-xs font-medium text-foreground"
           aria-label="Chat on WhatsApp"
         >
-          <MessageCircle className="h-4 w-4" /> WhatsApp
+          <WhatsAppIcon className="h-4 w-4" /> WhatsApp
         </a>
         <Link
           to="/quote"
