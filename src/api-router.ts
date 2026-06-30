@@ -90,6 +90,7 @@ export async function handleApiRequest(request: Request): Promise<Response | nul
     try {
       return await handler({ request, params });
     } catch (error) {
+      if (error instanceof Response) return error;
       console.error(`API error ${request.method} ${url.pathname}:`, error);
       return Response.json({ error: 'Internal Server Error' }, { status: 500 });
     }

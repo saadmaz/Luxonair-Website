@@ -70,7 +70,7 @@ function AdminDestinationsPage() {
   const openAdd = () => { setForm(emptyForm); setEditId(null); setModal("add"); };
   const openEdit = (d: DbDestination) => {
     setEditId(d.id);
-    setForm({ slug: d.slug, name: d.name, country: d.country, region: d.region, tripType: d.tripType as string[], budgetBand: d.budgetBand, fromPrice: d.fromPrice, durationNights: d.durationNights, heroImage: d.heroImage, tagline: d.tagline, summary: d.summary });
+    setForm({ slug: d.slug, name: d.name, country: d.country, region: d.region, tripType: Array.isArray(d.tripType) ? d.tripType : [], budgetBand: d.budgetBand, fromPrice: d.fromPrice, durationNights: d.durationNights, heroImage: d.heroImage, tagline: d.tagline, summary: d.summary });
     setModal("edit");
   };
 
@@ -113,7 +113,7 @@ function AdminDestinationsPage() {
                 <h3 className="font-semibold text-gray-900 leading-snug">{d.name}</h3>
                 <p className="mt-1 line-clamp-2 text-xs text-gray-500">{d.tagline}</p>
                 <div className="mt-3 flex flex-wrap gap-1.5">
-                  {(d.tripType as string[]).map((t) => (
+                  {(Array.isArray(d.tripType) ? d.tripType : []).map((t) => (
                     <span key={t} className="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600">{t}</span>
                   ))}
                 </div>

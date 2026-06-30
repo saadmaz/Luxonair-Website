@@ -26,11 +26,28 @@ function parseDbUrl(url: string) {
   };
 }
 
-const config = process.env.DATABASE_URL
+const baseConfig = process.env.DATABASE_URL
   ? parseDbUrl(process.env.DATABASE_URL)
   : { host: "127.0.0.1", port: 3306, user: "", password: "", database: "", waitForConnections: true, connectionLimit: 1 };
 
-const pool = createPool(config);
+// MariaDB (used on Hostinger) stores json columns as LONGTEXT and mysql2 returns them as raw
+// strings instead of parsed objects. Intercept by column name so all queries benefit automatically.
+const JSON_COLUMNS = new Set([
+  "trip_type", "gallery", "itinerary", "highlights",  // destinations
+  "content",                                            // blog_posts
+  "bullets", "destination_slugs",                      // deals
+]);
+
+const pool = createPool({
+  ...baseConfig,
+  typeCast(field, next) {
+    if (JSON_COLUMNS.has(field.name)) {
+      const raw = field.string();
+      return raw == null ? null : JSON.parse(raw);
+    }
+    return next();
+  },
+});
 export const db = drizzle(pool, { schema, mode: "default" });
 
 export async function runStartupMigrations() {
