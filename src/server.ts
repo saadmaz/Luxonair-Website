@@ -3,6 +3,7 @@ import "./server/error-capture";
 import * as Sentry from "@sentry/node";
 import { consumeLastCapturedError } from "./server/error-capture";
 import { renderErrorPage } from "./server/error-page";
+import { handleApiRequest } from "./api-router";
 
 if (process.env.SENTRY_DSN) {
   Sentry.init({
@@ -49,6 +50,9 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      const apiResponse = await handleApiRequest(request);
+      if (apiResponse) return apiResponse;
+
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
