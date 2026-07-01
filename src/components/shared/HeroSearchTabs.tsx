@@ -16,8 +16,18 @@ function Flag({ code, size = 18 }: { code: string; size?: number }) {
 }
 
 function airportLabel(a: Airport) {
-  return `${a.city} (${a.code})`;
+  return a.airportName
+    ? `${a.cityName} ${a.airportName} (${a.code})`
+    : `${a.cityName} (${a.code})`;
 }
+
+// ─── Common shorthand country search terms not present in the full country name ──
+const COUNTRY_ALIASES: Record<string, string> = {
+  uk: "united kingdom",
+  usa: "united states",
+  us: "united states",
+  uae: "united arab emirates",
+};
 
 // ─── Searchable airport dropup — search by city, IATA code, or country ───────
 function AirportSelect({
@@ -42,14 +52,17 @@ function AirportSelect({
   const selectedAirport = AIRPORTS.find((a) => a.code === selectedCode);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q || query === selected) return AIRPORTS.slice(0, 50);
+    const raw = query.trim().toLowerCase();
+    if (!raw || query === selected) return AIRPORTS.slice(0, 50);
+    const q = COUNTRY_ALIASES[raw] ?? raw;
     return AIRPORTS.filter(
       (a) =>
-        a.city.toLowerCase().includes(q) ||
+        a.cityName.toLowerCase().includes(q) ||
+        a.airportName.toLowerCase().includes(q) ||
         a.code.toLowerCase().includes(q) ||
-        a.country.toLowerCase().includes(q)
-    ).slice(0, 50);
+        a.country.toLowerCase().includes(q) ||
+        a.countryCode.toLowerCase() === raw
+    ).slice(0, 100);
   }, [query, selected]);
 
   useEffect(() => {
@@ -138,16 +151,19 @@ function AirportSelect({
                   e.preventDefault();
                   pick(a);
                 }}
-                className={`flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors hover:bg-muted ${
-                  selectedCode === a.code
-                    ? "bg-muted font-medium text-primary"
-                    : "text-foreground"
+                className={`flex w-full items-start gap-3 px-4 py-2.5 text-left transition-colors hover:bg-muted ${
+                  selectedCode === a.code ? "bg-muted" : ""
                 }`}
               >
-                <Flag code={a.countryCode} size={14} />
-                <span className="flex-1 truncate">{a.city}</span>
-                <span className="shrink-0 text-xs text-muted-foreground">
-                  {a.code}
+                <Flag code={a.countryCode} size={16} />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm text-foreground">
+                    <span className="font-semibold">{a.cityName}</span>
+                    {a.airportName ? ` ${a.airportName}` : ""} ({a.code})
+                  </span>
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {a.country}
+                  </span>
                 </span>
               </button>
             ))
