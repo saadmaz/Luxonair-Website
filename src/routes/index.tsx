@@ -5,7 +5,6 @@ import { Newsletter } from "@/components/shared/Newsletter";
 import { getTestimonials } from "@/server/queries";
 import {
   Hero,
-  StatsStrip,
   TrustPillars,
   HotDeals,
   FeaturedDestinations,
@@ -56,7 +55,6 @@ function Home() {
   return (
     <>
       <Hero />
-      <StatsStrip />
       <TrustPillars />
       <HotDeals />
       <FeaturedDestinations />
