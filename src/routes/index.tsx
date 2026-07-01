@@ -1,5 +1,5 @@
-﻿// Home page route - pure composition of section components.
-// Each section lives in src/components/home/ and can be edited independently.
+// Home page route - pure composition of section components.
+// Each section lives in src/features/home/ and can be edited independently.
 import { createFileRoute } from "@tanstack/react-router";
 import { Newsletter } from "@/components/shared/Newsletter";
 import { getTestimonials } from "@/server/queries";
@@ -7,13 +7,15 @@ import {
   Hero,
   StatsStrip,
   TrustPillars,
+  HotDeals,
   FeaturedDestinations,
   HolidayTypeTiles,
-  DealsSection,
+  AllTimeFavourites,
   WhyLuxonair,
   SocialProof,
-  FinalCTA,
   BlogCarousel,
+  HomeFAQ,
+  FinalCTA,
 } from "@/features/home";
 
 export const Route = createFileRoute("/")({
@@ -40,7 +42,6 @@ export const Route = createFileRoute("/")({
     links: [
       { rel: "canonical", href: "https://www.luxeonair.co.uk/" },
       {
-        // Preload the hero background so it's ready before the above-the-fold paint
         rel: "preload",
         as: "image",
         href: "https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=2400&q=70",
@@ -57,12 +58,14 @@ function Home() {
       <Hero />
       <StatsStrip />
       <TrustPillars />
+      <HotDeals />
       <FeaturedDestinations />
       <HolidayTypeTiles />
-      <DealsSection />
+      <AllTimeFavourites />
       <WhyLuxonair />
       <SocialProof testimonials={testimonials} />
       <BlogCarousel />
+      <HomeFAQ />
       <Newsletter variant="section" />
       <FinalCTA />
     </>

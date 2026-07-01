@@ -2,10 +2,12 @@
 export { Hero } from "./Hero";
 export { StatsStrip } from "./StatsStrip";
 export { TrustPillars } from "./TrustPillars";
+export { HotDeals } from "./HotDeals";
 export { FeaturedDestinations } from "./FeaturedDestinations";
 export { HolidayTypeTiles } from "./HolidayTypeTiles";
-export { DealsSection } from "./DealsSection";
+export { AllTimeFavourites } from "./AllTimeFavourites";
 export { WhyLuxonair } from "./WhyLuxonair";
 export { SocialProof } from "./SocialProof";
-export { FinalCTA } from "./FinalCTA";
+export { FinalCTA } from "./FinalCta";
 export { BlogCarousel } from "./BlogCarousel";
+export { HomeFAQ } from "./HomeFAQ";
