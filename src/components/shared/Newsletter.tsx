@@ -46,8 +46,8 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
             aria-hidden="true"
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          {/* Dark overlay — works for both light + dark mode */}
-          <div className="absolute inset-0 bg-navy/65" />
+          {/* Blue overlay — works for both light + dark mode */}
+          <div className="absolute inset-0 bg-linear-to-br from-primary/80 via-navy/75 to-teal-deep/70" />
 
           {/* Content */}
           <div className="relative px-6 py-14 text-center md:px-16 md:py-20">
