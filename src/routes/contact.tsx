@@ -1,8 +1,8 @@
 ﻿import type React from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, CheckCircle2, Clock, Loader2, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Building2, CheckCircle2, Clock, Loader2, Mail, MapPin, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
 
@@ -221,6 +221,44 @@ function ContactPage() {
                 </Button>
               </form>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Team */}
+      <section className="container-page py-16 md:py-20">
+        <div className="grid gap-10 md:grid-cols-[1fr_1.5fr] md:items-center">
+          <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
+            <Building2 className="h-9 w-9 text-gold" />
+            <h3 className="mt-5 font-display text-2xl font-semibold">The Luxeonair team</h3>
+            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+              We're a small team, and that's the point. Every booking is handled by someone who
+              actually knows your trip — your preferences, your budget, your must-haves — and is
+              reachable when it matters.
+            </p>
+            <Button asChild className="mt-6 bg-gold text-gold-foreground hover:bg-gold/90">
+              <Link to="/quote">Talk to a consultant</Link>
+            </Button>
+          </div>
+          <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
+            <p>
+              Whether you need a last-minute business flight, a family holiday that actually works
+              for everyone, or a long-haul trip in Business Class, we'll sort it properly. Not with
+              a script, but with a proper conversation.
+            </p>
+            <p>
+              We give you honest advice, we get back to you quickly, and we don't disappear once
+              the booking's made. From the first enquiry to the moment you're home, there's always
+              someone you can reach.
+            </p>
+            <p>
+              Most of our clients come back. We think that says more than any award or badge could.
+              Repeat clients, genuine relationships, and travel that feels easy from start to finish.
+            </p>
+            <p>
+              Economy, Premium Economy, Business or First Class, whatever you're after, we'll find
+              you the right option at the right price and be there if anything changes along the way.
+            </p>
           </div>
         </div>
       </section>

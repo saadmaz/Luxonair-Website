@@ -48,7 +48,7 @@ export function Header() {
 
           {/* Desktop navigation */}
           <nav className="hidden items-center gap-6 md:flex">
-            <NavLink to="/about">About us</NavLink>
+            <NavLink to="/">Home</NavLink>
 
             {/* Holidays dropdown */}
             <div className="group relative">
@@ -132,7 +132,7 @@ export function Header() {
             className="border-b border-border bg-background md:hidden"
           >
             <div className="container-page flex flex-col gap-1 py-3">
-              <Link to="/about" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">About us</Link>
+              <Link to="/" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">Home</Link>
 
               <Link to="/holidays" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted">Holidays</Link>
               {holidayTypes.map((h) => (

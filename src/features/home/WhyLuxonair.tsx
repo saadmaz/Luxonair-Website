@@ -90,7 +90,7 @@ export function WhyLuxonair() {
                 asChild
                 className="bg-gold text-gold-foreground shadow-lg shadow-gold/25 hover:bg-gold/90"
               >
-                <Link to="/about">Learn about us</Link>
+                <Link to="/contact">Get in touch</Link>
               </Button>
               <Link
                 to="/quote"

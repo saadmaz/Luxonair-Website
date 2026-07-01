@@ -88,7 +88,6 @@ export function Footer() {
             Company
           </h4>
           <ul className="space-y-2.5 text-sm text-navy-fg/60">
-            <li><FooterLink to="/about">About Us</FooterLink></li>
             <li><FooterLink to="/contact">Contact</FooterLink></li>
             <li><FooterLink to="/faq">FAQ</FooterLink></li>
             <li><FooterLink to="/quote">Get a Quote</FooterLink></li>
