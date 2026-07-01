@@ -53,7 +53,7 @@ function AirportSelect({
 
   const filtered = useMemo(() => {
     const raw = query.trim().toLowerCase();
-    if (!raw || query === selected) return AIRPORTS.slice(0, 50);
+    if (!raw || query === selected) return AIRPORTS;
     const q = COUNTRY_ALIASES[raw] ?? raw;
     return AIRPORTS.filter(
       (a) =>
@@ -62,7 +62,7 @@ function AirportSelect({
         a.code.toLowerCase().includes(q) ||
         a.country.toLowerCase().includes(q) ||
         a.countryCode.toLowerCase() === raw
-    ).slice(0, 100);
+    );
   }, [query, selected]);
 
   useEffect(() => {
