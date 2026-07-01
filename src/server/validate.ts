@@ -41,7 +41,11 @@ export const subscriberSchema = z.object({
 });
 
 export const destinationSchema = z.object({
-  slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/, "Slug must be lowercase alphanumeric with hyphens"),
+  slug: z
+    .string()
+    .min(1)
+    .max(100)
+    .regex(/^[a-z0-9-]+$/, "Slug must be lowercase alphanumeric with hyphens"),
   name: z.string().min(1).max(200),
   country: z.string().min(1).max(100),
   region: z.string().max(100).default(""),
@@ -58,7 +62,11 @@ export const destinationSchema = z.object({
 });
 
 export const blogPostSchema = z.object({
-  slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/, "Slug must be lowercase alphanumeric with hyphens"),
+  slug: z
+    .string()
+    .min(1)
+    .max(100)
+    .regex(/^[a-z0-9-]+$/, "Slug must be lowercase alphanumeric with hyphens"),
   title: z.string().min(1).max(300),
   excerpt: z.string().min(1).max(500),
   category: z.string().max(100).default("General"),
@@ -93,7 +101,11 @@ export const testimonialSchema = z.object({
 });
 
 export const holidayTypeSchema = z.object({
-  slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/, "Slug must be lowercase alphanumeric with hyphens"),
+  slug: z
+    .string()
+    .min(1)
+    .max(100)
+    .regex(/^[a-z0-9-]+$/, "Slug must be lowercase alphanumeric with hyphens"),
   name: z.string().min(1).max(200),
   tagline: z.string().max(300).default(""),
   summary: z.string().max(5000).default(""),
@@ -105,6 +117,43 @@ export const holidayTypeSchema = z.object({
 export const faqGroupSchema = z.object({
   title: z.string().min(1).max(200),
   sortOrder: z.number().int().min(0).default(0),
+});
+
+export const flightOfferSchema = z.object({
+  id: z
+    .string()
+    .min(1)
+    .max(100)
+    .regex(/^[a-z0-9-]+$/, "ID must be lowercase alphanumeric with hyphens"),
+  cabinClass: z.enum(["Business", "Economy"]),
+  fromCity: z.string().min(1).max(100),
+  fromCountry: z.string().min(1).max(100),
+  toCity: z.string().min(1).max(100),
+  toCountry: z.string().min(1).max(100),
+  airlineName: z.string().min(1).max(100),
+  airlineLogo: z.string().max(500).default(""),
+  price: z.number().int().min(0),
+  image: z.string().max(500).default(""),
+  featured: z.boolean().default(false),
+  sortOrder: z.number().int().min(0).default(0),
+});
+
+export const flightOfferBookingSchema = z.object({
+  offerId: z.string().min(1).max(100),
+  routeLabel: z.string().min(1).max(200),
+  cabinClass: z.string().min(1).max(50),
+  price: z.number().int().min(0),
+  tripType: z.enum(["One Way", "Return"]),
+  departDate: z.string().max(10).optional(),
+  returnDate: z.string().max(10).optional(),
+  adults: z.number().int().min(1).max(20),
+  children: z.number().int().min(0).max(20).default(0),
+  infants: z.number().int().min(0).max(20).default(0),
+  budget: z.string().max(100).optional(),
+  notes: z.string().max(2000).optional(),
+  name: z.string().min(2).max(100),
+  email: z.string().email(),
+  phone: z.string().min(7).max(30),
 });
 
 export const faqItemSchema = z.object({

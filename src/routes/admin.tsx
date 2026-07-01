@@ -1,20 +1,58 @@
-﻿import { createFileRoute, Outlet, Link, useNavigate, useRouterState, redirect } from "@tanstack/react-router";
+﻿import {
+  createFileRoute,
+  Outlet,
+  Link,
+  useNavigate,
+  useRouterState,
+  redirect,
+} from "@tanstack/react-router";
 import { getAdminSession } from "@/server/queries";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  LayoutDashboard, FileText, MessageSquare, LogOut,
-  Menu, X, MapPin, Tag, Sun, BookOpen, Star, HelpCircle,
-  UserCog, Mail, Bell, Search, ChevronRight, PanelLeftClose, PanelLeft,
-  Users, ArrowRight,
+  LayoutDashboard,
+  FileText,
+  MessageSquare,
+  LogOut,
+  Menu,
+  X,
+  MapPin,
+  Tag,
+  Sun,
+  BookOpen,
+  Star,
+  HelpCircle,
+  UserCog,
+  Mail,
+  Bell,
+  Search,
+  ChevronRight,
+  PanelLeftClose,
+  PanelLeft,
+  Users,
+  ArrowRight,
+  PlaneTakeoff,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type ActivityData = {
   newEnquiryCount: number;
   unreadContactCount: number;
-  recentEnquiries: { id: number; name: string; destination: string; createdAt: string; status: string }[];
-  unreadContacts: { id: number; name: string; topic: string | null; createdAt: string; read: boolean }[];
+  newFlightBookingCount: number;
+  recentEnquiries: {
+    id: number;
+    name: string;
+    destination: string;
+    createdAt: string;
+    status: string;
+  }[];
+  unreadContacts: {
+    id: number;
+    name: string;
+    topic: string | null;
+    createdAt: string;
+    read: boolean;
+  }[];
 };
 
 export const Route = createFileRoute("/admin")({
@@ -34,7 +72,9 @@ function AdminErrorScreen() {
         <span className="text-lg font-bold text-[#031e3e]/40">!</span>
       </div>
       <div className="text-center">
-        <p className="text-sm font-semibold text-gray-700">Something went wrong loading this page.</p>
+        <p className="text-sm font-semibold text-gray-700">
+          Something went wrong loading this page.
+        </p>
         <p className="mt-1 text-xs text-gray-400">Try refreshing, or return to the dashboard.</p>
       </div>
       <div className="flex gap-2">
@@ -58,39 +98,37 @@ function AdminErrorScreen() {
 const navSections = [
   {
     label: "Overview",
-    items: [
-      { to: "/admin",              label: "Dashboard",    icon: LayoutDashboard, exact: true },
-    ],
+    items: [{ to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true }],
   },
   {
     label: "Enquiries",
     items: [
-      { to: "/admin/enquiries",    label: "Enquiries",    icon: FileText,       exact: false },
-      { to: "/admin/messages",     label: "Messages",     icon: MessageSquare,  exact: false },
-      { to: "/admin/subscribers",  label: "Subscribers",  icon: Mail,           exact: false },
+      { to: "/admin/enquiries", label: "Enquiries", icon: FileText, exact: false },
+      { to: "/admin/flight-bookings", label: "Flight Bookings", icon: PlaneTakeoff, exact: false },
+      { to: "/admin/messages", label: "Messages", icon: MessageSquare, exact: false },
+      { to: "/admin/subscribers", label: "Subscribers", icon: Mail, exact: false },
     ],
   },
   {
     label: "Content",
     items: [
-      { to: "/admin/destinations", label: "Destinations",  icon: MapPin,   exact: false },
-      { to: "/admin/deals",        label: "Deals",         icon: Tag,      exact: false },
-      { to: "/admin/holidays",     label: "Holiday Types", icon: Sun,      exact: false },
-      { to: "/admin/blog",         label: "Blog",          icon: BookOpen, exact: false },
+      { to: "/admin/destinations", label: "Destinations", icon: MapPin, exact: false },
+      { to: "/admin/deals", label: "Deals", icon: Tag, exact: false },
+      { to: "/admin/flight-offers", label: "Flight Offers", icon: PlaneTakeoff, exact: false },
+      { to: "/admin/holidays", label: "Holiday Types", icon: Sun, exact: false },
+      { to: "/admin/blog", label: "Blog", icon: BookOpen, exact: false },
     ],
   },
   {
     label: "Feedback",
     items: [
-      { to: "/admin/testimonials", label: "Testimonials", icon: Star,       exact: false },
-      { to: "/admin/faqs",         label: "FAQs",         icon: HelpCircle, exact: false },
+      { to: "/admin/testimonials", label: "Testimonials", icon: Star, exact: false },
+      { to: "/admin/faqs", label: "FAQs", icon: HelpCircle, exact: false },
     ],
   },
   {
     label: "Settings",
-    items: [
-      { to: "/admin/users", label: "Users", icon: UserCog, exact: false },
-    ],
+    items: [{ to: "/admin/users", label: "Users", icon: UserCog, exact: false }],
   },
 ] as const;
 
@@ -160,6 +198,7 @@ function AdminLayoutRoute() {
 
   const newEnquiries = activity?.newEnquiryCount ?? 0;
   const unreadMessages = activity?.unreadContactCount ?? 0;
+  const newFlightBookings = activity?.newFlightBookingCount ?? 0;
 
   useEffect(() => {
     if (!isLoginPage && authed === false) {
@@ -177,11 +216,12 @@ function AdminLayoutRoute() {
     );
   }
 
-  if (!authed) return (
-    <div className="flex h-screen items-center justify-center bg-[#f1f4f8]">
-      <div className="h-5 w-5 animate-spin rounded-full border-[2.5px] border-[#042045] border-t-transparent" />
-    </div>
-  );
+  if (!authed)
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#f1f4f8]">
+        <div className="h-5 w-5 animate-spin rounded-full border-[2.5px] border-[#042045] border-t-transparent" />
+      </div>
+    );
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -195,13 +235,12 @@ function AdminLayoutRoute() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#f1f4f8]">
-
       {/* ── Mobile backdrop ─────────────────────────────────────── */}
       <div
         onClick={() => setMobileOpen(false)}
         className={cn(
           "fixed inset-0 z-40 bg-black/50 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden",
-          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
         )}
       />
 
@@ -214,21 +253,23 @@ function AdminLayoutRoute() {
           collapsed ? "lg:w-[60px]" : "lg:w-60",
           // mobile: always full width drawer, shown/hidden by translate
           "w-60",
-          mobileOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full lg:shadow-none"
+          mobileOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full lg:shadow-none",
         )}
       >
         {/* Brand row */}
-        <div className={cn(
-          "flex h-[60px] shrink-0 items-center border-b border-white/[0.07]",
-          collapsed ? "lg:justify-center lg:px-0 px-4" : "justify-between px-4"
-        )}>
+        <div
+          className={cn(
+            "flex h-[60px] shrink-0 items-center border-b border-white/[0.07]",
+            collapsed ? "lg:justify-center lg:px-0 px-4" : "justify-between px-4",
+          )}
+        >
           {/* Logo — hidden in collapsed desktop mode */}
           <img
             src="/Logo/main-logo.png"
             alt="Luxeonair"
             className={cn(
               "h-7 w-auto opacity-90 transition-all duration-300",
-              collapsed && "lg:hidden"
+              collapsed && "lg:hidden",
             )}
           />
           {/* Collapsed: show monogram */}
@@ -244,7 +285,7 @@ function AdminLayoutRoute() {
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             className={cn(
               "hidden lg:flex h-7 w-7 items-center justify-center rounded-md text-white/25 transition-colors hover:bg-white/8 hover:text-white/70",
-              collapsed && "lg:hidden"
+              collapsed && "lg:hidden",
             )}
           >
             <PanelLeftClose className="h-4 w-4" />
@@ -264,14 +305,14 @@ function AdminLayoutRoute() {
         <nav
           className={cn(
             "flex-1 overflow-y-auto overflow-x-hidden py-4",
-            collapsed ? "lg:px-1.5 px-2.5" : "px-2.5"
+            collapsed ? "lg:px-1.5 px-2.5" : "px-2.5",
           )}
           style={{ scrollbarWidth: "none" }}
         >
           {navSections.map((section, si) => (
             <div key={section.label} className={si > 0 ? "mt-5" : ""}>
               {/* Section label — hidden when collapsed on desktop */}
-              {(!collapsed) && (
+              {!collapsed && (
                 <p className="mb-1 px-2.5 text-[9.5px] font-bold uppercase tracking-[0.2em] text-white/25">
                   {section.label}
                 </p>
@@ -284,11 +325,15 @@ function AdminLayoutRoute() {
                 {section.items.map((item) => {
                   const { to, label, icon: Icon, exact } = item;
                   const badge =
-                    to === "/admin/enquiries" && newEnquiries > 0 ? String(newEnquiries) :
-                    to === "/admin/messages"  && unreadMessages > 0 ? String(unreadMessages) :
-                    undefined;
+                    to === "/admin/enquiries" && newEnquiries > 0
+                      ? String(newEnquiries)
+                      : to === "/admin/flight-bookings" && newFlightBookings > 0
+                        ? String(newFlightBookings)
+                        : to === "/admin/messages" && unreadMessages > 0
+                          ? String(unreadMessages)
+                          : undefined;
                   const badgeGold = to === "/admin/messages";
-                  const active    = exact ? pathname === to : pathname.startsWith(to);
+                  const active = exact ? pathname === to : pathname.startsWith(to);
                   return (
                     <li key={to}>
                       <Link
@@ -302,7 +347,7 @@ function AdminLayoutRoute() {
                             : "gap-2.5 px-2.5 py-[7px]",
                           active
                             ? "bg-white/[0.10] font-semibold text-white"
-                            : "font-medium text-white/40 hover:bg-white/[0.05] hover:text-white/75"
+                            : "font-medium text-white/40 hover:bg-white/[0.05] hover:text-white/75",
                         )}
                       >
                         {/* Active stripe — hidden when collapsed */}
@@ -317,7 +362,7 @@ function AdminLayoutRoute() {
                           className={cn(
                             "shrink-0 transition-colors",
                             collapsed ? "lg:h-[18px] lg:w-[18px] h-4 w-4" : "h-4 w-4",
-                            active ? "text-white" : "text-white/35 group-hover:text-white/60"
+                            active ? "text-white" : "text-white/35 group-hover:text-white/60",
                           )}
                           strokeWidth={1.6}
                         />
@@ -325,11 +370,13 @@ function AdminLayoutRoute() {
                           {label}
                         </span>
                         {badge && (
-                          <span className={cn(
-                            "flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-bold leading-none text-white",
-                            badgeGold ? "bg-amber-500" : "bg-white/[0.12]",
-                            collapsed && "lg:hidden"
-                          )}>
+                          <span
+                            className={cn(
+                              "flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-bold leading-none text-white",
+                              badgeGold ? "bg-amber-500" : "bg-white/[0.12]",
+                              collapsed && "lg:hidden",
+                            )}
+                          >
                             {badge}
                           </span>
                         )}
@@ -344,10 +391,12 @@ function AdminLayoutRoute() {
 
         {/* Sidebar footer */}
         <div className="shrink-0 border-t border-white/[0.07] p-2">
-          <div className={cn(
-            "flex items-center gap-2.5 rounded-lg px-2 py-2",
-            collapsed && "lg:justify-center lg:px-0"
-          )}>
+          <div
+            className={cn(
+              "flex items-center gap-2.5 rounded-lg px-2 py-2",
+              collapsed && "lg:justify-center lg:px-0",
+            )}
+          >
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-400/15 text-[11px] font-bold text-amber-400 ring-1 ring-amber-400/20">
               LX
             </div>
@@ -360,7 +409,7 @@ function AdminLayoutRoute() {
               title="Sign out"
               className={cn(
                 "flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-white/25 transition-colors hover:bg-white/8 hover:text-white/70",
-                collapsed && "lg:hidden"
+                collapsed && "lg:hidden",
               )}
             >
               <LogOut className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -381,10 +430,8 @@ function AdminLayoutRoute() {
 
       {/* ── Main area ───────────────────────────────────────────── */}
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-
         {/* Topbar */}
         <header className="flex h-[60px] shrink-0 items-center gap-3 border-b border-gray-200/70 bg-white px-4 lg:px-6">
-
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen(true)}
@@ -404,7 +451,9 @@ function AdminLayoutRoute() {
               </>
             )}
           </div>
-          <p className="text-sm font-semibold text-gray-800 lg:hidden">{activeItem?.label ?? "Admin"}</p>
+          <p className="text-sm font-semibold text-gray-800 lg:hidden">
+            {activeItem?.label ?? "Admin"}
+          </p>
 
           <div className="flex flex-1 items-center justify-end gap-2">
             {/* Search */}
@@ -414,7 +463,9 @@ function AdminLayoutRoute() {
             >
               <Search className="h-3.5 w-3.5 text-gray-400" />
               <span className="select-none text-[12px] text-gray-400">Search…</span>
-              <kbd className="ml-4 rounded border border-gray-200 bg-white px-1.5 py-px text-[10px] font-medium text-gray-400">⌘K</kbd>
+              <kbd className="ml-4 rounded border border-gray-200 bg-white px-1.5 py-px text-[10px] font-medium text-gray-400">
+                ⌘K
+              </kbd>
             </button>
 
             {/* Bell */}
@@ -424,11 +475,17 @@ function AdminLayoutRoute() {
                 className="relative flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
               >
                 <Bell className="h-4 w-4" />
-                {(newEnquiries > 0 || unreadMessages > 0) && (
+                {(newEnquiries > 0 || unreadMessages > 0 || newFlightBookings > 0) && (
                   <span className="absolute right-[7px] top-[7px] h-1.5 w-1.5 rounded-full bg-amber-400 ring-[1.5px] ring-white" />
                 )}
               </button>
-              {notifOpen && <NotificationsPanel activity={activity} onClose={() => setNotifOpen(false)} navigate={navigate} />}
+              {notifOpen && (
+                <NotificationsPanel
+                  activity={activity}
+                  onClose={() => setNotifOpen(false)}
+                  navigate={navigate}
+                />
+              )}
             </div>
 
             <div className="h-5 w-px bg-gray-100" />
@@ -461,28 +518,40 @@ function AdminLayoutRoute() {
 // ─── Search Palette ──────────────────────────────────────────────────────────
 
 const allNavItems = navSections.flatMap((s) =>
-  s.items.map((item) => ({ ...item, section: s.label }))
+  s.items.map((item) => ({ ...item, section: s.label })),
 );
 
-function SearchPalette({ onClose, navigate }: { onClose: () => void; navigate: ReturnType<typeof useNavigate> }) {
+function SearchPalette({
+  onClose,
+  navigate,
+}: {
+  onClose: () => void;
+  navigate: ReturnType<typeof useNavigate>;
+}) {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
   const results = query.trim()
-    ? allNavItems.filter((item) =>
-        item.label.toLowerCase().includes(query.toLowerCase()) ||
-        item.section.toLowerCase().includes(query.toLowerCase())
+    ? allNavItems.filter(
+        (item) =>
+          item.label.toLowerCase().includes(query.toLowerCase()) ||
+          item.section.toLowerCase().includes(query.toLowerCase()),
       )
     : allNavItems;
 
-  const go = (to: string) => { navigate({ to: to as "/admin" }); onClose(); };
+  const go = (to: string) => {
+    navigate({ to: to as "/admin" });
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-[60] flex items-start justify-center px-4 pt-[15vh]">
@@ -501,7 +570,10 @@ function SearchPalette({ onClose, navigate }: { onClose: () => void; navigate: R
             placeholder="Search pages…"
             className="flex-1 bg-transparent text-sm text-gray-900 placeholder-gray-400 outline-none"
           />
-          <button onClick={onClose} className="rounded-md border border-gray-200 px-2 py-0.5 text-[10px] font-medium text-gray-400 hover:bg-gray-50">
+          <button
+            onClick={onClose}
+            className="rounded-md border border-gray-200 px-2 py-0.5 text-[10px] font-medium text-gray-400 hover:bg-gray-50"
+          >
             ESC
           </button>
         </div>
@@ -509,7 +581,9 @@ function SearchPalette({ onClose, navigate }: { onClose: () => void; navigate: R
         {/* Results */}
         <ul className="max-h-72 overflow-y-auto py-2" style={{ scrollbarWidth: "none" }}>
           {results.length === 0 && (
-            <li className="px-4 py-6 text-center text-sm text-gray-400">No results for "{query}"</li>
+            <li className="px-4 py-6 text-center text-sm text-gray-400">
+              No results for "{query}"
+            </li>
           )}
           {results.map((item) => {
             const Icon = item.icon;
@@ -532,8 +606,12 @@ function SearchPalette({ onClose, navigate }: { onClose: () => void; navigate: R
         </ul>
 
         <div className="border-t border-gray-100 px-4 py-2 text-[11px] text-gray-400">
-          <span className="mr-3"><kbd className="rounded border border-gray-200 px-1 py-px font-mono">↑↓</kbd> navigate</span>
-          <span><kbd className="rounded border border-gray-200 px-1 py-px font-mono">↵</kbd> select</span>
+          <span className="mr-3">
+            <kbd className="rounded border border-gray-200 px-1 py-px font-mono">↑↓</kbd> navigate
+          </span>
+          <span>
+            <kbd className="rounded border border-gray-200 px-1 py-px font-mono">↵</kbd> select
+          </span>
         </div>
       </div>
     </div>
@@ -544,11 +622,11 @@ function SearchPalette({ onClose, navigate }: { onClose: () => void; navigate: R
 
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
-  const mins  = Math.floor(diff / 60000);
+  const mins = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
-  const days  = Math.floor(diff / 86400000);
-  if (mins  < 1)  return "just now";
-  if (mins  < 60) return `${mins}m ago`;
+  const days = Math.floor(diff / 86400000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
   if (hours < 24) return `${hours}h ago`;
   return `${days}d ago`;
 }
@@ -572,8 +650,8 @@ function NotificationsPanel({
     return () => document.removeEventListener("mousedown", handler);
   }, [onClose]);
 
-  const enquiries  = activity?.recentEnquiries  ?? [];
-  const messages   = activity?.unreadContacts   ?? [];
+  const enquiries = activity?.recentEnquiries ?? [];
+  const messages = activity?.unreadContacts ?? [];
   const totalUnread = (activity?.newEnquiryCount ?? 0) + (activity?.unreadContactCount ?? 0);
 
   const hasActivity = enquiries.length > 0 || messages.length > 0;
@@ -596,7 +674,10 @@ function NotificationsPanel({
       </div>
 
       {/* List */}
-      <ul className="max-h-[340px] overflow-y-auto divide-y divide-gray-50" style={{ scrollbarWidth: "none" }}>
+      <ul
+        className="max-h-[340px] overflow-y-auto divide-y divide-gray-50"
+        style={{ scrollbarWidth: "none" }}
+      >
         {!hasActivity && (
           <li className="px-4 py-8 text-center text-sm text-gray-400">No recent activity</li>
         )}
@@ -604,23 +685,33 @@ function NotificationsPanel({
         {enquiries.map((e) => (
           <li key={`enq-${e.id}`}>
             <button
-              onClick={() => { navigate({ to: "/admin/enquiries" }); onClose(); }}
+              onClick={() => {
+                navigate({ to: "/admin/enquiries" });
+                onClose();
+              }}
               className={cn(
                 "flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50",
-                e.status === "new" && "bg-blue-50/40"
+                e.status === "new" && "bg-blue-50/40",
               )}
             >
               <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-50">
                 <FileText className="h-4 w-4 text-blue-600" strokeWidth={1.75} />
               </span>
               <div className="min-w-0 flex-1">
-                <p className={cn("text-[13px] leading-snug", e.status === "new" ? "font-semibold text-gray-900" : "text-gray-600")}>
+                <p
+                  className={cn(
+                    "text-[13px] leading-snug",
+                    e.status === "new" ? "font-semibold text-gray-900" : "text-gray-600",
+                  )}
+                >
                   New enquiry — {e.destination}
                 </p>
                 <p className="mt-0.5 truncate text-[11px] text-gray-400">{e.name}</p>
                 <p className="mt-1 text-[10px] text-gray-400">{timeAgo(e.createdAt)}</p>
               </div>
-              {e.status === "new" && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500" />}
+              {e.status === "new" && (
+                <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
+              )}
             </button>
           </li>
         ))}
@@ -628,7 +719,10 @@ function NotificationsPanel({
         {messages.map((m) => (
           <li key={`msg-${m.id}`}>
             <button
-              onClick={() => { navigate({ to: "/admin/messages" }); onClose(); }}
+              onClick={() => {
+                navigate({ to: "/admin/messages" });
+                onClose();
+              }}
               className="flex w-full items-start gap-3 bg-amber-50/30 px-4 py-3 text-left transition-colors hover:bg-gray-50"
             >
               <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-50">
@@ -638,7 +732,9 @@ function NotificationsPanel({
                 <p className="text-[13px] font-semibold leading-snug text-gray-900">
                   Message from {m.name}
                 </p>
-                <p className="mt-0.5 truncate text-[11px] text-gray-400">{m.topic ?? "General enquiry"}</p>
+                <p className="mt-0.5 truncate text-[11px] text-gray-400">
+                  {m.topic ?? "General enquiry"}
+                </p>
                 <p className="mt-1 text-[10px] text-gray-400">{timeAgo(m.createdAt)}</p>
               </div>
               <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-amber-400" />
@@ -650,7 +746,10 @@ function NotificationsPanel({
       {/* Footer */}
       <div className="border-t border-gray-100 px-4 py-2.5">
         <button
-          onClick={() => { navigate({ to: "/admin/enquiries" }); onClose(); }}
+          onClick={() => {
+            navigate({ to: "/admin/enquiries" });
+            onClose();
+          }}
           className="flex w-full items-center justify-center gap-1.5 text-[12px] font-medium text-gray-500 hover:text-gray-800"
         >
           View all enquiries <ArrowRight className="h-3.5 w-3.5" />

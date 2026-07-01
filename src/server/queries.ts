@@ -8,6 +8,7 @@ import {
   blogPosts,
   destinations,
   deals,
+  flightOffers,
   testimonials,
   faqGroups,
   faqItems,
@@ -47,6 +48,15 @@ export const getDestinationBySlug = createServerFn({ method: "GET" })
 
 export const getDeals = createServerFn({ method: "GET" }).handler(async () => {
   return db.select().from(deals).orderBy(asc(deals.expires));
+});
+
+// ─── Flight offers ────────────────────────────────────────────────────────────
+
+export const getFlightOffers = createServerFn({ method: "GET" }).handler(async () => {
+  return db
+    .select()
+    .from(flightOffers)
+    .orderBy(asc(flightOffers.sortOrder), desc(flightOffers.createdAt));
 });
 
 // ─── Testimonials ─────────────────────────────────────────────────────────────

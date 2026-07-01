@@ -2,7 +2,7 @@
 // Each section lives in src/features/home/ and can be edited independently.
 import { createFileRoute } from "@tanstack/react-router";
 import { Newsletter } from "@/components/shared/Newsletter";
-import { getTestimonials } from "@/server/queries";
+import { getTestimonials, getFlightOffers } from "@/server/queries";
 import {
   Hero,
   TrustPillars,
@@ -10,6 +10,7 @@ import {
   FeaturedDestinations,
   HolidayTypeTiles,
   AllTimeFavourites,
+  FlightOffers,
   WhyLuxonair,
   SocialProof,
   BlogCarousel,
@@ -20,23 +21,38 @@ import {
 export const Route = createFileRoute("/")({
   loader: async () => {
     try {
-      const testimonials = await getTestimonials();
-      return { testimonials };
+      const [testimonials, flightOffers] = await Promise.all([
+        getTestimonials(),
+        getFlightOffers(),
+      ]);
+      return { testimonials, flightOffers };
     } catch {
-      return { testimonials: [] };
+      return { testimonials: [], flightOffers: [] };
     }
   },
   head: () => ({
     meta: [
       { title: "Luxeonair | Tailor-Made Luxury Holidays & Corporate Travel from the UK" },
-      { name: "description", content: "Bespoke long-haul holidays, family escapes and corporate trips built by London consultants who know every route. ATOL protected. Quote replied to within 4 working hours." },
+      {
+        name: "description",
+        content:
+          "Bespoke long-haul holidays, family escapes and corporate trips built by London consultants who know every route. ATOL protected. Quote replied to within 4 working hours.",
+      },
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Luxeonair | Tailor-Made Luxury Travel from the UK" },
-      { property: "og:description", content: "Bespoke long-haul holidays, family escapes and corporate trips from the UK. One consultant. ATOL protected. Quote in minutes." },
+      {
+        property: "og:description",
+        content:
+          "Bespoke long-haul holidays, family escapes and corporate trips from the UK. One consultant. ATOL protected. Quote in minutes.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.co.uk/" },
       { name: "twitter:title", content: "Luxeonair | Tailor-Made Luxury Travel from the UK" },
-      { name: "twitter:description", content: "Bespoke long-haul holidays & corporate trips from the UK. ATOL protected. A consultant replies to every quote within 4 hours." },
+      {
+        name: "twitter:description",
+        content:
+          "Bespoke long-haul holidays & corporate trips from the UK. ATOL protected. A consultant replies to every quote within 4 hours.",
+      },
     ],
     links: [
       { rel: "canonical", href: "https://www.luxeonair.co.uk/" },
@@ -51,7 +67,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const { testimonials } = Route.useLoaderData();
+  const { testimonials, flightOffers } = Route.useLoaderData();
   return (
     <>
       <Hero />
@@ -60,6 +76,7 @@ function Home() {
       <FeaturedDestinations />
       <HolidayTypeTiles />
       <AllTimeFavourites />
+      <FlightOffers offers={flightOffers} />
       <WhyLuxonair />
       <SocialProof testimonials={testimonials} />
       <BlogCarousel />

@@ -8,9 +8,9 @@ import { SITE } from "@/config/site";
 import { AnimatePresence, motion } from "framer-motion";
 
 const dealCategories = [
-  { label: "Cheap Flights",        slug: "cheap-flights" },
+  { label: "Cheap Flights", slug: "cheap-flights" },
   { label: "Last Minute Holidays", slug: "last-minute" },
-  { label: "Seasonal Offers",      slug: "seasonal" },
+  { label: "Seasonal Offers", slug: "seasonal" },
 ];
 
 export function Header() {
@@ -22,11 +22,17 @@ export function Header() {
       <div className="bg-navy text-navy-fg">
         <div className="container-page flex items-center justify-between gap-x-4 py-1.5 text-xs">
           <div className="flex items-center gap-3">
-            <a href={`tel:${SITE.phone.tel}`} className="flex items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold">
+            <a
+              href={`tel:${SITE.phone.tel}`}
+              className="flex items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold"
+            >
               <Phone className="h-3 w-3 shrink-0" /> {SITE.phone.display}
             </a>
             <span className="hidden text-navy-fg/30 sm:block">|</span>
-            <a href={`mailto:${SITE.email}`} className="hidden items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold sm:flex">
+            <a
+              href={`mailto:${SITE.email}`}
+              className="hidden items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold sm:flex"
+            >
               <Mail className="h-3 w-3" /> {SITE.email}
             </a>
           </div>
@@ -53,7 +59,10 @@ export function Header() {
             {/* Holidays dropdown */}
             <div className="group relative">
               <div className="flex items-center gap-0.5 cursor-pointer">
-                <Link to="/holidays" className="text-sm text-muted-foreground transition-colors hover:text-foreground group-hover:text-foreground">
+                <Link
+                  to="/holidays"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground group-hover:text-foreground"
+                >
                   Holidays
                 </Link>
                 <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 group-hover:rotate-180 group-hover:text-foreground" />
@@ -78,7 +87,10 @@ export function Header() {
             {/* Deals dropdown */}
             <div className="group relative">
               <div className="flex items-center gap-0.5 cursor-pointer">
-                <Link to="/deals" className="text-sm text-muted-foreground transition-colors hover:text-foreground group-hover:text-foreground">
+                <Link
+                  to="/deals"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground group-hover:text-foreground"
+                >
                   Deals
                 </Link>
                 <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 group-hover:rotate-180 group-hover:text-foreground" />
@@ -98,6 +110,7 @@ export function Header() {
               </div>
             </div>
 
+            <NavLink to="/flight-offers">Flight Offers</NavLink>
             <NavLink to="/blog">Blog</NavLink>
             <NavLink to="/contact">Contact us</NavLink>
           </nav>
@@ -105,7 +118,12 @@ export function Header() {
           {/* Right actions */}
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <Button asChild variant="default" size="sm" className="hidden bg-primary text-primary-foreground hover:bg-primary/90 md:inline-flex">
+            <Button
+              asChild
+              variant="default"
+              size="sm"
+              className="hidden bg-primary text-primary-foreground hover:bg-primary/90 md:inline-flex"
+            >
               <Link to="/quote">Start a quote</Link>
             </Button>
             <button
@@ -132,28 +150,78 @@ export function Header() {
             className="border-b border-border bg-background md:hidden"
           >
             <div className="container-page flex flex-col gap-1 py-3">
-              <Link to="/" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">Home</Link>
+              <Link
+                to="/"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted"
+              >
+                Home
+              </Link>
 
-              <Link to="/holidays" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted">Holidays</Link>
+              <Link
+                to="/holidays"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted"
+              >
+                Holidays
+              </Link>
               {holidayTypes.map((h) => (
-                <Link key={h.slug} to="/holiday/$slug" params={{ slug: h.slug }} onClick={() => setOpen(false)} className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
+                <Link
+                  key={h.slug}
+                  to="/holiday/$slug"
+                  params={{ slug: h.slug }}
+                  onClick={() => setOpen(false)}
+                  className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                >
                   {h.name}
                 </Link>
               ))}
 
-              <Link to="/deals" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted">Deals</Link>
+              <Link
+                to="/deals"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted"
+              >
+                Deals
+              </Link>
               {dealCategories.map((c) => (
-                <Link key={c.slug} to="/deals" onClick={() => setOpen(false)} className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
+                <Link
+                  key={c.slug}
+                  to="/deals"
+                  onClick={() => setOpen(false)}
+                  className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                >
                   {c.label}
                 </Link>
               ))}
 
-              <Link to="/blog" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">Blog</Link>
-              <Link to="/contact" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted">Contact us</Link>
+              <Link
+                to="/flight-offers"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted"
+              >
+                Flight Offers
+              </Link>
+              <Link
+                to="/blog"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted"
+              >
+                Blog
+              </Link>
+              <Link
+                to="/contact"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted"
+              >
+                Contact us
+              </Link>
 
               <div className="mt-2 border-t border-border pt-2">
                 <Button asChild className="w-full">
-                  <Link to="/quote" onClick={() => setOpen(false)}>Get a quote</Link>
+                  <Link to="/quote" onClick={() => setOpen(false)}>
+                    Get a quote
+                  </Link>
                 </Button>
               </div>
             </div>
