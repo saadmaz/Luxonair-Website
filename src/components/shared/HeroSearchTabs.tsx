@@ -151,19 +151,17 @@ function AirportSelect({
                   e.preventDefault();
                   pick(a);
                 }}
-                className={`flex w-full items-start gap-3 px-4 py-2.5 text-left transition-colors hover:bg-muted ${
+                className={`flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-muted ${
                   selectedCode === a.code ? "bg-muted" : ""
                 }`}
               >
                 <Flag code={a.countryCode} size={16} />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm text-foreground">
-                    <span className="font-semibold">{a.cityName}</span>
-                    {a.airportName ? ` ${a.airportName}` : ""} ({a.code})
-                  </span>
-                  <span className="block truncate text-xs text-muted-foreground">
-                    {a.country}
-                  </span>
+                <span className="min-w-0 flex-1 truncate text-sm text-foreground">
+                  <span className="font-semibold">{a.cityName}</span>
+                  {a.airportName ? `/${a.airportName}` : ""}
+                </span>
+                <span className="shrink-0 text-xs text-muted-foreground">
+                  {a.code}
                 </span>
               </button>
             ))
