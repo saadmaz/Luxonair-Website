@@ -30,6 +30,9 @@ dist-ssr
 .wrangler/
 .dev.vars
 
+# User-uploaded admin images (persisted on the server, not in git)
+/uploads/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
