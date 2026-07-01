@@ -80,6 +80,11 @@ export function TrustPillars() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
+          <span className="mb-4 inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.25em] text-gold">
+            <span className="h-px w-7 bg-gold/50" />
+            Why Luxonair
+            <span className="h-px w-7 bg-gold/50" />
+          </span>
           <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-[2.75rem] text-balance">
             Where Every Journey{" "}
             <span className="text-gold">Begins</span>{" "}
@@ -91,27 +96,33 @@ export function TrustPillars() {
           </p>
         </motion.div>
 
-        {/* Cards */}
+        {/* Premium pillar panel */}
         <motion.div
-          className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+          className="relative mt-14 overflow-hidden rounded-4xl border border-navy/10 bg-linear-to-b from-card to-muted/30 shadow-[0_30px_80px_-30px_rgba(4,32,69,0.22)]"
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-40px" }}
         >
-          {items.map(({ icon: Icon, title, note }) => (
-            <motion.div
-              key={title}
-              variants={item}
-              className="group rounded-2xl border border-border/60 bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/30 hover:shadow-lg"
-            >
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-teal/10 transition-colors group-hover:bg-teal/20">
-                <Icon className="h-5 w-5 text-teal" />
-              </div>
-              <h3 className="font-display text-base font-bold text-gold">{title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{note}</p>
-            </motion.div>
-          ))}
+          <div className="grid divide-y divide-border/70 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
+            {items.map(({ icon: Icon, title, note }, i) => (
+              <motion.div
+                key={title}
+                variants={item}
+                className="group relative px-7 py-10 transition-colors duration-300 hover:bg-gold/3"
+              >
+                <span className="pointer-events-none absolute right-6 top-6 font-display text-4xl font-bold text-foreground/4 transition-colors duration-300 group-hover:text-gold/10">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="relative mb-5 inline-flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-br from-teal/15 to-aqua/10 ring-1 ring-teal/20 transition-all duration-300 group-hover:from-gold/15 group-hover:to-gold/5 group-hover:ring-gold/40">
+                  <Icon className="h-6 w-6 text-teal transition-colors duration-300 group-hover:text-gold" />
+                </div>
+                <h3 className="font-display text-lg font-bold text-foreground">{title}</h3>
+                <span className="mt-2 block h-0.5 w-8 rounded-full bg-gold/50 transition-all duration-300 group-hover:w-14 group-hover:bg-gold" />
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{note}</p>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
       </div>
     </section>
