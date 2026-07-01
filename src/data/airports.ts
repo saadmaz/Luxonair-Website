@@ -459,7 +459,7 @@ export const AIRPORTS: Airport[] = [
   { cityName: "Guam", airportName: "", code: "GUM", country: "Guam", countryCode: "gu" },
   { cityName: "Palau", airportName: "", code: "ROR", country: "Palau", countryCode: "pw" },
   // ── USA ──────────────────────────────────────────────────────────────────
-  { cityName: "New York", airportName: "JFK", code: "JFK", country: "United States", countryCode: "us" },
+  { cityName: "New York", airportName: "John F. Kennedy", code: "JFK", country: "United States", countryCode: "us" },
   { cityName: "New York", airportName: "Newark", code: "EWR", country: "United States", countryCode: "us" },
   { cityName: "New York", airportName: "LaGuardia", code: "LGA", country: "United States", countryCode: "us" },
   { cityName: "Los Angeles", airportName: "", code: "LAX", country: "United States", countryCode: "us" },
