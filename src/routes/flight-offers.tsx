@@ -4,6 +4,8 @@ import { PlaneTakeoff, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getFlightOffers } from "@/server/queries";
 import { FlightOfferBookingModal } from "@/components/shared/FlightOfferBookingModal";
+import { Flag } from "@/components/shared/Flag";
+import { findAirport } from "@/data/airports";
 import type { FlightOffer } from "@/types/flightOffer";
 
 const TABS = ["Economy", "Business"] as const;
@@ -96,71 +98,81 @@ function FlightOffersPage() {
           </p>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {shown.map((offer) => (
-              <article
-                key={offer.id}
-                className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-xl"
-              >
-                <div className="relative aspect-video w-full overflow-hidden bg-muted sm:aspect-16/10">
-                  <img
-                    src={offer.image}
-                    alt={`${offer.fromCity} to ${offer.toCity}`}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <span className="absolute left-3 top-3 rounded-full bg-gold px-2.5 py-1 text-xs font-semibold text-gold-foreground shadow">
-                    {offer.cabinClass}
-                  </span>
-                </div>
-
-                <div className="flex flex-1 flex-col p-5">
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <p className="font-display text-lg font-bold text-foreground">
-                        {offer.fromCity}
-                      </p>
-                      <p className="text-xs text-muted-foreground">{offer.fromCountry}</p>
-                    </div>
-                    <ArrowRight className="h-4 w-4 shrink-0 text-gold" />
-                    <div className="text-right">
-                      <p className="font-display text-lg font-bold text-foreground">
-                        {offer.toCity}
-                      </p>
-                      <p className="text-xs text-muted-foreground">{offer.toCountry}</p>
-                    </div>
+            {shown.map((offer) => {
+              const fromA = findAirport(offer.fromCode);
+              const toA = findAirport(offer.toCode);
+              return (
+                <article
+                  key={offer.id}
+                  className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-xl"
+                >
+                  <div className="relative aspect-video w-full overflow-hidden bg-muted sm:aspect-16/10">
+                    <img
+                      src={offer.image}
+                      alt={`${fromA?.cityName ?? offer.fromCode} to ${toA?.cityName ?? offer.toCode}`}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <span className="absolute left-3 top-3 rounded-full bg-gold px-2.5 py-1 text-xs font-semibold text-gold-foreground shadow">
+                      {offer.cabinClass}
+                    </span>
                   </div>
 
-                  <div className="my-4 border-t border-border" />
-
-                  <div className="flex flex-1 items-end justify-between gap-3">
-                    <div className="flex h-9 w-16 items-center justify-center overflow-hidden rounded-md border border-border bg-background">
-                      {offer.airlineLogo ? (
-                        <img
-                          src={offer.airlineLogo}
-                          alt={offer.airlineName}
-                          className="h-full w-full object-contain p-1"
-                        />
-                      ) : (
-                        <PlaneTakeoff className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xs text-muted-foreground">per person</div>
-                      <div className="font-display text-2xl font-semibold text-teal">
-                        £{offer.price.toLocaleString()}
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="flex items-center justify-between gap-2">
+                      <div>
+                        <p className="font-display text-lg font-bold text-foreground">
+                          {fromA?.cityName ?? offer.fromCode}
+                        </p>
+                        <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          {fromA && <Flag code={fromA.countryCode} size={12} />}
+                          {offer.fromCode}
+                        </p>
+                      </div>
+                      <ArrowRight className="h-4 w-4 shrink-0 text-gold" />
+                      <div className="text-right">
+                        <p className="font-display text-lg font-bold text-foreground">
+                          {toA?.cityName ?? offer.toCode}
+                        </p>
+                        <p className="flex items-center justify-end gap-1.5 text-xs text-muted-foreground">
+                          {offer.toCode}
+                          {toA && <Flag code={toA.countryCode} size={12} />}
+                        </p>
                       </div>
                     </div>
-                  </div>
 
-                  <button
-                    onClick={() => setSelected(offer)}
-                    className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-lg bg-gold px-4 py-2.5 text-sm font-bold text-gold-foreground transition-all hover:bg-gold/90"
-                  >
-                    Book Now <ArrowRight className="h-4 w-4" />
-                  </button>
-                </div>
-              </article>
-            ))}
+                    <div className="my-4 border-t border-border" />
+
+                    <div className="flex flex-1 items-end justify-between gap-3">
+                      <div className="flex h-9 w-16 items-center justify-center overflow-hidden rounded-md border border-border bg-background">
+                        {offer.airlineLogo ? (
+                          <img
+                            src={offer.airlineLogo}
+                            alt={offer.airlineName}
+                            className="h-full w-full object-contain p-1"
+                          />
+                        ) : (
+                          <PlaneTakeoff className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs text-muted-foreground">per person</div>
+                        <div className="font-display text-2xl font-semibold text-teal">
+                          £{offer.price.toLocaleString()}
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => setSelected(offer)}
+                      className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-lg bg-gold px-4 py-2.5 text-sm font-bold text-gold-foreground transition-all hover:bg-gold/90"
+                    >
+                      Book Now <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         )}
       </section>

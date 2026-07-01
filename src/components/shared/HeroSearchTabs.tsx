@@ -1,25 +1,9 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Plane, Package, ChevronUp, ChevronDown, Search } from "lucide-react";
-import "flag-icons/css/flag-icons.min.css";
 import { DatePicker } from "./DatePicker";
-import { AIRPORTS, type Airport } from "@/data/airports";
-
-// ─── Inline flag using bundled SVG via flag-icons CSS ────────────────────────
-function Flag({ code, size = 18 }: { code: string; size?: number }) {
-  return (
-    <span
-      className={`fi fi-${code} shrink-0 rounded-sm`}
-      style={{ width: `${Math.round(size * 1.333)}px`, height: `${size}px` }}
-    />
-  );
-}
-
-function airportLabel(a: Airport) {
-  return a.airportName
-    ? `${a.cityName} ${a.airportName} (${a.code})`
-    : `${a.cityName} (${a.code})`;
-}
+import { Flag } from "./Flag";
+import { AIRPORTS, airportLabel, type Airport } from "@/data/airports";
 
 // ─── Common shorthand country search terms not present in the full country name ──
 const COUNTRY_ALIASES: Record<string, string> = {
@@ -61,16 +45,13 @@ function AirportSelect({
         a.airportName.toLowerCase().includes(q) ||
         a.code.toLowerCase().includes(q) ||
         a.country.toLowerCase().includes(q) ||
-        a.countryCode.toLowerCase() === raw
+        a.countryCode.toLowerCase() === raw,
     );
   }, [query, selected]);
 
   useEffect(() => {
     function handler(e: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
         setQuery(selected);
       }
@@ -139,9 +120,7 @@ function AirportSelect({
       {open && (
         <div className="absolute bottom-full left-0 z-50 mb-1.5 flex max-h-72 w-full min-w-72 flex-col gap-0.5 overflow-y-auto rounded-xl border border-border bg-background p-1.5 shadow-2xl">
           {filtered.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-muted-foreground">
-              No airports found
-            </p>
+            <p className="px-4 py-3 text-sm text-muted-foreground">No airports found</p>
           ) : (
             filtered.map((a) => (
               <button
@@ -163,9 +142,7 @@ function AirportSelect({
                     <span className="font-semibold">{a.cityName}</span>
                     {a.airportName ? ` ${a.airportName}` : ""} ({a.code})
                   </span>
-                  <span className="block truncate text-xs text-muted-foreground">
-                    {a.country}
-                  </span>
+                  <span className="block truncate text-xs text-muted-foreground">{a.country}</span>
                 </span>
               </button>
             ))
@@ -246,9 +223,7 @@ function Tab({
       aria-controls={panelId}
       onClick={onClick}
       className={`flex items-center gap-2 rounded-t-lg px-5 py-2.5 text-sm font-medium transition-all ${
-        active
-          ? "bg-card text-foreground shadow-sm"
-          : "text-muted-foreground hover:text-foreground"
+        active ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
       }`}
     >
       <Icon className="h-4 w-4" /> {children}
@@ -302,11 +277,7 @@ function FlightForm() {
     >
       <input type="hidden" name="tripType" value="Flight only" />
       <Field label="From">
-        <AirportSelect
-          name="from"
-          placeholder="Departure airport"
-          defaultAirportCode="LHR"
-        />
+        <AirportSelect name="from" placeholder="Departure airport" defaultAirportCode="LHR" />
       </Field>
       <Field label="To">
         <AirportSelect name="destination" placeholder="Where to?" />
@@ -334,10 +305,7 @@ function FlightForm() {
 function CabinSelect({ name }: { name: string }) {
   return (
     <div className="relative">
-      <select
-        name={name}
-        className="input-field appearance-none pr-8"
-      >
+      <select name={name} className="input-field appearance-none pr-8">
         <option>Economy</option>
         <option>Premium economy</option>
         <option>Business</option>

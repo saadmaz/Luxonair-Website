@@ -198,10 +198,8 @@ export const flightOffers = mysqlTable(
   {
     id: varchar("id", { length: 100 }).primaryKey(),
     cabinClass: varchar("cabin_class", { length: 20 }).notNull(),
-    fromCity: varchar("from_city", { length: 100 }).notNull(),
-    fromCountry: varchar("from_country", { length: 100 }).notNull(),
-    toCity: varchar("to_city", { length: 100 }).notNull(),
-    toCountry: varchar("to_country", { length: 100 }).notNull(),
+    fromCode: varchar("from_code", { length: 10 }).notNull(),
+    toCode: varchar("to_code", { length: 10 }).notNull(),
     airlineName: varchar("airline_name", { length: 100 }).notNull(),
     airlineLogo: text("airline_logo").notNull(),
     price: int("price").notNull(),

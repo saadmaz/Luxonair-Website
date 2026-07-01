@@ -126,10 +126,8 @@ export const flightOfferSchema = z.object({
     .max(100)
     .regex(/^[a-z0-9-]+$/, "ID must be lowercase alphanumeric with hyphens"),
   cabinClass: z.enum(["Business", "Economy"]),
-  fromCity: z.string().min(1).max(100),
-  fromCountry: z.string().min(1).max(100),
-  toCity: z.string().min(1).max(100),
-  toCountry: z.string().min(1).max(100),
+  fromCode: z.string().min(3).max(10),
+  toCode: z.string().min(3).max(10),
   airlineName: z.string().min(1).max(100),
   airlineLogo: z.string().max(500).default(""),
   price: z.number().int().min(0),

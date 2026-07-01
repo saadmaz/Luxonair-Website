@@ -8,6 +8,8 @@ import { useMutation } from "@tanstack/react-query";
 import { X, Check, Loader2, PlaneTakeoff } from "lucide-react";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { Flag } from "@/components/shared/Flag";
+import { findAirport } from "@/data/airports";
 import type { FlightOffer } from "@/types/flightOffer";
 
 type Props = {
@@ -58,6 +60,11 @@ export function FlightOfferBookingModal({ offer, onOpenChange }: Props) {
   const [form, setForm] = useState<FormState>(() => buildInitialForm(offer ?? ({} as FlightOffer)));
   const [error, setError] = useState("");
 
+  const fromA = offer ? findAirport(offer.fromCode) : undefined;
+  const toA = offer ? findAirport(offer.toCode) : undefined;
+  const fromLabel = fromA?.cityName ?? offer?.fromCode ?? "";
+  const toLabel = toA?.cityName ?? offer?.toCode ?? "";
+
   useEffect(() => {
     if (offer) {
       setForm(buildInitialForm(offer));
@@ -71,7 +78,7 @@ export function FlightOfferBookingModal({ offer, onOpenChange }: Props) {
       if (!offer) throw new Error("No offer selected");
       return api.post("/api/flight-offer-bookings", {
         offerId: offer.id,
-        routeLabel: `${offer.fromCity} → ${offer.toCity}`,
+        routeLabel: `${fromLabel} → ${toLabel}`,
         cabinClass: form.cabinClass,
         price: offer.price,
         tripType: form.tripType,
@@ -145,8 +152,11 @@ export function FlightOfferBookingModal({ offer, onOpenChange }: Props) {
                     <DialogPrimitive.Title className="font-display text-base font-bold leading-tight">
                       Send your flight enquiry
                     </DialogPrimitive.Title>
-                    <p className="mt-0.5 text-xs text-navy-fg/70">
-                      {offer.fromCity} → {offer.toCity} · {offer.cabinClass}
+                    <p className="mt-0.5 flex items-center gap-1.5 text-xs text-navy-fg/70">
+                      {fromA && <Flag code={fromA.countryCode} size={11} />}
+                      {fromLabel} → {toLabel}
+                      {toA && <Flag code={toA.countryCode} size={11} />}
+                      <span>· {offer.cabinClass}</span>
                     </p>
                   </div>
                 </div>

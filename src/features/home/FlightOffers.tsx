@@ -4,6 +4,8 @@ import { ArrowRight, ArrowUpRight, PlaneTakeoff } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { FlightOfferBookingModal } from "@/components/shared/FlightOfferBookingModal";
+import { Flag } from "@/components/shared/Flag";
+import { findAirport } from "@/data/airports";
 import type { FlightOffer } from "@/types/flightOffer";
 
 const TABS = ["Economy", "Business"] as const;
@@ -55,79 +57,89 @@ export function FlightOffers({ offers }: { offers: FlightOffer[] }) {
           </p>
         ) : (
           <div className="grid gap-6 sm:grid-cols-3">
-            {shown.map((offer, i) => (
-              <motion.article
-                key={offer.id}
-                initial={{ opacity: 0, y: 28 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ delay: i * 0.12, duration: 0.5, ease: "easeOut" }}
-                className="group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-              >
-                {/* Image */}
-                <div className="relative overflow-hidden">
-                  <div className="aspect-[4/3] w-full overflow-hidden">
-                    <img
-                      src={offer.image}
-                      alt={`${offer.fromCity} to ${offer.toCity}`}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <span className="absolute right-3 top-3 rounded-full bg-navy/90 px-3 py-1 text-xs font-bold text-navy-fg shadow-md">
-                    {offer.cabinClass}
-                  </span>
-                </div>
-
-                {/* Body */}
-                <div className="p-5">
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <p className="font-display text-base font-bold text-foreground">
-                        {offer.fromCity}
-                      </p>
-                      <p className="text-xs text-muted-foreground">{offer.fromCountry}</p>
+            {shown.map((offer, i) => {
+              const fromA = findAirport(offer.fromCode);
+              const toA = findAirport(offer.toCode);
+              return (
+                <motion.article
+                  key={offer.id}
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ delay: i * 0.12, duration: 0.5, ease: "easeOut" }}
+                  className="group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                >
+                  {/* Image */}
+                  <div className="relative overflow-hidden">
+                    <div className="aspect-[4/3] w-full overflow-hidden">
+                      <img
+                        src={offer.image}
+                        alt={`${fromA?.cityName ?? offer.fromCode} to ${toA?.cityName ?? offer.toCode}`}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
                     </div>
-                    <ArrowRight className="h-4 w-4 shrink-0 text-gold" />
-                    <div className="text-right">
-                      <p className="font-display text-base font-bold text-foreground">
-                        {offer.toCity}
-                      </p>
-                      <p className="text-xs text-muted-foreground">{offer.toCountry}</p>
-                    </div>
+                    <span className="absolute right-3 top-3 rounded-full bg-navy/90 px-3 py-1 text-xs font-bold text-navy-fg shadow-md">
+                      {offer.cabinClass}
+                    </span>
                   </div>
 
-                  <div className="my-4 border-t border-border" />
+                  {/* Body */}
+                  <div className="p-5">
+                    <div className="flex items-center justify-between gap-2">
+                      <div>
+                        <p className="font-display text-base font-bold text-foreground">
+                          {fromA?.cityName ?? offer.fromCode}
+                        </p>
+                        <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          {fromA && <Flag code={fromA.countryCode} size={12} />}
+                          {offer.fromCode}
+                        </p>
+                      </div>
+                      <ArrowRight className="h-4 w-4 shrink-0 text-gold" />
+                      <div className="text-right">
+                        <p className="font-display text-base font-bold text-foreground">
+                          {toA?.cityName ?? offer.toCode}
+                        </p>
+                        <p className="flex items-center justify-end gap-1.5 text-xs text-muted-foreground">
+                          {offer.toCode}
+                          {toA && <Flag code={toA.countryCode} size={12} />}
+                        </p>
+                      </div>
+                    </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex h-8 w-14 items-center justify-center overflow-hidden rounded-md border border-border bg-background">
-                      {offer.airlineLogo ? (
-                        <img
-                          src={offer.airlineLogo}
-                          alt={offer.airlineName}
-                          className="h-full w-full object-contain p-1"
-                        />
-                      ) : (
-                        <PlaneTakeoff className="h-4 w-4 text-muted-foreground" />
-                      )}
+                    <div className="my-4 border-t border-border" />
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex h-8 w-14 items-center justify-center overflow-hidden rounded-md border border-border bg-background">
+                        {offer.airlineLogo ? (
+                          <img
+                            src={offer.airlineLogo}
+                            alt={offer.airlineName}
+                            className="h-full w-full object-contain p-1"
+                          />
+                        ) : (
+                          <PlaneTakeoff className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] text-muted-foreground">per person</p>
+                        <p className="font-display text-lg font-bold text-foreground">
+                          £{offer.price.toLocaleString()}
+                        </p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-[10px] text-muted-foreground">per person</p>
-                      <p className="font-display text-lg font-bold text-foreground">
-                        £{offer.price.toLocaleString()}
-                      </p>
-                    </div>
+
+                    <button
+                      onClick={() => setSelected(offer)}
+                      className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-lg bg-gold px-4 py-2.5 text-xs font-bold text-gold-foreground transition-all hover:bg-gold/90"
+                    >
+                      Book Now <ArrowUpRight className="h-3.5 w-3.5" />
+                    </button>
                   </div>
-
-                  <button
-                    onClick={() => setSelected(offer)}
-                    className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-lg bg-gold px-4 py-2.5 text-xs font-bold text-gold-foreground transition-all hover:bg-gold/90"
-                  >
-                    Book Now <ArrowUpRight className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </motion.article>
-            ))}
+                </motion.article>
+              );
+            })}
           </div>
         )}
 

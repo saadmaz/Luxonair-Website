@@ -1,10 +1,9 @@
 export type FlightOffer = {
   id: string;
   cabinClass: string;
-  fromCity: string;
-  fromCountry: string;
-  toCity: string;
-  toCountry: string;
+  /** IATA code, e.g. "LHR" — resolve to city/country/flag via findAirport() */
+  fromCode: string;
+  toCode: string;
   airlineName: string;
   airlineLogo: string;
   /** Indicative per-person price in GBP */

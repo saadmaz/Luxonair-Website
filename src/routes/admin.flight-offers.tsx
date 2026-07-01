@@ -11,6 +11,9 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { AirportPicker } from "@/components/admin/AirportPicker";
+import { Flag } from "@/components/shared/Flag";
+import { findAirport } from "@/data/airports";
 import { api } from "@/lib/api";
 import { Pagination } from "@/components/ui/Pagination";
 
@@ -21,10 +24,8 @@ export const Route = createFileRoute("/admin/flight-offers")({
 type DbFlightOffer = {
   id: string;
   cabinClass: "Business" | "Economy";
-  fromCity: string;
-  fromCountry: string;
-  toCity: string;
-  toCountry: string;
+  fromCode: string;
+  toCode: string;
   airlineName: string;
   airlineLogo: string;
   price: number;
@@ -40,10 +41,8 @@ const labelCls = "block text-sm font-medium text-gray-700 mb-1";
 const emptyForm = {
   id: "",
   cabinClass: "Economy" as "Business" | "Economy",
-  fromCity: "",
-  fromCountry: "",
-  toCity: "",
-  toCountry: "",
+  fromCode: "",
+  toCode: "",
   airlineName: "",
   airlineLogo: "",
   price: 0,
@@ -96,10 +95,8 @@ function AdminFlightOffersPage() {
     setForm({
       id: o.id,
       cabinClass: o.cabinClass,
-      fromCity: o.fromCity,
-      fromCountry: o.fromCountry,
-      toCity: o.toCity,
-      toCountry: o.toCountry,
+      fromCode: o.fromCode,
+      toCode: o.toCode,
       airlineName: o.airlineName,
       airlineLogo: o.airlineLogo,
       price: o.price,
@@ -149,112 +146,126 @@ function AdminFlightOffersPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {items.map((o) => (
-                  <tr key={o.id} className="transition-colors hover:bg-gray-50/60">
-                    <td className="py-4 pl-6 pr-4">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-14 shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                          {o.image && (
-                            <img
-                              src={o.image}
-                              alt={o.fromCity}
-                              className="h-full w-full object-cover"
-                            />
-                          )}
+                {items.map((o) => {
+                  const fromA = findAirport(o.fromCode);
+                  const toA = findAirport(o.toCode);
+                  return (
+                    <tr key={o.id} className="transition-colors hover:bg-gray-50/60">
+                      <td className="py-4 pl-6 pr-4">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-14 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                            {o.image && (
+                              <img
+                                src={o.image}
+                                alt={fromA?.cityName ?? o.fromCode}
+                                className="h-full w-full object-cover"
+                              />
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-900 leading-snug">
+                              {fromA?.cityName ?? o.fromCode} → {toA?.cityName ?? o.toCode}
+                            </p>
+                            <p className="flex items-center gap-1.5 text-xs text-gray-400">
+                              {fromA && <Flag code={fromA.countryCode} size={12} />}
+                              {o.fromCode} → {o.toCode}
+                              {toA && <Flag code={toA.countryCode} size={12} />}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-semibold text-gray-900 leading-snug">
-                            {o.fromCity} → {o.toCity}
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            {o.fromCountry} → {o.toCountry}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${o.cabinClass === "Business" ? "bg-amber-50 text-amber-700" : "bg-blue-50 text-blue-700"}`}
-                      >
-                        {o.cabinClass}
-                      </span>
-                    </td>
-                    <td className="px-4 py-4 text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <div className="flex h-6 w-9 items-center justify-center overflow-hidden rounded border border-gray-200 bg-white">
-                          {o.airlineLogo ? (
-                            <img
-                              src={o.airlineLogo}
-                              alt={o.airlineName}
-                              className="h-full w-full object-contain"
-                            />
-                          ) : (
-                            <PlaneTakeoff className="h-3 w-3 text-gray-300" />
-                          )}
-                        </div>
-                        {o.airlineName}
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 font-semibold text-gray-900">
-                      £{o.price.toLocaleString()}
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="flex items-center gap-1.5">
-                        <button
-                          onClick={() => openEdit(o)}
-                          className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-gray-50 hover:text-gray-600"
+                      </td>
+                      <td className="px-4 py-4">
+                        <span
+                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${o.cabinClass === "Business" ? "bg-amber-50 text-amber-700" : "bg-blue-50 text-blue-700"}`}
                         >
-                          <Pencil className="h-3.5 w-3.5" />
-                        </button>
-                        <button
-                          onClick={() => setDeleteId(o.id)}
-                          className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                          {o.cabinClass}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-6 w-9 items-center justify-center overflow-hidden rounded border border-gray-200 bg-white">
+                            {o.airlineLogo ? (
+                              <img
+                                src={o.airlineLogo}
+                                alt={o.airlineName}
+                                className="h-full w-full object-contain"
+                              />
+                            ) : (
+                              <PlaneTakeoff className="h-3 w-3 text-gray-300" />
+                            )}
+                          </div>
+                          {o.airlineName}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 font-semibold text-gray-900">
+                        £{o.price.toLocaleString()}
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => openEdit(o)}
+                            className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-gray-50 hover:text-gray-600"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            onClick={() => setDeleteId(o.id)}
+                            className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
 
           <div className="divide-y divide-gray-100 md:hidden">
-            {items.map((o) => (
-              <div key={o.id} className="flex gap-3 px-5 py-4">
-                <div className="h-14 w-20 shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                  {o.image && (
-                    <img src={o.image} alt={o.fromCity} className="h-full w-full object-cover" />
-                  )}
+            {items.map((o) => {
+              const fromA = findAirport(o.fromCode);
+              const toA = findAirport(o.toCode);
+              return (
+                <div key={o.id} className="flex gap-3 px-5 py-4">
+                  <div className="h-14 w-20 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                    {o.image && (
+                      <img
+                        src={o.image}
+                        alt={fromA?.cityName ?? o.fromCode}
+                        className="h-full w-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900 leading-snug truncate">
+                      {fromA?.cityName ?? o.fromCode} → {toA?.cityName ?? o.toCode}
+                    </p>
+                    <p className="mt-0.5 text-xs text-gray-500">
+                      {o.cabinClass} · {o.airlineName}
+                    </p>
+                    <p className="mt-1 text-sm font-bold text-gray-900">
+                      £{o.price.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <button
+                      onClick={() => openEdit(o)}
+                      className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-gray-50"
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setDeleteId(o.id)}
+                      className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 leading-snug truncate">
-                    {o.fromCity} → {o.toCity}
-                  </p>
-                  <p className="mt-0.5 text-xs text-gray-500">
-                    {o.cabinClass} · {o.airlineName}
-                  </p>
-                  <p className="mt-1 text-sm font-bold text-gray-900">
-                    £{o.price.toLocaleString()}
-                  </p>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <button
-                    onClick={() => openEdit(o)}
-                    className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-gray-50"
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    onClick={() => setDeleteId(o.id)}
-                    className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <Pagination page={page} total={total} limit={50} onChange={setPage} />
         </div>
@@ -279,38 +290,16 @@ function AdminFlightOffersPage() {
               </div>
             )}
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className={labelCls}>From city</label>
-                <input
-                  className={inputCls}
-                  value={form.fromCity}
-                  onChange={(e) => setForm({ ...form, fromCity: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className={labelCls}>From country</label>
-                <input
-                  className={inputCls}
-                  value={form.fromCountry}
-                  onChange={(e) => setForm({ ...form, fromCountry: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className={labelCls}>To city</label>
-                <input
-                  className={inputCls}
-                  value={form.toCity}
-                  onChange={(e) => setForm({ ...form, toCity: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className={labelCls}>To country</label>
-                <input
-                  className={inputCls}
-                  value={form.toCountry}
-                  onChange={(e) => setForm({ ...form, toCountry: e.target.value })}
-                />
-              </div>
+              <AirportPicker
+                label="From"
+                value={form.fromCode}
+                onChange={(code) => setForm({ ...form, fromCode: code })}
+              />
+              <AirportPicker
+                label="To"
+                value={form.toCode}
+                onChange={(code) => setForm({ ...form, toCode: code })}
+              />
               <div>
                 <label className={labelCls}>Cabin class</label>
                 <select
