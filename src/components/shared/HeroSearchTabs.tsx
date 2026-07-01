@@ -1,90 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Plane, Package, ChevronUp, ChevronDown, Search } from "lucide-react";
 import "flag-icons/css/flag-icons.min.css";
 import { DatePicker } from "./DatePicker";
-
-// ─── Country data with ISO-2 codes for flag-icons ────────────────────────────
-const COUNTRIES = [
-  { name: "Albania",              code: "al" },
-  { name: "Antigua & Barbuda",   code: "ag" },
-  { name: "Argentina",           code: "ar" },
-  { name: "Armenia",             code: "am" },
-  { name: "Australia",           code: "au" },
-  { name: "Austria",             code: "at" },
-  { name: "Azerbaijan",          code: "az" },
-  { name: "Bahamas",             code: "bs" },
-  { name: "Bahrain",             code: "bh" },
-  { name: "Bangladesh",          code: "bd" },
-  { name: "Barbados",            code: "bb" },
-  { name: "Brazil",              code: "br" },
-  { name: "Cambodia",            code: "kh" },
-  { name: "Canada",              code: "ca" },
-  { name: "China",               code: "cn" },
-  { name: "Colombia",            code: "co" },
-  { name: "Croatia",             code: "hr" },
-  { name: "Cuba",                code: "cu" },
-  { name: "Cyprus",              code: "cy" },
-  { name: "Denmark",             code: "dk" },
-  { name: "Dominican Republic",  code: "do" },
-  { name: "Egypt",               code: "eg" },
-  { name: "Ethiopia",            code: "et" },
-  { name: "Finland",             code: "fi" },
-  { name: "France",              code: "fr" },
-  { name: "Georgia",             code: "ge" },
-  { name: "Germany",             code: "de" },
-  { name: "Ghana",               code: "gh" },
-  { name: "Greece",              code: "gr" },
-  { name: "Hong Kong",           code: "hk" },
-  { name: "Iceland",             code: "is" },
-  { name: "India",               code: "in" },
-  { name: "Indonesia",           code: "id" },
-  { name: "Ireland",             code: "ie" },
-  { name: "Israel",              code: "il" },
-  { name: "Italy",               code: "it" },
-  { name: "Jamaica",             code: "jm" },
-  { name: "Japan",               code: "jp" },
-  { name: "Jordan",              code: "jo" },
-  { name: "Kenya",               code: "ke" },
-  { name: "Kuwait",              code: "kw" },
-  { name: "Malaysia",            code: "my" },
-  { name: "Maldives",            code: "mv" },
-  { name: "Malta",               code: "mt" },
-  { name: "Mauritius",           code: "mu" },
-  { name: "Mexico",              code: "mx" },
-  { name: "Montenegro",          code: "me" },
-  { name: "Morocco",             code: "ma" },
-  { name: "Nepal",               code: "np" },
-  { name: "Netherlands",         code: "nl" },
-  { name: "New Zealand",         code: "nz" },
-  { name: "Nigeria",             code: "ng" },
-  { name: "Norway",              code: "no" },
-  { name: "Oman",                code: "om" },
-  { name: "Pakistan",            code: "pk" },
-  { name: "Peru",                code: "pe" },
-  { name: "Philippines",         code: "ph" },
-  { name: "Portugal",            code: "pt" },
-  { name: "Qatar",               code: "qa" },
-  { name: "Saint Lucia",         code: "lc" },
-  { name: "Saudi Arabia",        code: "sa" },
-  { name: "Seychelles",          code: "sc" },
-  { name: "Singapore",           code: "sg" },
-  { name: "South Africa",        code: "za" },
-  { name: "South Korea",         code: "kr" },
-  { name: "Spain",               code: "es" },
-  { name: "Sri Lanka",           code: "lk" },
-  { name: "Sweden",              code: "se" },
-  { name: "Switzerland",         code: "ch" },
-  { name: "Tanzania",            code: "tz" },
-  { name: "Thailand",            code: "th" },
-  { name: "Trinidad & Tobago",   code: "tt" },
-  { name: "Turkey",              code: "tr" },
-  { name: "United Arab Emirates",code: "ae" },
-  { name: "United Kingdom",      code: "gb" },
-  { name: "United States",       code: "us" },
-  { name: "Vietnam",             code: "vn" },
-  { name: "Zanzibar",            code: "tz" },
-].sort((a, b) => a.name.localeCompare(b.name));
+import { AIRPORTS, type Airport } from "@/data/airports";
 
 // ─── Inline flag using bundled SVG via flag-icons CSS ────────────────────────
 function Flag({ code, size = 18 }: { code: string; size?: number }) {
@@ -96,30 +15,42 @@ function Flag({ code, size = 18 }: { code: string; size?: number }) {
   );
 }
 
-// ─── Searchable country dropup ────────────────────────────────────────────────
-function CountrySelect({
+function airportLabel(a: Airport) {
+  return `${a.city} (${a.code})`;
+}
+
+// ─── Searchable airport dropup — search by city, IATA code, or country ───────
+function AirportSelect({
   name,
   placeholder,
-  defaultValue = "",
+  defaultAirportCode = "",
 }: {
   name: string;
   placeholder: string;
-  defaultValue?: string;
+  defaultAirportCode?: string;
 }) {
-  const [query, setQuery] = useState(defaultValue);
-  const [selected, setSelected] = useState(defaultValue);
+  const defaultAirport = AIRPORTS.find((a) => a.code === defaultAirportCode);
+  const defaultLabel = defaultAirport ? airportLabel(defaultAirport) : "";
+
+  const [query, setQuery] = useState(defaultLabel);
+  const [selected, setSelected] = useState(defaultLabel);
+  const [selectedCode, setSelectedCode] = useState(defaultAirportCode);
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const selectedCountry = COUNTRIES.find((c) => c.name === selected);
+  const selectedAirport = AIRPORTS.find((a) => a.code === selectedCode);
 
-  const filtered =
-    query && !COUNTRIES.find((c) => c.name === query)
-      ? COUNTRIES.filter((c) =>
-          c.name.toLowerCase().includes(query.toLowerCase())
-        )
-      : COUNTRIES;
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q || query === selected) return AIRPORTS.slice(0, 50);
+    return AIRPORTS.filter(
+      (a) =>
+        a.city.toLowerCase().includes(q) ||
+        a.code.toLowerCase().includes(q) ||
+        a.country.toLowerCase().includes(q)
+    ).slice(0, 50);
+  }, [query, selected]);
 
   useEffect(() => {
     function handler(e: MouseEvent) {
@@ -128,7 +59,7 @@ function CountrySelect({
         !containerRef.current.contains(e.target as Node)
       ) {
         setOpen(false);
-        if (!COUNTRIES.find((c) => c.name === query)) setQuery(selected);
+        setQuery(selected);
       }
     }
     document.addEventListener("mousedown", handler);
@@ -146,21 +77,24 @@ function CountrySelect({
     return () => document.removeEventListener("keydown", handler);
   }, [selected]);
 
-  function pick(country: { name: string; code: string }) {
-    setSelected(country.name);
-    setQuery(country.name);
+  function pick(airport: Airport) {
+    const label = airportLabel(airport);
+    setSelected(label);
+    setSelectedCode(airport.code);
+    setQuery(label);
     setOpen(false);
   }
 
   return (
     <div ref={containerRef} className="relative">
       <input type="hidden" name={name} value={selected} />
+      <input type="hidden" name={`${name}Code`} value={selectedCode} />
 
       {/* Trigger input */}
       <div className="relative">
-        {selectedCountry && !open ? (
+        {selectedAirport && !open ? (
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
-            <Flag code={selectedCountry.code} size={14} />
+            <Flag code={selectedAirport.countryCode} size={14} />
           </span>
         ) : (
           <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
@@ -190,28 +124,31 @@ function CountrySelect({
 
       {/* Dropup — opens upward */}
       {open && (
-        <div className="absolute bottom-full left-0 z-50 mb-1.5 max-h-64 w-full overflow-y-auto rounded-xl border border-border bg-background shadow-2xl">
+        <div className="absolute bottom-full left-0 z-50 mb-1.5 max-h-72 w-full min-w-72 overflow-y-auto rounded-xl border border-border bg-background shadow-2xl">
           {filtered.length === 0 ? (
             <p className="px-4 py-3 text-sm text-muted-foreground">
-              No countries found
+              No airports found
             </p>
           ) : (
-            filtered.map((c) => (
+            filtered.map((a) => (
               <button
-                key={c.name + c.code}
+                key={a.code}
                 type="button"
                 onMouseDown={(e) => {
                   e.preventDefault();
-                  pick(c);
+                  pick(a);
                 }}
                 className={`flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors hover:bg-muted ${
-                  selected === c.name
+                  selectedCode === a.code
                     ? "bg-muted font-medium text-primary"
                     : "text-foreground"
                 }`}
               >
-                <Flag code={c.code} size={14} />
-                <span>{c.name}</span>
+                <Flag code={a.countryCode} size={14} />
+                <span className="flex-1 truncate">{a.city}</span>
+                <span className="shrink-0 text-xs text-muted-foreground">
+                  {a.code}
+                </span>
               </button>
             ))
           )}
@@ -347,14 +284,14 @@ function FlightForm() {
     >
       <input type="hidden" name="tripType" value="Flight only" />
       <Field label="From">
-        <CountrySelect
+        <AirportSelect
           name="from"
-          placeholder="London (any)"
-          defaultValue="United Kingdom"
+          placeholder="Departure airport"
+          defaultAirportCode="LHR"
         />
       </Field>
       <Field label="To">
-        <CountrySelect name="destination" placeholder="Where to?" />
+        <AirportSelect name="destination" placeholder="Where to?" />
       </Field>
       <Field label="Depart">
         <DatePicker name="depart" placeholder="Departure date" />
