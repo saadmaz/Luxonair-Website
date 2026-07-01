@@ -1,11 +1,17 @@
 // Floating WhatsApp button - desktop only (hidden on mobile where StickyMobileCTA
-// already provides a WhatsApp action). The ping animation draws attention without
+// already provides a WhatsApp action). Hidden on /contact (redundant) and all
+// /admin routes (irrelevant). The ping animation draws attention without
 // requiring any user interaction.
 import { SITE } from "@/config/site";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
+import { useRouterState } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 
 export function WhatsAppFloat() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  if (pathname === "/contact" || pathname.startsWith("/admin")) return null;
+
   return (
     <a
       href={`https://wa.me/${SITE.phone.whatsapp}`}
@@ -13,7 +19,7 @@ export function WhatsAppFloat() {
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
       title="Chat with us on WhatsApp"
-      className="fixed bottom-8 right-6 z-50 hidden md:block"
+      className="fixed bottom-6 right-5 z-50 hidden md:block"
     >
       <span className="relative flex h-14 w-14">
         <span className="absolute inset-0 animate-ping rounded-full bg-[#25D366] opacity-25" />

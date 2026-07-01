@@ -53,10 +53,10 @@ function FaqPage() {
         <p className="mt-3 text-muted-foreground">Can't find your answer? Call <a href={`tel:${SITE.phone.tel}`} className="text-primary hover:underline">{SITE.phone.display}</a> or WhatsApp us.</p>
       </header>
 
-      <div className="mt-12 space-y-12">
+      <div className="mt-12 space-y-14">
         {groups.map((g) => (
           <section key={g.id}>
-            <h2 className="font-display text-2xl font-semibold">{g.title}</h2>
+            <h2 className="font-display text-2xl font-semibold text-foreground">{g.title}</h2>
             <div className="mt-5 divide-y divide-border rounded-xl border border-border bg-card">
               {g.items.map((i) => (
                 <details key={i.id} className="group p-5">

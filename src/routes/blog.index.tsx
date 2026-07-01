@@ -109,7 +109,7 @@ function BlogIndex() {
                     {p.category}
                   </span>
                   <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" /> {p.readMinutes} min
+                    <Clock className="h-3 w-3" /> {p.readMinutes} min read
                   </span>
                 </div>
                 <h3 className="mt-2 font-display text-lg font-semibold leading-snug">{p.title}</h3>

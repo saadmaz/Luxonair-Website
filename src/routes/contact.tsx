@@ -2,7 +2,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Clock, Loader2, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Clock, Loader2, Mail, MapPin, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
 
@@ -141,13 +141,23 @@ function ContactPage() {
             </div>
 
             {/* Map */}
-            <div className="overflow-hidden rounded-2xl border border-border shadow-sm">
-              <iframe
-                title="Luxeonair London office"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-0.1421%2C51.5045%2C-0.1186%2C51.5189&amp;layer=mapnik"
-                className="h-72 w-full"
-                loading="eager"
-              />
+            <div>
+              <div className="overflow-hidden rounded-2xl border border-border bg-muted shadow-sm min-h-72">
+                <iframe
+                  title="Luxonair London office"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=-0.1421%2C51.5045%2C-0.1186%2C51.5189&amp;layer=mapnik"
+                  className="h-72 w-full"
+                  loading="lazy"
+                />
+              </div>
+              <a
+                href="https://www.openstreetmap.org/?mlat=51.5117&mlon=-0.1304#map=15/51.5117/-0.1304"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+              >
+                View on OpenStreetMap <ArrowUpRight className="h-3 w-3" />
+              </a>
             </div>
           </aside>
 
@@ -243,7 +253,7 @@ function Row({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      <span className="mb-1.5 block text-sm font-medium text-foreground">
         {label}
       </span>
       {children}

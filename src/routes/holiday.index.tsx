@@ -1,5 +1,6 @@
 ﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { getHolidayTypes } from "@/server/queries";
 
 export const Route = createFileRoute("/holiday/")({
@@ -44,6 +45,18 @@ function HolidayTypesIndex() {
             Pick the type, we'll match the destination, board basis, and flight cabin to your
             dates and budget.
           </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button asChild size="lg" className="bg-gold text-gold-foreground hover:bg-gold/90">
+              <Link to="/quote">
+                Start a quote <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" size="lg" className="text-navy-fg/70 hover:bg-navy-fg/10 hover:text-navy-fg">
+              <Link to="/destinations">
+                Browse destinations <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 

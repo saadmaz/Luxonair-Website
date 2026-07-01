@@ -74,10 +74,10 @@ function AdminDashboard() {
   const statsLoading = subsLoading || enquiriesLoading;
 
   const statCards = [
-    { label: "Total Enquiries", value: totalEnquiries, change: `${newEnquiries} new`, positive: true, icon: FileText, accent: "bg-[#042045]", iconBg: "bg-[#042045]/8", iconColor: "text-[#042045]" },
-    { label: "New Enquiries", value: newEnquiries, change: "Awaiting reply", positive: true, icon: TrendingUp, accent: "bg-emerald-500", iconBg: "bg-emerald-50", iconColor: "text-emerald-600" },
-    { label: "Subscribers", value: totalSubs, change: "Email list", positive: true, icon: Users, accent: "bg-violet-500", iconBg: "bg-violet-50", iconColor: "text-violet-600" },
-    { label: "Unread Messages", value: unreadContacts, change: "Contact form", positive: unreadContacts === 0, icon: MessageSquare, accent: "bg-amber-400", iconBg: "bg-amber-50", iconColor: "text-amber-600" },
+    { label: "Total Enquiries",  value: totalEnquiries,  change: `${newEnquiries} new`, positive: true,                    icon: FileText,     accent: "bg-[#042045]", iconBg: "bg-[#042045]/8",  iconColor: "text-[#042045]" },
+    { label: "New Enquiries",    value: newEnquiries,    change: "Awaiting reply",      positive: true,                    icon: TrendingUp,   accent: "bg-[#0F9CA4]", iconBg: "bg-[#0F9CA4]/10", iconColor: "text-[#0F9CA4]" },
+    { label: "Subscribers",      value: totalSubs,       change: "Email list",          positive: true,                    icon: Users,        accent: "bg-[#097F8B]", iconBg: "bg-[#097F8B]/10", iconColor: "text-[#097F8B]" },
+    { label: "Unread Messages",  value: unreadContacts,  change: "Contact form",        positive: unreadContacts === 0,    icon: MessageSquare, accent: "bg-[#D2972A]", iconBg: "bg-[#D2972A]/10", iconColor: "text-[#D2972A]" },
   ];
 
   const recentEnquiries = enquiries.slice(0, 6);
@@ -87,7 +87,7 @@ function AdminDashboard() {
       <div className="mb-8 flex items-start justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">{dateStr}</p>
-          <h1 className="mt-1 text-2xl font-bold text-gray-900">{greeting} 👋</h1>
+          <h1 className="mt-1 text-2xl font-bold text-gray-900">{greeting}</h1>
           <p className="mt-0.5 text-sm text-gray-400">Here's what's happening with Luxeonair today.</p>
         </div>
       </div>
@@ -138,8 +138,12 @@ function AdminDashboard() {
             <Loader2 className="h-5 w-5 animate-spin text-gray-300" />
           </div>
         ) : enquiries.length === 0 ? (
-          <div className="flex h-32 items-center justify-center text-sm text-gray-400">
-            No enquiries yet
+          <div className="flex h-44 flex-col items-center justify-center gap-2 text-center px-6">
+            <FileText className="h-8 w-8 text-gray-200" strokeWidth={1.25} />
+            <p className="text-sm font-medium text-gray-400">No enquiries yet</p>
+            <p className="max-w-xs text-xs text-gray-300">
+              Once visitors submit a quote request on the website, enquiries will appear here.
+            </p>
           </div>
         ) : (
           <>

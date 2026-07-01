@@ -430,7 +430,7 @@ function Stepper({ current }: { current: number }) {
         <li key={label} className="flex flex-1 items-center gap-2">
           <span
             className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-medium ${
-              i <= current ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+              i <= current ? "bg-primary text-primary-foreground" : "border border-border bg-transparent text-muted-foreground"
             }`}
           >
             {i < current ? <Check className="h-3.5 w-3.5" /> : i + 1}

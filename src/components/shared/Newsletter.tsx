@@ -132,7 +132,7 @@ function NewsletterForm({
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email address"
+          placeholder="your@email.com"
           className={`h-11 w-full rounded-md pl-10 pr-4 text-sm transition-colors focus:outline-none focus:ring-2 ${
             dark
               ? "border border-white/10 bg-white/5 text-navy-fg placeholder:text-navy-fg/35 focus:border-gold/50 focus:ring-gold/20 hover:border-white/20"

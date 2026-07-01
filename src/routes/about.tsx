@@ -107,7 +107,7 @@ function AboutPage() {
               <Bullet>Not a discount aggregator - we don't compete on shouty deal pages.</Bullet>
               <Bullet>Not a call-centre - calls go to a named consultant, not a queue.</Bullet>
               <Bullet>Not a live online booking platform - pricing is confirmed within hours.</Bullet>
-              <Bullet>Not selling fake reviews or fabricated accreditation.</Bullet>
+              <Bullet>Every review is from a real Luxonair-booked traveller — nothing fabricated.</Bullet>
             </ul>
           </motion.div>
         </div>

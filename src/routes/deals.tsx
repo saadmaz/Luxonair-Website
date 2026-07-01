@@ -57,7 +57,7 @@ function DealsPage() {
           {deals.map((d) => (
             <article
               key={d.id}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-xl"
+              className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-xl"
             >
               {/* Image */}
               <div className="relative aspect-video w-full overflow-hidden bg-muted sm:aspect-16/10">
@@ -88,7 +88,7 @@ function DealsPage() {
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   {d.board}
                 </p>
-                <h2 className="mt-1 font-display text-xl font-semibold leading-snug">{d.title}</h2>
+                <h2 className="mt-1 line-clamp-2 font-display text-xl font-semibold leading-snug">{d.title}</h2>
                 <p className="mt-2 flex-1 text-sm text-muted-foreground leading-relaxed">
                   {d.blurb}
                 </p>

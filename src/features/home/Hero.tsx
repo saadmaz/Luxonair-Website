@@ -28,7 +28,7 @@ export function Hero() {
       <div className="container-page flex flex-1 flex-col justify-center pb-3 pt-5 md:pb-4 md:pt-8">
         <div className="max-w-3xl">
           <h1
-            className="mt-3 font-display text-[2.1rem] font-semibold leading-[1.08] tracking-tight text-navy-fg sm:mt-4 sm:text-5xl md:text-[3.25rem] text-balance animate-in fade-in-0 slide-in-from-bottom-4 duration-700"
+            className="mt-3 font-display text-[2.1rem] font-semibold leading-[1.08] tracking-tight text-white sm:mt-4 sm:text-5xl md:text-[3.25rem] text-balance animate-in fade-in-0 slide-in-from-bottom-4 duration-700"
             style={{ animationFillMode: "both" }}
           >
             Tailor-Made Holidays,{" "}
@@ -37,7 +37,7 @@ export function Hero() {
           </h1>
 
           <p
-            className="mt-3 max-w-lg text-sm leading-relaxed text-navy-fg/75 md:mt-4 md:text-base animate-in fade-in-0 slide-in-from-bottom-4 duration-700"
+            className="mt-3 max-w-lg text-sm leading-relaxed text-white/80 md:mt-4 md:text-base animate-in fade-in-0 slide-in-from-bottom-4 duration-700"
             style={{ animationDelay: "150ms", animationFillMode: "both" }}
           >
             Long-haul adventures, family getaways, business travel. We handle the lot. One consultant, one point of contact, genuinely good advice from start to finish.
@@ -58,7 +58,7 @@ export function Hero() {
             </Button>
             <Link
               to="/destinations"
-              className="flex items-center gap-1.5 text-sm text-navy-fg/50 transition-colors hover:text-navy-fg"
+              className="flex items-center gap-1.5 text-sm text-white/65 transition-colors hover:text-white"
             >
               Explore destinations <ArrowRight className="h-3.5 w-3.5" />
             </Link>
@@ -74,8 +74,8 @@ export function Hero() {
               { icon: Clock,       label: "We reply fast" },
               { icon: Users,       label: "500+ trips" },
             ].map(({ icon: Icon, label }) => (
-              <span key={label} className="flex items-center gap-1.5 text-xs text-navy-fg/55">
-                <Icon className="h-3.5 w-3.5 shrink-0 text-teal/70" />
+              <span key={label} className="flex items-center gap-1.5 text-xs text-white/65">
+                <Icon className="h-3.5 w-3.5 shrink-0 text-teal" />
                 {label}
               </span>
             ))}

@@ -212,9 +212,9 @@ function FlightsPage() {
                     <Link
                       to="/quote"
                       search={{ destination: to, tripType: "Flight only" }}
-                      className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                      className="inline-flex min-h-11 min-w-11 items-center justify-end gap-1 rounded-lg px-3 text-sm font-medium text-primary transition-colors hover:bg-primary/8"
                     >
-                      Quote <ArrowRight className="h-3 w-3" />
+                      Quote <ArrowRight className="h-3.5 w-3.5" />
                     </Link>
                   </td>
                 </tr>

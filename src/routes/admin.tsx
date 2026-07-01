@@ -1,6 +1,6 @@
 ﻿import { createFileRoute, Outlet, Link, useNavigate, useRouterState, redirect } from "@tanstack/react-router";
 import { getAdminSession } from "@/server/queries";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   LayoutDashboard, FileText, MessageSquare, LogOut,
@@ -23,8 +23,37 @@ export const Route = createFileRoute("/admin")({
     const session = await getAdminSession();
     if (!session) throw redirect({ to: "/admin/login" });
   },
+  errorComponent: AdminErrorScreen,
   component: AdminLayoutRoute,
 });
+
+function AdminErrorScreen() {
+  return (
+    <div className="flex h-screen flex-col items-center justify-center gap-4 bg-[#f1f4f8]">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#031e3e]/8">
+        <span className="text-lg font-bold text-[#031e3e]/40">!</span>
+      </div>
+      <div className="text-center">
+        <p className="text-sm font-semibold text-gray-700">Something went wrong loading this page.</p>
+        <p className="mt-1 text-xs text-gray-400">Try refreshing, or return to the dashboard.</p>
+      </div>
+      <div className="flex gap-2">
+        <button
+          onClick={() => window.location.reload()}
+          className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 shadow-sm transition-colors hover:bg-gray-50"
+        >
+          Refresh
+        </button>
+        <a
+          href="/admin"
+          className="rounded-lg bg-[#031e3e] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#042045]"
+        >
+          Back to dashboard
+        </a>
+      </div>
+    </div>
+  );
+}
 
 const navSections = [
   {
@@ -88,11 +117,16 @@ function AdminLayoutRoute() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  // Desktop collapse — persisted in localStorage
-  const [collapsed, setCollapsed] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem("lx_sidebar_collapsed") === "1";
-  });
+  // Desktop collapse — persisted in localStorage.
+  // Always start false (SSR-safe), sync from localStorage after mount to avoid
+  // server/client hydration mismatch that caused the sidebar logo to flicker.
+  const [collapsed, setCollapsed] = useState(false);
+
+  useLayoutEffect(() => {
+    if (localStorage.getItem("lx_sidebar_collapsed") === "1") {
+      setCollapsed(true);
+    }
+  }, []);
 
   const toggleCollapsed = () => {
     setCollapsed((v) => {
@@ -143,7 +177,11 @@ function AdminLayoutRoute() {
     );
   }
 
-  if (!authed) return null;
+  if (!authed) return (
+    <div className="flex h-screen items-center justify-center bg-[#f1f4f8]">
+      <div className="h-5 w-5 animate-spin rounded-full border-[2.5px] border-[#042045] border-t-transparent" />
+    </div>
+  );
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
