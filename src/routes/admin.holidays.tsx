@@ -1,7 +1,7 @@
 ﻿import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Star, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { api } from "@/lib/api";
@@ -20,12 +20,13 @@ type DbHoliday = {
   heroImage: string;
   bullets: string[];
   destinationSlugs: string[];
+  isFavourite: boolean;
 };
 
 const inputCls = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#042045] focus:bg-white focus:ring-2 focus:ring-[#042045]/10";
 const labelCls = "block text-sm font-medium text-gray-700 mb-1";
 
-const emptyForm = { slug: "", name: "", tagline: "", summary: "", heroImage: "", bullets: ["", "", "", ""] as string[], destinationSlugs: [] as string[] };
+const emptyForm = { slug: "", name: "", tagline: "", summary: "", heroImage: "", bullets: ["", "", "", ""] as string[], destinationSlugs: [] as string[], isFavourite: false };
 
 function AdminHolidaysPage() {
   const qc = useQueryClient();
@@ -60,7 +61,7 @@ function AdminHolidaysPage() {
   const openAdd = () => { setForm(emptyForm); setEditId(null); setModal("add"); };
   const openEdit = (h: DbHoliday) => {
     setEditId(h.id);
-    setForm({ slug: h.slug, name: h.name, tagline: h.tagline, summary: h.summary, heroImage: h.heroImage, bullets: [...(h.bullets as string[]), "", "", "", ""].slice(0, 4), destinationSlugs: [...(h.destinationSlugs as string[])] });
+    setForm({ slug: h.slug, name: h.name, tagline: h.tagline, summary: h.summary, heroImage: h.heroImage, bullets: [...(h.bullets as string[]), "", "", "", ""].slice(0, 4), destinationSlugs: [...(h.destinationSlugs as string[])], isFavourite: h.isFavourite ?? false });
     setModal("edit");
   };
 
@@ -92,8 +93,9 @@ function AdminHolidaysPage() {
               <div className="relative h-36 overflow-hidden bg-gray-100">
                 {h.heroImage && <img src={h.heroImage} alt={h.name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />}
                 <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-3 left-3">
+                <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
                   <p className="text-lg font-bold text-white">{h.name}</p>
+                  {h.isFavourite && <Star className="h-4 w-4 shrink-0 fill-amber-400 text-amber-400" />}
                 </div>
               </div>
               <div className="p-4">
@@ -141,6 +143,15 @@ function AdminHolidaysPage() {
               </div>
             </div>
             <ImageUpload label="Hero image" value={form.heroImage} onChange={(url) => setForm({ ...form, heroImage: url })} />
+            <label className="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                checked={form.isFavourite}
+                onChange={(e) => setForm({ ...form, isFavourite: e.target.checked })}
+                className="h-4 w-4 rounded border-gray-300 text-[#042045] focus:ring-[#042045]/30"
+              />
+              Add as All Time Favourite
+            </label>
           </div>
           {saveMut.error && <p className="text-sm text-red-600">{(saveMut.error as Error).message}</p>}
           <DialogFooter>

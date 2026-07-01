@@ -132,10 +132,12 @@ export const deals = mysqlTable(
     badge: varchar("badge", { length: 50 }).notNull(),
     expires: varchar("expires", { length: 10 }).notNull(),
     image: text("image").notNull(),
+    gallery: json("gallery").notNull().default([]),
+    isFavourite: boolean("is_favourite").notNull().default(false),
     blurb: text("blurb").notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (t) => [index("deals_expires_idx").on(t.expires)],
+  (t) => [index("deals_expires_idx").on(t.expires), index("deals_is_favourite_idx").on(t.isFavourite)],
 );
 
 export const testimonials = mysqlTable(
@@ -190,8 +192,23 @@ export const holidayTypes = mysqlTable("holiday_types", {
   heroImage: text("hero_image").notNull(),
   bullets: json("bullets").notNull(),
   destinationSlugs: json("destination_slugs").notNull(),
+  isFavourite: boolean("is_favourite").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const destinationHighlights = mysqlTable(
+  "destination_highlights",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    image: text("image").notNull(),
+    country: varchar("country", { length: 255 }).notNull(),
+    city: varchar("city", { length: 255 }).notNull(),
+    type: varchar("type", { length: 100 }).notNull(),
+    sortOrder: int("sort_order").notNull().default(0),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("destination_highlights_sort_order_idx").on(t.sortOrder)],
+);
 
 export const flightOffers = mysqlTable(
   "flight_offers",
@@ -273,6 +290,7 @@ export type Testimonial = typeof testimonials.$inferSelect;
 export type FaqGroup = typeof faqGroups.$inferSelect;
 export type FaqItem = typeof faqItems.$inferSelect;
 export type HolidayType = typeof holidayTypes.$inferSelect;
+export type DestinationHighlight = typeof destinationHighlights.$inferSelect;
 export type Session = typeof sessions.$inferSelect;
 export type AdminUser = typeof adminUsers.$inferSelect;
 export type FlightOffer = typeof flightOffers.$inferSelect;

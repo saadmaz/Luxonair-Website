@@ -4,8 +4,17 @@ import { QuoteForm } from "@/components/shared/QuoteForm";
 import { Clock, Phone, ShieldCheck } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
+import { getHolidayTypes } from "@/server/queries";
 
 export const Route = createFileRoute("/quote")({
+  loader: async () => {
+    try {
+      const holidayTypes = await getHolidayTypes();
+      return { holidayTypeNames: holidayTypes.map((h) => h.name) };
+    } catch {
+      return { holidayTypeNames: [] };
+    }
+  },
   validateSearch: (search: Record<string, unknown>): {
     destination?: string;
     when?: string;
@@ -50,6 +59,7 @@ function parseTravellers(str: string): { adults?: string; children?: string } {
 
 function QuotePage() {
   const search = Route.useSearch();
+  const { holidayTypeNames } = Route.useLoaderData();
 
   // Map hero search widget params → QuoteForm initial state
   const initialValues = {
@@ -76,7 +86,7 @@ function QuotePage() {
           <Row icon={WhatsAppIcon} title="WhatsApp" body="Send the same details on WhatsApp if you prefer." href={`https://wa.me/${SITE.phone.whatsapp}`} />
         </ul>
       </aside>
-      <QuoteForm initialValues={initialValues} />
+      <QuoteForm initialValues={initialValues} holidayTypeNames={holidayTypeNames} />
     </div>
   );
 }

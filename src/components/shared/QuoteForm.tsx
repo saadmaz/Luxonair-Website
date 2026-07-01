@@ -11,8 +11,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { regions, tripTypes, budgetBands } from "@/data/destinations";
+import { regions, budgetBands } from "@/data/destinations";
 import { SITE } from "@/config/site";
+import { DatePicker } from "@/components/shared/DatePicker";
+import { AirportPicker } from "@/components/admin/AirportPicker";
 
 // ─── Per-step Zod schemas ─────────────────────────────────────────────────────
 
@@ -20,6 +22,11 @@ const step1 = z.object({
   destination: z.string().min(2, "Tell us where you'd like to go"),
   region: z.string().optional(),
   tripType: z.string().min(1, "Pick one"),
+  tripTypeOther: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (data.tripType === "Other" && (!data.tripTypeOther || data.tripTypeOther.trim().length < 2)) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Tell us the holiday type", path: ["tripTypeOther"] });
+  }
 });
 
 const step2 = z.object({
@@ -61,7 +68,7 @@ const step5 = z.object({
 // ─── Form state type ──────────────────────────────────────────────────────────
 
 type Form = {
-  destination: string; region: string; tripType: string;
+  destination: string; region: string; tripType: string; tripTypeOther: string;
   dateMode: "flexible" | "specific";
   departWindow: string; flexibility: string; nights: string;
   departDate: string; returnDate: string;
@@ -71,7 +78,7 @@ type Form = {
 };
 
 const initial: Form = {
-  destination: "", region: "", tripType: "Luxury",
+  destination: "", region: "", tripType: "", tripTypeOther: "",
   dateMode: "flexible",
   departWindow: "", flexibility: "Flexible ±1 week", nights: "7",
   departDate: "", returnDate: "",
@@ -80,27 +87,13 @@ const initial: Form = {
   name: "", email: "", phone: "", notes: "",
 };
 
-const UK_AIRPORTS = [
-  "London Heathrow (LHR)",
-  "London Gatwick (LGW)",
-  "London Stansted (STN)",
-  "London Luton (LTN)",
-  "Manchester (MAN)",
-  "Birmingham (BHX)",
-  "Edinburgh (EDI)",
-  "Glasgow (GLA)",
-  "Bristol (BRS)",
-  "Leeds Bradford (LBA)",
-  "Newcastle (NCL)",
-  "Other",
-];
-
 const CABIN_CLASSES = ["Economy", "Premium Economy", "Business Class", "First Class"];
 const DIRECT_OPTIONS = ["No preference", "Direct only"];
 
 const steps = ["Where", "When", "Flights", "Who", "Contact"] as const;
 
-export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) {
+export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialValues?: Partial<Form>; holidayTypeNames?: string[] }) {
+  const tripTypeOptions = [...holidayTypeNames, "Other"];
   const [form, setForm] = useState<Form>({ ...initial, ...initialValues });
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -162,7 +155,7 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
           phone: form.phone,
           destination: form.destination,
           region: form.region || undefined,
-          tripType: form.tripType,
+          tripType: form.tripType === "Other" ? form.tripTypeOther : form.tripType,
           dateMode: form.dateMode,
           departWindow: form.departWindow || undefined,
           flexibility: form.flexibility || undefined,
@@ -254,8 +247,17 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
               <Select value={form.region} onChange={(v) => set("region", v)} options={["", ...regions]} />
             </Field>
             <Field label="Trip type" error={errors.tripType}>
-              <Pills value={form.tripType} onChange={(v) => set("tripType", v)} options={[...tripTypes]} />
+              <Pills value={form.tripType} onChange={(v) => set("tripType", v)} options={tripTypeOptions} />
             </Field>
+            {form.tripType === "Other" && (
+              <Field label="Tell us the holiday type" error={errors.tripTypeOther}>
+                <Input
+                  value={form.tripTypeOther}
+                  onChange={(e) => set("tripTypeOther", e.target.value)}
+                  placeholder="e.g. Cruise, Ski, Safari"
+                />
+              </Field>
+            )}
           </div>
         )}
 
@@ -288,30 +290,33 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
                   />
                 </Field>
                 <Field label="Return date (optional)" className="sm:col-span-2">
-                  <Input
-                    type="date"
-                    min={today}
+                  <DatePicker
+                    name="returnDate"
+                    placeholder="Select return date"
+                    minDate={new Date(today)}
                     value={form.returnDate}
-                    onChange={(e) => set("returnDate", e.target.value)}
+                    onChange={(v) => set("returnDate", v)}
                   />
                 </Field>
               </div>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Departure date" error={errors.departDate}>
-                  <Input
-                    type="date"
-                    min={today}
+                  <DatePicker
+                    name="departDate"
+                    placeholder="Select departure date"
+                    minDate={new Date(today)}
                     value={form.departDate}
-                    onChange={(e) => handleDepartDate(e.target.value)}
+                    onChange={handleDepartDate}
                   />
                 </Field>
                 <Field label="Return date (optional)">
-                  <Input
-                    type="date"
-                    min={form.departDate || today}
+                  <DatePicker
+                    name="returnDate"
+                    placeholder="Select return date"
+                    minDate={new Date(form.departDate || today)}
                     value={form.returnDate}
-                    onChange={(e) => handleReturnDate(e.target.value)}
+                    onChange={handleReturnDate}
                   />
                 </Field>
               </div>
@@ -335,11 +340,10 @@ export function QuoteForm({ initialValues }: { initialValues?: Partial<Form> }) 
         {step === 2 && (
           <div className="grid gap-4">
             <Field label="Departing from" error={errors.departAirport}>
-              <Select
+              <AirportPicker
+                label=""
                 value={form.departAirport}
                 onChange={(v) => set("departAirport", v)}
-                options={["", ...UK_AIRPORTS]}
-                emptyLabel="Select departure airport"
               />
             </Field>
             <Field label="Cabin class" error={errors.cabinClass}>

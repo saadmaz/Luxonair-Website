@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Clock, CheckCircle2, Circle, ChevronDown, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Clock, CheckCircle2, Circle, ChevronDown, Pencil, Trash2, Loader2, Mail } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { cn } from "@/lib/utils";
 import {
@@ -88,6 +88,9 @@ function AdminEnquiriesPage() {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [editItem, setEditItem] = useState<Enquiry | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [replyItem, setReplyItem] = useState<Enquiry | null>(null);
+  const [replySubject, setReplySubject] = useState("");
+  const [replyMessage, setReplyMessage] = useState("");
 
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["enquiries"],
@@ -117,6 +120,21 @@ function AdminEnquiriesPage() {
       if (expandedId === deleteId) setExpandedId(null);
     },
   });
+
+  const sendReply = useMutation({
+    mutationFn: (vars: { id: number; subject: string; message: string }) =>
+      api.post(`/api/enquiries/${vars.id}/reply`, { subject: vars.subject, message: vars.message }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["enquiries"] });
+      setReplyItem(null);
+    },
+  });
+
+  const openReply = (e: Enquiry) => {
+    setReplyItem(e);
+    setReplySubject(`Your ${e.destination} enquiry — Luxeonair`);
+    setReplyMessage("");
+  };
 
   const filtered = filter === "All" ? items : items.filter((e) => e.status === filter);
   const counts = {
@@ -214,7 +232,7 @@ function AdminEnquiriesPage() {
                           <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Phone</p><p className="mt-1 text-gray-800">{e.phone}</p></div>
                           <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Notes</p><p className="mt-1 text-gray-800">{e.notes || "-"}</p></div>
                           <div className="col-span-2 flex items-center gap-2">
-                            <a href={`mailto:${e.email}`} className="rounded-lg bg-[#042045] px-4 py-2 text-xs font-semibold text-white hover:bg-[#042045]/90">Reply by email</a>
+                            <button onClick={() => openReply(e)} className="inline-flex items-center gap-1.5 rounded-lg bg-[#042045] px-4 py-2 text-xs font-semibold text-white hover:bg-[#042045]/90"><Mail className="h-3.5 w-3.5" />Reply by email</button>
                             <a href={`https://wa.me/${e.phone.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"><WhatsAppIcon className="h-3.5 w-3.5 text-[#25D366]" />WhatsApp</a>
                           </div>
                         </div>
@@ -240,7 +258,7 @@ function AdminEnquiriesPage() {
                 <span>{e.travelDate}</span><span>{e.nights}n</span><span>{e.budget}</span>
               </div>
               <div className="mt-3 flex gap-2">
-                <a href={`mailto:${e.email}`} className="rounded-lg bg-[#042045] px-3 py-1.5 text-xs font-semibold text-white">Reply</a>
+                <button onClick={() => openReply(e)} className="rounded-lg bg-[#042045] px-3 py-1.5 text-xs font-semibold text-white">Reply</button>
                 <button onClick={() => setEditItem({ ...e })} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600">Edit</button>
                 <button onClick={() => setDeleteId(e.id)} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-red-500">Delete</button>
               </div>
@@ -301,6 +319,31 @@ function AdminEnquiriesPage() {
               className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
             >
               {deleteEnquiry.isPending ? "Deleting…" : "Delete"}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reply modal */}
+      <Dialog open={!!replyItem} onOpenChange={(o) => !o && setReplyItem(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>Reply to {replyItem?.name}</DialogTitle></DialogHeader>
+          {replyItem && (
+            <div className="space-y-4 py-2">
+              <p className="text-xs text-gray-500">Sending to <span className="font-medium text-gray-700">{replyItem.email}</span></p>
+              <div><label className={labelCls}>Subject</label><input className={inputCls} value={replySubject} onChange={(e) => setReplySubject(e.target.value)} /></div>
+              <div><label className={labelCls}>Message</label><textarea className={inputCls} rows={6} value={replyMessage} onChange={(e) => setReplyMessage(e.target.value)} placeholder="Write your reply…" /></div>
+              {sendReply.error && <p className="text-sm text-red-600">{(sendReply.error as Error).message}</p>}
+            </div>
+          )}
+          <DialogFooter>
+            <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
+            <button
+              onClick={() => replyItem && replySubject.trim() && replyMessage.trim() && sendReply.mutate({ id: replyItem.id, subject: replySubject, message: replyMessage })}
+              disabled={sendReply.isPending || !replySubject.trim() || !replyMessage.trim()}
+              className="inline-flex items-center gap-2 rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90 disabled:opacity-60"
+            >
+              {sendReply.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}Send reply
             </button>
           </DialogFooter>
         </DialogContent>

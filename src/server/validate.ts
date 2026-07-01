@@ -89,6 +89,8 @@ export const dealSchema = z.object({
   badge: z.string().max(100).default(""),
   expires: z.string().max(50).default(""),
   image: z.string().max(500).default(""),
+  gallery: z.array(z.string().max(500)).default([]),
+  isFavourite: z.boolean().default(false),
   blurb: z.string().max(1000).default(""),
 });
 
@@ -112,6 +114,15 @@ export const holidayTypeSchema = z.object({
   heroImage: z.string().max(500).default(""),
   bullets: z.array(z.string().max(200)).default([]),
   destinationSlugs: z.array(z.string().max(100)).default([]),
+  isFavourite: z.boolean().default(false),
+});
+
+export const destinationHighlightSchema = z.object({
+  image: z.string().min(1).max(500),
+  country: z.string().min(1).max(255),
+  city: z.string().min(1).max(255),
+  type: z.string().min(1).max(100),
+  sortOrder: z.number().int().min(0).default(0),
 });
 
 export const faqGroupSchema = z.object({

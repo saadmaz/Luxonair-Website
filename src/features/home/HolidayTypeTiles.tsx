@@ -1,10 +1,21 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { holidayTypes } from "@/data/holidayTypes";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { motion } from "framer-motion";
 
-export function HolidayTypeTiles() {
+type HolidayType = {
+  slug: string;
+  name: string;
+  tagline: string;
+  heroImage: string;
+  destinationSlugs: unknown;
+};
+
+const parseArr = <T,>(v: unknown): T[] =>
+  Array.isArray(v) ? (v as T[]) : typeof v === "string" ? JSON.parse(v) : [];
+
+export function HolidayTypeTiles({ holidayTypes }: { holidayTypes: HolidayType[] }) {
+  if (holidayTypes.length === 0) return null;
   return (
     <section className="bg-secondary/30">
       <div className="container-page py-10 md:py-16">
@@ -23,7 +34,9 @@ export function HolidayTypeTiles() {
             show: { transition: { staggerChildren: 0.08 } },
           }}
         >
-          {holidayTypes.map((h) => (
+          {holidayTypes.map((h) => {
+            const destinationSlugs = parseArr<string>(h.destinationSlugs);
+            return (
             <motion.div
               key={h.slug}
               variants={{
@@ -37,7 +50,7 @@ export function HolidayTypeTiles() {
                 className="group relative block overflow-hidden rounded-2xl shadow-md transition-shadow duration-300 hover:shadow-xl"
               >
                 {/* Image */}
-                <div className="aspect-[4/3] w-full overflow-hidden bg-navy/30">
+                <div className="aspect-4/3 w-full overflow-hidden bg-navy/30">
                   <img
                     src={h.heroImage}
                     alt={h.name}
@@ -59,15 +72,16 @@ export function HolidayTypeTiles() {
                 </div>
 
                 {/* Destination count badge */}
-                {(h.destinationSlugs?.length ?? 0) > 0 && (
+                {destinationSlugs.length > 0 && (
                   <div className="absolute right-3 top-3 rounded-full bg-black/40 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur-sm">
-                    {h.destinationSlugs.length} destination
-                    {h.destinationSlugs.length !== 1 ? "s" : ""}
+                    {destinationSlugs.length} destination
+                    {destinationSlugs.length !== 1 ? "s" : ""}
                   </div>
                 )}
               </Link>
             </motion.div>
-          ))}
+            );
+          })}
         </motion.div>
       </div>
     </section>

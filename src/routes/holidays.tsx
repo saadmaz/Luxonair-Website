@@ -1,8 +1,8 @@
 ﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { holidayTypes } from "@/data/holidayTypes";
 import { destinations } from "@/data/destinations";
 import { DestinationCard } from "@/components/shared/DestinationCard";
+import { getHolidayTypes } from "@/server/queries";
 import {
   ArrowRight,
   Clock,
@@ -13,6 +13,13 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/holidays")({
+  loader: async () => {
+    try {
+      return await getHolidayTypes();
+    } catch {
+      return [];
+    }
+  },
   head: () => ({
     meta: [
       { title: "Bespoke Tailor-Made Holidays from the UK | Luxeonair" },
@@ -31,6 +38,7 @@ export const Route = createFileRoute("/holidays")({
 });
 
 function HolidaysPage() {
+  const holidayTypes = Route.useLoaderData() ?? [];
   return (
     <>
       {/* Hero */}

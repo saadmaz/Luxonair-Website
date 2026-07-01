@@ -2,7 +2,15 @@
 // Each section lives in src/features/home/ and can be edited independently.
 import { createFileRoute } from "@tanstack/react-router";
 import { Newsletter } from "@/components/shared/Newsletter";
-import { getTestimonials, getFlightOffers } from "@/server/queries";
+import {
+  getTestimonials,
+  getFlightOffers,
+  getDeals,
+  getHolidayTypes,
+  getDestinationHighlights,
+  getFaqsNested,
+  getPublishedBlogPosts,
+} from "@/server/queries";
 import {
   Hero,
   TrustPillars,
@@ -21,13 +29,27 @@ import {
 export const Route = createFileRoute("/")({
   loader: async () => {
     try {
-      const [testimonials, flightOffers] = await Promise.all([
-        getTestimonials(),
-        getFlightOffers(),
-      ]);
-      return { testimonials, flightOffers };
+      const [testimonials, flightOffers, deals, holidayTypes, destinationHighlights, faqGroups, blogPosts] =
+        await Promise.all([
+          getTestimonials(),
+          getFlightOffers(),
+          getDeals(),
+          getHolidayTypes(),
+          getDestinationHighlights(),
+          getFaqsNested(),
+          getPublishedBlogPosts(),
+        ]);
+      return { testimonials, flightOffers, deals, holidayTypes, destinationHighlights, faqGroups, blogPosts };
     } catch {
-      return { testimonials: [], flightOffers: [] };
+      return {
+        testimonials: [],
+        flightOffers: [],
+        deals: [],
+        holidayTypes: [],
+        destinationHighlights: [],
+        faqGroups: [],
+        blogPosts: [],
+      };
     }
   },
   head: () => ({
@@ -67,20 +89,21 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const { testimonials, flightOffers } = Route.useLoaderData();
+  const { testimonials, flightOffers, deals, holidayTypes, destinationHighlights, faqGroups, blogPosts } =
+    Route.useLoaderData();
   return (
     <>
       <Hero />
       <TrustPillars />
-      <HotDeals />
-      <FeaturedDestinations />
-      <HolidayTypeTiles />
-      <AllTimeFavourites />
+      <HotDeals deals={deals} />
+      <FeaturedDestinations highlights={destinationHighlights} />
+      <HolidayTypeTiles holidayTypes={holidayTypes} />
+      <AllTimeFavourites deals={deals} holidayTypes={holidayTypes} />
       <FlightOffers offers={flightOffers} />
       <WhyLuxonair />
       <SocialProof testimonials={testimonials} />
-      <BlogCarousel />
-      <HomeFAQ />
+      <BlogCarousel posts={blogPosts} />
+      <HomeFAQ faqGroups={faqGroups} />
       <Newsletter variant="section" />
       <FinalCTA />
     </>

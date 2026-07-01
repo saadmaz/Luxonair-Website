@@ -78,6 +78,30 @@ export async function sendEnquiryAlert(d: EnquiryPayload) {
   });
 }
 
+// ─── Enquiry reply (admin → customer) ──────────────────────────────────────────
+
+export async function sendEnquiryReply(d: { to: string; name: string; subject: string; message: string }) {
+  const html = `
+<div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a2e">
+  <div style="background:#031e3e;padding:20px 24px;border-radius:8px 8px 0 0">
+    <img src="https://www.luxeonair.co.uk/Logo/main-logo.png" alt="Luxeonair" height="28" style="opacity:.9"/>
+  </div>
+  <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:24px">
+    <p style="margin:0 0 16px">Hi ${esc(d.name.split(" ")[0] || d.name)},</p>
+    <div style="white-space:pre-wrap;line-height:1.6">${esc(d.message)}</div>
+    <p style="margin:24px 0 0">Best regards,<br/>The Luxeonair team</p>
+  </div>
+  <p style="margin:16px 0 0;font-size:11px;color:#9ca3af;text-align:center">Luxeonair · luxeonair.co.uk</p>
+</div>`;
+
+  await client().emails.send({
+    from: from(),
+    to: d.to,
+    subject: d.subject,
+    html,
+  });
+}
+
 // ─── Flight offer booking alert ────────────────────────────────────────────────
 
 export interface FlightOfferBookingPayload {

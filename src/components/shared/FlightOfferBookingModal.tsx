@@ -10,6 +10,7 @@ import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { Flag } from "@/components/shared/Flag";
 import { findAirport } from "@/data/airports";
+import { DatePicker } from "@/components/shared/DatePicker";
 import type { FlightOffer } from "@/types/flightOffer";
 
 type Props = {
@@ -235,21 +236,22 @@ export function FlightOfferBookingModal({ offer, onOpenChange }: Props) {
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <label className={labelCls}>Departure Date</label>
-                          <input
-                            type="date"
-                            className={inputCls}
+                          <DatePicker
+                            name="departDate"
+                            placeholder="Select date"
                             value={form.departDate}
-                            onChange={(e) => set("departDate", e.target.value)}
+                            onChange={(v) => set("departDate", v)}
                           />
                         </div>
                         {form.tripType === "Return" ? (
                           <div>
                             <label className={labelCls}>Return Date</label>
-                            <input
-                              type="date"
-                              className={inputCls}
+                            <DatePicker
+                              name="returnDate"
+                              placeholder="Select date"
+                              minDate={form.departDate ? new Date(form.departDate) : undefined}
                               value={form.returnDate}
-                              onChange={(e) => set("returnDate", e.target.value)}
+                              onChange={(v) => set("returnDate", v)}
                             />
                           </div>
                         ) : (

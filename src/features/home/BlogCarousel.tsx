@@ -2,9 +2,18 @@ import { useState, useEffect, useCallback } from "react";
 import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, ArrowRight, Clock } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { blogPosts } from "@/data/blog";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { cn } from "@/lib/utils";
+
+type BlogPost = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  heroImage: string;
+  readMinutes: number;
+  date: string;
+};
 
 const slideVariants = {
   enter: (d: number) => ({ opacity: 0, x: d * 50 }),
@@ -12,7 +21,7 @@ const slideVariants = {
   exit:  (d: number) => ({ opacity: 0, x: d * -50 }),
 };
 
-export function BlogCarousel() {
+export function BlogCarousel({ posts: blogPosts }: { posts: BlogPost[] }) {
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
   const total = blogPosts.length;
@@ -30,12 +39,14 @@ export function BlogCarousel() {
   const next = () => goTo((current + 1) % total, 1);
 
   useEffect(() => {
+    if (total === 0) return;
     const id = setInterval(() => {
       goTo((current + 1) % total, 1);
     }, 7000);
     return () => clearInterval(id);
   }, [current, goTo, total]);
 
+  if (total === 0) return null;
   const post = blogPosts[current];
 
   return (

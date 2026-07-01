@@ -3,18 +3,18 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { ChevronDown, Clock, Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
-import { holidayTypes } from "@/data/holidayTypes";
+import { useQuery } from "@tanstack/react-query";
+import { getHolidayTypes } from "@/server/queries";
 import { SITE } from "@/config/site";
 import { AnimatePresence, motion } from "framer-motion";
 
-const dealCategories = [
-  { label: "Cheap Flights", slug: "cheap-flights" },
-  { label: "Last Minute Holidays", slug: "last-minute" },
-  { label: "Seasonal Offers", slug: "seasonal" },
-];
-
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { data: holidayTypes = [] } = useQuery({
+    queryKey: ["nav", "holiday-types"],
+    queryFn: () => getHolidayTypes(),
+    staleTime: 5 * 60 * 1000,
+  });
 
   return (
     <header className="sticky top-0 z-50">
@@ -84,31 +84,7 @@ export function Header() {
               </div>
             </div>
 
-            {/* Deals dropdown */}
-            <div className="group relative">
-              <div className="flex items-center gap-0.5 cursor-pointer">
-                <Link
-                  to="/deals"
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground group-hover:text-foreground"
-                >
-                  Deals
-                </Link>
-                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 group-hover:rotate-180 group-hover:text-foreground" />
-              </div>
-              <div className="invisible absolute left-0 top-full z-50 pt-1 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100">
-                <div className="w-48 rounded-xl border border-border bg-background py-2 shadow-xl">
-                  {dealCategories.map((c) => (
-                    <Link
-                      key={c.slug}
-                      to="/deals"
-                      className="block px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-muted hover:text-primary"
-                    >
-                      {c.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <NavLink to="/deals">Deals</NavLink>
 
             <NavLink to="/flight-offers">Flight Offers</NavLink>
             <NavLink to="/blog">Blog</NavLink>
@@ -184,16 +160,6 @@ export function Header() {
               >
                 Deals
               </Link>
-              {dealCategories.map((c) => (
-                <Link
-                  key={c.slug}
-                  to="/deals"
-                  onClick={() => setOpen(false)}
-                  className="rounded-md pl-6 pr-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-                >
-                  {c.label}
-                </Link>
-              ))}
 
               <Link
                 to="/flight-offers"

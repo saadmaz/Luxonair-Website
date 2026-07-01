@@ -10,6 +10,9 @@ interface DatePickerProps {
   placeholder?: string;
   disabled?: boolean;
   minDate?: Date;
+  /** Controlled usage (React-state forms): yyyy-MM-dd, paired with onChange. */
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
 export function DatePicker({
@@ -17,12 +20,21 @@ export function DatePicker({
   placeholder = "Select date",
   disabled,
   minDate,
+  value,
+  onChange,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Date | undefined>();
+  const [internalSelected, setInternalSelected] = useState<Date | undefined>();
+  const isControlled = value !== undefined;
+  const selected = isControlled
+    ? value
+      ? new Date(`${value}T00:00:00`)
+      : undefined
+    : internalSelected;
 
   function pick(date: Date | undefined) {
-    setSelected(date);
+    if (!isControlled) setInternalSelected(date);
+    onChange?.(date ? format(date, "yyyy-MM-dd") : "");
     if (date) setOpen(false);
   }
 
@@ -104,7 +116,7 @@ export function DatePicker({
               <div className="border-t border-border px-4 py-2.5 text-right">
                 <button
                   type="button"
-                  onClick={() => setSelected(undefined)}
+                  onClick={() => pick(undefined)}
                   className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
                 >
                   Clear date

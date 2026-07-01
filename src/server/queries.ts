@@ -7,6 +7,7 @@ import {
   db,
   blogPosts,
   destinations,
+  destinationHighlights,
   deals,
   flightOffers,
   testimonials,
@@ -43,6 +44,13 @@ export const getDestinationBySlug = createServerFn({ method: "GET" })
     const [row] = await db.select().from(destinations).where(eq(destinations.slug, data));
     return row ?? null;
   });
+
+export const getDestinationHighlights = createServerFn({ method: "GET" }).handler(async () => {
+  return db
+    .select()
+    .from(destinationHighlights)
+    .orderBy(asc(destinationHighlights.sortOrder), desc(destinationHighlights.createdAt));
+});
 
 // ─── Deals ────────────────────────────────────────────────────────────────────
 

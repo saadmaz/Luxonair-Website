@@ -1,101 +1,80 @@
-import { useState } from "react";
-import { Link } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "framer-motion";
-import { MapPin } from "lucide-react";
-import { destinations, tripTypes } from "@/data/destinations";
+import { useRef } from "react";
+import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 
-const FILTERS = ["All", ...tripTypes] as const;
-type Filter = (typeof FILTERS)[number];
+type DestinationHighlight = { id: number; image: string; country: string; city: string; type: string };
 
-export function FeaturedDestinations() {
-  const [active, setActive] = useState<Filter>("All");
+type Props = { highlights: DestinationHighlight[] };
 
-  const filtered =
-    active === "All"
-      ? destinations
-      : destinations.filter((d) =>
-          d.tripType.includes(active as (typeof tripTypes)[number])
-        );
+export function FeaturedDestinations({ highlights }: Props) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
 
-  const visible = filtered.slice(0, 4);
+  const scrollBy = (dir: 1 | -1) => {
+    scrollerRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
+  };
+
+  if (highlights.length === 0) return null;
 
   return (
     <section className="py-12 md:py-20">
       <div className="container-page">
         {/* Header */}
-        <div className="mb-8 text-center">
-          <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Popular Destinations
-          </h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Explore top picks with trending destinations our clients love
-          </p>
-        </div>
-
-        {/* Filter tabs */}
-        <div className="mb-8 flex flex-wrap items-center justify-center gap-2">
-          {FILTERS.map((f) => (
+        <div className="mb-8 flex items-end justify-between gap-4">
+          <div>
+            <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              Popular Destinations
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Explore top picks with trending destinations our clients love
+            </p>
+          </div>
+          <div className="hidden shrink-0 gap-2 sm:flex">
             <button
-              key={f}
               type="button"
-              onClick={() => setActive(f)}
-              className={[
-                "rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200",
-                active === f
-                  ? "bg-gold text-gold-foreground shadow-sm"
-                  : "border border-border bg-background text-foreground hover:border-gold/50 hover:text-gold",
-              ].join(" ")}
+              onClick={() => scrollBy(-1)}
+              aria-label="Scroll left"
+              className="grid h-9 w-9 place-items-center rounded-full border border-border text-foreground transition-colors hover:border-gold hover:text-gold"
             >
-              {f === "All" ? "All Destinations" : f}
+              <ChevronLeft className="h-4 w-4" />
             </button>
-          ))}
+            <button
+              type="button"
+              onClick={() => scrollBy(1)}
+              aria-label="Scroll right"
+              className="grid h-9 w-9 place-items-center rounded-full border border-border text-foreground transition-colors hover:border-gold hover:text-gold"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
-        {/* Grid */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
-            className="grid grid-cols-2 gap-4 sm:grid-cols-4"
-          >
-            {visible.length > 0 ? (
-              visible.map((d) => (
-                <Link
-                  key={d.slug}
-                  to="/destinations/$slug"
-                  params={{ slug: d.slug }}
-                  className="group flex flex-col items-center text-center"
-                >
-                  <div className="aspect-square w-full overflow-hidden rounded-3xl bg-muted shadow-sm transition-shadow duration-300 group-hover:shadow-lg">
-                    <img
-                      src={d.heroImage}
-                      alt={d.name}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <p className="mt-3 flex items-center gap-1 text-sm font-bold text-foreground">
-                    <MapPin className="h-3.5 w-3.5 shrink-0 text-gold" />
-                    {d.country}
-                  </p>
-                </Link>
-              ))
-            ) : (
-              <p className="col-span-4 py-10 text-center text-sm text-muted-foreground">
-                No destinations found for this filter.
+        {/* Horizontal scroll strip */}
+        <div
+          ref={scrollerRef}
+          className="flex gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] snap-x snap-mandatory [&::-webkit-scrollbar]:hidden"
+        >
+          {highlights.map((h) => (
+            <div
+              key={h.id}
+              className="group flex w-52.5 shrink-0 snap-start flex-col items-center text-center"
+            >
+              <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-muted shadow-sm transition-shadow duration-300 group-hover:shadow-lg">
+                <img
+                  src={h.image}
+                  alt={`${h.city}, ${h.country}`}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <span className="absolute left-2.5 top-2.5 rounded-full bg-background/90 px-2.5 py-0.5 text-[10px] font-semibold text-foreground backdrop-blur-sm">
+                  {h.type}
+                </span>
+              </div>
+              <p className="mt-3 flex items-center gap-1 text-sm font-bold text-foreground">
+                <MapPin className="h-3.5 w-3.5 shrink-0 text-gold" />
+                {h.city}
               </p>
-            )}
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Dot indicators */}
-        <div className="mt-8 flex justify-center gap-2">
-          <span className="h-2.5 w-7 rounded-full bg-gold" />
-          <span className="h-2.5 w-2.5 rounded-full bg-border transition-colors hover:bg-gold/40" />
-          <span className="h-2.5 w-2.5 rounded-full bg-border transition-colors hover:bg-gold/40" />
+              <p className="text-xs text-muted-foreground">{h.country}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

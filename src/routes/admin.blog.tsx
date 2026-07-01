@@ -2,8 +2,11 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Pencil, Trash2, Clock, Loader2 } from "lucide-react";
+import type { JSONContent } from "@tiptap/react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
+import { DatePicker } from "@/components/shared/DatePicker";
 import { api } from "@/lib/api";
 import { Pagination } from "@/components/ui/Pagination";
 
@@ -21,6 +24,7 @@ type DbPost = {
   date: string;
   readMinutes: number;
   heroImage: string;
+  content: JSONContent | null;
 };
 
 const inputCls = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#042045] focus:bg-white focus:ring-2 focus:ring-[#042045]/10";
@@ -32,7 +36,7 @@ const categoryColors: Record<string, string> = {
   Family: "bg-amber-50 text-amber-700", Destinations: "bg-emerald-50 text-emerald-700", News: "bg-gray-100 text-gray-600",
 };
 
-const emptyForm = { slug: "", title: "", excerpt: "", category: "Guides", author: "Luxeonair Editorial", date: new Date().toISOString().slice(0, 10), readMinutes: 5, heroImage: "" };
+const emptyForm = { slug: "", title: "", excerpt: "", category: "Guides", author: "Luxeonair Editorial", date: new Date().toISOString().slice(0, 10), readMinutes: 5, heroImage: "", content: null as JSONContent | null };
 
 function AdminBlogPage() {
   const qc = useQueryClient();
@@ -65,7 +69,7 @@ function AdminBlogPage() {
   const openAdd = () => { setForm(emptyForm); setEditId(null); setModal("add"); };
   const openEdit = (post: DbPost) => {
     setEditId(post.id);
-    setForm({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, author: post.author, date: post.date, readMinutes: post.readMinutes, heroImage: post.heroImage });
+    setForm({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, author: post.author, date: post.date, readMinutes: post.readMinutes, heroImage: post.heroImage, content: post.content });
     setModal("edit");
   };
 
@@ -168,10 +172,14 @@ function AdminBlogPage() {
                 </select>
               </div>
               <div><label className={labelCls}>Author</label><input className={inputCls} value={form.author} onChange={(e) => setForm({ ...form, author: e.target.value })} /></div>
-              <div><label className={labelCls}>Publish date</label><input type="date" className={inputCls} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></div>
+              <div><label className={labelCls}>Publish date</label><DatePicker name="date" placeholder="Select date" value={form.date} onChange={(v) => setForm({ ...form, date: v })} /></div>
               <div><label className={labelCls}>Read time (min)</label><input type="number" className={inputCls} value={form.readMinutes} onChange={(e) => setForm({ ...form, readMinutes: +e.target.value })} /></div>
             </div>
             <ImageUpload label="Hero image" value={form.heroImage} onChange={(url) => setForm({ ...form, heroImage: url })} />
+            <div>
+              <label className={labelCls}>Content</label>
+              <RichTextEditor value={form.content} onChange={(doc) => setForm({ ...form, content: doc })} />
+            </div>
           </div>
           {saveMut.error && <p className="text-sm text-red-600">{(saveMut.error as Error).message}</p>}
           <DialogFooter>

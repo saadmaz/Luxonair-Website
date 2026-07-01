@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { reviews as staticReviews } from "@/data/reviews";
 
 type Testimonial = {
   id: number;
@@ -36,12 +35,11 @@ function polar(angleDeg: number, r: number) {
 }
 
 export function SocialProof({ testimonials }: { testimonials: Testimonial[] }) {
-  const rows: Row[] =
-    testimonials.length > 0
-      ? testimonials.map((t) => ({ id: t.id, author: t.author, trip: t.trip, rating: t.rating, body: t.body }))
-      : staticReviews.map((r) => ({ id: r.id, author: r.author, trip: r.trip, rating: r.rating, body: r.body }));
+  const rows: Row[] = testimonials.map((t) => ({ id: t.id, author: t.author, trip: t.trip, rating: t.rating, body: t.body }));
 
   const [current, setCurrent] = useState(0);
+
+  if (rows.length === 0) return null;
 
   const prev = () => setCurrent((c) => (c - 1 + rows.length) % rows.length);
   const next = () => setCurrent((c) => (c + 1) % rows.length);

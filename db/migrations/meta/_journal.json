@@ -36,6 +36,13 @@
       "when": 1782921669370,
       "tag": "0004_add_flight_offers",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1782950000000,
+      "tag": "0005_add_deals_gallery_favourites_destination_highlights",
+      "breakpoints": true
     }
   ]
 }

@@ -2,17 +2,22 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { faqGroups } from "@/data/faq";
 
-export function HomeFAQ() {
-  const [openKey, setOpenKey] = useState<string | null>(null);
+type FaqGroup = {
+  id: number;
+  title: string;
+  items: { id: number; question: string; answer: string }[];
+};
 
-  // Flatten all FAQ items with a unique key
-  const allItems = faqGroups.flatMap((g) =>
-    g.items.map((item) => ({ ...item, key: `${g.title}::${item.q}` }))
-  );
+export function HomeFAQ({ faqGroups }: { faqGroups: FaqGroup[] }) {
+  const [openKey, setOpenKey] = useState<number | null>(null);
 
-  const toggle = (key: string) =>
+  // Flatten all FAQ items
+  const allItems = faqGroups.flatMap((g) => g.items);
+
+  if (allItems.length === 0) return null;
+
+  const toggle = (key: number) =>
     setOpenKey((prev) => (prev === key ? null : key));
 
   return (
@@ -31,27 +36,27 @@ export function HomeFAQ() {
 
         {/* Accordion */}
         <div className="space-y-3">
-          {allItems.map(({ q, a, key }) => (
+          {allItems.map(({ id, question, answer }) => (
             <div
-              key={key}
+              key={id}
               className="overflow-hidden rounded-xl border border-border bg-card shadow-sm"
             >
               <button
                 type="button"
-                onClick={() => toggle(key)}
+                onClick={() => toggle(id)}
                 className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-semibold text-foreground transition-colors hover:bg-muted/40"
               >
-                <span>{q}</span>
+                <span>{question}</span>
                 <ChevronDown
                   className={[
                     "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200",
-                    openKey === key ? "rotate-180" : "",
+                    openKey === id ? "rotate-180" : "",
                   ].join(" ")}
                 />
               </button>
 
               <AnimatePresence initial={false}>
-                {openKey === key && (
+                {openKey === id && (
                   <motion.div
                     key="content"
                     initial={{ height: 0 }}
@@ -61,7 +66,7 @@ export function HomeFAQ() {
                     className="overflow-hidden"
                   >
                     <div className="border-t border-border px-5 py-4 text-sm leading-relaxed text-muted-foreground">
-                      {a}
+                      {answer}
                     </div>
                   </motion.div>
                 )}

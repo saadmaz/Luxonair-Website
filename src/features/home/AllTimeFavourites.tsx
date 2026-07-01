@@ -1,7 +1,35 @@
 import { Link } from "@tanstack/react-router";
-import { MapPin, ArrowUpRight, Sparkles, ClipboardList, Info } from "lucide-react";
+import { MapPin, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { deals } from "@/data/deals";
+
+type Deal = {
+  id: string;
+  title: string;
+  region: string;
+  nights: number;
+  fromPrice: number;
+  badge: string;
+  image: string;
+  isFavourite: boolean;
+};
+
+type HolidayType = {
+  id: number;
+  slug: string;
+  name: string;
+  tagline: string;
+  heroImage: string;
+  isFavourite: boolean;
+};
+
+type Card = {
+  key: string;
+  image: string;
+  title: string;
+  subtitle: string;
+  price?: number;
+  href: string;
+};
 
 const BADGE_COLORS: Record<string, string> = {
   Honeymoon: "bg-pink-500 text-white",
@@ -12,9 +40,31 @@ const BADGE_COLORS: Record<string, string> = {
   "Tailor-made": "bg-teal text-white",
 };
 
-export function AllTimeFavourites() {
-  // Show a different set of deals than HotDeals (which uses slice 0–3)
-  const featured = deals.slice(3, 6);
+export function AllTimeFavourites({ deals, holidayTypes }: { deals: Deal[]; holidayTypes: HolidayType[] }) {
+  const dealCards: Card[] = deals
+    .filter((d) => d.isFavourite)
+    .map((d) => ({
+      key: `deal-${d.id}`,
+      image: d.image,
+      title: d.title,
+      subtitle: `${d.region} · ${d.nights + 1} Days / ${d.nights} Nights`,
+      price: d.fromPrice,
+      href: `/quote?destination=${encodeURIComponent(d.title)}`,
+    }));
+
+  const holidayCards: Card[] = holidayTypes
+    .filter((h) => h.isFavourite)
+    .map((h) => ({
+      key: `holiday-${h.id}`,
+      image: h.heroImage,
+      title: h.name,
+      subtitle: h.tagline,
+      href: `/holiday/${h.slug}`,
+    }));
+
+  const featured = [...dealCards, ...holidayCards].slice(0, 6);
+
+  if (featured.length === 0) return null;
 
   return (
     <section className="bg-secondary/30 py-12 md:py-20">
@@ -31,12 +81,11 @@ export function AllTimeFavourites() {
 
         {/* Cards */}
         <div className="grid gap-6 sm:grid-cols-3">
-          {featured.map((deal, i) => {
-            const badgeClass = BADGE_COLORS[deal.badge ?? ""] ?? "bg-gold text-gold-foreground";
-            const days = deal.nights + 1;
+          {featured.map((card, i) => {
+            const badgeClass = BADGE_COLORS[card.title] ?? "bg-gold text-gold-foreground";
             return (
               <motion.article
-                key={deal.id}
+                key={card.key}
                 initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
@@ -45,19 +94,17 @@ export function AllTimeFavourites() {
               >
                 {/* Image */}
                 <div className="relative overflow-hidden">
-                  <div className="aspect-[4/3] w-full overflow-hidden">
+                  <div className="aspect-4/3 w-full overflow-hidden">
                     <img
-                      src={deal.image}
-                      alt={deal.title}
+                      src={card.image}
+                      alt={card.title}
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
-                  {deal.badge && (
-                    <span
-                      className={`absolute right-3 top-3 rounded-full px-3 py-1 text-xs font-bold shadow-md ${badgeClass}`}
-                    >
-                      {deal.badge}
+                  {!card.price && (
+                    <span className={`absolute right-3 top-3 rounded-full px-3 py-1 text-xs font-bold shadow-md ${badgeClass}`}>
+                      Holiday type
                     </span>
                   )}
                 </div>
@@ -65,50 +112,30 @@ export function AllTimeFavourites() {
                 {/* Body */}
                 <div className="p-5">
                   <h3 className="line-clamp-2 font-display text-base font-bold leading-snug text-foreground">
-                    {deal.title}
+                    {card.title}
                   </h3>
 
                   <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
                     <MapPin className="h-3.5 w-3.5 shrink-0 text-gold" />
-                    <span className="font-medium">{deal.region}</span>
-                    <span className="text-border">↔</span>
-                    <span>
-                      {days} Days / {deal.nights} Nights
-                    </span>
+                    <span className="line-clamp-1">{card.subtitle}</span>
                   </div>
 
                   {/* CTA row */}
                   <div className="mt-4 flex items-center justify-between">
-                    <Link
-                      to="/quote"
-                      search={{ destination: deal.title }}
+                    <a
+                      href={card.href}
                       className="inline-flex items-center gap-1.5 rounded-lg bg-gold px-4 py-2 text-xs font-bold text-gold-foreground transition-all hover:bg-gold/90"
                     >
-                      Book Now <ArrowUpRight className="h-3.5 w-3.5" />
-                    </Link>
-                    <div className="text-right">
-                      <p className="text-[10px] text-muted-foreground">per person</p>
-                      <p className="font-display text-lg font-bold text-foreground">
-                        £{deal.fromPrice.toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Separator */}
-                  <div className="my-4 border-t border-border" />
-
-                  {/* Info tags */}
-                  <div className="flex items-center gap-4">
-                    <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                      <Sparkles className="h-3.5 w-3.5 text-gold" />
-                      Experience
-                      <Info className="h-3 w-3 opacity-40" />
-                    </span>
-                    <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                      <ClipboardList className="h-3.5 w-3.5 text-teal" />
-                      Inclusion
-                      <Info className="h-3 w-3 opacity-40" />
-                    </span>
+                      {card.price ? "Book Now" : "Explore"} <ArrowUpRight className="h-3.5 w-3.5" />
+                    </a>
+                    {card.price !== undefined && (
+                      <div className="text-right">
+                        <p className="text-[10px] text-muted-foreground">per person</p>
+                        <p className="font-display text-lg font-bold text-foreground">
+                          £{card.price.toLocaleString()}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.article>

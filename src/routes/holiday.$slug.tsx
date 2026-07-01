@@ -4,17 +4,23 @@ import { ArrowRight, Check, MessageCircle, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { Newsletter } from "@/components/shared/Newsletter";
 import { PackageCard } from "@/components/shared/PackageCard";
-import { findHolidayType } from "@/data/holidayTypes";
 import { destinations } from "@/data/destinations";
 import { holidayPackages } from "@/data/packages";
+import { getHolidayTypeBySlug } from "@/server/queries";
 import { SITE } from "@/config";
 
+const parseArr = <T,>(v: unknown): T[] =>
+  Array.isArray(v) ? (v as T[]) : typeof v === "string" ? JSON.parse(v) : [];
+
 export const Route = createFileRoute("/holiday/$slug")({
-  loader: ({ params }) => {
-    const holidayType = findHolidayType(params.slug);
-    if (!holidayType) throw notFound();
+  loader: async ({ params }) => {
+    const row = await getHolidayTypeBySlug({ data: params.slug });
+    if (!row) throw notFound();
+    const bullets = parseArr<string>(row.bullets);
+    const destinationSlugs = parseArr<string>(row.destinationSlugs);
+    const holidayType = { ...row, bullets, destinationSlugs };
     const linkedDestinations = destinations.filter((d) =>
-      holidayType.destinationSlugs.includes(d.slug)
+      destinationSlugs.includes(d.slug)
     );
     const packages = holidayPackages.filter(
       (p) => p.holidayTypeSlug === params.slug

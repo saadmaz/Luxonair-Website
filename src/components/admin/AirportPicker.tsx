@@ -63,7 +63,7 @@ export function AirportPicker({ label, value, onChange }: Props) {
 
   return (
     <div ref={containerRef} className="relative">
-      <label className="mb-1 block text-sm font-medium text-gray-700">{label}</label>
+      {label && <label className="mb-1 block text-sm font-medium text-gray-700">{label}</label>}
       <div className="relative">
         {selectedAirport && !open ? (
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">

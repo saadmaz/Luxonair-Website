@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Pencil, Trash2, Star, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { DatePicker } from "@/components/shared/DatePicker";
 import { api } from "@/lib/api";
 import { Pagination } from "@/components/ui/Pagination";
 
@@ -194,7 +195,7 @@ function AdminTestimonialsPage() {
             </div>
             <div>
               <label className={labelCls}>Date</label>
-              <input type="date" className={inputCls} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+              <DatePicker name="date" placeholder="Select date" value={form.date} onChange={(v) => setForm({ ...form, date: v })} />
             </div>
             <div>
               <label className={labelCls}>Review text</label>

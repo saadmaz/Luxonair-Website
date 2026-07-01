@@ -1,9 +1,11 @@
 ﻿import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Pencil, Trash2, Tag, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Tag, Star, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { GalleryUpload } from "@/components/admin/GalleryUpload";
+import { DatePicker } from "@/components/shared/DatePicker";
 import { api } from "@/lib/api";
 import { Pagination } from "@/components/ui/Pagination";
 
@@ -23,6 +25,8 @@ type DbDeal = {
   badge: string;
   expires: string;
   image: string;
+  gallery: string[];
+  isFavourite: boolean;
   blurb: string;
 };
 
@@ -36,7 +40,7 @@ const badges = ["Honeymoon", "Family", "Corporate", "Couples", "Tailor-made", "C
 const emptyForm = {
   id: "", title: "", destinationSlug: "", region: "Europe", nights: 7,
   board: "B&B", fromPrice: 0, oldPrice: "" as string | number,
-  badge: "Honeymoon", expires: "", image: "", blurb: "",
+  badge: "Honeymoon", expires: "", image: "", gallery: [] as string[], isFavourite: false, blurb: "",
 };
 
 function AdminDealsPage() {
@@ -72,7 +76,7 @@ function AdminDealsPage() {
   const openAdd = () => { setForm(emptyForm); setEditId(null); setModal("add"); };
   const openEdit = (d: DbDeal) => {
     setEditId(d.id);
-    setForm({ id: d.id, title: d.title, destinationSlug: d.destinationSlug, region: d.region, nights: d.nights, board: d.board, fromPrice: d.fromPrice, oldPrice: d.oldPrice ?? "", badge: d.badge, expires: d.expires, image: d.image, blurb: d.blurb });
+    setForm({ id: d.id, title: d.title, destinationSlug: d.destinationSlug, region: d.region, nights: d.nights, board: d.board, fromPrice: d.fromPrice, oldPrice: d.oldPrice ?? "", badge: d.badge, expires: d.expires, image: d.image, gallery: d.gallery ?? [], isFavourite: d.isFavourite ?? false, blurb: d.blurb });
     setModal("edit");
   };
 
@@ -110,7 +114,10 @@ function AdminDealsPage() {
                           {d.image && <img src={d.image} alt={d.title} className="h-full w-full object-cover" />}
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-900 leading-snug">{d.title}</p>
+                          <p className="flex items-center gap-1.5 font-semibold text-gray-900 leading-snug">
+                            {d.title}
+                            {d.isFavourite && <Star className="h-3.5 w-3.5 shrink-0 fill-amber-400 text-amber-400" />}
+                          </p>
                           <p className="text-xs text-gray-400 line-clamp-1 max-w-xs">{d.blurb}</p>
                         </div>
                       </div>
@@ -192,10 +199,20 @@ function AdminDealsPage() {
               </div>
               <div><label className={labelCls}>From price (£)</label><input type="number" className={inputCls} value={form.fromPrice} onChange={(e) => setForm({ ...form, fromPrice: +e.target.value })} /></div>
               <div><label className={labelCls}>Was price (£, optional)</label><input type="number" className={inputCls} value={form.oldPrice} onChange={(e) => setForm({ ...form, oldPrice: e.target.value })} /></div>
-              <div className="col-span-2"><label className={labelCls}>Expires</label><input type="date" className={inputCls} value={form.expires} onChange={(e) => setForm({ ...form, expires: e.target.value })} /></div>
+              <div className="col-span-2"><label className={labelCls}>Expires</label><DatePicker name="expires" placeholder="Select expiry date" value={form.expires} onChange={(v) => setForm({ ...form, expires: v })} /></div>
             </div>
             <div><label className={labelCls}>Blurb</label><textarea className={inputCls} rows={2} value={form.blurb} onChange={(e) => setForm({ ...form, blurb: e.target.value })} /></div>
-            <ImageUpload label="Deal image" value={form.image} onChange={(url) => setForm({ ...form, image: url })} />
+            <ImageUpload label="Cover image" value={form.image} onChange={(url) => setForm({ ...form, image: url })} />
+            <GalleryUpload label="Additional images" value={form.gallery} onChange={(gallery) => setForm({ ...form, gallery })} />
+            <label className="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                checked={form.isFavourite}
+                onChange={(e) => setForm({ ...form, isFavourite: e.target.checked })}
+                className="h-4 w-4 rounded border-gray-300 text-[#042045] focus:ring-[#042045]/30"
+              />
+              Add as All Time Favourite
+            </label>
           </div>
           {saveMut.error && <p className="text-sm text-red-600">{(saveMut.error as Error).message}</p>}
           <DialogFooter>

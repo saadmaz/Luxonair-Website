@@ -1,10 +1,6 @@
 // Central barrel export for all static data and lookup functions.
-// Import from here: import { destinations, findPost, AIRLINES } from "@/data"
+// Import from here: import { destinations, AIRLINES } from "@/data"
+// Note: deals, blog, holiday types, reviews and FAQs are DB-driven (see src/server/queries.ts) — not static data.
 export * from "./destinations";
-export * from "./deals";
-export * from "./blog";
-export * from "./holidayTypes";
-export * from "./reviews";
-export * from "./faq";
 export * from "./flights";
 export * from "./packages";

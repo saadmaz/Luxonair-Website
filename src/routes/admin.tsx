@@ -32,6 +32,7 @@ import {
   Users,
   ArrowRight,
   PlaneTakeoff,
+  Images,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -101,9 +102,9 @@ const navSections = [
     items: [{ to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true }],
   },
   {
-    label: "Enquiries",
+    label: "Customer Relations",
     items: [
-      { to: "/admin/enquiries", label: "Enquiries", icon: FileText, exact: false },
+      { to: "/admin/enquiries", label: "Quote Inquiries", icon: FileText, exact: false },
       { to: "/admin/flight-bookings", label: "Flight Bookings", icon: PlaneTakeoff, exact: false },
       { to: "/admin/messages", label: "Messages", icon: MessageSquare, exact: false },
       { to: "/admin/subscribers", label: "Subscribers", icon: Mail, exact: false },
@@ -112,7 +113,8 @@ const navSections = [
   {
     label: "Content",
     items: [
-      { to: "/admin/destinations", label: "Destinations", icon: MapPin, exact: false },
+      { to: "/admin/destination-highlights", label: "Destinations", icon: Images, exact: false },
+      { to: "/admin/destinations", label: "Destination Pages", icon: MapPin, exact: false },
       { to: "/admin/deals", label: "Deals", icon: Tag, exact: false },
       { to: "/admin/flight-offers", label: "Flight Offers", icon: PlaneTakeoff, exact: false },
       { to: "/admin/holidays", label: "Holiday Types", icon: Sun, exact: false },

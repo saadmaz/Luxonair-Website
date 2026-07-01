@@ -1,7 +1,18 @@
 ﻿import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { generateHTML } from "@tiptap/html";
 import { Button } from "@/components/ui/button";
 import { getBlogPostBySlug, getPublishedBlogPosts } from "@/server/queries";
+import { editorExtensions } from "@/components/admin/RichTextEditor";
+
+function renderContentHtml(content: unknown): string {
+  if (!content || typeof content !== "object") return "";
+  try {
+    return generateHTML(content as Parameters<typeof generateHTML>[0], editorExtensions);
+  } catch {
+    return "";
+  }
+}
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params }) => {
@@ -92,14 +103,10 @@ function PostPage() {
           </p>
         </header>
         <img src={p.heroImage} alt={p.title} className="mt-10 aspect-video w-full rounded-2xl object-cover" />
-        <div className="mx-auto mt-10 max-w-3xl space-y-6 text-base leading-relaxed">
-          {(Array.isArray(p.content) ? p.content as { heading?: string; body: string }[] : []).map((b, i) => (
-            <div key={i}>
-              {b.heading && <h2 className="mt-8 font-display text-2xl font-semibold">{b.heading}</h2>}
-              <p className="mt-3 text-muted-foreground">{b.body}</p>
-            </div>
-          ))}
-        </div>
+        <div
+          className="prose prose-lg mx-auto mt-10 max-w-3xl"
+          dangerouslySetInnerHTML={{ __html: renderContentHtml(p.content) }}
+        />
 
         {/* Post-article CTA */}
         <div className="mx-auto mt-16 max-w-3xl rounded-2xl bg-navy px-8 py-10 text-navy-fg">

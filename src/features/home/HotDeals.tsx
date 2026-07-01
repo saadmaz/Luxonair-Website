@@ -1,7 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Flame } from "lucide-react";
 import { motion } from "framer-motion";
-import { deals } from "@/data/deals";
+
+type Deal = {
+  id: string;
+  title: string;
+  destinationSlug: string;
+  nights: number;
+  fromPrice: number;
+  badge: string;
+  image: string;
+};
 
 const THEMES = [
   { from: "#C4790E", to: "#8B4F08", label: "Christmas Offer" },
@@ -9,8 +18,10 @@ const THEMES = [
   { from: "#2C3E6B", to: "#16223D", label: "Christmas Offer" },
 ] as const;
 
-export function HotDeals() {
+export function HotDeals({ deals }: { deals: Deal[] }) {
   const top = deals.slice(0, 3);
+
+  if (top.length === 0) return null;
 
   return (
     <section className="bg-secondary/40 py-12 md:py-20">
@@ -44,7 +55,7 @@ export function HotDeals() {
               >
                 <a
                   href={deal.destinationSlug ? `/destinations/${deal.destinationSlug}` : "/deals"}
-                  className="group relative flex min-h-[200px] overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
+                  className="group relative flex min-h-50 overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
                   style={{
                     background: `linear-gradient(135deg, ${theme.from} 0%, ${theme.to} 100%)`,
                   }}
