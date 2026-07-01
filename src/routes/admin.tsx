@@ -33,6 +33,7 @@ import {
   ArrowRight,
   PlaneTakeoff,
   Images,
+  type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -96,7 +97,26 @@ function AdminErrorScreen() {
   );
 }
 
-const navSections = [
+type AdminPath =
+  | "/admin"
+  | "/admin/enquiries"
+  | "/admin/flight-bookings"
+  | "/admin/messages"
+  | "/admin/subscribers"
+  | "/admin/destination-highlights"
+  | "/admin/destinations"
+  | "/admin/deals"
+  | "/admin/flight-offers"
+  | "/admin/holidays"
+  | "/admin/blog"
+  | "/admin/testimonials"
+  | "/admin/faqs"
+  | "/admin/users";
+
+type NavItem = { to: AdminPath; label: string; icon: LucideIcon; exact: boolean };
+type NavSection = { label: string; items: NavItem[] };
+
+const navSections: NavSection[] = [
   {
     label: "Overview",
     items: [{ to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true }],
@@ -132,7 +152,7 @@ const navSections = [
     label: "Settings",
     items: [{ to: "/admin/users", label: "Users", icon: UserCog, exact: false }],
   },
-] as const;
+];
 
 function AdminLayoutRoute() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });

@@ -9,6 +9,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+import type { JSONContent } from "@tiptap/react";
 
 export const enquiries = mysqlTable(
   "enquiries",
@@ -86,7 +87,7 @@ export const blogPosts = mysqlTable(
     date: varchar("date", { length: 10 }).notNull(),
     readMinutes: int("read_minutes").notNull().default(5),
     heroImage: text("hero_image").notNull(),
-    content: json("content").notNull(),
+    content: json("content").$type<JSONContent>().notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [index("blog_posts_date_idx").on(t.date)],
@@ -100,16 +101,16 @@ export const destinations = mysqlTable(
     name: text("name").notNull(),
     country: varchar("country", { length: 255 }).notNull(),
     region: varchar("region", { length: 50 }).notNull(),
-    tripType: json("trip_type").notNull(),
+    tripType: json("trip_type").$type<string[]>().notNull(),
     budgetBand: varchar("budget_band", { length: 10 }).notNull(),
     fromPrice: int("from_price").notNull(),
     durationNights: int("duration_nights").notNull(),
     heroImage: text("hero_image").notNull(),
-    gallery: json("gallery").notNull(),
+    gallery: json("gallery").$type<string[]>().notNull(),
     tagline: text("tagline").notNull(),
     summary: text("summary").notNull(),
-    itinerary: json("itinerary").notNull(),
-    highlights: json("highlights").notNull(),
+    itinerary: json("itinerary").$type<{ day: string; title: string; detail: string }[]>().notNull(),
+    highlights: json("highlights").$type<string[]>().notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [
@@ -132,7 +133,7 @@ export const deals = mysqlTable(
     badge: varchar("badge", { length: 50 }).notNull(),
     expires: varchar("expires", { length: 10 }).notNull(),
     image: text("image").notNull(),
-    gallery: json("gallery").notNull().default([]),
+    gallery: json("gallery").$type<string[]>().notNull().default([]),
     isFavourite: boolean("is_favourite").notNull().default(false),
     blurb: text("blurb").notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -190,8 +191,8 @@ export const holidayTypes = mysqlTable("holiday_types", {
   tagline: text("tagline").notNull(),
   summary: text("summary").notNull(),
   heroImage: text("hero_image").notNull(),
-  bullets: json("bullets").notNull(),
-  destinationSlugs: json("destination_slugs").notNull(),
+  bullets: json("bullets").$type<string[]>().notNull(),
+  destinationSlugs: json("destination_slugs").$type<string[]>().notNull(),
   isFavourite: boolean("is_favourite").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

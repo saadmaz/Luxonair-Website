@@ -56,9 +56,9 @@ export const destinationSchema = z.object({
   heroImage: z.string().max(500).default(""),
   tagline: z.string().max(300).default(""),
   summary: z.string().max(5000).default(""),
-  gallery: z.array(z.unknown()).default([]),
-  itinerary: z.array(z.unknown()).default([]),
-  highlights: z.array(z.unknown()).default([]),
+  gallery: z.array(z.string().max(500)).default([]),
+  itinerary: z.array(z.object({ day: z.string(), title: z.string(), detail: z.string() })).default([]),
+  highlights: z.array(z.string().max(200)).default([]),
 });
 
 export const blogPostSchema = z.object({
