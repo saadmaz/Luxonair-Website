@@ -78,10 +78,12 @@ export const Route = createFileRoute("/destinations/$slug")({
 
 function DestinationDetail() {
   const { destination: d, others } = Route.useLoaderData();
-  const gallery = (d.gallery as string[]) ?? [];
-  const itinerary = (d.itinerary as { day: string; title: string; detail: string }[]) ?? [];
-  const highlights = (d.highlights as string[]) ?? [];
-  const tripType = (d.tripType as string[]) ?? [];
+  const parseArr = <T,>(v: unknown): T[] =>
+    Array.isArray(v) ? (v as T[]) : typeof v === "string" ? JSON.parse(v) : [];
+  const gallery = parseArr<string>(d.gallery);
+  const itinerary = parseArr<{ day: string; title: string; detail: string }>(d.itinerary);
+  const highlights = parseArr<string>(d.highlights);
+  const tripType = parseArr<string>(d.tripType);
 
   return (
     <article>
