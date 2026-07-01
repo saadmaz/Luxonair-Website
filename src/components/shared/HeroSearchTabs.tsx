@@ -137,7 +137,7 @@ function AirportSelect({
 
       {/* Dropup — opens upward */}
       {open && (
-        <div className="absolute bottom-full left-0 z-50 mb-1.5 max-h-72 w-full min-w-72 overflow-y-auto rounded-xl border border-border bg-background shadow-2xl">
+        <div className="absolute bottom-full left-0 z-50 mb-1.5 flex max-h-72 w-full min-w-72 flex-col gap-0.5 overflow-y-auto rounded-xl border border-border bg-background p-1.5 shadow-2xl">
           {filtered.length === 0 ? (
             <p className="px-4 py-3 text-sm text-muted-foreground">
               No airports found
@@ -151,17 +151,21 @@ function AirportSelect({
                   e.preventDefault();
                   pick(a);
                 }}
-                className={`flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-muted ${
-                  selectedCode === a.code ? "bg-muted" : ""
+                className={`flex w-full items-start gap-3 rounded-lg border-l-4 px-3 py-2 text-left transition-colors ${
+                  selectedCode === a.code
+                    ? "border-l-primary bg-muted"
+                    : "border-l-transparent hover:border-l-primary hover:bg-muted"
                 }`}
               >
-                <Flag code={a.countryCode} size={16} />
-                <span className="min-w-0 flex-1 truncate text-sm text-foreground">
-                  <span className="font-semibold">{a.cityName}</span>
-                  {a.airportName ? `/${a.airportName}` : ""}
-                </span>
-                <span className="shrink-0 text-xs text-muted-foreground">
-                  {a.code}
+                <Flag code={a.countryCode} size={18} />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm text-foreground">
+                    <span className="font-semibold">{a.cityName}</span>
+                    {a.airportName ? ` ${a.airportName}` : ""} ({a.code})
+                  </span>
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {a.country}
+                  </span>
                 </span>
               </button>
             ))
