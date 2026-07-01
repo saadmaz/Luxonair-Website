@@ -151,7 +151,7 @@ function AirportSelect({
                   e.preventDefault();
                   pick(a);
                 }}
-                className={`flex w-full items-start gap-3 rounded-lg border-l-4 px-3 py-2 text-left transition-colors ${
+                className={`flex w-full items-center gap-3 rounded-lg border-l-4 px-3 py-2 text-left transition-colors ${
                   selectedCode === a.code
                     ? "border-l-primary bg-muted"
                     : "border-l-transparent hover:border-l-primary hover:bg-muted"
