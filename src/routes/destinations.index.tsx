@@ -35,14 +35,23 @@ const cardVariants = {
   show:   { opacity: 1, y: 0, transition: { duration: 0.45 } },
 };
 
+// The API may return tripType as a JSON-encoded string rather than an already-parsed
+// array, depending on how the MariaDB driver typecasts json columns.
+const parseArr = (v: unknown): string[] =>
+  Array.isArray(v) ? v : typeof v === "string" ? JSON.parse(v) : [];
+
 function DestinationsList() {
-  const destinations = Route.useLoaderData() ?? [];
+  const loaderData = Route.useLoaderData() ?? [];
+  const destinations = useMemo(
+    () => loaderData.map((d) => ({ ...d, tripType: parseArr(d.tripType) })),
+    [loaderData]
+  );
   const [region, setRegion] = useState<string>("All");
   const [trip, setTrip] = useState<string>("All");
   const [budget, setBudget] = useState<string>("All");
 
   const regions = useMemo(() => [...new Set(destinations.map((d) => d.region))].sort(), [destinations]);
-  const tripTypes = useMemo(() => [...new Set(destinations.flatMap((d) => d.tripType as string[]))].sort(), [destinations]);
+  const tripTypes = useMemo(() => [...new Set(destinations.flatMap((d) => d.tripType))].sort(), [destinations]);
   const budgetBands = useMemo(() => [...new Set(destinations.map((d) => d.budgetBand))].sort(), [destinations]);
 
   const filtered = useMemo(
@@ -50,7 +59,7 @@ function DestinationsList() {
       destinations.filter(
         (d) =>
           (region === "All" || d.region === region) &&
-          (trip === "All" || (d.tripType as string[]).includes(trip)) &&
+          (trip === "All" || d.tripType.includes(trip)) &&
           (budget === "All" || d.budgetBand === budget)
       ),
     [destinations, region, trip, budget]

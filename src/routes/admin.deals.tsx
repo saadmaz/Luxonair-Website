@@ -43,6 +43,11 @@ const emptyForm = {
   badge: "Honeymoon", expires: "", image: "", gallery: [] as string[], isFavourite: false, blurb: "",
 };
 
+// The API may return gallery as a JSON-encoded string rather than an already-parsed
+// array, depending on how the MariaDB driver typecasts json columns.
+const parseArr = (v: unknown): string[] =>
+  Array.isArray(v) ? v : typeof v === "string" ? JSON.parse(v) : [];
+
 function AdminDealsPage() {
   const qc = useQueryClient();
   const [modal, setModal] = useState<"add" | "edit" | null>(null);
@@ -76,7 +81,7 @@ function AdminDealsPage() {
   const openAdd = () => { setForm(emptyForm); setEditId(null); setModal("add"); };
   const openEdit = (d: DbDeal) => {
     setEditId(d.id);
-    setForm({ id: d.id, title: d.title, destinationSlug: d.destinationSlug, region: d.region, nights: d.nights, board: d.board, fromPrice: d.fromPrice, oldPrice: d.oldPrice ?? "", badge: d.badge, expires: d.expires, image: d.image, gallery: d.gallery ?? [], isFavourite: d.isFavourite ?? false, blurb: d.blurb });
+    setForm({ id: d.id, title: d.title, destinationSlug: d.destinationSlug, region: d.region, nights: d.nights, board: d.board, fromPrice: d.fromPrice, oldPrice: d.oldPrice ?? "", badge: d.badge, expires: d.expires, image: d.image, gallery: parseArr(d.gallery), isFavourite: d.isFavourite ?? false, blurb: d.blurb });
     setModal("edit");
   };
 

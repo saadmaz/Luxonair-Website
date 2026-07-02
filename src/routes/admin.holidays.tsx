@@ -28,6 +28,11 @@ const labelCls = "block text-sm font-medium text-gray-700 mb-1";
 
 const emptyForm = { slug: "", name: "", tagline: "", summary: "", heroImage: "", bullets: ["", "", "", ""] as string[], destinationSlugs: [] as string[], isFavourite: false };
 
+// The API may return bullets/destinationSlugs as a JSON-encoded string rather than
+// an already-parsed array, depending on how the MariaDB driver typecasts json columns.
+const parseArr = (v: unknown): string[] =>
+  Array.isArray(v) ? v : typeof v === "string" ? JSON.parse(v) : [];
+
 function AdminHolidaysPage() {
   const qc = useQueryClient();
   const [modal, setModal] = useState<"add" | "edit" | null>(null);
@@ -40,7 +45,7 @@ function AdminHolidaysPage() {
     queryKey: ["holidays", page],
     queryFn: () => api.getPaged<DbHoliday>("/api/holidays", page),
   });
-  const items = result?.data ?? [];
+  const items = (result?.data ?? []).map((h) => ({ ...h, bullets: parseArr(h.bullets), destinationSlugs: parseArr(h.destinationSlugs) }));
   const total = result?.total ?? 0;
 
   const saveMut = useMutation({

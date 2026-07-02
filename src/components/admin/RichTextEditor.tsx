@@ -29,9 +29,12 @@ const btnCls = (active: boolean) =>
   }`;
 
 export function RichTextEditor({ value, onChange }: Props) {
+  // The API may return content as a JSON-encoded string rather than an already-parsed
+  // object, depending on how the MariaDB driver typecasts json columns.
+  const initialContent = typeof value === "string" ? JSON.parse(value) : (value ?? "");
   const editor = useEditor({
     extensions: editorExtensions,
-    content: value ?? "",
+    content: initialContent,
     immediatelyRender: false,
     onUpdate: ({ editor }) => onChange(editor.getJSON()),
     editorProps: {

@@ -6,9 +6,12 @@ import { getBlogPostBySlug, getPublishedBlogPosts } from "@/server/queries";
 import { editorExtensions } from "@/components/admin/RichTextEditor";
 
 function renderContentHtml(content: unknown): string {
-  if (!content || typeof content !== "object") return "";
+  // The API may return content as a JSON-encoded string rather than an already-parsed
+  // object, depending on how the MariaDB driver typecasts json columns.
+  const parsed = typeof content === "string" ? JSON.parse(content) : content;
+  if (!parsed || typeof parsed !== "object") return "";
   try {
-    return generateHTML(content as Parameters<typeof generateHTML>[0], editorExtensions);
+    return generateHTML(parsed as Parameters<typeof generateHTML>[0], editorExtensions);
   } catch {
     return "";
   }
