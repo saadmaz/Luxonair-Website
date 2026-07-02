@@ -22,10 +22,10 @@ export const SITE = {
   registration: "",
 
   social: {
-    instagram: "",
-    facebook: "",
-    tiktok: "",
-    linkedin: "",
+    instagram: "https://www.instagram.com/luxeonair",
+    facebook: "https://www.facebook.com/people/Luxeonair/61590846627301/",
+    tiktok: "https://www.tiktok.com/@luxeonair",
+    linkedin: "https://www.linkedin.com/company/luxeonair",
   },
 
   accreditation: {
