@@ -28,7 +28,7 @@ export const enquirySchema = z.object({
   nights: z.number().int().min(1).max(365),
   departAirport: z.string().min(1).max(100),
   cabinClass: z.string().min(1).max(50),
-  directOnly: z.string().max(5).optional(),
+  directOnly: z.string().max(20).optional(),
   preferredAirlines: z.string().max(200).optional(),
   adults: z.number().int().min(1).max(20),
   children: z.number().int().min(0).max(20).default(0),
