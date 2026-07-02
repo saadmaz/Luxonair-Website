@@ -2156,13 +2156,6 @@ export const AIRPORTS: Airport[] = [
   { cityName: "Elko", airportName: "", code: "EKO", country: "United States", countryCode: "us" },
   { cityName: "Eureka", airportName: "", code: "ACV", country: "United States", countryCode: "us" },
   {
-    cityName: "Medford",
-    airportName: "Oregon",
-    code: "MFR",
-    country: "United States",
-    countryCode: "us",
-  },
-  {
     cityName: "Walla Walla",
     airportName: "",
     code: "ALW",
@@ -2229,13 +2222,6 @@ export const AIRPORTS: Airport[] = [
   { cityName: "Yuma", airportName: "", code: "YUM", country: "United States", countryCode: "us" },
   {
     cityName: "El Centro",
-    airportName: "",
-    code: "IPL",
-    country: "United States",
-    countryCode: "us",
-  },
-  {
-    cityName: "Imperial",
     airportName: "",
     code: "IPL",
     country: "United States",
@@ -2632,7 +2618,6 @@ export const AIRPORTS: Airport[] = [
     country: "Haiti",
     countryCode: "ht",
   },
-  { cityName: "Bridgetown", airportName: "", code: "BGI", country: "Barbados", countryCode: "bb" },
   {
     cityName: "St Barths",
     airportName: "Gustaf III",
@@ -2977,13 +2962,6 @@ export const AIRPORTS: Airport[] = [
     countryCode: "gf",
   },
   {
-    cityName: "Trinidad",
-    airportName: "Piarco",
-    code: "POS",
-    country: "Trinidad and Tobago",
-    countryCode: "tt",
-  },
-  {
     cityName: "Arequipa",
     airportName: "Rodríguez Ballón",
     code: "AQP",
@@ -3000,4 +2978,40 @@ export function findAirport(code: string): Airport | undefined {
 
 export function airportLabel(a: Airport): string {
   return a.airportName ? `${a.cityName} ${a.airportName} (${a.code})` : `${a.cityName} (${a.code})`;
+}
+
+// Common shorthand country search terms not present in the full country name.
+const COUNTRY_ALIASES: Record<string, string> = {
+  uk: "united kingdom",
+  usa: "united states",
+  us: "united states",
+  uae: "united arab emirates",
+};
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// Matches only at the start of the field or the start of a word within it,
+// so e.g. searching "man" finds "Manchester" but not "Germany" or "Kilimanjaro".
+function matchesField(text: string, query: string): boolean {
+  const t = text.toLowerCase();
+  if (t.startsWith(query)) return true;
+  return new RegExp(`[\\s-]${escapeRegExp(query)}`).test(t);
+}
+
+// Searches by city, airport name, country, or IATA/country code — word-prefix
+// matches only, so results stay specific to what was actually typed.
+export function searchAirports(query: string): Airport[] {
+  const raw = query.trim().toLowerCase();
+  if (!raw) return AIRPORTS;
+  const q = COUNTRY_ALIASES[raw] ?? raw;
+  return AIRPORTS.filter(
+    (a) =>
+      matchesField(a.cityName, q) ||
+      matchesField(a.airportName, q) ||
+      matchesField(a.country, q) ||
+      a.code.toLowerCase().startsWith(raw) ||
+      a.countryCode.toLowerCase() === raw,
+  );
 }

@@ -3,15 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Plane, Package, ChevronUp, ChevronDown, Search } from "lucide-react";
 import { DatePicker } from "./DatePicker";
 import { Flag } from "./Flag";
-import { AIRPORTS, airportLabel, type Airport } from "@/data/airports";
-
-// ─── Common shorthand country search terms not present in the full country name ──
-const COUNTRY_ALIASES: Record<string, string> = {
-  uk: "united kingdom",
-  usa: "united states",
-  us: "united states",
-  uae: "united arab emirates",
-};
+import { AIRPORTS, airportLabel, searchAirports, type Airport } from "@/data/airports";
 
 // ─── Searchable airport dropup — search by city, IATA code, or country ───────
 function AirportSelect({
@@ -35,19 +27,10 @@ function AirportSelect({
 
   const selectedAirport = AIRPORTS.find((a) => a.code === selectedCode);
 
-  const filtered = useMemo(() => {
-    const raw = query.trim().toLowerCase();
-    if (!raw || query === selected) return AIRPORTS;
-    const q = COUNTRY_ALIASES[raw] ?? raw;
-    return AIRPORTS.filter(
-      (a) =>
-        a.cityName.toLowerCase().includes(q) ||
-        a.airportName.toLowerCase().includes(q) ||
-        a.code.toLowerCase().includes(q) ||
-        a.country.toLowerCase().includes(q) ||
-        a.countryCode.toLowerCase() === raw,
-    );
-  }, [query, selected]);
+  const filtered = useMemo(
+    () => (query === selected ? AIRPORTS : searchAirports(query)),
+    [query, selected],
+  );
 
   useEffect(() => {
     function handler(e: MouseEvent) {

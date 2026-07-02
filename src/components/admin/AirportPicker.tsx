@@ -4,14 +4,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
 import { Flag } from "@/components/shared/Flag";
-import { AIRPORTS, airportLabel, findAirport } from "@/data/airports";
-
-const COUNTRY_ALIASES: Record<string, string> = {
-  uk: "united kingdom",
-  usa: "united states",
-  us: "united states",
-  uae: "united arab emirates",
-};
+import { AIRPORTS, airportLabel, findAirport, searchAirports } from "@/data/airports";
 
 type Props = {
   label: string;
@@ -31,18 +24,8 @@ export function AirportPicker({ label, value, onChange }: Props) {
   }, [value]);
 
   const filtered = useMemo(() => {
-    const raw = query.trim().toLowerCase();
     const selectedLabel = selectedAirport ? airportLabel(selectedAirport) : "";
-    if (!raw || query === selectedLabel) return AIRPORTS;
-    const q = COUNTRY_ALIASES[raw] ?? raw;
-    return AIRPORTS.filter(
-      (a) =>
-        a.cityName.toLowerCase().includes(q) ||
-        a.airportName.toLowerCase().includes(q) ||
-        a.code.toLowerCase().includes(q) ||
-        a.country.toLowerCase().includes(q) ||
-        a.countryCode.toLowerCase() === raw,
-    );
+    return query === selectedLabel ? AIRPORTS : searchAirports(query);
   }, [query, selectedAirport]);
 
   useEffect(() => {
