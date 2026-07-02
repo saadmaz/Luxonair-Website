@@ -1,18 +1,19 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { hash } from "bcryptjs";
-import { asc, eq } from "drizzle-orm";
+import { asc, count, eq } from "drizzle-orm";
 import { db, adminUsers } from "../../../../db/index";
-import { requireAuth } from "@/server/auth";
+import { requireSuperAdmin } from "@/server/auth";
 import { z } from "zod";
 
 const updateUserSchema = z.object({
   email: z.string().email().max(255).optional(),
   password: z.string().min(8).max(200).optional(),
+  role: z.enum(["admin", "superadmin"]).optional(),
 });
 
 export const APIRoute = createAPIFileRoute("/api/users/$id")({
   PATCH: async ({ request, params }) => {
-    const session = await requireAuth(request);
+    await requireSuperAdmin(request);
     const id = Number(params.id);
 
     const raw = await request.json().catch(() => null);
@@ -27,29 +28,38 @@ export const APIRoute = createAPIFileRoute("/api/users/$id")({
     const update: Record<string, unknown> = {};
     if (parsed.data.email) update.email = parsed.data.email.trim().toLowerCase();
     if (parsed.data.password) update.passwordHash = await hash(parsed.data.password, 12);
+    if (parsed.data.role) update.role = parsed.data.role;
 
     if (Object.keys(update).length === 0) {
       return Response.json({ error: "Nothing to update" }, { status: 400 });
     }
 
+    if (parsed.data.role === "admin") {
+      const [target] = await db.select({ role: adminUsers.role }).from(adminUsers).where(eq(adminUsers.id, id));
+      if (target?.role === "superadmin") {
+        const [{ n }] = await db.select({ n: count() }).from(adminUsers).where(eq(adminUsers.role, "superadmin"));
+        if (Number(n) <= 1) {
+          return Response.json({ error: "Cannot demote the last superadmin account" }, { status: 409 });
+        }
+      }
+    }
+
     await db.update(adminUsers).set(update).where(eq(adminUsers.id, id));
 
     const rows = await db
-      .select({ id: adminUsers.id, email: adminUsers.email, createdAt: adminUsers.createdAt })
+      .select({ id: adminUsers.id, email: adminUsers.email, role: adminUsers.role, createdAt: adminUsers.createdAt })
       .from(adminUsers)
       .orderBy(asc(adminUsers.createdAt));
 
-    void session;
     return Response.json(rows);
   },
 
   DELETE: async ({ request, params }) => {
-    const session = await requireAuth(request);
+    const session = await requireSuperAdmin(request);
     const id = Number(params.id);
 
-    // Prevent deleting yourself
     const [target] = await db
-      .select({ email: adminUsers.email })
+      .select({ email: adminUsers.email, role: adminUsers.role })
       .from(adminUsers)
       .where(eq(adminUsers.id, id));
 
@@ -57,11 +67,17 @@ export const APIRoute = createAPIFileRoute("/api/users/$id")({
     if (target.email === session.email) {
       return Response.json({ error: "You cannot delete your own account" }, { status: 403 });
     }
+    if (target.role === "superadmin") {
+      const [{ n }] = await db.select({ n: count() }).from(adminUsers).where(eq(adminUsers.role, "superadmin"));
+      if (Number(n) <= 1) {
+        return Response.json({ error: "Cannot delete the last superadmin account" }, { status: 409 });
+      }
+    }
 
     await db.delete(adminUsers).where(eq(adminUsers.id, id));
 
     const rows = await db
-      .select({ id: adminUsers.id, email: adminUsers.email, createdAt: adminUsers.createdAt })
+      .select({ id: adminUsers.id, email: adminUsers.email, role: adminUsers.role, createdAt: adminUsers.createdAt })
       .from(adminUsers)
       .orderBy(asc(adminUsers.createdAt));
 

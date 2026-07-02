@@ -5,7 +5,8 @@ import { requireAuth } from "@/server/auth";
 import { faqGroupSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/faqs")({
-  GET: async () => {
+  GET: async ({ request }) => {
+    await requireAuth(request);
     const groups = await db.select().from(faqGroups).orderBy(asc(faqGroups.sortOrder));
     const items = await db.select().from(faqItems).orderBy(asc(faqItems.sortOrder));
     return Response.json(

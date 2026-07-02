@@ -172,3 +172,16 @@ export const faqItemSchema = z.object({
   answer: z.string().min(1).max(5000),
   sortOrder: z.number().int().min(0).default(0),
 });
+
+export const enquiryUpdateSchema = z.object({
+  status: z.string().max(50).optional(),
+  notes: z.string().max(2000).optional(),
+});
+
+export const contactUpdateSchema = z.object({
+  read: z.boolean().optional(),
+});
+
+export const flightOfferBookingUpdateSchema = z.object({
+  status: z.string().max(20).optional(),
+});

@@ -21,6 +21,11 @@ export const APIRoute = createAPIFileRoute("/api/auth/login")({
     const { username, password } = parsed.data;
     const normalUsername = username.trim().toLowerCase();
 
+    // Per-account lockout in addition to per-IP — mitigates credential stuffing
+    // from rotating IPs against a single known admin username.
+    const accountRl = await checkRateLimit(`login-account:${normalUsername}`, 5, 15 * 60 * 1000);
+    if (!accountRl.allowed) return rateLimitResponse(accountRl.retryAfter);
+
     // ── Path 1: env-var credentials (no DB required) ─────────────────────────
     const envUsername = process.env.ADMIN_USERNAME?.trim().toLowerCase();
     const envHash     = process.env.ADMIN_PASSWORD_HASH?.trim();

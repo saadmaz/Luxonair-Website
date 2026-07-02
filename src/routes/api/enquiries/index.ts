@@ -3,6 +3,7 @@ import { count, desc } from "drizzle-orm";
 import { db, enquiries } from "../../../../db/index";
 import { requireAuth } from "@/server/auth";
 import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
+import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { enquirySchema } from "@/server/validate";
 import { sendEnquiryAlert } from "@/server/email";
 
@@ -17,14 +18,14 @@ export const APIRoute = createAPIFileRoute("/api/enquiries")({
       const data = await db.select().from(enquiries).orderBy(desc(enquiries.createdAt)).limit(limit).offset((page - 1) * limit);
       return Response.json({ data, total, page, limit });
     }
-    const rows = await db.select().from(enquiries).orderBy(desc(enquiries.createdAt));
+    const rows = await db.select().from(enquiries).orderBy(desc(enquiries.createdAt)).limit(DEFAULT_LIST_LIMIT);
     return Response.json(rows);
   },
 
   POST: async ({ request }) => {
     // 5 submissions per 10 minutes per IP
     const ip = getClientIp(request);
-    const rl = checkRateLimit(`enquiry:${ip}`, 5, 10 * 60 * 1000);
+    const rl = await checkRateLimit(`enquiry:${ip}`, 5, 10 * 60 * 1000);
     if (!rl.allowed) return rateLimitResponse(rl.retryAfter);
 
     const raw = await request.json().catch(() => null);

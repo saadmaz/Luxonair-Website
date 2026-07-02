@@ -1,45 +1,47 @@
 "use server";
 import { drizzle } from "drizzle-orm/mysql2";
+import { getTableColumns } from "drizzle-orm";
 import { createPool } from "mysql2/promise";
 import * as schema from "./schema";
-
-function parseDbUrl(url: string) {
-  const withoutProtocol = url.replace(/^mysql(2)?:\/\//, "");
-  const lastAt = withoutProtocol.lastIndexOf("@");
-  const userPass = withoutProtocol.slice(0, lastAt);
-  const hostDb = withoutProtocol.slice(lastAt + 1);
-  const colonIdx = userPass.indexOf(":");
-  const user = userPass.slice(0, colonIdx);
-  const password = userPass.slice(colonIdx + 1);
-  const slashIdx = hostDb.indexOf("/");
-  const hostPort = hostDb.slice(0, slashIdx);
-  const database = hostDb.slice(slashIdx + 1).split("?")[0];
-  const [host, portStr] = hostPort.split(":");
-  return {
-    host: host || "127.0.0.1",
-    port: portStr ? Number(portStr) : 3306,
-    user,
-    password,
-    database,
-    waitForConnections: true,
-    connectionLimit: 10,
-  };
-}
+import { parseDbUrl } from "./parse-db-url";
 
 const baseConfig = process.env.DATABASE_URL
   ? parseDbUrl(process.env.DATABASE_URL)
-  : { host: "127.0.0.1", port: 3306, user: "", password: "", database: "", waitForConnections: true, connectionLimit: 1 };
+  : { host: "127.0.0.1", port: 3306, user: "", password: "", database: "" };
+
+// `npm run dev` is the one command a developer runs directly against whatever
+// DATABASE_URL happens to be in .env — checking npm_lifecycle_event instead of
+// NODE_ENV because NODE_ENV in this repo's own .env is frequently left at
+// "production" (copied from a deploy config) even for local runs, which would
+// silently defeat a NODE_ENV-gated check.
+if (process.env.npm_lifecycle_event === "dev" && !/^(dev|local|test)/i.test(baseConfig.database)) {
+  console.warn(
+    `[db] 'npm run dev' is connecting to ${baseConfig.host}/${baseConfig.database}. ` +
+      `If this is not a disposable local database, stop now — see README's "Local development database" section ` +
+      `and docker-compose.yml. Writing test data into this database from local dev may write to production.`,
+  );
+}
 
 // MariaDB (used on Hostinger) stores json columns as LONGTEXT and mysql2 returns them as raw
 // strings instead of parsed objects. Intercept by column name so all queries benefit automatically.
-const JSON_COLUMNS = new Set([
-  "trip_type", "gallery", "itinerary", "highlights",  // destinations
-  "content",                                            // blog_posts
-  "bullets", "destination_slugs",                      // deals
-]);
+// Derived from schema.ts so a new json() column is never silently missed.
+const JSON_COLUMNS = new Set(
+  Object.values(schema).flatMap((table) =>
+    Object.values(getTableColumns(table as Parameters<typeof getTableColumns>[0]))
+      .filter((c) => c.columnType === "MySqlJson")
+      .map((c) => c.name),
+  ),
+);
 
 const pool = createPool({
   ...baseConfig,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 50,
+  connectTimeout: 10_000,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 10_000,
+  ssl: process.env.DATABASE_SSL === "true" ? { rejectUnauthorized: true } : undefined,
   typeCast(field, next) {
     if (JSON_COLUMNS.has(field.name)) {
       const raw = field.string();

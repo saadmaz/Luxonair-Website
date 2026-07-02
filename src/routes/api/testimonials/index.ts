@@ -1,7 +1,8 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
-import { count, desc } from "drizzle-orm";
+import { count, desc, eq } from "drizzle-orm";
 import { db, testimonials } from "../../../../db/index";
 import { requireAuth } from "@/server/auth";
+import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { testimonialSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/testimonials")({
@@ -15,7 +16,7 @@ export const APIRoute = createAPIFileRoute("/api/testimonials")({
       const data = await db.select().from(testimonials).orderBy(desc(testimonials.createdAt)).limit(limit).offset((page - 1) * limit);
       return Response.json({ data, total, page, limit });
     }
-    const rows = await db.select().from(testimonials).orderBy(desc(testimonials.createdAt));
+    const rows = await db.select().from(testimonials).orderBy(desc(testimonials.createdAt)).limit(DEFAULT_LIST_LIMIT);
     return Response.json(rows);
   },
 
@@ -27,8 +28,8 @@ export const APIRoute = createAPIFileRoute("/api/testimonials")({
       return Response.json({ error: "Invalid request", issues: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
 
-    await db.insert(testimonials).values(parsed.data);
-    const rows = await db.select().from(testimonials).orderBy(desc(testimonials.createdAt));
-    return Response.json(rows[0], { status: 201 });
+    const [{ id }] = await db.insert(testimonials).values(parsed.data).$returningId();
+    const [row] = await db.select().from(testimonials).where(eq(testimonials.id, id));
+    return Response.json(row, { status: 201 });
   },
 });

@@ -2,6 +2,7 @@ import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { count, desc, eq } from "drizzle-orm";
 import { db, flightOffers } from "../../../../db/index";
 import { requireAuth } from "@/server/auth";
+import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { flightOfferSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/flight-offers")({
@@ -20,7 +21,7 @@ export const APIRoute = createAPIFileRoute("/api/flight-offers")({
         .offset((page - 1) * limit);
       return Response.json({ data, total, page, limit });
     }
-    const rows = await db.select().from(flightOffers).orderBy(desc(flightOffers.createdAt));
+    const rows = await db.select().from(flightOffers).orderBy(desc(flightOffers.createdAt)).limit(DEFAULT_LIST_LIMIT);
     return Response.json(rows);
   },
 

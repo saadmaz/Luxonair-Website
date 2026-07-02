@@ -3,6 +3,7 @@ import { count, desc } from "drizzle-orm";
 import { db, flightOfferBookings } from "../../../../db/index";
 import { requireAuth } from "@/server/auth";
 import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
+import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { flightOfferBookingSchema } from "@/server/validate";
 import { sendFlightBookingAlert } from "@/server/email";
 
@@ -25,7 +26,8 @@ export const APIRoute = createAPIFileRoute("/api/flight-offer-bookings")({
     const rows = await db
       .select()
       .from(flightOfferBookings)
-      .orderBy(desc(flightOfferBookings.createdAt));
+      .orderBy(desc(flightOfferBookings.createdAt))
+      .limit(DEFAULT_LIST_LIMIT);
     return Response.json(rows);
   },
 

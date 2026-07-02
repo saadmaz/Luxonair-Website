@@ -5,6 +5,7 @@ import { APIRoute as meHandlers } from './routes/api/auth/me';
 import { APIRoute as activityHandlers } from './routes/api/activity/index';
 import { APIRoute as enquiriesHandlers } from './routes/api/enquiries/index';
 import { APIRoute as enquiriesIdHandlers } from './routes/api/enquiries/$id';
+import { APIRoute as enquiriesReplyHandlers } from './routes/api/enquiries/$id.reply';
 import { APIRoute as contactsHandlers } from './routes/api/contacts/index';
 import { APIRoute as contactsIdHandlers } from './routes/api/contacts/$id';
 import { APIRoute as subscribersHandlers } from './routes/api/subscribers/index';
@@ -15,6 +16,8 @@ import { APIRoute as blogHandlers } from './routes/api/blog/index';
 import { APIRoute as blogIdHandlers } from './routes/api/blog/$id';
 import { APIRoute as destinationsHandlers } from './routes/api/destinations/index';
 import { APIRoute as destinationsIdHandlers } from './routes/api/destinations/$id';
+import { APIRoute as destinationHighlightsHandlers } from './routes/api/destination-highlights/index';
+import { APIRoute as destinationHighlightsIdHandlers } from './routes/api/destination-highlights/$id';
 import { APIRoute as dealsHandlers } from './routes/api/deals/index';
 import { APIRoute as dealsIdHandlers } from './routes/api/deals/$id';
 import { APIRoute as testimonialsHandlers } from './routes/api/testimonials/index';
@@ -25,6 +28,14 @@ import { APIRoute as faqsHandlers } from './routes/api/faqs/index';
 import { APIRoute as faqItemsHandlers } from './routes/api/faq-items/index';
 import { APIRoute as faqItemsIdHandlers } from './routes/api/faq-items/$id';
 import { APIRoute as faqGroupsIdHandlers } from './routes/api/faq-groups/$id';
+import { APIRoute as flightOffersHandlers } from './routes/api/flight-offers/index';
+import { APIRoute as flightOffersIdHandlers } from './routes/api/flight-offers/$id';
+import { APIRoute as flightOfferBookingsHandlers } from './routes/api/flight-offer-bookings/index';
+import { APIRoute as flightOfferBookingsIdHandlers } from './routes/api/flight-offer-bookings/$id';
+import { APIRoute as uploadHandlers } from './routes/api/upload';
+import { APIRoute as uploadsFilenameHandlers } from './routes/api/uploads/$filename';
+import { getSession } from './server/auth';
+import { db, adminActions } from '../db/index';
 
 type Ctx = { request: Request; params: Record<string, string> };
 type Handler = (ctx: Ctx) => Promise<Response> | Response;
@@ -47,6 +58,7 @@ const routes = [
   makeRoute('/api/activity', activityHandlers as Handlers),
   makeRoute('/api/enquiries', enquiriesHandlers as Handlers),
   makeRoute('/api/enquiries/$id', enquiriesIdHandlers as Handlers),
+  makeRoute('/api/enquiries/$id/reply', enquiriesReplyHandlers as Handlers),
   makeRoute('/api/contacts', contactsHandlers as Handlers),
   makeRoute('/api/contacts/$id', contactsIdHandlers as Handlers),
   makeRoute('/api/subscribers', subscribersHandlers as Handlers),
@@ -57,6 +69,8 @@ const routes = [
   makeRoute('/api/blog/$id', blogIdHandlers as Handlers),
   makeRoute('/api/destinations', destinationsHandlers as Handlers),
   makeRoute('/api/destinations/$id', destinationsIdHandlers as Handlers),
+  makeRoute('/api/destination-highlights', destinationHighlightsHandlers as Handlers),
+  makeRoute('/api/destination-highlights/$id', destinationHighlightsIdHandlers as Handlers),
   makeRoute('/api/deals', dealsHandlers as Handlers),
   makeRoute('/api/deals/$id', dealsIdHandlers as Handlers),
   makeRoute('/api/testimonials', testimonialsHandlers as Handlers),
@@ -67,7 +81,25 @@ const routes = [
   makeRoute('/api/faq-items', faqItemsHandlers as Handlers),
   makeRoute('/api/faq-items/$id', faqItemsIdHandlers as Handlers),
   makeRoute('/api/faq-groups/$id', faqGroupsIdHandlers as Handlers),
+  makeRoute('/api/flight-offers', flightOffersHandlers as Handlers),
+  makeRoute('/api/flight-offers/$id', flightOffersIdHandlers as Handlers),
+  makeRoute('/api/flight-offer-bookings', flightOfferBookingsHandlers as Handlers),
+  makeRoute('/api/flight-offer-bookings/$id', flightOfferBookingsIdHandlers as Handlers),
+  makeRoute('/api/upload', uploadHandlers as Handlers),
+  makeRoute('/api/uploads/$filename', uploadsFilenameHandlers as Handlers),
 ];
+
+// Fire-and-forget audit log for every mutating admin request. Only logs when an
+// authenticated session is present — the public lead-capture POSTs (enquiries,
+// contacts, subscribers, flight-offer-bookings) aren't "admin actions".
+function logAdminAction(request: Request, path: string, status: number) {
+  getSession(request)
+    .then((session) => {
+      if (!session) return;
+      return db.insert(adminActions).values({ adminEmail: session.email, method: request.method, path, status });
+    })
+    .catch((err) => console.error('[audit] failed to log admin action:', err));
+}
 
 export async function handleApiRequest(request: Request): Promise<Response | null> {
   const url = new URL(request.url);
@@ -88,9 +120,14 @@ export async function handleApiRequest(request: Request): Promise<Response | nul
     }
 
     try {
-      return await handler({ request, params });
+      const response = await handler({ request, params });
+      if (request.method !== 'GET') logAdminAction(request, url.pathname, response.status);
+      return response;
     } catch (error) {
-      if (error instanceof Response) return error;
+      if (error instanceof Response) {
+        if (request.method !== 'GET') logAdminAction(request, url.pathname, error.status);
+        return error;
+      }
       console.error(`API error ${request.method} ${url.pathname}:`, error);
       return Response.json({ error: 'Internal Server Error' }, { status: 500 });
     }

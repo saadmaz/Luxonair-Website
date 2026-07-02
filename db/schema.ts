@@ -4,6 +4,7 @@ import {
   index,
   int,
   json,
+  mysqlEnum,
   mysqlTable,
   text,
   timestamp,
@@ -125,7 +126,9 @@ export const deals = mysqlTable(
   {
     id: varchar("id", { length: 100 }).primaryKey(),
     title: text("title").notNull(),
-    destinationSlug: varchar("destination_slug", { length: 255 }).notNull(),
+    destinationSlug: varchar("destination_slug", { length: 255 })
+      .notNull()
+      .references(() => destinations.slug, { onDelete: "restrict" }),
     region: varchar("region", { length: 100 }).notNull(),
     nights: int("nights").notNull(),
     board: varchar("board", { length: 50 }).notNull(),
@@ -237,7 +240,9 @@ export const flightOfferBookings = mysqlTable(
   "flight_offer_bookings",
   {
     id: int("id").autoincrement().primaryKey(),
-    offerId: varchar("offer_id", { length: 100 }).notNull(),
+    offerId: varchar("offer_id", { length: 100 })
+      .notNull()
+      .references(() => flightOffers.id, { onDelete: "restrict" }),
     routeLabel: text("route_label").notNull(),
     cabinClass: varchar("cabin_class", { length: 20 }).notNull(),
     price: int("price").notNull(),
@@ -282,8 +287,25 @@ export const adminUsers = mysqlTable("admin_users", {
   id: int("id").autoincrement().primaryKey(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+  role: mysqlEnum("role", ["admin", "superadmin"]).notNull().default("admin"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const adminActions = mysqlTable(
+  "admin_actions",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    adminEmail: varchar("admin_email", { length: 255 }).notNull(),
+    method: varchar("method", { length: 10 }).notNull(),
+    path: varchar("path", { length: 500 }).notNull(),
+    status: int("status").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("admin_actions_admin_email_idx").on(t.adminEmail),
+    index("admin_actions_created_at_idx").on(t.createdAt),
+  ],
+);
 
 export type BlogPost = typeof blogPosts.$inferSelect;
 export type Destination = typeof destinations.$inferSelect;
@@ -297,3 +319,4 @@ export type Session = typeof sessions.$inferSelect;
 export type AdminUser = typeof adminUsers.$inferSelect;
 export type FlightOffer = typeof flightOffers.$inferSelect;
 export type FlightOfferBooking = typeof flightOfferBookings.$inferSelect;
+export type AdminAction = typeof adminActions.$inferSelect;

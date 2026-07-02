@@ -9,7 +9,7 @@ export const Route = createFileRoute("/admin/users")({
   component: AdminUsersPage,
 });
 
-type DbUser = { id: number; email: string; createdAt: string };
+type DbUser = { id: number; email: string; role: "admin" | "superadmin"; createdAt: string };
 
 const inputCls = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#042045] focus:bg-white focus:ring-2 focus:ring-[#042045]/10";
 const labelCls = "block text-sm font-medium text-gray-700 mb-1";
@@ -19,26 +19,35 @@ function AdminUsersPage() {
   const [modal, setModal] = useState<"invite" | "edit" | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [editId, setEditId] = useState<number | null>(null);
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [editForm, setEditForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState<{ email: string; password: string; role: "admin" | "superadmin" }>({
+    email: "",
+    password: "",
+    role: "admin",
+  });
+  const [editForm, setEditForm] = useState<{ email: string; password: string; role: "admin" | "superadmin" }>({
+    email: "",
+    password: "",
+    role: "admin",
+  });
 
-  const { data: users = [], isLoading } = useQuery({
+  const { data: users = [], isLoading, error: usersError } = useQuery({
     queryKey: ["users"],
     queryFn: () => api.get<DbUser[]>("/api/users"),
+    retry: false,
   });
 
   const createMut = useMutation({
-    mutationFn: (data: { email: string; password: string }) =>
+    mutationFn: (data: { email: string; password: string; role: "admin" | "superadmin" }) =>
       api.post<DbUser[]>("/api/users", data),
     onSuccess: (rows) => {
       qc.setQueryData(["users"], rows);
       setModal(null);
-      setForm({ email: "", password: "" });
+      setForm({ email: "", password: "", role: "admin" });
     },
   });
 
   const updateMut = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: { email?: string; password?: string } }) =>
+    mutationFn: ({ id, data }: { id: number; data: { email?: string; password?: string; role?: "admin" | "superadmin" } }) =>
       api.patch<DbUser[]>(`/api/users/${id}`, data),
     onSuccess: (rows) => {
       qc.setQueryData(["users"], rows);
@@ -56,7 +65,7 @@ function AdminUsersPage() {
 
   const openEdit = (u: DbUser) => {
     setEditId(u.id);
-    setEditForm({ email: u.email, password: "" });
+    setEditForm({ email: u.email, password: "", role: u.role });
     setModal("edit");
   };
 
@@ -67,9 +76,10 @@ function AdminUsersPage() {
 
   const handleUpdate = () => {
     if (!editId) return;
-    const payload: { email?: string; password?: string } = {};
+    const payload: { email?: string; password?: string; role?: "admin" | "superadmin" } = {};
     if (editForm.email) payload.email = editForm.email;
     if (editForm.password) payload.password = editForm.password;
+    payload.role = editForm.role;
     updateMut.mutate({ id: editId, data: payload });
   };
 
@@ -81,7 +91,7 @@ function AdminUsersPage() {
           <p className="mt-1 text-sm text-gray-500">Admin accounts with dashboard access.</p>
         </div>
         <button
-          onClick={() => { setForm({ email: "", password: "" }); setModal("invite"); }}
+          onClick={() => { setForm({ email: "", password: "", role: "admin" }); setModal("invite"); }}
           className="inline-flex items-center gap-2 rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#042045]/90"
         >
           <Plus className="h-4 w-4" />Add user
@@ -93,12 +103,18 @@ function AdminUsersPage() {
         <div>
           <p className="text-sm font-semibold text-blue-800">Password-protected dashboard</p>
           <p className="mt-0.5 text-xs text-blue-600">
-            Users added here are stored in the database with bcrypt-hashed passwords. The primary admin account is also controlled via <code className="rounded bg-blue-100 px-1 py-0.5 font-mono">ADMIN_EMAIL</code> and <code className="rounded bg-blue-100 px-1 py-0.5 font-mono">ADMIN_PASSWORD_HASH</code> environment variables.
+            Users added here are stored in the database with bcrypt-hashed passwords. Only <strong>superadmin</strong> accounts can manage users. The bootstrap admin account is also controlled via <code className="rounded bg-blue-100 px-1 py-0.5 font-mono">ADMIN_USERNAME</code> and <code className="rounded bg-blue-100 px-1 py-0.5 font-mono">ADMIN_PASSWORD_HASH</code> environment variables and is always treated as superadmin.
           </p>
         </div>
       </div>
 
-      {isLoading ? (
+      {usersError ? (
+        <div className="rounded-xl border border-red-100 bg-red-50 px-5 py-4 text-sm text-red-700">
+          {(usersError as Error).message === "Forbidden — superadmin required"
+            ? "Your account doesn't have permission to manage users — only superadmin accounts can access this page."
+            : `Couldn't load users: ${(usersError as Error).message}`}
+        </div>
+      ) : isLoading ? (
         <div className="flex h-40 items-center justify-center">
           <Loader2 className="h-6 w-6 animate-spin text-gray-300" />
         </div>
@@ -108,7 +124,7 @@ function AdminUsersPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50/60">
-                  {["Email", "Created", ""].map((h) => (
+                  {["Email", "Role", "Created", ""].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-400 first:pl-6">{h}</th>
                   ))}
                 </tr>
@@ -116,7 +132,7 @@ function AdminUsersPage() {
               <tbody className="divide-y divide-gray-100">
                 {users.length === 0 && (
                   <tr>
-                    <td colSpan={3} className="px-6 py-8 text-center text-sm text-gray-400">No additional users yet</td>
+                    <td colSpan={4} className="px-6 py-8 text-center text-sm text-gray-400">No additional users yet</td>
                   </tr>
                 )}
                 {users.map((u) => (
@@ -128,6 +144,11 @@ function AdminUsersPage() {
                         </div>
                         <p className="font-medium text-gray-900">{u.email}</p>
                       </div>
+                    </td>
+                    <td className="px-4 py-4">
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${u.role === "superadmin" ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-600"}`}>
+                        {u.role}
+                      </span>
                     </td>
                     <td className="px-4 py-4 text-xs text-gray-400">
                       {new Date(u.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
@@ -155,7 +176,12 @@ function AdminUsersPage() {
                   {u.email.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="truncate font-medium text-gray-900">{u.email}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="truncate font-medium text-gray-900">{u.email}</p>
+                    <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${u.role === "superadmin" ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-600"}`}>
+                      {u.role}
+                    </span>
+                  </div>
                   <p className="text-xs text-gray-400">
                     Added {new Date(u.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                   </p>
@@ -182,6 +208,17 @@ function AdminUsersPage() {
             <div>
               <label className={labelCls}>Password</label>
               <input type="password" className={inputCls} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Minimum 8 characters" />
+            </div>
+            <div>
+              <label className={labelCls}>Role</label>
+              <select
+                className={inputCls}
+                value={form.role}
+                onChange={(e) => setForm({ ...form, role: e.target.value as "admin" | "superadmin" })}
+              >
+                <option value="admin">Admin — manage content and bookings</option>
+                <option value="superadmin">Superadmin — can also manage users</option>
+              </select>
             </div>
             {createMut.error && <p className="text-sm text-red-600">{(createMut.error as Error).message}</p>}
           </div>
@@ -212,6 +249,17 @@ function AdminUsersPage() {
             <div>
               <label className={labelCls}>New password <span className="font-normal text-gray-400">(leave blank to keep current)</span></label>
               <input type="password" className={inputCls} value={editForm.password} onChange={(e) => setEditForm({ ...editForm, password: e.target.value })} placeholder="Minimum 8 characters" />
+            </div>
+            <div>
+              <label className={labelCls}>Role</label>
+              <select
+                className={inputCls}
+                value={editForm.role}
+                onChange={(e) => setEditForm({ ...editForm, role: e.target.value as "admin" | "superadmin" })}
+              >
+                <option value="admin">Admin — manage content and bookings</option>
+                <option value="superadmin">Superadmin — can also manage users</option>
+              </select>
             </div>
             {updateMut.error && <p className="text-sm text-red-600">{(updateMut.error as Error).message}</p>}
           </div>

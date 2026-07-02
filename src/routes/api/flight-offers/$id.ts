@@ -34,7 +34,20 @@ export const APIRoute = createAPIFileRoute("/api/flight-offers/$id")({
   DELETE: async ({ request, params }) => {
     await requireAuth(request);
     const { id } = params;
-    await db.delete(flightOffers).where(eq(flightOffers.id, id));
+    let result: { affectedRows: number };
+    try {
+      [result] = await db.delete(flightOffers).where(eq(flightOffers.id, id));
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "";
+      if (msg.toLowerCase().includes("foreign key constraint")) {
+        return Response.json(
+          { error: "This flight offer still has bookings referencing it — those must be handled first" },
+          { status: 409 },
+        );
+      }
+      throw e;
+    }
+    if (result.affectedRows === 0) return Response.json({ error: "Not found" }, { status: 404 });
     return Response.json({ ok: true });
   },
 });

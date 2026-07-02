@@ -5,6 +5,9 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { fileURLToPath, URL } from "node:url";
 
 export default defineConfig({
+  server: {
+    port: Number(process.env.PORT) || 3000,
+  },
   resolve: {
     tsconfigPaths: true,
     alias: {

@@ -29,7 +29,8 @@ export const APIRoute = createAPIFileRoute("/api/faq-groups/$id")({
   DELETE: async ({ request, params }) => {
     await requireAuth(request);
     const id = Number(params.id);
-    await db.delete(faqGroups).where(eq(faqGroups.id, id));
+    const [result] = await db.delete(faqGroups).where(eq(faqGroups.id, id));
+    if (result.affectedRows === 0) return Response.json({ error: "Not found" }, { status: 404 });
 
     const groups = await db.select().from(faqGroups).orderBy(asc(faqGroups.sortOrder));
     const items = await db.select().from(faqItems).orderBy(asc(faqItems.sortOrder));

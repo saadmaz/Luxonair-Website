@@ -28,7 +28,8 @@ export const APIRoute = createAPIFileRoute("/api/holidays/$id")({
   DELETE: async ({ request, params }) => {
     await requireAuth(request);
     const id = Number(params.id);
-    await db.delete(holidayTypes).where(eq(holidayTypes.id, id));
+    const [result] = await db.delete(holidayTypes).where(eq(holidayTypes.id, id));
+    if (result.affectedRows === 0) return Response.json({ error: "Not found" }, { status: 404 });
     return Response.json({ ok: true });
   },
 });

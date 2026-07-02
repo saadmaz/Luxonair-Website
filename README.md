@@ -190,11 +190,15 @@ cd Luxonair-Website
 # 2. Install dependencies
 npm install
 
-# 3. Create and populate the .env file (see Environment Variables section)
+# 3. Start a local MySQL instance (do NOT point local dev at the production DB)
+docker compose up -d
+
+# 4. Create and populate the .env file (see Environment Variables section) —
+#    point DATABASE_URL at the docker-compose instance from step 3
 cp .env.example .env
 
-# 4. Push the database schema
-npm run db:push
+# 5. Apply the schema to your local database
+npm run db:migrate
 ```
 
 ---
@@ -205,12 +209,29 @@ All runtime secrets live in a `.env` file (not committed). An `.env.example` tem
 
 | Variable | Purpose |
 |---|---|
-| `DATABASE_URL` | MySQL connection string, e.g. `mysql://user:pass@host:3306/dbname` |
+| `DATABASE_URL` | MySQL connection string, e.g. `mysql://user:pass@host:3306/dbname`. **Never point this at production from a local machine** — see the warning in `.env.example`. |
+| `DATABASE_SSL` | `"true"` to enable TLS on the MySQL connection; leave unset/`false` for same-host Hostinger deployments |
 | `JWT_SECRET` | Secret key used to sign and verify admin session tokens |
-| `ADMIN_EMAIL` | Admin login email |
-| `ADMIN_PASSWORD_HASH` | bcrypt hash of the admin password (generate with bcryptjs) |
+| `ADMIN_USERNAME` | Bootstrap admin login username (env-var based account, separate from the `admin_users` table) |
+| `ADMIN_PASSWORD_HASH` | bcrypt hash of the bootstrap admin password (generate with bcryptjs) |
 | `NODE_ENV` | `production` or `development` |
 | `PORT` | Server port (default `3000`) |
+
+### Local development database
+
+Local dev, `npm run db:studio`, and the Playwright suite under `tests/` all connect using
+whatever `DATABASE_URL` is set in `.env` — there is no separate dev/prod switch in code.
+Run a disposable local MySQL instance instead of connecting to production:
+
+```bash
+docker compose up -d
+# then set in .env:
+# DATABASE_URL=mysql://luxonair_dev:luxonair_dev_password@127.0.0.1:3306/luxonair_dev
+npm run db:migrate
+```
+
+`db/index.ts` logs a warning at startup if `NODE_ENV !== "production"` and the resolved
+DB host/name don't look like a local database — treat that warning as a stop sign.
 
 **Brand constants** (phone, email, social links, Formspree IDs, accreditation numbers) are **not** environment variables — they live as TypeScript constants in `src/config/site.ts` and are compiled into the bundle.
 
@@ -450,13 +471,21 @@ Session auth is implemented in `src/server/auth.ts` using **jose** for JWT opera
 ### Database Commands
 
 ```bash
-# Generate migration files from schema changes
+# Generate migration files from schema changes (review the generated SQL before committing)
 npm run db:generate
 
-# Apply schema to the database directly (skips migration files)
+# Apply pending migrations from db/migrations (preferred — used for local dev and,
+# going forward, production; see db/migrate.ts for the one-time --baseline flag
+# needed before production can be cut over from db:push)
+npm run db:migrate
+
+# Apply schema to the database directly, skipping migration files entirely.
+# Still used by the production deploy workflow (.github/workflows/deploy.yml) until
+# the baseline cutover happens — do not use this against a database you care about
+# without understanding that it can drop/recreate columns without confirmation.
 npm run db:push
 
-# Open Drizzle Studio (web UI for browsing data)
+# Open Drizzle Studio (web UI for browsing data) — same DATABASE_URL warning applies
 npm run db:studio
 ```
 
@@ -560,6 +589,10 @@ Styles are authored in Tailwind CSS v4 with a custom design system defined in `s
 ```bash
 pm2 start ecosystem.config.cjs
 ```
+
+The actual production deploy path is `.github/workflows/deploy.yml`, triggered on push to `main`: it SSHes into the Hostinger box, pulls, builds, applies the database schema, and reloads PM2.
+
+**Database backups**: the deploy workflow runs a `mysqldump` of the production database to `~/db-backups/` (gzipped, timestamped, last 14 kept) *before* touching schema or code on every deploy — this is currently the only backup mechanism in place. There is no automated off-server backup, point-in-time recovery, or tested restore procedure; verify what backup coverage (if any) Hostinger's own hosting plan provides, and consider it a gap until confirmed.
 
 ---
 

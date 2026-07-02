@@ -2,7 +2,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import { randomBytes } from "node:crypto";
 import { isNull, eq, and } from "drizzle-orm";
-import { db, sessions } from "../../db/index";
+import { db, sessions, adminUsers } from "../../db/index";
 
 const getSecret = () => {
   const s = process.env.JWT_SECRET;
@@ -73,6 +73,29 @@ export async function requireAuth(request: Request) {
   if (!session) {
     throw new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  return session;
+}
+
+// The bootstrap ADMIN_USERNAME/ADMIN_PASSWORD_HASH account never has a row in
+// admin_users (see login.ts) — it's always treated as superadmin.
+export async function requireSuperAdmin(request: Request) {
+  const session = await requireAuth(request);
+
+  const envUsername = process.env.ADMIN_USERNAME?.trim().toLowerCase();
+  if (envUsername && session.email === envUsername) return session;
+
+  const [user] = await db
+    .select({ role: adminUsers.role })
+    .from(adminUsers)
+    .where(eq(adminUsers.email, session.email))
+    .limit(1);
+
+  if (!user || user.role !== "superadmin") {
+    throw new Response(JSON.stringify({ error: "Forbidden — superadmin required" }), {
+      status: 403,
       headers: { "Content-Type": "application/json" },
     });
   }

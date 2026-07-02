@@ -1,0 +1,16 @@
+services:
+  db:
+    image: mysql:8
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: dev_root_password
+      MYSQL_DATABASE: luxonair_dev
+      MYSQL_USER: luxonair_dev
+      MYSQL_PASSWORD: luxonair_dev_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - luxonair_dev_db:/var/lib/mysql
+
+volumes:
+  luxonair_dev_db:

@@ -3,6 +3,7 @@ import { count, desc } from "drizzle-orm";
 import { db, subscribers } from "../../../../db/index";
 import { requireAuth } from "@/server/auth";
 import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
+import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { subscriberSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/subscribers")({
@@ -16,14 +17,14 @@ export const APIRoute = createAPIFileRoute("/api/subscribers")({
       const data = await db.select().from(subscribers).orderBy(desc(subscribers.createdAt)).limit(limit).offset((page - 1) * limit);
       return Response.json({ data, total, page, limit });
     }
-    const rows = await db.select().from(subscribers).orderBy(desc(subscribers.createdAt));
+    const rows = await db.select().from(subscribers).orderBy(desc(subscribers.createdAt)).limit(DEFAULT_LIST_LIMIT);
     return Response.json(rows);
   },
 
   POST: async ({ request }) => {
     // 10 subscriptions per 10 minutes per IP (slightly more lenient)
     const ip = getClientIp(request);
-    const rl = checkRateLimit(`subscribe:${ip}`, 10, 10 * 60 * 1000);
+    const rl = await checkRateLimit(`subscribe:${ip}`, 10, 10 * 60 * 1000);
     if (!rl.allowed) return rateLimitResponse(rl.retryAfter);
 
     const raw = await request.json().catch(() => null);

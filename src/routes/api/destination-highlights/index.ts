@@ -1,7 +1,8 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
-import { count, asc, desc } from "drizzle-orm";
+import { count, asc, desc, eq } from "drizzle-orm";
 import { db, destinationHighlights } from "../../../../db/index";
 import { requireAuth } from "@/server/auth";
+import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { destinationHighlightSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/destination-highlights")({
@@ -23,7 +24,8 @@ export const APIRoute = createAPIFileRoute("/api/destination-highlights")({
     const rows = await db
       .select()
       .from(destinationHighlights)
-      .orderBy(asc(destinationHighlights.sortOrder), desc(destinationHighlights.createdAt));
+      .orderBy(asc(destinationHighlights.sortOrder), desc(destinationHighlights.createdAt))
+      .limit(DEFAULT_LIST_LIMIT);
     return Response.json(rows);
   },
 
@@ -35,12 +37,8 @@ export const APIRoute = createAPIFileRoute("/api/destination-highlights")({
       return Response.json({ error: "Invalid request", issues: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
 
-    await db.insert(destinationHighlights).values(parsed.data);
-    const [row] = await db
-      .select()
-      .from(destinationHighlights)
-      .orderBy(desc(destinationHighlights.createdAt))
-      .limit(1);
+    const [{ id }] = await db.insert(destinationHighlights).values(parsed.data).$returningId();
+    const [row] = await db.select().from(destinationHighlights).where(eq(destinationHighlights.id, id));
     return Response.json(row, { status: 201 });
   },
 });

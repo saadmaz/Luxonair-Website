@@ -50,6 +50,20 @@
       "when": 1782990176027,
       "tag": "0006_add_enquiries_infants",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1782995099325,
+      "tag": "0007_add_deal_flightbooking_fks",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1782995200000,
+      "tag": "0008_add_role_and_admin_actions",
+      "breakpoints": true
     }
   ]
 }

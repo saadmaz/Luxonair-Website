@@ -41,11 +41,33 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           envs: ADMIN_USERNAME,ADMIN_PASSWORD_HASH
           script: |
-            set -e
+            set -eo pipefail
             cd ${{ secrets.APP_PATH }}
+
+            # ── Pre-deploy backup ─────────────────────────────────────────────────
+            # Always dump the database before touching schema/code, so a bad deploy
+            # (migration or otherwise) is recoverable. Fails the deploy (via set -e)
+            # if the dump itself fails, rather than risking an unrecoverable change.
+            BACKUP_DIR="$HOME/db-backups"
+            mkdir -p "$BACKUP_DIR"
+            DB_URL=$(grep -m1 '^DATABASE_URL=' .env | cut -d '=' -f2-)
+            DB_USER=$(echo "$DB_URL" | sed -E 's#mysql2?://([^:]+):.*#\1#')
+            DB_PASS=$(echo "$DB_URL" | sed -E 's#mysql2?://[^:]+:([^@]+)@.*#\1#')
+            DB_HOST=$(echo "$DB_URL" | sed -E 's#.*@([^:/]+).*#\1#')
+            DB_NAME=$(echo "$DB_URL" | sed -E 's#.*/([^/?]+).*#\1#')
+            mysqldump -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" | gzip > "$BACKUP_DIR/pre-deploy-$(date +%Y%m%d-%H%M%S).sql.gz"
+            # keep the last 14 backups only
+            ls -1t "$BACKUP_DIR"/*.sql.gz | tail -n +15 | xargs -r rm --
+
             git pull origin main
             npm ci --omit=dev
             npm run build
+            # TODO(db-migrations-cutover): still using `drizzle-kit push` here rather than
+            # `npm run db:migrate` — see db/migrate.ts. Cutover is pending a one-time
+            # `npm run db:migrate -- --baseline` run against this database (this database's
+            # tables were created via `push`, not tracked migrations, so the normal migrate
+            # path would try to re-run CREATE TABLE for tables that already exist). Once
+            # baselined, replace the line below with `npm run db:migrate`.
             npm run db:push
             # Update admin credentials in .env from GitHub Secrets
             if [ -n "$ADMIN_USERNAME" ]; then
