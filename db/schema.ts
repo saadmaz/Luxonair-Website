@@ -295,7 +295,9 @@ export const adminUsers = mysqlTable("admin_users", {
 
 // Shared across enquiry_notes and contact_notes — an append-only CRM-style
 // activity log (plain notes as well as logged calls/follow-ups/emails).
-export const NOTE_TYPE_VALUES = ["note", "call", "follow_up", "email"] as const;
+// Not exported: db/index.ts derives its JSON-column cache by assuming every
+// export from this file is a mysqlTable, so any non-table export crashes it.
+const NOTE_TYPE_VALUES = ["note", "call", "follow_up", "email"] as const;
 
 export const enquiryNotes = mysqlTable(
   "enquiry_notes",
