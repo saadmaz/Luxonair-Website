@@ -175,7 +175,10 @@ export const faqItemSchema = z.object({
 
 export const enquiryUpdateSchema = z.object({
   status: z.string().max(50).optional(),
-  notes: z.string().max(2000).optional(),
+});
+
+export const enquiryNoteCreateSchema = z.object({
+  body: z.string().trim().min(1).max(5000),
 });
 
 export const contactUpdateSchema = z.object({

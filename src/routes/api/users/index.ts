@@ -11,6 +11,7 @@ const createUserSchema = z.object({
   password: z.string().min(8).max(200),
   role: z.enum(["admin", "superadmin", "user"]).default("admin"),
   sections: z.array(z.enum(SECTION_KEYS)).default([]),
+  displayName: z.string().max(100).optional(),
 });
 
 const userColumns = {
@@ -18,6 +19,7 @@ const userColumns = {
   email: adminUsers.email,
   role: adminUsers.role,
   sections: adminUsers.sections,
+  displayName: adminUsers.displayName,
   createdAt: adminUsers.createdAt,
 };
 
@@ -40,7 +42,7 @@ export const APIRoute = createAPIFileRoute("/api/users")({
       );
     }
 
-    const { email, password, role, sections } = parsed.data;
+    const { email, password, role, sections, displayName } = parsed.data;
 
     if (ctx.role !== "superadmin") {
       if (role === "superadmin") {
@@ -58,7 +60,13 @@ export const APIRoute = createAPIFileRoute("/api/users")({
     const passwordHash = await hash(password, 12);
 
     try {
-      await db.insert(adminUsers).values({ email: email.trim().toLowerCase(), passwordHash, role, sections });
+      await db.insert(adminUsers).values({
+        email: email.trim().toLowerCase(),
+        passwordHash,
+        role,
+        sections,
+        displayName: displayName?.trim() || null,
+      });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "";
       if (msg.includes("Duplicate") || msg.includes("unique")) {

@@ -289,8 +289,24 @@ export const adminUsers = mysqlTable("admin_users", {
   passwordHash: varchar("password_hash", { length: 255 }).notNull(),
   role: mysqlEnum("role", ["admin", "superadmin", "user"]).notNull().default("admin"),
   sections: json("sections").$type<string[]>().notNull().default([]),
+  displayName: varchar("display_name", { length: 100 }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const enquiryNotes = mysqlTable(
+  "enquiry_notes",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    enquiryId: int("enquiry_id")
+      .notNull()
+      .references(() => enquiries.id, { onDelete: "cascade" }),
+    body: text("body").notNull(),
+    authorEmail: varchar("author_email", { length: 255 }).notNull(),
+    authorName: varchar("author_name", { length: 100 }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("enquiry_notes_enquiry_id_idx").on(t.enquiryId)],
+);
 
 export const adminActions = mysqlTable(
   "admin_actions",
@@ -321,3 +337,4 @@ export type AdminUser = typeof adminUsers.$inferSelect;
 export type FlightOffer = typeof flightOffers.$inferSelect;
 export type FlightOfferBooking = typeof flightOfferBookings.$inferSelect;
 export type AdminAction = typeof adminActions.$inferSelect;
+export type EnquiryNote = typeof enquiryNotes.$inferSelect;

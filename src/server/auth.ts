@@ -85,6 +85,7 @@ export type UserContext = {
   sid: string;
   role: "superadmin" | "admin" | "user";
   sections: SectionKey[];
+  displayName: string | null;
 };
 
 // The bootstrap ADMIN_USERNAME/ADMIN_PASSWORD_HASH account never has a row in
@@ -94,11 +95,11 @@ export async function getUserContext(request: Request): Promise<UserContext> {
 
   const envUsername = process.env.ADMIN_USERNAME?.trim().toLowerCase();
   if (envUsername && session.email === envUsername) {
-    return { ...session, role: "superadmin", sections: [] };
+    return { ...session, role: "superadmin", sections: [], displayName: null };
   }
 
   const [user] = await db
-    .select({ role: adminUsers.role, sections: adminUsers.sections })
+    .select({ role: adminUsers.role, sections: adminUsers.sections, displayName: adminUsers.displayName })
     .from(adminUsers)
     .where(eq(adminUsers.email, session.email))
     .limit(1);
@@ -110,7 +111,12 @@ export async function getUserContext(request: Request): Promise<UserContext> {
     });
   }
 
-  return { ...session, role: user.role, sections: (user.sections ?? []) as SectionKey[] };
+  return {
+    ...session,
+    role: user.role,
+    sections: (user.sections ?? []) as SectionKey[],
+    displayName: user.displayName,
+  };
 }
 
 export async function requireSuperAdmin(request: Request): Promise<UserContext> {

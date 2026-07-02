@@ -11,9 +11,9 @@ export const Route = createFileRoute("/admin/users")({
 });
 
 type Role = "admin" | "superadmin" | "user";
-type DbUser = { id: number; email: string; role: Role; sections: SectionKey[]; createdAt: string };
+type DbUser = { id: number; email: string; role: Role; sections: SectionKey[]; displayName: string | null; createdAt: string };
 type MeData = { email: string; role: Role; sections: SectionKey[] };
-type UserForm = { email: string; password: string; role: Role; sections: SectionKey[] };
+type UserForm = { email: string; password: string; role: Role; sections: SectionKey[]; displayName: string };
 
 const inputCls = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#042045] focus:bg-white focus:ring-2 focus:ring-[#042045]/10";
 const labelCls = "block text-sm font-medium text-gray-700 mb-1";
@@ -52,8 +52,8 @@ function AdminUsersPage() {
   const [modal, setModal] = useState<"invite" | "edit" | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [editId, setEditId] = useState<number | null>(null);
-  const [form, setForm] = useState<UserForm>({ email: "", password: "", role: "admin", sections: [] });
-  const [editForm, setEditForm] = useState<UserForm>({ email: "", password: "", role: "admin", sections: [] });
+  const [form, setForm] = useState<UserForm>({ email: "", password: "", role: "admin", sections: [], displayName: "" });
+  const [editForm, setEditForm] = useState<UserForm>({ email: "", password: "", role: "admin", sections: [], displayName: "" });
 
   const me = qc.getQueryData<MeData>(["auth", "me"]);
   const isSuperAdmin = me?.role === "superadmin";
@@ -70,7 +70,7 @@ function AdminUsersPage() {
     onSuccess: (rows) => {
       qc.setQueryData(["users"], rows);
       setModal(null);
-      setForm({ email: "", password: "", role: "admin", sections: [] });
+      setForm({ email: "", password: "", role: "admin", sections: [], displayName: "" });
     },
   });
 
@@ -93,7 +93,7 @@ function AdminUsersPage() {
 
   const openEdit = (u: DbUser) => {
     setEditId(u.id);
-    setEditForm({ email: u.email, password: "", role: u.role, sections: u.sections });
+    setEditForm({ email: u.email, password: "", role: u.role, sections: u.sections, displayName: u.displayName ?? "" });
     setModal("edit");
   };
 
@@ -104,7 +104,7 @@ function AdminUsersPage() {
 
   const handleUpdate = () => {
     if (!editId) return;
-    const payload: Partial<UserForm> = { sections: editForm.sections, role: editForm.role };
+    const payload: Partial<UserForm> = { sections: editForm.sections, role: editForm.role, displayName: editForm.displayName };
     if (editForm.email) payload.email = editForm.email;
     if (editForm.password) payload.password = editForm.password;
     updateMut.mutate({ id: editId, data: payload });
@@ -118,7 +118,7 @@ function AdminUsersPage() {
           <p className="mt-1 text-sm text-gray-500">Admin accounts with dashboard access.</p>
         </div>
         <button
-          onClick={() => { setForm({ email: "", password: "", role: "admin", sections: [] }); setModal("invite"); }}
+          onClick={() => { setForm({ email: "", password: "", role: "admin", sections: [], displayName: "" }); setModal("invite"); }}
           className="inline-flex items-center gap-2 rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#042045]/90"
         >
           <Plus className="h-4 w-4" />Add user
@@ -233,6 +233,10 @@ function AdminUsersPage() {
               <input type="email" className={inputCls} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
             </div>
             <div>
+              <label className={labelCls}>Display name</label>
+              <input className={inputCls} value={form.displayName} onChange={(e) => setForm({ ...form, displayName: e.target.value })} placeholder="Shown on notes instead of email" />
+            </div>
+            <div>
               <label className={labelCls}>Password</label>
               <input type="password" className={inputCls} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Minimum 8 characters" />
             </div>
@@ -283,6 +287,10 @@ function AdminUsersPage() {
             <div>
               <label className={labelCls}>Email</label>
               <input type="email" className={inputCls} value={editForm.email} onChange={(e) => setEditForm({ ...editForm, email: e.target.value })} />
+            </div>
+            <div>
+              <label className={labelCls}>Display name</label>
+              <input className={inputCls} value={editForm.displayName} onChange={(e) => setEditForm({ ...editForm, displayName: e.target.value })} placeholder="Shown on notes instead of email" />
             </div>
             <div>
               <label className={labelCls}>New password <span className="font-normal text-gray-400">(leave blank to keep current)</span></label>

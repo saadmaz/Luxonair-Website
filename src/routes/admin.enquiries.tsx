@@ -15,6 +15,8 @@ export const Route = createFileRoute("/admin/enquiries")({
 
 type Status = "New" | "In Progress" | "Responded";
 
+type NoteEntry = { id: number; body: string; authorEmail: string; authorName: string | null; createdAt: string };
+
 type Enquiry = {
   id: number; name: string; email: string; phone: string;
   destination: string; region: string; tripType: string;
@@ -92,6 +94,7 @@ function AdminEnquiriesPage() {
   const [replyItem, setReplyItem] = useState<Enquiry | null>(null);
   const [replySubject, setReplySubject] = useState("");
   const [replyMessage, setReplyMessage] = useState("");
+  const [noteText, setNoteText] = useState("");
 
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["enquiries"],
@@ -108,9 +111,23 @@ function AdminEnquiriesPage() {
     mutationFn: (e: Enquiry) =>
       api.patch(`/api/enquiries/${e.id}`, {
         status: uiStatusToDb(e.status),
-        notes: e.notes,
       }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["enquiries"] }); setEditItem(null); },
+  });
+
+  const { data: notes = [] } = useQuery({
+    queryKey: ["enquiry-notes", editItem?.id],
+    queryFn: () => api.get<NoteEntry[]>(`/api/enquiries/${editItem!.id}/notes`),
+    enabled: editItem !== null,
+  });
+
+  const addNote = useMutation({
+    mutationFn: (vars: { id: number; body: string }) =>
+      api.post<NoteEntry>(`/api/enquiries/${vars.id}/notes`, { body: vars.body }),
+    onSuccess: (_, vars) => {
+      qc.invalidateQueries({ queryKey: ["enquiry-notes", vars.id] });
+      setNoteText("");
+    },
   });
 
   const deleteEnquiry = useMutation({
@@ -218,7 +235,7 @@ function AdminEnquiriesPage() {
                     <td className="px-4 py-4 text-xs text-gray-400">{e.received}</td>
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-1.5">
-                        <button onClick={() => setEditItem({ ...e })} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-gray-50 hover:text-gray-600"><Pencil className="h-3.5 w-3.5" /></button>
+                        <button onClick={() => { setEditItem({ ...e }); setNoteText(""); }} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-gray-50 hover:text-gray-600"><Pencil className="h-3.5 w-3.5" /></button>
                         <button onClick={() => setDeleteId(e.id)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"><Trash2 className="h-3.5 w-3.5" /></button>
                         <button onClick={() => setExpandedId(expandedId === e.id ? null : e.id)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-gray-50">
                           <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", expandedId === e.id && "rotate-180")} />
@@ -260,7 +277,7 @@ function AdminEnquiriesPage() {
               </div>
               <div className="mt-3 flex gap-2">
                 <button onClick={() => openReply(e)} className="rounded-lg bg-[#042045] px-3 py-1.5 text-xs font-semibold text-white">Reply</button>
-                <button onClick={() => setEditItem({ ...e })} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600">Edit</button>
+                <button onClick={() => { setEditItem({ ...e }); setNoteText(""); }} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600">Edit</button>
                 <button onClick={() => setDeleteId(e.id)} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-red-500">Delete</button>
               </div>
             </div>
@@ -292,7 +309,44 @@ function AdminEnquiriesPage() {
                   </select>
                 </div>
               </div>
-              <div><label className={labelCls}>Notes</label><textarea className={inputCls} rows={3} value={editItem.notes} onChange={(e) => setEditItem({ ...editItem, notes: e.target.value })} /></div>
+              <div>
+                <label className={labelCls}>Notes</label>
+                <div className="max-h-48 overflow-y-auto rounded-lg border border-gray-200 bg-gray-50 p-3 space-y-3">
+                  {notes.length === 0 ? (
+                    <p className="text-sm text-gray-400">No notes yet</p>
+                  ) : (
+                    notes.map((n) => (
+                      <div key={n.id} className="rounded-lg border border-gray-200 bg-white p-2.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-xs font-semibold text-gray-700">{n.authorName || n.authorEmail}</p>
+                          <p className="text-xs text-gray-400">
+                            {new Date(n.createdAt).toLocaleString("en-GB", {
+                              day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit",
+                            })}
+                          </p>
+                        </div>
+                        <p className="mt-1 whitespace-pre-wrap text-sm text-gray-800">{n.body}</p>
+                      </div>
+                    ))
+                  )}
+                </div>
+                <div className="mt-2 flex flex-col gap-2">
+                  <textarea
+                    className={inputCls}
+                    rows={3}
+                    value={noteText}
+                    onChange={(e) => setNoteText(e.target.value)}
+                    placeholder="Add a note…"
+                  />
+                  <button
+                    onClick={() => editItem && noteText.trim() && addNote.mutate({ id: editItem.id, body: noteText.trim() })}
+                    disabled={addNote.isPending || !noteText.trim()}
+                    className="self-start inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+                  >
+                    {addNote.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}Add note
+                  </button>
+                </div>
+              </div>
             </div>
           )}
           <DialogFooter>

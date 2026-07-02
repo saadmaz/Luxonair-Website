@@ -11,6 +11,7 @@ const updateUserSchema = z.object({
   password: z.string().min(8).max(200).optional(),
   role: z.enum(["admin", "superadmin", "user"]).optional(),
   sections: z.array(z.enum(SECTION_KEYS)).optional(),
+  displayName: z.string().max(100).optional(),
 });
 
 const userColumns = {
@@ -18,6 +19,7 @@ const userColumns = {
   email: adminUsers.email,
   role: adminUsers.role,
   sections: adminUsers.sections,
+  displayName: adminUsers.displayName,
   createdAt: adminUsers.createdAt,
 };
 
@@ -40,6 +42,7 @@ export const APIRoute = createAPIFileRoute("/api/users/$id")({
     if (parsed.data.password) update.passwordHash = await hash(parsed.data.password, 12);
     if (parsed.data.role) update.role = parsed.data.role;
     if (parsed.data.sections) update.sections = parsed.data.sections;
+    if (parsed.data.displayName !== undefined) update.displayName = parsed.data.displayName.trim() || null;
 
     if (Object.keys(update).length === 0) {
       return Response.json({ error: "Nothing to update" }, { status: 400 });

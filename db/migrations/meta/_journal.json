@@ -71,6 +71,20 @@
       "when": 1783000000000,
       "tag": "0009_add_sections_and_user_role",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1783000100000,
+      "tag": "0010_add_display_name",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1783000200000,
+      "tag": "0011_add_enquiry_notes",
+      "breakpoints": true
     }
   ]
 }
