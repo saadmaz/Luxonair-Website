@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { NOTE_TYPES } from "@/lib/notes";
 
 export const loginSchema = z.object({
   username: z.string().min(1).max(100),
@@ -177,12 +178,20 @@ export const enquiryUpdateSchema = z.object({
   status: z.string().max(50).optional(),
 });
 
+const noteTypeSchema = z.enum(NOTE_TYPES).default("note");
+
 export const enquiryNoteCreateSchema = z.object({
   body: z.string().trim().min(1).max(5000),
+  type: noteTypeSchema,
 });
 
 export const contactUpdateSchema = z.object({
   read: z.boolean().optional(),
+});
+
+export const contactNoteCreateSchema = z.object({
+  body: z.string().trim().min(1).max(5000),
+  type: noteTypeSchema,
 });
 
 export const flightOfferBookingUpdateSchema = z.object({

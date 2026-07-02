@@ -1,18 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Mail, MailOpen, Trash2, Loader2 } from "lucide-react";
+import { Mail, MailOpen, Trash2, Loader2, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { api } from "@/lib/api";
+import { NotesLog } from "@/components/admin/NotesLog";
+import type { NoteEntry, NoteType } from "@/lib/notes";
 
 export const Route = createFileRoute("/admin/messages")({
   component: AdminMessagesPage,
 });
 
 type Message = {
-  id: number; name: string; email: string; subject: string;
-  body: string; received: string; read: boolean;
+  id: number; name: string; email: string; phone: string | null;
+  topic: string; message: string; received: string; read: boolean;
 };
 
 type DbContact = {
@@ -26,8 +28,9 @@ function toUIMessage(row: DbContact): Message {
     id: row.id,
     name: row.name,
     email: row.email,
-    subject: row.topic ?? "Contact form message",
-    body: row.message,
+    phone: row.phone,
+    topic: row.topic || "General enquiry",
+    message: row.message,
     received: new Date(row.createdAt).toLocaleDateString("en-GB", {
       day: "numeric", month: "short", year: "numeric",
     }),
@@ -35,10 +38,14 @@ function toUIMessage(row: DbContact): Message {
   };
 }
 
+type StatusFilter = "All" | "Unread" | "Read";
+
 function AdminMessagesPage() {
   const qc = useQueryClient();
   const [selected, setSelected] = useState<number | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
+  const [topicFilter, setTopicFilter] = useState<string>("All");
 
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["contacts"],
@@ -59,8 +66,34 @@ function AdminMessagesPage() {
     },
   });
 
+  const { data: notes = [] } = useQuery({
+    queryKey: ["contact-notes", selected],
+    queryFn: () => api.get<NoteEntry[]>(`/api/contacts/${selected}/notes`),
+    enabled: selected !== null,
+  });
+
+  const addNote = useMutation({
+    mutationFn: (vars: { id: number; body: string; type: NoteType }) =>
+      api.post<NoteEntry>(`/api/contacts/${vars.id}/notes`, { body: vars.body, type: vars.type }),
+    onSuccess: (_, vars) => qc.invalidateQueries({ queryKey: ["contact-notes", vars.id] }),
+  });
+
+  const topics = useMemo(() => Array.from(new Set(items.map((m) => m.topic))).sort(), [items]);
+
+  const filtered = items.filter((m) => {
+    if (statusFilter === "Unread" && m.read) return false;
+    if (statusFilter === "Read" && !m.read) return false;
+    if (topicFilter !== "All" && m.topic !== topicFilter) return false;
+    return true;
+  });
+
+  const counts = {
+    All: items.length,
+    Unread: items.filter((m) => !m.read).length,
+    Read: items.filter((m) => m.read).length,
+  };
+
   const selectedMsg = items.find((m) => m.id === selected);
-  const unread = items.filter((m) => !m.read).length;
 
   const open = (id: number) => {
     setSelected(id);
@@ -84,22 +117,43 @@ function AdminMessagesPage() {
     <div className="p-6 lg:p-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Contact form submissions.{" "}
-          {unread > 0 && <span className="font-semibold text-amber-600">{unread} unread</span>}
-          {unread === 0 && <span className="text-emerald-600">All read</span>}
-        </p>
+        <p className="mt-1 text-sm text-gray-500">Contact form submissions.</p>
       </div>
 
-      <div className="flex h-[calc(100vh-220px)] min-h-[400px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      {/* Filters */}
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        {(["All", "Unread", "Read"] as const).map((s) => (
+          <button key={s} onClick={() => setStatusFilter(s)}
+            className={cn("rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+              statusFilter === s ? "bg-[#042045] text-white" : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50")}
+          >
+            {s}
+            <span className={cn("ml-2 rounded-full px-1.5 py-0.5 text-xs", statusFilter === s ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500")}>
+              {counts[s]}
+            </span>
+          </button>
+        ))}
+        {topics.length > 0 && (
+          <select
+            value={topicFilter}
+            onChange={(e) => setTopicFilter(e.target.value)}
+            className="ml-auto rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-700 outline-none focus:border-[#042045] focus:ring-1 focus:ring-[#042045]/20"
+          >
+            <option value="All">All topics</option>
+            {topics.map((t) => <option key={t} value={t}>{t}</option>)}
+          </select>
+        )}
+      </div>
+
+      <div className="flex h-[calc(100vh-260px)] min-h-[400px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         {/* List */}
         <div className={cn("flex w-full flex-col divide-y divide-gray-100 overflow-y-auto md:w-80 md:border-r md:border-gray-100", selected !== null && "hidden md:flex")}>
-          {items.length === 0 && (
+          {filtered.length === 0 && (
             <div className="flex flex-1 items-center justify-center p-8 text-center">
-              <p className="text-sm text-gray-400">No messages yet</p>
+              <p className="text-sm text-gray-400">No messages match this filter</p>
             </div>
           )}
-          {items.map((m) => (
+          {filtered.map((m) => (
             <button key={m.id} onClick={() => open(m.id)}
               className={cn("flex flex-col items-start gap-1 px-4 py-4 text-left transition-colors hover:bg-gray-50", selected === m.id && "bg-blue-50/60", !m.read && "bg-amber-50/30")}
             >
@@ -108,30 +162,42 @@ function AdminMessagesPage() {
                 <p className={cn("flex-1 truncate text-sm", !m.read ? "font-semibold text-gray-900" : "font-medium text-gray-700")}>{m.name}</p>
                 <p className="text-[11px] text-gray-400">{m.received.split(" ").slice(0, 2).join(" ")}</p>
               </div>
-              <p className="pl-5 text-xs font-medium text-gray-600 truncate w-full">{m.subject}</p>
-              <p className="pl-5 line-clamp-1 text-xs text-gray-400">{m.body}</p>
+              <p className="pl-5 text-xs font-medium text-gray-600 truncate w-full">{m.topic}</p>
+              <p className="pl-5 line-clamp-1 text-xs text-gray-400">{m.message}</p>
             </button>
           ))}
         </div>
 
         {/* Detail */}
-        <div className={cn("flex flex-1 flex-col", selected === null && "hidden md:flex md:items-center md:justify-center")}>
+        <div className={cn("flex flex-1 flex-col overflow-y-auto", selected === null && "hidden md:flex md:items-center md:justify-center")}>
           {selectedMsg ? (
             <>
               <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
                 <div>
                   <p className="font-semibold text-gray-900">{selectedMsg.name}</p>
-                  <p className="text-xs text-gray-400">{selectedMsg.email} · {selectedMsg.received}</p>
+                  <p className="text-xs text-gray-400">
+                    {selectedMsg.email}
+                    {selectedMsg.phone && <> · <Phone className="inline h-3 w-3 -mt-0.5" /> {selectedMsg.phone}</>}
+                    {" · "}{selectedMsg.received}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button onClick={() => setSelected(null)} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 md:hidden">Back</button>
                   <button onClick={() => setDeleteId(selectedMsg.id)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"><Trash2 className="h-4 w-4" /></button>
-                  <a href={`mailto:${selectedMsg.email}?subject=Re: ${selectedMsg.subject}`} className="rounded-lg bg-[#042045] px-4 py-1.5 text-xs font-semibold text-white hover:bg-[#042045]/90">Reply</a>
+                  <a href={`mailto:${selectedMsg.email}?subject=Re: ${selectedMsg.topic}`} className="rounded-lg bg-[#042045] px-4 py-1.5 text-xs font-semibold text-white hover:bg-[#042045]/90">Reply</a>
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto px-6 py-5">
-                <h2 className="mb-4 text-base font-semibold text-gray-900">{selectedMsg.subject}</h2>
-                <p className="text-sm leading-relaxed text-gray-700">{selectedMsg.body}</p>
+              <div className="px-6 py-5">
+                <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-200">{selectedMsg.topic}</span>
+                <p className="mt-4 text-sm leading-relaxed text-gray-700">{selectedMsg.message}</p>
+              </div>
+              <div className="mt-auto border-t border-gray-100 px-6 py-5">
+                <label className="mb-1 block text-sm font-medium text-gray-700">Activity log</label>
+                <NotesLog
+                  notes={notes}
+                  isPending={addNote.isPending}
+                  onAdd={(body, type) => selectedMsg && addNote.mutate({ id: selectedMsg.id, body, type })}
+                />
               </div>
             </>
           ) : (

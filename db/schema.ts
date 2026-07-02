@@ -293,6 +293,10 @@ export const adminUsers = mysqlTable("admin_users", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Shared across enquiry_notes and contact_notes — an append-only CRM-style
+// activity log (plain notes as well as logged calls/follow-ups/emails).
+export const NOTE_TYPE_VALUES = ["note", "call", "follow_up", "email"] as const;
+
 export const enquiryNotes = mysqlTable(
   "enquiry_notes",
   {
@@ -301,11 +305,28 @@ export const enquiryNotes = mysqlTable(
       .notNull()
       .references(() => enquiries.id, { onDelete: "cascade" }),
     body: text("body").notNull(),
+    type: mysqlEnum("type", NOTE_TYPE_VALUES).notNull().default("note"),
     authorEmail: varchar("author_email", { length: 255 }).notNull(),
     authorName: varchar("author_name", { length: 100 }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [index("enquiry_notes_enquiry_id_idx").on(t.enquiryId)],
+);
+
+export const contactNotes = mysqlTable(
+  "contact_notes",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    contactId: int("contact_id")
+      .notNull()
+      .references(() => contacts.id, { onDelete: "cascade" }),
+    body: text("body").notNull(),
+    type: mysqlEnum("type", NOTE_TYPE_VALUES).notNull().default("note"),
+    authorEmail: varchar("author_email", { length: 255 }).notNull(),
+    authorName: varchar("author_name", { length: 100 }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("contact_notes_contact_id_idx").on(t.contactId)],
 );
 
 export const adminActions = mysqlTable(
@@ -338,3 +359,4 @@ export type FlightOffer = typeof flightOffers.$inferSelect;
 export type FlightOfferBooking = typeof flightOfferBookings.$inferSelect;
 export type AdminAction = typeof adminActions.$inferSelect;
 export type EnquiryNote = typeof enquiryNotes.$inferSelect;
+export type ContactNote = typeof contactNotes.$inferSelect;

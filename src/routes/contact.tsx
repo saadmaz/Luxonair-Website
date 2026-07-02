@@ -199,8 +199,7 @@ function ContactPage() {
                   <select name="topic" className="input-field">
                     <option>General enquiry</option>
                     <option>Existing booking</option>
-                    <option>Corporate account</option>
-                    <option>Press / media</option>
+                    <option>Feedback</option>
                   </select>
                 </Field>
                 <Field label="Message">

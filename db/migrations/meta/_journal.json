@@ -85,6 +85,13 @@
       "when": 1783000200000,
       "tag": "0011_add_enquiry_notes",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1783000300000,
+      "tag": "0012_add_note_types_and_contact_notes",
+      "breakpoints": true
     }
   ]
 }
