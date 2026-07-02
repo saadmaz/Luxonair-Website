@@ -33,6 +33,7 @@ export const enquiries = mysqlTable(
     preferredAirlines: text("preferred_airlines"),
     adults: int("adults").notNull(),
     children: int("children").notNull().default(0),
+    infants: int("infants").notNull().default(0),
     budget: text("budget").notNull(),
     notes: text("notes"),
     status: text("status").notNull().default("new"),

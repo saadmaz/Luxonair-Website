@@ -18,7 +18,7 @@ type Status = "New" | "In Progress" | "Responded";
 type Enquiry = {
   id: number; name: string; email: string; phone: string;
   destination: string; region: string; tripType: string;
-  travelDate: string; nights: number; adults: number; children: number;
+  travelDate: string; nights: number; adults: number; children: number; infants: number;
   budget: string; status: Status; received: string; notes: string;
 };
 
@@ -26,7 +26,7 @@ type DbEnquiry = {
   id: number; name: string; email: string; phone: string;
   destination: string; region: string | null; tripType: string;
   dateMode: string; departWindow: string | null; departDate: string | null;
-  nights: number; adults: number; children: number;
+  nights: number; adults: number; children: number; infants: number;
   budget: string; status: string; notes: string | null; createdAt: string;
 };
 
@@ -55,6 +55,7 @@ function toUIEnquiry(row: DbEnquiry): Enquiry {
     nights: row.nights,
     adults: row.adults,
     children: row.children,
+    infants: row.infants,
     budget: row.budget,
     status: dbStatusToUI(row.status),
     received: new Date(row.createdAt).toLocaleDateString("en-GB", {
@@ -201,7 +202,7 @@ function AdminEnquiriesPage() {
                       <p>{e.travelDate}</p>
                       <p className="text-xs text-gray-400">{e.nights} nights</p>
                     </td>
-                    <td className="px-4 py-4 text-gray-600">{e.adults}A{e.children > 0 ? ` · ${e.children}C` : ""}</td>
+                    <td className="px-4 py-4 text-gray-600">{e.adults}A{e.children > 0 ? ` · ${e.children}C` : ""}{e.infants > 0 ? ` · ${e.infants}I` : ""}</td>
                     <td className="px-4 py-4 font-medium text-gray-700">{e.budget}</td>
                     <td className="px-4 py-4">
                       <select
@@ -282,6 +283,7 @@ function AdminEnquiriesPage() {
                 <div><label className={labelCls}>Nights</label><input type="number" className={inputCls} value={editItem.nights} onChange={(e) => setEditItem({ ...editItem, nights: +e.target.value })} /></div>
                 <div><label className={labelCls}>Adults</label><input type="number" className={inputCls} value={editItem.adults} onChange={(e) => setEditItem({ ...editItem, adults: +e.target.value })} /></div>
                 <div><label className={labelCls}>Children</label><input type="number" className={inputCls} value={editItem.children} onChange={(e) => setEditItem({ ...editItem, children: +e.target.value })} /></div>
+                <div><label className={labelCls}>Infants</label><input type="number" className={inputCls} value={editItem.infants} onChange={(e) => setEditItem({ ...editItem, infants: +e.target.value })} /></div>
                 <div><label className={labelCls}>Budget</label><input className={inputCls} value={editItem.budget} onChange={(e) => setEditItem({ ...editItem, budget: e.target.value })} /></div>
                 <div>
                   <label className={labelCls}>Status</label>

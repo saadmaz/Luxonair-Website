@@ -24,6 +24,7 @@ export interface EnquiryPayload {
   nights: number;
   adults: number;
   children: number;
+  infants: number;
   cabinClass: string;
   budget: string;
   notes?: string | null;
@@ -54,7 +55,7 @@ export async function sendEnquiryAlert(d: EnquiryPayload) {
       <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f3f4f6">Destination</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6">${esc(d.destination)}</td></tr>
       <tr style="background:#f9fafb"><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f3f4f6">Trip type</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6">${esc(d.tripType)}</td></tr>
       <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f3f4f6">Dates</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6">${esc(dateInfo)} · ${d.nights} nights</td></tr>
-      <tr style="background:#f9fafb"><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f3f4f6">Travellers</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6">${d.adults} adult${d.adults !== 1 ? "s" : ""}${d.children ? ` · ${d.children} child${d.children !== 1 ? "ren" : ""}` : ""}</td></tr>
+      <tr style="background:#f9fafb"><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f3f4f6">Travellers</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6">${d.adults} adult${d.adults !== 1 ? "s" : ""}${d.children ? ` · ${d.children} child${d.children !== 1 ? "ren" : ""}` : ""}${d.infants ? ` · ${d.infants} infant${d.infants !== 1 ? "s" : ""}` : ""}</td></tr>
       <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f3f4f6">Cabin class</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6">${esc(d.cabinClass)}</td></tr>
       <tr style="background:#f9fafb"><td style="padding:8px 12px;font-weight:600;${d.notes ? "border-bottom:1px solid #f3f4f6" : ""}">Budget</td><td style="padding:8px 12px;${d.notes ? "border-bottom:1px solid #f3f4f6" : ""}">${esc(d.budget)}</td></tr>
       ${d.notes ? `<tr><td style="padding:8px 12px;font-weight:600">Notes</td><td style="padding:8px 12px">${esc(d.notes)}</td></tr>` : ""}

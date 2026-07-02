@@ -56,6 +56,7 @@ export const APIRoute = createAPIFileRoute("/api/enquiries")({
       preferredAirlines: d.preferredAirlines ?? null,
       adults: d.adults,
       children: d.children,
+      infants: d.infants,
       budget: d.budget,
       notes: d.notes ?? null,
       status: "new",

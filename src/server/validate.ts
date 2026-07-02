@@ -32,6 +32,7 @@ export const enquirySchema = z.object({
   preferredAirlines: z.string().max(200).optional(),
   adults: z.number().int().min(1).max(20),
   children: z.number().int().min(0).max(20).default(0),
+  infants: z.number().int().min(0).max(20).default(0),
   budget: z.string().min(1).max(100),
   notes: z.string().max(2000).optional(),
 });

@@ -43,6 +43,13 @@
       "when": 1782950000000,
       "tag": "0005_add_deals_gallery_favourites_destination_highlights",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1782990176027,
+      "tag": "0006_add_enquiries_infants",
+      "breakpoints": true
     }
   ]
 }

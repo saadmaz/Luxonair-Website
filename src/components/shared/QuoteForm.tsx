@@ -55,6 +55,7 @@ const step3 = z.object({
 const step4 = z.object({
   adults: z.coerce.number().min(1, "At least 1 adult").max(20),
   children: z.coerce.number().min(0).max(20),
+  infants: z.coerce.number().min(0).max(20),
   budget: z.string().min(1, "Pick a budget band"),
 });
 
@@ -73,7 +74,7 @@ type Form = {
   departWindow: string; flexibility: string; nights: string;
   departDate: string; returnDate: string;
   departAirport: string; cabinClass: string; directOnly: string; preferredAirlines: string;
-  adults: string; children: string; budget: string;
+  adults: string; children: string; infants: string; budget: string;
   name: string; email: string; phone: string; notes: string;
 };
 
@@ -83,7 +84,7 @@ const initial: Form = {
   departWindow: "", flexibility: "Flexible ±1 week", nights: "7",
   departDate: "", returnDate: "",
   departAirport: "", cabinClass: "Business Class", directOnly: "No preference", preferredAirlines: "",
-  adults: "1", children: "0", budget: "£££",
+  adults: "1", children: "0", infants: "0", budget: "£££",
   name: "", email: "", phone: "", notes: "",
 };
 
@@ -168,6 +169,7 @@ export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialVal
           preferredAirlines: form.preferredAirlines || undefined,
           adults: Number(form.adults),
           children: Number(form.children),
+          infants: Number(form.infants),
           budget: form.budget,
           notes: form.notes || undefined,
         }),
@@ -215,7 +217,7 @@ export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialVal
           <Row k="Destination" v={form.destination} />
           <Row k="When" v={departInfo} />
           <Row k="Flights" v={`${form.departAirport} · ${form.cabinClass}`} />
-          <Row k="Travellers" v={`${form.adults} adult${form.adults === "1" ? "" : "s"}${Number(form.children) ? `, ${form.children} child` : ""}`} />
+          <Row k="Travellers" v={`${form.adults} adult${form.adults === "1" ? "" : "s"}${Number(form.children) ? `, ${form.children} child` : ""}${Number(form.infants) ? `, ${form.infants} infant` : ""}`} />
           <Row k="Budget" v={`${form.budget} (${form.nights} nights)`} />
         </div>
       </motion.div>
@@ -364,13 +366,18 @@ export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialVal
 
         {/* ── Step 3: Who ── */}
         {step === 3 && (
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Field label="Adults" error={errors.adults}>
-              <Input type="number" min={1} value={form.adults} onChange={(e) => set("adults", e.target.value)} />
-            </Field>
-            <Field label="Children" error={errors.children}>
-              <Input type="number" min={0} value={form.children} onChange={(e) => set("children", e.target.value)} />
-            </Field>
+          <div className="grid gap-4">
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Field label="Adults" error={errors.adults}>
+                <Input type="number" min={1} value={form.adults} onChange={(e) => set("adults", e.target.value)} />
+              </Field>
+              <Field label="Children" error={errors.children}>
+                <Input type="number" min={0} value={form.children} onChange={(e) => set("children", e.target.value)} />
+              </Field>
+              <Field label="Infants" error={errors.infants}>
+                <Input type="number" min={0} value={form.infants} onChange={(e) => set("infants", e.target.value)} />
+              </Field>
+            </div>
             <Field label="Budget pp" error={errors.budget}>
               <Pills value={form.budget} onChange={(v) => set("budget", v)} options={[...budgetBands]} />
               <p className="mt-1.5 text-xs text-muted-foreground">
