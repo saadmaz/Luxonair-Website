@@ -1,628 +1,520 @@
-# Luxonair Website
+# Luxeonair Website
 
-Marketing and enquiry website for Luxonair, a UK travel agency specialising in premium long-haul, family, and corporate trips.
+Marketing and lead-generation website for Luxeonair, a UK travel agency specialising in bespoke long-haul holidays, family escapes, and corporate travel.
+
+- **Live domain:** www.luxeonair.co.uk
+- **Stack:** TanStack Start · React 19 · Nitro · MySQL · Drizzle ORM
+- **Deploy:** Hostinger VPS · PM2
+- **Node:** 22 LTS
+
+> **Note:** This README was reverse-engineered from the codebase. It supersedes the previous version which contained inaccuracies including a non-existent Vercel deployment, Formspree integrations never implemented, a missing `/about` route reference, and documentation of only 3 of 14 database tables.
 
 ---
 
 ## Overview
 
-This is the public-facing website for Luxonair. It presents destination pages, travel deals, holiday-type guides, a blog, and a customer reviews section. The primary conversion flows are a structured four-step quote wizard and a contact form. The site has no booking engine or payment processing — all enquiries are handled offline by consultants.
-
-It includes a password-protected admin dashboard for managing enquiries, contact messages, newsletter subscribers, and content across all sections.
-
-The site uses server-side rendering on first load and client-side navigation thereafter, backed by a MySQL database for form submissions and a Nitro server for SSR and API routes.
+Luxeonair is a server-side rendered marketing site with an integrated admin CMS and lead management dashboard. The site has **no booking engine or payment processing** — all transactions happen offline. Its purpose is to capture leads through a quote wizard and contact form, present travel content (destinations, deals, blog, flight offers), and allow an admin team to manage that content and respond to enquiries.
 
 ---
 
-## Tech Stack
+## Technology Stack
 
 | Layer | Technology | Version |
 |---|---|---|
-| Language | TypeScript | ^5.8.3 |
-| UI framework | React | ^19.2.0 |
-| Meta-framework (SSR) | TanStack Start | ^1.167.50 |
-| File-based routing | TanStack Router | ^1.168.25 |
-| Data fetching | TanStack Query | ^5.83.0 |
-| Build tool | Vite | ^8.0.16 |
-| SSR server | Nitro | 3.0.260603-beta |
-| CSS | Tailwind CSS | ^4.2.1 |
-| CSS animations | tw-animate-css | ^1.3.4 |
-| UI primitives | Radix UI (full suite) | ^1.x – ^2.x |
-| Icons | Lucide React | ^0.575.0 |
-| Form handling | react-hook-form | ^7.71.2 |
-| Form validation | Zod | ^3.24.2 |
-| Carousel | Embla Carousel React | ^8.6.0 |
-| Date picker | react-day-picker | ^9.14.0 |
-| Date utilities | date-fns | ^4.1.0 |
-| Toast notifications | Sonner | ^2.0.7 |
-| Auth | jose (JWT) + bcryptjs | ^6.2.3, ^3.0.3 |
-| Database ORM | Drizzle ORM | ^0.45.2 |
-| Database driver | MySQL2 | ^3.11.0 |
-| Deployment target | Vercel (Nitro preset) or Node.js (PM2) | — |
+| Language | TypeScript | `^5.8.3` |
+| UI Framework | React | `^19.2.0` |
+| Meta-framework | TanStack Start (SSR) | `^1.167.50` |
+| File-based routing | TanStack Router | `^1.168.25` |
+| Data fetching | TanStack Query | `^5.83.0` |
+| Build tool | Vite | `^8.0.16` |
+| SSR server | Nitro | `3.0.260603-beta` |
+| CSS | Tailwind CSS v4 | `^4.2.1` |
+| UI Primitives | Radix UI (40+ components) | `^1.x – ^2.x` |
+| Rich text editor | Tiptap | `^3.27.1` |
+| Charts | Recharts | `^2.15.4` |
+| Animation | Framer Motion | `^12.42.0` |
+| Forms | react-hook-form + Zod | `^7.71.2 / ^3.24.2` |
+| Auth | jose (JWT) + bcryptjs | `^6.2.3 / ^3.0.3` |
+| ORM | Drizzle ORM | `^0.45.2` |
+| Database driver | mysql2 | `^3.11.0` |
+| Database | MySQL 8 (dev via Docker), MariaDB (Hostinger prod) | — |
+| Email | Resend | `^6.16.0` |
+| Error monitoring | Sentry (Node + React) | `^10.62.0` |
+| Process manager | PM2 | via `ecosystem.config.cjs` |
 
-Fonts loaded from Google Fonts: **Fraunces** (display/headings) and **Inter** (body).
+> **Warning:** Nitro is pinned to a beta build (`3.0.260603-beta`). Pin to a stable release when one becomes available.
 
 ---
 
-## Project Structure
+## Architecture
+
+The application is **server-side rendered on first request** (Nitro + TanStack Start), then client-navigated as a React SPA. API routes live alongside page routes in `src/routes/api/` and are handled by Nitro at runtime.
+
+- **Request flow:** Browser → Nitro (SSR) → TanStack Router → React → MySQL via Drizzle ORM
+- **Client navigation:** After hydration, TanStack Router handles navigation client-side. TanStack Query caches server data.
+- **State management:** TanStack Query for all server state. No global client store. Theme and sidebar state in `localStorage`.
+- **Security layer:** HTTP security headers set in `nitro.config.ts` via `routeRules`: CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy.
+
+The database is the authoritative source for all dynamic content. The `src/data/` directory contains legacy static TypeScript arrays (destinations, packages, flights) that are no longer consumed by public-facing pages — the live site reads exclusively from MySQL via `src/server/queries.ts`.
+
+---
+
+## Folder Structure
 
 ```
 Luxonair-Website/
-├── public/                          # Static assets served as-is
-│   ├── favicon.png
-│   ├── Logo/Main Logo.png
-│   ├── robots.txt
-│   └── sitemap.xml                  # Static sitemap (also generated dynamically at runtime)
+├── .env.example                  # environment variable template
+├── .github/workflows/deploy.yml  # CI/CD: build + SSH deploy
+├── .nvmrc                        # Node 22 pin
+├── docker-compose.yml            # local MySQL 8 dev database
+├── drizzle.config.ts             # Drizzle Kit config
+├── ecosystem.config.cjs          # PM2 config
+├── nitro.config.ts               # Nitro: security headers, routeRules
 ├── db/
-│   ├── schema.ts                    # Drizzle table definitions (enquiries, contacts, subscribers)
-│   ├── index.ts                     # MySQL pool init + Drizzle ORM instance
-│   └── migrations/                  # Drizzle-generated migration files
-├── src/
-│   ├── routes/                      # File-based route definitions (TanStack Router)
-│   │   ├── __root.tsx               # Root layout: HTML shell, Header, Footer, CTAs, JSON-LD
-│   │   ├── index.tsx                # Home page (/)
-│   │   ├── about.tsx                # About page
-│   │   ├── contact.tsx              # Contact page with enquiry form
-│   │   ├── quote.tsx                # 4-step quote wizard
-│   │   ├── destinations.tsx         # Destinations layout route
-│   │   ├── destinations.index.tsx   # /destinations listing
-│   │   ├── destinations.$slug.tsx   # /destinations/:slug detail page
-│   │   ├── holiday-types.tsx        # Holiday types layout route
-│   │   ├── holiday-types.index.tsx  # /holiday-types listing
-│   │   ├── holiday-types.$slug.tsx  # /holiday-types/:slug detail page
-│   │   ├── deals.tsx                # Deals listing
-│   │   ├── flights.tsx              # Flights page
-│   │   ├── holidays.tsx             # Holidays overview page
-│   │   ├── blog.tsx                 # Blog layout route
-│   │   ├── blog.index.tsx           # /blog listing
-│   │   ├── blog.$slug.tsx           # /blog/:slug post
-│   │   ├── reviews.tsx              # Customer testimonials
-│   │   ├── faq.tsx                  # FAQ accordion page
-│   │   ├── privacy.tsx              # Privacy policy
-│   │   ├── terms.tsx                # Terms & conditions
-│   │   ├── sitemap[.]xml.ts         # Server-rendered XML sitemap at /sitemap.xml
-│   │   ├── admin.tsx                # Admin layout (auth-protected wrapper)
-│   │   ├── admin.login.tsx          # Admin login page
-│   │   ├── admin.index.tsx          # Admin dashboard (stats + recent activity)
-│   │   ├── admin.enquiries.tsx      # Quote enquiry management
-│   │   ├── admin.messages.tsx       # Contact message management
-│   │   ├── admin.subscribers.tsx    # Newsletter subscriber list
-│   │   ├── admin.blog.tsx           # Blog content editor
-│   │   ├── admin.destinations.tsx   # Destination editor
-│   │   ├── admin.deals.tsx          # Deal editor
-│   │   ├── admin.holidays.tsx       # Holiday type editor
-│   │   ├── admin.testimonials.tsx   # Review editor
-│   │   ├── admin.faqs.tsx           # FAQ editor
-│   │   ├── admin.users.tsx          # Admin user management
-│   │   └── api/                     # Server-side API route handlers
-│   │       ├── auth/login.ts
-│   │       ├── auth/logout.ts
-│   │       ├── auth/me.ts
-│   │       ├── enquiries/index.ts
-│   │       ├── enquiries/$id.ts
-│   │       ├── contacts/index.ts
-│   │       ├── contacts/$id.ts
-│   │       ├── subscribers/index.ts
-│   │       └── subscribers/$id.ts
-│   ├── features/
-│   │   └── home/                    # Home page section components
-│   │       ├── Hero.tsx
-│   │       ├── StatsStrip.tsx
-│   │       ├── TrustPillars.tsx
-│   │       ├── FeaturedDestinations.tsx
-│   │       ├── HolidayTypeTiles.tsx
-│   │       ├── DealsSection.tsx
-│   │       ├── WhyLuxonair.tsx
-│   │       ├── SocialProof.tsx
-│   │       ├── BlogCarousel.tsx
-│   │       ├── FinalCta.tsx
-│   │       └── index.ts
-│   ├── components/
-│   │   ├── layout/                  # Header, Footer, StickyMobileCTA, WhatsAppFloat, ThemeToggle
-│   │   ├── shared/                  # Reusable cross-page components
-│   │   │   ├── QuoteForm.tsx        # 4-step quote wizard component
-│   │   │   ├── Newsletter.tsx       # Email signup component
-│   │   │   ├── HeroSearchTabs.tsx   # Home hero search widget
-│   │   │   ├── DestinationCard.tsx  # Destination preview card
-│   │   │   └── SectionHeader.tsx
-│   │   └── ui/                      # 40+ shadcn/ui-generated Radix UI primitives
-│   ├── data/                        # Static content arrays (TypeScript, no CMS)
-│   │   ├── destinations.ts
-│   │   ├── deals.ts
-│   │   ├── holidayTypes.ts
-│   │   ├── blog.ts
-│   │   ├── reviews.ts
-│   │   ├── faq.ts
-│   │   └── flights.ts
-│   ├── types/                       # TypeScript interfaces for each data domain
-│   │   ├── destination.ts
-│   │   ├── deal.ts
-│   │   ├── blog.ts
-│   │   ├── holiday-type.ts
-│   │   ├── review.ts
-│   │   ├── faq.ts
-│   │   ├── flight.ts
-│   │   └── index.ts
-│   ├── config/
-│   │   └── site.ts                  # Single source of truth for brand constants
-│   ├── lib/
-│   │   ├── utils.ts                 # cn() helper (clsx + tailwind-merge)
-│   │   └── unsplash.ts              # Centralised Unsplash CDN URL builder
-│   ├── hooks/
-│   │   └── use-mobile.tsx           # useIsMobile() hook (768px breakpoint)
-│   ├── server/
-│   │   ├── auth.ts                  # JWT helpers: signToken, verifyToken, requireAuth()
-│   │   ├── error-capture.ts         # Global error listener with 5s TTL cache
-│   │   └── error-page.ts            # Static HTML 500 error page renderer
-│   ├── styles/
-│   │   └── globals.css              # Tailwind entry point + Luxonair brand token definitions
-│   ├── router.tsx                   # Router factory with QueryClient context
-│   ├── routeTree.gen.ts             # Auto-generated route tree (do not edit manually)
-│   ├── server.ts                    # Nitro server entry with error middleware
-│   └── start.ts                     # TanStack Start client/server entry point
-├── drizzle.config.ts                # Drizzle Kit config (MySQL, schema path, migrations dir)
-├── ecosystem.config.cjs             # PM2 config for standalone Node.js deployment
-├── nitro.config.ts                  # Nitro server config (entry point, public assets dir)
-├── vite.config.ts                   # Vite config (TanStack Start, Tailwind, tsconfig paths)
-├── tsconfig.json                    # TypeScript config (strict, bundler module resolution)
-├── vercel.json                      # Vercel deployment config (build command, Nitro preset)
-├── components.json                  # shadcn/ui CLI config
-└── bunfig.toml                      # Bun package manager hint
+│   ├── index.ts                  # mysql2 pool + Drizzle instance
+│   ├── migrate.ts                # migration runner (--baseline flag)
+│   ├── schema.ts                 # all table definitions
+│   └── migrations/               # 9 SQL migration files
+├── public/                       # static assets: logo, favicon
+└── src/
+    ├── router.tsx                # router factory + QueryClient
+    ├── components/
+    │   ├── admin/                # AirportPicker, GalleryUpload, RichTextEditor
+    │   ├── layout/               # Header, Footer, ThemeToggle, WhatsAppFloat
+    │   ├── shared/               # QuoteForm, DestinationCard, Newsletter, …
+    │   └── ui/                   # 40+ Radix UI / shadcn primitives
+    ├── config/
+    │   └── site.ts               # brand constants (phone, email, address, socials)
+    ├── data/                     # legacy static arrays — not used by live pages
+    ├── features/home/            # home page section components
+    ├── hooks/                    # useIsMobile, useInView
+    ├── lib/                      # api.ts helpers, cn(), unsplash URL builder
+    ├── routes/
+    │   ├── __root.tsx            # global layout, JSON-LD, dark mode
+    │   ├── *.tsx                 # public page routes
+    │   ├── admin*.tsx            # admin pages
+    │   └── api/                  # all API route handlers
+    ├── server/
+    │   ├── auth.ts               # JWT sign/verify, requireAuth, requireSuperAdmin
+    │   ├── email.ts              # Resend email senders
+    │   ├── queries.ts            # createServerFn loaders for SSR
+    │   ├── rate-limit.ts         # DB-backed rate limiter
+    │   └── validate.ts           # all Zod input schemas
+    └── styles/globals.css        # Tailwind v4 entry + OKLCH brand tokens
 ```
 
 ---
 
-## Prerequisites
+## Getting Started
 
-- **Node.js** — Node 20 LTS recommended. Vite 8 requires Node 18+.
-- **npm** — used by `vercel.json`. Bun is also supported (`bunfig.toml`).
-- **MySQL** — a running MySQL instance is required for form submissions and the admin dashboard.
+### Prerequisites
 
----
+- **Node.js 22 LTS** — pinned in `.nvmrc` and CI
+- **npm** — used in CI; Bun also supported locally (`bunfig.toml`)
+- **Docker + Docker Compose** — required for local MySQL instance
+- A **Resend** account with a verified sending domain (required for email notifications)
 
-## Installation
+### Installation
 
 ```bash
-# 1. Clone the repository
+# 1. Clone
 git clone <repo-url>
 cd Luxonair-Website
 
 # 2. Install dependencies
 npm install
 
-# 3. Start a local MySQL instance (do NOT point local dev at the production DB)
+# 3. Start local MySQL database
 docker compose up -d
+# Creates: luxonair_dev database, user luxonair_dev, password luxonair_dev_password, port 3306
 
-# 4. Create and populate the .env file (see Environment Variables section) —
-#    point DATABASE_URL at the docker-compose instance from step 3
+# 4. Configure environment variables
 cp .env.example .env
+# Edit .env — see Environment Variables section
 
-# 5. Apply the schema to your local database
+# 5. Run database migrations
 npm run db:migrate
+
+# 6. Start development server
+npm run dev
+# Site: http://localhost:3000
+# Admin: http://localhost:3000/admin
 ```
 
 ---
 
 ## Environment Variables
 
-All runtime secrets live in a `.env` file (not committed). An `.env.example` template is included.
-
-| Variable | Purpose |
-|---|---|
-| `DATABASE_URL` | MySQL connection string, e.g. `mysql://user:pass@host:3306/dbname`. **Never point this at production from a local machine** — see the warning in `.env.example`. |
-| `DATABASE_SSL` | `"true"` to enable TLS on the MySQL connection; leave unset/`false` for same-host Hostinger deployments |
-| `JWT_SECRET` | Secret key used to sign and verify admin session tokens |
-| `ADMIN_USERNAME` | Bootstrap admin login username (env-var based account, separate from the `admin_users` table) |
-| `ADMIN_PASSWORD_HASH` | bcrypt hash of the bootstrap admin password (generate with bcryptjs) |
-| `NODE_ENV` | `production` or `development` |
-| `PORT` | Server port (default `3000`) |
-
-### Local development database
-
-Local dev, `npm run db:studio`, and the Playwright suite under `tests/` all connect using
-whatever `DATABASE_URL` is set in `.env` — there is no separate dev/prod switch in code.
-Run a disposable local MySQL instance instead of connecting to production:
-
-```bash
-docker compose up -d
-# then set in .env:
-# DATABASE_URL=mysql://luxonair_dev:luxonair_dev_password@127.0.0.1:3306/luxonair_dev
-npm run db:migrate
-```
-
-`db/index.ts` logs a warning at startup if `NODE_ENV !== "production"` and the resolved
-DB host/name don't look like a local database — treat that warning as a stop sign.
-
-**Brand constants** (phone, email, social links, Formspree IDs, accreditation numbers) are **not** environment variables — they live as TypeScript constants in `src/config/site.ts` and are compiled into the bundle.
-
----
-
-## Site Configuration (`src/config/site.ts`)
-
-`SITE` is the single source of truth for all brand-level constants. Fields set to empty strings act as feature flags — the UI gracefully hides or disables the related element.
-
-| Field | Purpose | Effect when empty |
-|---|---|---|
-| `formspree.quote` | Formspree form ID for the quote wizard | Submissions logged to console only |
-| `formspree.contact` | Formspree form ID for the contact form | Submissions not sent |
-| `formspree.newsletter` | Formspree/Mailchimp list ID for newsletter | Submissions not sent |
-| `social.facebook` | Facebook page URL | Icon hidden in footer |
-| `social.instagram` | Instagram profile URL | Icon hidden in footer |
-| `social.linkedin` | LinkedIn URL | Icon hidden in footer |
-| `social.youtube` | YouTube channel URL | Icon hidden in footer |
-| `accreditation.atol` | ATOL membership number | Membership number not displayed |
-| `accreditation.iata` | IATA code | Code not displayed |
-| `registration` | Companies House registration number | Not displayed |
-
-`SITE.phone`, `SITE.email`, `SITE.address`, `SITE.hours`, and `SITE.stats` are already populated with live values.
-
----
-
-## Running the Project
-
-```bash
-# Development server (Vite + HMR)
-npm run dev
-
-# Production build → outputs to .output/
-npm run build
-
-# Preview production build locally
-npm run preview
-
-# Start the bundled production server directly
-npm run start
-
-# Lint
-npm run lint
-
-# Format (Prettier)
-npm run format
-```
-
----
-
-## Frontend Architecture
-
-### SSR Model
-
-The project uses **TanStack Start**, which wraps TanStack Router with an SSR layer powered by Nitro. Every public route is server-rendered on first request for SEO and performance, then client-navigated thereafter using the pre-loaded route tree.
-
-The `routeTree.gen.ts` file is auto-generated by the `@tanstack/router-plugin` Vite plugin and must not be edited manually.
-
-### Root Layout (`__root.tsx`)
-
-The root shell renders the full `<html>` document and is responsible for:
-
-- Injecting Google Fonts and Tailwind styles
-- Embedding JSON-LD structured data (`TravelAgency` + `WebSite` schema.org types)
-- Injecting a synchronous inline script before the first paint to read `localStorage` and toggle the `dark` class on `<html>` — this prevents the flash of unstyled content (FOUC) on theme-aware loads
-- Wrapping all non-admin routes with `Header`, `Footer`, `StickyMobileCTA`, and `WhatsAppFloat`
-- Admin routes bypass the public wrapper entirely
-
-### Routes
-
-| Path | Description |
-|---|---|
-| `/` | Home page |
-| `/about` | About Luxonair |
-| `/contact` | Contact form |
-| `/quote` | 4-step quote wizard |
-| `/destinations` | All destinations listing |
-| `/destinations/:slug` | Individual destination detail |
-| `/holiday-types` | Holiday category listing |
-| `/holiday-types/:slug` | Individual holiday type |
-| `/deals` | Current deals |
-| `/flights` | Flights overview |
-| `/holidays` | Holidays overview |
-| `/blog` | Blog listing |
-| `/blog/:slug` | Individual blog post |
-| `/reviews` | Customer testimonials |
-| `/faq` | FAQ accordion |
-| `/privacy` | Privacy policy |
-| `/terms` | Terms & conditions |
-| `/sitemap.xml` | Dynamically generated XML sitemap |
-| `/admin` | Admin dashboard (auth-protected) |
-| `/admin/login` | Admin login |
-| `/admin/enquiries` | Quote enquiry management |
-| `/admin/messages` | Contact message management |
-| `/admin/subscribers` | Newsletter subscriber list |
-| `/admin/destinations` | Destination content editor |
-| `/admin/deals` | Deal editor |
-| `/admin/holidays` | Holiday type editor |
-| `/admin/blog` | Blog editor |
-| `/admin/testimonials` | Testimonial editor |
-| `/admin/faqs` | FAQ editor |
-| `/admin/users` | Admin user management |
-
-### Static Content Data
-
-All public-facing content (destinations, deals, blog posts, reviews, FAQ, flights) lives as TypeScript arrays in `src/data/*.ts`. There is no CMS or database for content — updating it means editing these files and redeploying.
-
-**Destination shape:**
-```typescript
-{
-  slug, name, country,
-  region: "Europe" | "Caribbean" | "Indian Ocean" | "Asia" | "Americas" | "Middle East",
-  tripType: string[],
-  budgetBand: "££" | "£££" | "££££",
-  fromPrice, durationNights,
-  heroImage, gallery: string[],
-  tagline, summary,
-  itinerary: [{ day, title, detail }],
-  highlights: string[]
-}
-```
-
-**BlogPost shape:**
-```typescript
-{
-  slug, title, excerpt,
-  category: "Guides" | "Family" | "Corporate" | "News",
-  author, date, readMinutes, heroImage,
-  content: [{ heading?, body }]
-}
-```
-
-**Deal, HolidayType, Review, FaqGroup, FlightRoute** follow similarly typed structures defined in `src/types/`.
-
-### Quote Form URL Pre-population
-
-The `/quote` route reads search parameters (`destination`, `when`, `depart`, `tripType`, `travellers`, `cabin`) and maps them to the wizard's initial state. The hero search widget links to `/quote?destination=...` to pre-fill the first step.
-
-### Images
-
-All content images reference Unsplash photo IDs via `src/lib/unsplash.ts`. The `unsplashImg(id, width?)` helper builds the full CDN URL. Changing the CDN or default quality requires editing one line.
-
-### Theme
-
-Dark mode is toggled via a `ThemeToggle` component in the header. The current preference is persisted to `localStorage` and applied by a synchronous script in `__root.tsx` before hydration to prevent FOUC.
-
-### Mobile Responsiveness
-
-`useIsMobile()` hook (768px breakpoint) is used to conditionally render drawer navigation and a sticky mobile CTA bar at the bottom of the screen. A floating WhatsApp button links to `wa.me/<number>` with a prefilled message.
-
----
-
-## Backend / API Architecture
-
-### Server Entry
-
-`src/server.ts` is the Nitro server entry point. It:
-
-- Imports the error-capture module to attach global `error` and `unhandledrejection` listeners
-- Dynamically loads the TanStack Start server bundle
-- Catches SSR errors and either recovers a stack trace from the cached error store or falls back to rendering a static HTML error page
-- Normalises h3-swallowed catastrophic SSR responses (prevents silent 200-with-broken-HTML responses)
-
-### API Routes (`src/routes/api/`)
-
-All API routes are TanStack Start server functions served by the Nitro handler.
-
-| Method | Path | Auth | Description |
+| Variable | Required | Purpose | Example |
 |---|---|---|---|
-| `POST` | `/api/auth/login` | Public | Verifies email + bcrypt password; sets `lx_session` JWT cookie (7 days, HttpOnly) |
-| `GET` | `/api/auth/me` | Protected | Returns current session info |
-| `POST` | `/api/auth/logout` | Protected | Clears session cookie |
-| `POST` | `/api/enquiries` | Public | Saves a quote wizard submission to the `enquiries` table |
-| `GET` | `/api/enquiries` | Protected | Returns all enquiries, newest first |
-| `GET` | `/api/enquiries/:id` | Protected | Returns a single enquiry |
-| `POST` | `/api/contacts` | Public | Saves a contact form submission to the `contacts` table |
-| `GET` | `/api/contacts` | Protected | Returns all contact messages |
-| `GET` | `/api/contacts/:id` | Protected | Returns a single contact message |
-| `POST` | `/api/subscribers` | Public | Adds an email to the `subscribers` table (unique constraint) |
-| `GET` | `/api/subscribers` | Protected | Returns all newsletter subscribers |
-| `GET` | `/api/subscribers/:id` | Protected | Returns a single subscriber |
+| `NODE_ENV` | Required | Controls cookie `Secure` flag and error verbosity | `production` |
+| `PORT` | Optional | Server listen port | `3000` |
+| `DATABASE_URL` | Required | Full MySQL/MariaDB connection URL | `mysql://user:pass@127.0.0.1:3306/dbname` |
+| `DATABASE_SSL` | Optional | Set `true` to enable TLS on DB connection | `false` |
+| `JWT_SECRET` | Required | Signs admin session JWTs. Minimum 32 characters. Rotate to invalidate all sessions. | `openssl rand -hex 32` |
+| `ADMIN_USERNAME` | Required | Bootstrap superadmin username. No database row required. | `super_admin` |
+| `ADMIN_PASSWORD_HASH` | Required | bcrypt hash of the bootstrap superadmin password. | `$2b$12$...` |
+| `RESEND_API_KEY` | Required | Resend transactional email API key. Without this, no email alerts are sent. | `re_xxxxxxxxxxxx` |
+| `RESEND_FROM` | Optional | Sender address. Must be a verified domain in Resend. | `Luxeonair <noreply@luxeonair.co.uk>` |
+| `RESEND_TO` | Optional | Admin inbox for inbound notification emails. | `admin@luxeonair.co.uk` |
+| `SENTRY_DSN` | Optional | Sentry project DSN for server + client error monitoring. | `https://xxx@yyy.ingest.sentry.io/zzz` |
 
-### Authentication
+**Generating the admin password hash:**
 
-Session auth is implemented in `src/server/auth.ts` using **jose** for JWT operations and **bcryptjs** for password hashing.
+```bash
+node -e "require('bcryptjs').hash('your-password-here', 12).then(console.log)"
+```
 
-- On login, the server checks the submitted credentials against `ADMIN_EMAIL` and `ADMIN_PASSWORD_HASH` from env vars
-- A signed JWT is issued and stored in a `lx_session` cookie (HttpOnly, Secure in production, 7-day expiry)
-- Protected routes call `requireAuth()` which verifies the cookie before processing the request
-- There is a single admin account; credentials are set via environment variables
-
-### Sitemap
-
-`GET /sitemap.xml` is a server-rendered route that builds an XML sitemap dynamically from the static data arrays (destinations, holiday types, blog posts). It sets `Cache-Control: max-age=3600` (1 hour). A static `public/sitemap.xml` also exists as a fallback.
+> `ADMIN_EMAIL` is accepted as a legacy alias for `RESEND_TO` but is not documented in `.env.example`. Use `RESEND_TO` in new deployments.
 
 ---
 
-## Database
+## Database Setup
 
-### Technology
-
-**MySQL** with **Drizzle ORM**. The connection is initialised in `db/index.ts` using the `DATABASE_URL` environment variable. Drizzle Kit is used for schema management.
-
-### Schema
-
-**`enquiries` table** — Stores quote wizard submissions:
-
-| Column | Type | Notes |
-|---|---|---|
-| id | INT | PK, auto-increment |
-| name, email, phone, destination | TEXT NOT NULL | |
-| region, tripType, dateMode, departWindow | TEXT | Nullable |
-| flexibility, departDate, returnDate | TEXT | Nullable |
-| nights, adults, children | INT | |
-| departAirport, cabinClass, budget | TEXT | |
-| directOnly, preferredAirlines, notes | TEXT | Nullable |
-| status | TEXT | Default `"new"` |
-| createdAt | TIMESTAMP | Auto |
-
-**`contacts` table** — Stores contact form submissions:
-
-| Column | Type | Notes |
-|---|---|---|
-| id | INT | PK, auto-increment |
-| name, email, phone, topic, message | TEXT | |
-| read | BOOLEAN | Default `false` |
-| createdAt | TIMESTAMP | Auto |
-
-**`subscribers` table** — Stores newsletter signups:
-
-| Column | Type | Notes |
-|---|---|---|
-| id | INT | PK, auto-increment |
-| email | VARCHAR(255) | UNIQUE |
-| createdAt | TIMESTAMP | Auto |
-
-### Database Commands
+The project uses **Drizzle ORM** with a MySQL dialect. Migrations live in `db/migrations/`. There are currently 9 migration files covering the full schema.
 
 ```bash
-# Generate migration files from schema changes (review the generated SQL before committing)
-npm run db:generate
-
-# Apply pending migrations from db/migrations (preferred — used for local dev and,
-# going forward, production; see db/migrate.ts for the one-time --baseline flag
-# needed before production can be cut over from db:push)
+# Apply all pending migrations
 npm run db:migrate
 
-# Apply schema to the database directly, skipping migration files entirely.
-# Still used by the production deploy workflow (.github/workflows/deploy.yml) until
-# the baseline cutover happens — do not use this against a database you care about
-# without understanding that it can drop/recreate columns without confirmation.
-npm run db:push
-
-# Open Drizzle Studio (web UI for browsing data) — same DATABASE_URL warning applies
+# Browse the database via Drizzle Studio
 npm run db:studio
+
+# Generate a new migration after schema changes
+npm run db:generate
+# → Review the generated SQL before committing
 ```
+
+### Production migration cutover
+
+> **One-time action required:** The production database was initially created using `npm run db:push` (schema push without migration tracking). Before switching the deploy pipeline to use `npm run db:migrate`, run the baseline command once on production to register existing migrations without re-applying them:
+
+```bash
+npm run db:migrate -- --baseline
+```
+
+After this one-time step, all subsequent deploys use `npm run db:migrate` normally.
+
+---
+
+## Available Scripts
+
+| Script | Command | Use when |
+|---|---|---|
+| `dev` | `vite dev` | Local development with HMR |
+| `build` | `vite build && nitro build` | Full production build |
+| `build:dev` | `vite build --mode development` | Vite-only dev build (no Nitro) |
+| `preview` | `vite preview` | Preview Vite client build locally |
+| `start` | `node .output/server/index.mjs` | Start production Nitro server directly |
+| `lint` | `eslint .` | Check for lint errors |
+| `format` | `prettier --write .` | Auto-format all source files |
+| `db:generate` | `drizzle-kit generate` | Generate SQL migration from schema changes |
+| `db:push` | `drizzle-kit push` | Push schema directly — dev only, not safe on live data |
+| `db:studio` | `drizzle-kit studio` | Browse database via Drizzle Studio UI |
+| `db:migrate` | `tsx db/migrate.ts` | Apply pending migrations. Add `-- --baseline` for one-time cutover. |
+
+---
+
+## Public Website
+
+All public routes are SSR-rendered on first load from MySQL data. The hero search widget pre-populates the quote wizard via URL parameters (`destination`, `when`, `depart`, `tripType`, `travellers`, `cabin`).
+
+| Route | Page |
+|---|---|
+| `/` | Home — hero, deals, destinations, holiday types, flight offers, blog, FAQ, newsletter |
+| `/destinations` | Destinations listing — filterable by region, trip type, budget band |
+| `/destinations/:slug` | Destination detail — gallery, itinerary, highlights, quote CTA |
+| `/holiday` | Holiday types listing |
+| `/holiday/:slug` | Holiday type detail with associated destinations |
+| `/deals` | All current deals |
+| `/flight-offers` | Flight offers with booking modal |
+| `/flights` | Flights overview (static) |
+| `/holidays` | Holidays overview (static) |
+| `/blog` | Blog listing — featured article + grid |
+| `/blog/:slug` | Blog post — full Tiptap-rendered rich text |
+| `/reviews` | Customer testimonials from database |
+| `/faq` | Accordion FAQ grouped by category from database |
+| `/quote` | 4-step quote wizard — submits to `POST /api/enquiries` |
+| `/contact` | Contact form — submits to `POST /api/contacts` |
+| `/privacy` | Privacy policy (static) |
+| `/terms` | Terms and conditions (static) |
+| `/sitemap.xml` | Dynamically generated XML sitemap |
+
+**UX features:**
+- Dark mode toggle — persisted to `localStorage`, FOUC prevention via inline script in root layout
+- Sticky mobile CTA bar and floating WhatsApp button (`wa.me/447448009739`)
+- Animated page transitions via Framer Motion `AnimatePresence`
+- Skip-to-content accessibility link in root layout
+- Country flags via `flag-icons` CSS library
+- Image carousels via Embla Carousel
 
 ---
 
 ## Admin Dashboard
 
-The admin area lives under `/admin` and is protected by JWT session auth. Accessing any `/admin/*` route without a valid `lx_session` cookie redirects to `/admin/login`.
+Available at `/admin`. All routes are protected server-side via `requireAuth()`. User management is restricted to the `superadmin` role.
 
-| Section | Description |
-|---|---|
-| Dashboard | Overview with stats and recent enquiries/messages |
-| Enquiries | View and manage quote wizard submissions |
-| Messages | View and manage contact form submissions |
-| Subscribers | View newsletter email list |
-| Destinations | Content editor for destination data |
-| Deals | Content editor for deals |
-| Holidays | Content editor for holiday types |
-| Blog | Content editor for blog posts |
-| Testimonials | Content editor for customer reviews |
-| FAQs | Content editor for FAQ entries |
-| Users | Admin user account management |
-
-Content editors in the admin allow viewing and basic CRUD. Changes made via the admin are not yet persisted to the static `src/data/*.ts` files — this is a known limitation.
-
----
-
-## Styling
-
-### Tailwind CSS v4
-
-Styles are authored in Tailwind CSS v4 with a custom design system defined in `src/styles/globals.css` using CSS custom properties in OKLCH colour space.
-
-**Brand colour palette:**
-
-| Token | Hex | Usage |
+| Route | Section | Description |
 |---|---|---|
-| `--navy` | `#042045` | Page background (dark), headings |
-| `--primary` | `#12355B` | Royal navy, primary actions |
-| `--teal` | `#0F9CA4` | Accent, ring, highlights |
-| `--teal-deep` | `#097F8B` | Teal hover states |
-| `--gold` | `#D2972A` | Luxury gold, admin badges |
-| `--aqua` | `#6AAEB7` | Secondary, light accent |
+| `/admin` | Dashboard | Stats cards, recent enquiries, activity feed. Notification counts poll every 60 seconds. |
+| `/admin/enquiries` | Quote Enquiries | View, update status, edit notes, delete, reply by email |
+| `/admin/flight-bookings` | Flight Bookings | CRUD for flight offer booking submissions |
+| `/admin/messages` | Messages | Contact form submissions — mark read/unread, delete |
+| `/admin/subscribers` | Subscribers | Newsletter subscribers — view and delete |
+| `/admin/destination-highlights` | Destination Highlights | Image tiles for the home page "Featured Destinations" section |
+| `/admin/destinations` | Destinations | Full CRUD — gallery upload, itinerary, highlights list |
+| `/admin/deals` | Deals | Full CRUD — gallery upload, expiry date, is-favourite flag |
+| `/admin/flight-offers` | Flight Offers | Full CRUD — route codes, airline, cabin class, price, featured flag |
+| `/admin/holidays` | Holiday Types | Full CRUD — slug, bullets, associated destination slugs |
+| `/admin/blog` | Blog | Full CRUD with Tiptap rich text editor; hero image upload |
+| `/admin/testimonials` | Testimonials | Full CRUD |
+| `/admin/faqs` | FAQs | CRUD for FAQ groups and items with sort order |
+| `/admin/users` | Users | Superadmin only — invite, edit, delete admin users |
 
-### Utilities
-
-- **`cn()`** in `src/lib/utils.ts` — merges Tailwind class names using `clsx` + `tailwind-merge`, resolving specificity conflicts.
-- **40+ Radix UI primitives** scaffolded via shadcn/ui (`components.json`) live in `src/components/ui/`.
-
----
-
-## Forms & Validation
-
-### Quote Wizard
-
-`QuoteForm.tsx` is a 4-step wizard with:
-- Zod schema validation at each step
-- Fields: destination, trip dates, trip type, traveller count, budget, special notes, departure airport, cabin class
-- On submit: if `SITE.formspree.quote` is set, POSTs to Formspree; otherwise logs to console (demo mode)
-- URL pre-population from search params on the `/quote` route
-
-### Contact Form
-
-- Fields: name, email, phone, topic, message
-- Posts to `/api/contacts` (stored in DB) and optionally to Formspree if `SITE.formspree.contact` is set
-
-### Newsletter
-
-- Email field → `POST /api/subscribers` (stored in DB)
-- Renders in two variants: full-width section or inline
+**Admin UI features:**
+- Collapsible sidebar (state stored in `localStorage` as `lx_sidebar_collapsed`)
+- Mobile drawer navigation
+- Notification bell showing live counts: new enquiries, unread messages, new flight bookings (polled every 60 seconds via `GET /api/activity`)
+- Command palette — Cmd/Ctrl+K to jump between sections
+- Enquiry reply — send an email to the customer directly from the admin UI, automatically updating status to *responded*
 
 ---
 
-## Error Handling
+## Authentication
 
-**`src/server/error-capture.ts`** — Attaches global `error` and `unhandledrejection` listeners on the Node process. Stores the last error with a 5-second TTL so `server.ts` can recover a stack trace when h3 silently swallows a thrown error.
+Admin authentication uses **JWT sessions** stored in a `sessions` database table, delivered via an `HttpOnly` cookie named `lx_session`.
 
-**`src/server/error-page.ts`** — Renders a static HTML 500 error page without requiring React SSR. Detects the browser's `prefers-color-scheme` and renders an appropriate theme. Provides "Try again" (page reload) and "Go home" buttons.
+### Admin accounts
 
-**Root error boundary** — `ErrorComponent` in `__root.tsx` catches client-side React errors and renders an inline recovery UI with "Try again" (invalidates query cache) and "Go home" buttons.
+There are two auth paths:
+
+- **Bootstrap account** — credentials from `ADMIN_USERNAME` + `ADMIN_PASSWORD_HASH` environment variables. Requires no database row. Always has the `superadmin` role.
+- **Database accounts** — stored in the `admin_users` table with roles `admin` or `superadmin`. Managed via `/admin/users` (superadmin only).
+
+### Session security
+
+- Sessions are revocable individually (`POST /api/auth/logout`) or all-at-once (`POST /api/auth/logout-all`)
+- Cookie flags: `HttpOnly`, `SameSite=Lax`, `Secure` in production
+- Login is rate-limited: 5 attempts per 15 minutes per IP and per account
+- Rate limits enforced via the `rate_limits` database table (atomic upsert — safe under concurrent requests)
+
+---
+
+## Email
+
+Outbound email is handled by **Resend** via `src/server/email.ts`. Four email types are implemented:
+
+| Trigger | Recipients | Content |
+|---|---|---|
+| Quote enquiry submitted | Admin (`RESEND_TO`) | Full enquiry details |
+| Contact form submitted | Admin (`RESEND_TO`) | Contact message details |
+| Flight offer booking submitted | Admin (`RESEND_TO`) | Booking details and flight offer info |
+| Admin replies to enquiry | Customer (their submitted email) | Custom reply composed in admin UI |
+
+> No confirmation email is automatically sent to customers when they submit a quote or contact form. Only the admin reply sends an email to the customer.
+
+---
+
+## API Routes
+
+All API routes are TanStack Start `createAPIFileRoute` handlers processed by Nitro. Server-side Zod validation runs on all mutation endpoints.
+
+### Auth
+
+| Method | Path | Access | Description |
+|---|---|---|---|
+| POST | `/api/auth/login` | Public | Rate-limited login. Sets `lx_session` cookie on success. |
+| GET | `/api/auth/me` | Auth | Returns `{ ok: true }` if session is valid. |
+| POST | `/api/auth/logout` | Auth | Revokes current session; clears cookie. |
+| POST | `/api/auth/logout-all` | Auth | Revokes all sessions for the authenticated user. |
+
+### Activity
+
+| Method | Path | Access | Description |
+|---|---|---|---|
+| GET | `/api/activity` | Auth | Returns new enquiry count, unread contact count, new flight booking count, recent enquiries, unread contacts. Used by the sidebar notification bell. |
+
+### Public endpoints (rate-limited)
+
+| Method | Path | Limit | Description |
+|---|---|---|---|
+| POST | `/api/enquiries` | 5/10 min per IP | Submit quote wizard. Fires email alert to admin. |
+| POST | `/api/contacts` | 5/10 min per IP | Contact form submission. Fires email alert. |
+| POST | `/api/subscribers` | 10/10 min per IP | Newsletter signup. Upsert on duplicate email. |
+| POST | `/api/flight-offer-bookings` | 5/10 min per IP | Flight offer booking. Fires email alert. |
+
+### Enquiry management
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/enquiries` | List enquiries. Supports `?limit=N&page=P`. Returns `{ data, total, page, limit }`. |
+| GET | `/api/enquiries/:id` | Single enquiry. |
+| PATCH | `/api/enquiries/:id` | Update `status` and/or `notes`. |
+| DELETE | `/api/enquiries/:id` | Delete enquiry. |
+| POST | `/api/enquiries/:id/reply` | Send reply email to customer; sets status to *responded*. Body: `{ subject, message }`. |
+
+### Authenticated CMS endpoints
+
+The following resource groups each expose `GET` (list + paginated), `POST` (create), `GET /:id`, `PATCH /:id`, `DELETE /:id` — all requiring authentication:
+
+- `/api/contacts`
+- `/api/subscribers`
+- `/api/blog`
+- `/api/destinations`
+- `/api/deals`
+- `/api/flight-offers`
+- `/api/flight-offer-bookings`
+- `/api/holidays`
+- `/api/testimonials`
+- `/api/destination-highlights`
+- `/api/faqs`, `/api/faq-groups/:id`, `/api/faq-items`, `/api/faq-items/:id`
+- `/api/users` — superadmin only
+
+### File upload
+
+| Method | Path | Access | Description |
+|---|---|---|---|
+| POST | `/api/upload` | Auth | Upload image (JPG/PNG/WEBP/GIF, max 8MB). MIME detected via magic bytes. Returns `{ url: "/api/uploads/<uuid>.<ext>" }`. |
+| GET | `/api/uploads/:filename` | Public | Serve uploaded file. UUID-only filenames enforced (path-traversal protection). Cache: 1-year immutable. |
+
+---
+
+## Database
+
+14 tables managed by Drizzle ORM. MySQL 8 dialect on development; MariaDB-compatible on production (JSON columns returned as raw strings by MariaDB driver — parsed manually in query code).
+
+| Table | Purpose |
+|---|---|
+| `enquiries` | Quote wizard submissions — status (new/in_progress/responded), all trip details |
+| `contacts` | Contact form submissions — `read` boolean, topic, message |
+| `subscribers` | Newsletter signups — `email` UNIQUE |
+| `blog_posts` | Blog articles — slug UNIQUE, `content` JSON (Tiptap JSONContent), hero_image |
+| `destinations` | Destination pages — slug UNIQUE, `gallery` JSON, `itinerary` JSON, `highlights` JSON |
+| `deals` | Travel deals — string PK (slug), FK → `destinations.slug`, `gallery` JSON, `is_favourite`, `expires` |
+| `testimonials` | Customer reviews — author, trip, rating (1–5), body |
+| `faq_groups` | FAQ categories — title, sort_order |
+| `faq_items` | FAQ questions — FK → `faq_groups.id` CASCADE DELETE, question, answer, sort_order |
+| `holiday_types` | Holiday category pages — slug UNIQUE, `bullets` JSON, `destination_slugs` JSON |
+| `destination_highlights` | Home page image tiles — image, country, city, type, sort_order |
+| `flight_offers` | Published flight offers — string PK, from_code/to_code (IATA), cabin_class, featured |
+| `flight_offer_bookings` | Flight offer booking requests — FK → `flight_offers.id` ON DELETE RESTRICT, status |
+| `rate_limits` | DB-backed rate limiting — PK `key` VARCHAR(255), count, reset_at (Unix ms) |
+| `sessions` | Admin auth sessions — PK random hex id, email, revoked_at (null = active) |
+| `admin_users` | Admin user accounts — email UNIQUE, password_hash, role ENUM(admin, superadmin) |
+| `admin_actions` | Audit log of admin API calls — admin_email, method, path, status |
+
+**Relationships:**
+- `deals.destination_slug` → `destinations.slug` ON DELETE RESTRICT
+- `flight_offer_bookings.offer_id` → `flight_offers.id` ON DELETE RESTRICT
+- `faq_items.faq_group_id` → `faq_groups.id` ON DELETE CASCADE
+
+---
+
+## File Uploads
+
+Images uploaded through the admin are stored server-side (not as base64 or external CDN):
+
+1. Admin POSTs multipart form data to `POST /api/upload`
+2. Server validates MIME type via **magic bytes** (not the Content-Type header) — accepts JPG, PNG, WEBP, GIF only
+3. Size limit: 8MB
+4. File saved with a UUID filename to prevent enumeration
+5. Server returns `{ url: "/api/uploads/<uuid>.<ext>" }`
+6. Files served at `GET /api/uploads/:filename` with path-traversal protection and 1-year immutable cache headers
+
+> **Warning:** Uploaded files are stored on the local VPS filesystem with no offsite backup. A server wipe will lose all uploaded images. Consider migrating to object storage (S3, Cloudflare R2) for production resilience.
+
+---
+
+## Rate Limiting
+
+Rate limits are enforced via atomic upsert into the `rate_limits` database table — safe under concurrent requests and persistent across server restarts.
+
+| Endpoint | Limit | Window | Key |
+|---|---|---|---|
+| `POST /api/auth/login` | 5 attempts | 15 minutes | Per IP + per account |
+| `POST /api/enquiries` | 5 submissions | 10 minutes | Per IP |
+| `POST /api/contacts` | 5 submissions | 10 minutes | Per IP |
+| `POST /api/flight-offer-bookings` | 5 submissions | 10 minutes | Per IP |
+| `POST /api/subscribers` | 10 signups | 10 minutes | Per IP |
 
 ---
 
 ## Deployment
 
-### Vercel (primary)
+Deployment targets a **Hostinger VPS** running Node.js 22 + PM2. The GitHub Actions workflow (`.github/workflows/deploy.yml`) automates deployment on push to `main`.
 
-`vercel.json` specifies a custom build command that runs the Vite build followed by a Nitro build with `NITRO_PRESET=vercel`. The output lands in `.vercel/output/` in the Vercel serverless format.
+### CI/CD pipeline steps
 
-```json
-{
-  "buildCommand": "npm run build && NITRO_PRESET=vercel npx nitro build",
-  "outputDirectory": ".vercel/output"
-}
-```
+1. **Build on GitHub runner** — `npm ci && npm run build` → produces `.output/`
+2. **Pre-deploy database backup** — SSH into Hostinger; run `mysqldump` to `~/db-backups/`; retain last 14 backups
+3. **Deploy code** — pull latest code; install dependencies; run production build on server
+4. **Run migrations** — `npm run db:push` (current; see migration cutover note above)
+5. **Update environment** — write `ADMIN_USERNAME` and `ADMIN_PASSWORD_HASH` from GitHub Secrets to `.env`
+6. **Reload PM2** — `pm2 reload ecosystem.config.cjs --update-env` (zero-downtime reload)
 
-### Standalone Node.js (Hostinger / PM2)
+### Required GitHub Secrets
 
-`ecosystem.config.cjs` is a PM2 configuration that runs `.output/server/index.mjs` directly. Use this for VPS or shared hosting deployments where Vercel is not available.
+| Secret | Purpose |
+|---|---|
+| `HOST` | Hostinger server IP or hostname |
+| `PORT` | SSH port |
+| `USERNAME` | SSH username |
+| `SSH_KEY` | Private SSH key for server access |
+| `APP_PATH` | Absolute path to app directory on server |
+| `ADMIN_USERNAME` | Bootstrap admin username |
+| `ADMIN_PASSWORD_HASH` | bcrypt hash of admin password |
+
+> `RESEND_API_KEY`, `DATABASE_URL`, `JWT_SECRET`, and other env vars must be present in the `.env` file on the server. They are not injected by CI — manage them directly on the server.
+
+### PM2 commands
 
 ```bash
-pm2 start ecosystem.config.cjs
+# Start / reload application
+pm2 reload ecosystem.config.cjs --update-env
+
+# View logs
+pm2 logs luxeonair
+
+# Monitor
+pm2 monit
 ```
 
-The actual production deploy path is `.github/workflows/deploy.yml`, triggered on push to `main`: it SSHes into the Hostinger box, pulls, builds, applies the database schema, and reloads PM2.
+---
 
-**Database backups**: the deploy workflow runs a `mysqldump` of the production database to `~/db-backups/` (gzipped, timestamped, last 14 kept) *before* touching schema or code on every deploy — this is currently the only backup mechanism in place. There is no automated off-server backup, point-in-time recovery, or tested restore procedure; verify what backup coverage (if any) Hostinger's own hosting plan provides, and consider it a gap until confirmed.
+## Troubleshooting
+
+**Admin login returns 500**
+Ensure `ADMIN_USERNAME` and `ADMIN_PASSWORD_HASH` are set in `.env`. Generate the hash with:
+```bash
+node -e "require('bcryptjs').hash('yourpassword', 12).then(console.log)"
+```
+
+**Database connection fails silently**
+If `DATABASE_URL` is not set, the pool starts with empty credentials and fails at the first query (not at startup). Check that the variable is exported in your environment. Confirm Docker is running for local dev: `docker compose ps`
+
+**No email notifications on form submissions**
+Check that `RESEND_API_KEY`, `RESEND_FROM`, and `RESEND_TO` are set. The sending domain in `RESEND_FROM` must be verified in your Resend account. Check PM2 logs: `pm2 logs luxeonair`
+
+**Uploaded images not persisting after server restart**
+Upload files are stored on the local filesystem. A full server wipe will lose them. Back up the uploads directory regularly or migrate to object storage.
+
+**Site content not updating after admin edits**
+Public pages are SSR-rendered from MySQL on each request with no caching layer. If changes don't appear, check that the admin PATCH/POST returned a success response, then hard-refresh the public page.
+
+**Dark mode flicker on page load**
+The root layout includes an inline script that reads `localStorage` and applies the dark class before React hydrates. If you see a flash, check that the script in `__root.tsx` is not blocked or deferred.
 
 ---
 
-## Testing
+## Known Gaps & Future Work
 
-No tests exist in this repository. There is no test framework installed and no test scripts in `package.json`.
-
----
-
-## Known Limitations / TODOs
-
-**From `src/config/site.ts`:**
-- `SITE.registration` — Companies House number is placeholder `"00000000"`.
-- `SITE.formspree.*` — All three IDs are empty; forms run in demo/console mode until populated.
-- `SITE.accreditation.atol`, `.iata` — Both empty; accreditation section shows descriptions only.
-- `SITE.social.*` — All four social links are empty strings; icons are conditionally hidden.
-
-**From `src/routes/sitemap[.]xml.ts`:**
-- `BASE_URL` is an empty string, so `<loc>` values are relative paths (e.g. `/destinations/maldives`). Set this to the production domain before submitting the sitemap to search engines.
-
-**Admin content editors:**
-- Changes made in the admin dashboard are not yet written back to the static `src/data/*.ts` files. Admin CRUD and static data are not yet connected.
-- Only a single admin account is supported (credentials via env vars). There is no multi-user or role-based access control.
-
-**General:**
-- No test suite.
-- No CMS integration — all content is in TypeScript arrays and requires a redeploy to update.
-
----
-
-## License
-
-No `LICENSE` file is present in the repository.
+- **Admin dashboard stats are hardcoded** — stat cards and recent enquiries table on `/admin` show mock data, not live database counts
+- **Sidebar badge counts are hardcoded** — the navigation badges ("7", "3") are static; the notification bell correctly uses live data but the badge values do not
+- **Companies House registration number** — `src/config/site.ts` has a placeholder; update before public launch
+- **ATOL and IATA accreditation numbers** — both are empty strings in `site.ts`; the site references ATOL protection prominently, which must match a valid ATOL membership number
+- **Social media links** — all social URLs are empty strings in `site.ts`
+- **No automated tests** — Playwright is configured (`playwright.config.ts`) but no test files have been written; high-risk areas (auth, enquiry submission, admin CRUD) have no coverage
+- **Upload storage** — images are stored on the VPS filesystem with no offsite backup or CDN
+- **Migration cutover** — a one-time `npm run db:migrate -- --baseline` is required before switching from `db:push` to `db:migrate` in production CI
+- **`admin_actions` audit log** — the table and migration exist; wiring in API route handlers was not confirmed in all routes
+- **No customer auto-confirmation email** — customers receive no acknowledgement when submitting the quote or contact form; only the admin reply sends an email to the customer
