@@ -3,13 +3,23 @@ import { hash } from "bcryptjs";
 import { asc, count, eq } from "drizzle-orm";
 import { db, adminUsers } from "../../../../db/index";
 import { requireSuperAdmin } from "@/server/auth";
+import { SECTION_KEYS } from "@/lib/sections";
 import { z } from "zod";
 
 const updateUserSchema = z.object({
   email: z.string().email().max(255).optional(),
   password: z.string().min(8).max(200).optional(),
-  role: z.enum(["admin", "superadmin"]).optional(),
+  role: z.enum(["admin", "superadmin", "user"]).optional(),
+  sections: z.array(z.enum(SECTION_KEYS)).optional(),
 });
+
+const userColumns = {
+  id: adminUsers.id,
+  email: adminUsers.email,
+  role: adminUsers.role,
+  sections: adminUsers.sections,
+  createdAt: adminUsers.createdAt,
+};
 
 export const APIRoute = createAPIFileRoute("/api/users/$id")({
   PATCH: async ({ request, params }) => {
@@ -29,12 +39,13 @@ export const APIRoute = createAPIFileRoute("/api/users/$id")({
     if (parsed.data.email) update.email = parsed.data.email.trim().toLowerCase();
     if (parsed.data.password) update.passwordHash = await hash(parsed.data.password, 12);
     if (parsed.data.role) update.role = parsed.data.role;
+    if (parsed.data.sections) update.sections = parsed.data.sections;
 
     if (Object.keys(update).length === 0) {
       return Response.json({ error: "Nothing to update" }, { status: 400 });
     }
 
-    if (parsed.data.role === "admin") {
+    if (parsed.data.role && parsed.data.role !== "superadmin") {
       const [target] = await db.select({ role: adminUsers.role }).from(adminUsers).where(eq(adminUsers.id, id));
       if (target?.role === "superadmin") {
         const [{ n }] = await db.select({ n: count() }).from(adminUsers).where(eq(adminUsers.role, "superadmin"));
@@ -46,10 +57,7 @@ export const APIRoute = createAPIFileRoute("/api/users/$id")({
 
     await db.update(adminUsers).set(update).where(eq(adminUsers.id, id));
 
-    const rows = await db
-      .select({ id: adminUsers.id, email: adminUsers.email, role: adminUsers.role, createdAt: adminUsers.createdAt })
-      .from(adminUsers)
-      .orderBy(asc(adminUsers.createdAt));
+    const rows = await db.select(userColumns).from(adminUsers).orderBy(asc(adminUsers.createdAt));
 
     return Response.json(rows);
   },
@@ -76,10 +84,7 @@ export const APIRoute = createAPIFileRoute("/api/users/$id")({
 
     await db.delete(adminUsers).where(eq(adminUsers.id, id));
 
-    const rows = await db
-      .select({ id: adminUsers.id, email: adminUsers.email, role: adminUsers.role, createdAt: adminUsers.createdAt })
-      .from(adminUsers)
-      .orderBy(asc(adminUsers.createdAt));
+    const rows = await db.select(userColumns).from(adminUsers).orderBy(asc(adminUsers.createdAt));
 
     return Response.json(rows);
   },

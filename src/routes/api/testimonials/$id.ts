@@ -1,12 +1,12 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { eq } from "drizzle-orm";
 import { db, testimonials } from "../../../../db/index";
-import { requireAuth } from "@/server/auth";
+import { requireSection } from "@/server/auth";
 import { testimonialSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/testimonials/$id")({
   PATCH: async ({ request, params }) => {
-    await requireAuth(request);
+    await requireSection(request, "testimonials");
     const id = Number(params.id);
     const raw = await request.json().catch(() => null);
     const parsed = testimonialSchema.partial().safeParse(raw);
@@ -26,7 +26,7 @@ export const APIRoute = createAPIFileRoute("/api/testimonials/$id")({
   },
 
   DELETE: async ({ request, params }) => {
-    await requireAuth(request);
+    await requireSection(request, "testimonials");
     const id = Number(params.id);
     const [result] = await db.delete(testimonials).where(eq(testimonials.id, id));
     if (result.affectedRows === 0) return Response.json({ error: "Not found" }, { status: 404 });

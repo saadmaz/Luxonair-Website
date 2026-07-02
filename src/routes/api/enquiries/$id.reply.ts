@@ -2,7 +2,7 @@ import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { db, enquiries } from "../../../../db/index";
-import { requireAuth } from "@/server/auth";
+import { requireSection } from "@/server/auth";
 import { sendEnquiryReply } from "@/server/email";
 
 const replySchema = z.object({
@@ -12,7 +12,7 @@ const replySchema = z.object({
 
 export const APIRoute = createAPIFileRoute("/api/enquiries/$id/reply")({
   POST: async ({ request, params }) => {
-    await requireAuth(request);
+    await requireSection(request, "enquiries");
     const id = Number(params.id);
 
     const raw = await request.json().catch(() => null);

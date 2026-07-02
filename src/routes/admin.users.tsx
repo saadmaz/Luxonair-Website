@@ -4,31 +4,60 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Pencil, Trash2, ShieldCheck, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { api } from "@/lib/api";
+import { SECTION_KEYS, SECTION_LABELS, type SectionKey } from "@/lib/sections";
 
 export const Route = createFileRoute("/admin/users")({
   component: AdminUsersPage,
 });
 
-type DbUser = { id: number; email: string; role: "admin" | "superadmin"; createdAt: string };
+type Role = "admin" | "superadmin" | "user";
+type DbUser = { id: number; email: string; role: Role; sections: SectionKey[]; createdAt: string };
+type MeData = { email: string; role: Role; sections: SectionKey[] };
+type UserForm = { email: string; password: string; role: Role; sections: SectionKey[] };
 
 const inputCls = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#042045] focus:bg-white focus:ring-2 focus:ring-[#042045]/10";
 const labelCls = "block text-sm font-medium text-gray-700 mb-1";
+
+function SectionCheckboxes({
+  assignable,
+  selected,
+  onChange,
+}: {
+  assignable: readonly SectionKey[];
+  selected: SectionKey[];
+  onChange: (sections: SectionKey[]) => void;
+}) {
+  const toggle = (key: SectionKey) => {
+    onChange(selected.includes(key) ? selected.filter((s) => s !== key) : [...selected, key]);
+  };
+  return (
+    <div className="grid grid-cols-2 gap-2 rounded-lg border border-gray-200 bg-gray-50 p-3">
+      {assignable.map((key) => (
+        <label key={key} className="flex items-center gap-2 text-sm text-gray-700">
+          <input
+            type="checkbox"
+            checked={selected.includes(key)}
+            onChange={() => toggle(key)}
+            className="h-3.5 w-3.5 rounded border-gray-300 text-[#042045] focus:ring-[#042045]/30"
+          />
+          {SECTION_LABELS[key]}
+        </label>
+      ))}
+    </div>
+  );
+}
 
 function AdminUsersPage() {
   const qc = useQueryClient();
   const [modal, setModal] = useState<"invite" | "edit" | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [editId, setEditId] = useState<number | null>(null);
-  const [form, setForm] = useState<{ email: string; password: string; role: "admin" | "superadmin" }>({
-    email: "",
-    password: "",
-    role: "admin",
-  });
-  const [editForm, setEditForm] = useState<{ email: string; password: string; role: "admin" | "superadmin" }>({
-    email: "",
-    password: "",
-    role: "admin",
-  });
+  const [form, setForm] = useState<UserForm>({ email: "", password: "", role: "admin", sections: [] });
+  const [editForm, setEditForm] = useState<UserForm>({ email: "", password: "", role: "admin", sections: [] });
+
+  const me = qc.getQueryData<MeData>(["auth", "me"]);
+  const isSuperAdmin = me?.role === "superadmin";
+  const assignableSections = isSuperAdmin ? SECTION_KEYS : (me?.sections ?? []);
 
   const { data: users = [], isLoading, error: usersError } = useQuery({
     queryKey: ["users"],
@@ -37,17 +66,16 @@ function AdminUsersPage() {
   });
 
   const createMut = useMutation({
-    mutationFn: (data: { email: string; password: string; role: "admin" | "superadmin" }) =>
-      api.post<DbUser[]>("/api/users", data),
+    mutationFn: (data: UserForm) => api.post<DbUser[]>("/api/users", data),
     onSuccess: (rows) => {
       qc.setQueryData(["users"], rows);
       setModal(null);
-      setForm({ email: "", password: "", role: "admin" });
+      setForm({ email: "", password: "", role: "admin", sections: [] });
     },
   });
 
   const updateMut = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: { email?: string; password?: string; role?: "admin" | "superadmin" } }) =>
+    mutationFn: ({ id, data }: { id: number; data: Partial<UserForm> }) =>
       api.patch<DbUser[]>(`/api/users/${id}`, data),
     onSuccess: (rows) => {
       qc.setQueryData(["users"], rows);
@@ -65,7 +93,7 @@ function AdminUsersPage() {
 
   const openEdit = (u: DbUser) => {
     setEditId(u.id);
-    setEditForm({ email: u.email, password: "", role: u.role });
+    setEditForm({ email: u.email, password: "", role: u.role, sections: u.sections });
     setModal("edit");
   };
 
@@ -76,10 +104,9 @@ function AdminUsersPage() {
 
   const handleUpdate = () => {
     if (!editId) return;
-    const payload: { email?: string; password?: string; role?: "admin" | "superadmin" } = {};
+    const payload: Partial<UserForm> = { sections: editForm.sections, role: editForm.role };
     if (editForm.email) payload.email = editForm.email;
     if (editForm.password) payload.password = editForm.password;
-    payload.role = editForm.role;
     updateMut.mutate({ id: editId, data: payload });
   };
 
@@ -91,7 +118,7 @@ function AdminUsersPage() {
           <p className="mt-1 text-sm text-gray-500">Admin accounts with dashboard access.</p>
         </div>
         <button
-          onClick={() => { setForm({ email: "", password: "", role: "admin" }); setModal("invite"); }}
+          onClick={() => { setForm({ email: "", password: "", role: "admin", sections: [] }); setModal("invite"); }}
           className="inline-flex items-center gap-2 rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#042045]/90"
         >
           <Plus className="h-4 w-4" />Add user
@@ -198,7 +225,7 @@ function AdminUsersPage() {
 
       {/* Add user modal */}
       <Dialog open={modal === "invite"} onOpenChange={(o) => !o && setModal(null)}>
-        <DialogContent className="max-w-sm">
+        <DialogContent className="max-w-md">
           <DialogHeader><DialogTitle>Add user</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div>
@@ -214,12 +241,23 @@ function AdminUsersPage() {
               <select
                 className={inputCls}
                 value={form.role}
-                onChange={(e) => setForm({ ...form, role: e.target.value as "admin" | "superadmin" })}
+                onChange={(e) => setForm({ ...form, role: e.target.value as Role })}
               >
-                <option value="admin">Admin — manage content and bookings</option>
-                <option value="superadmin">Superadmin — can also manage users</option>
+                <option value="user">User — access to selected sections only</option>
+                <option value="admin">Admin — access to selected sections, can create users</option>
+                {isSuperAdmin && <option value="superadmin">Superadmin — full access, can manage users</option>}
               </select>
             </div>
+            {form.role !== "superadmin" && (
+              <div>
+                <label className={labelCls}>Sections</label>
+                <SectionCheckboxes
+                  assignable={assignableSections}
+                  selected={form.sections}
+                  onChange={(sections) => setForm({ ...form, sections })}
+                />
+              </div>
+            )}
             {createMut.error && <p className="text-sm text-red-600">{(createMut.error as Error).message}</p>}
           </div>
           <DialogFooter>
@@ -239,7 +277,7 @@ function AdminUsersPage() {
 
       {/* Edit user modal */}
       <Dialog open={modal === "edit"} onOpenChange={(o) => !o && setModal(null)}>
-        <DialogContent className="max-w-sm">
+        <DialogContent className="max-w-md">
           <DialogHeader><DialogTitle>Edit user</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div>
@@ -255,12 +293,23 @@ function AdminUsersPage() {
               <select
                 className={inputCls}
                 value={editForm.role}
-                onChange={(e) => setEditForm({ ...editForm, role: e.target.value as "admin" | "superadmin" })}
+                onChange={(e) => setEditForm({ ...editForm, role: e.target.value as Role })}
               >
-                <option value="admin">Admin — manage content and bookings</option>
-                <option value="superadmin">Superadmin — can also manage users</option>
+                <option value="user">User — access to selected sections only</option>
+                <option value="admin">Admin — access to selected sections, can create users</option>
+                {isSuperAdmin && <option value="superadmin">Superadmin — full access, can manage users</option>}
               </select>
             </div>
+            {editForm.role !== "superadmin" && (
+              <div>
+                <label className={labelCls}>Sections</label>
+                <SectionCheckboxes
+                  assignable={assignableSections}
+                  selected={editForm.sections}
+                  onChange={(sections) => setEditForm({ ...editForm, sections })}
+                />
+              </div>
+            )}
             {updateMut.error && <p className="text-sm text-red-600">{(updateMut.error as Error).message}</p>}
           </div>
           <DialogFooter>

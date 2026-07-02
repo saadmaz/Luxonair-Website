@@ -1,12 +1,12 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { asc, eq } from "drizzle-orm";
 import { db, faqGroups, faqItems } from "../../../../db/index";
-import { requireAuth } from "@/server/auth";
+import { requireSection } from "@/server/auth";
 import { faqItemSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/faq-items/$id")({
   PATCH: async ({ request, params }) => {
-    await requireAuth(request);
+    await requireSection(request, "faqs");
     const id = Number(params.id);
     const raw = await request.json().catch(() => null);
     const parsed = faqItemSchema.omit({ faqGroupId: true }).partial().safeParse(raw);
@@ -27,7 +27,7 @@ export const APIRoute = createAPIFileRoute("/api/faq-items/$id")({
   },
 
   DELETE: async ({ request, params }) => {
-    await requireAuth(request);
+    await requireSection(request, "faqs");
     const id = Number(params.id);
     const [result] = await db.delete(faqItems).where(eq(faqItems.id, id));
     if (result.affectedRows === 0) return Response.json({ error: "Not found" }, { status: 404 });

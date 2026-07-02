@@ -36,6 +36,9 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { SectionKey } from "@/lib/sections";
+
+type MeData = { email: string; role: "superadmin" | "admin" | "user"; sections: SectionKey[] };
 
 type ActivityData = {
   newEnquiryCount: number;
@@ -113,7 +116,13 @@ type AdminPath =
   | "/admin/faqs"
   | "/admin/users";
 
-type NavItem = { to: AdminPath; label: string; icon: LucideIcon; exact: boolean };
+type NavItem = {
+  to: AdminPath;
+  label: string;
+  icon: LucideIcon;
+  exact: boolean;
+  sectionKey?: SectionKey;
+};
 type NavSection = { label: string; items: NavItem[] };
 
 const navSections: NavSection[] = [
@@ -124,28 +133,28 @@ const navSections: NavSection[] = [
   {
     label: "Customer Relations",
     items: [
-      { to: "/admin/enquiries", label: "Quote Inquiries", icon: FileText, exact: false },
-      { to: "/admin/flight-bookings", label: "Flight Bookings", icon: PlaneTakeoff, exact: false },
-      { to: "/admin/messages", label: "Messages", icon: MessageSquare, exact: false },
-      { to: "/admin/subscribers", label: "Subscribers", icon: Mail, exact: false },
+      { to: "/admin/enquiries", label: "Quote Inquiries", icon: FileText, exact: false, sectionKey: "enquiries" },
+      { to: "/admin/flight-bookings", label: "Flight Bookings", icon: PlaneTakeoff, exact: false, sectionKey: "flight-bookings" },
+      { to: "/admin/messages", label: "Messages", icon: MessageSquare, exact: false, sectionKey: "messages" },
+      { to: "/admin/subscribers", label: "Subscribers", icon: Mail, exact: false, sectionKey: "subscribers" },
     ],
   },
   {
     label: "Content",
     items: [
-      { to: "/admin/destination-highlights", label: "Destinations", icon: Images, exact: false },
-      { to: "/admin/destinations", label: "Destination Pages", icon: MapPin, exact: false },
-      { to: "/admin/deals", label: "Deals", icon: Tag, exact: false },
-      { to: "/admin/flight-offers", label: "Flight Offers", icon: PlaneTakeoff, exact: false },
-      { to: "/admin/holidays", label: "Holiday Types", icon: Sun, exact: false },
-      { to: "/admin/blog", label: "Blog", icon: BookOpen, exact: false },
+      { to: "/admin/destination-highlights", label: "Destinations", icon: Images, exact: false, sectionKey: "destination-highlights" },
+      { to: "/admin/destinations", label: "Destination Pages", icon: MapPin, exact: false, sectionKey: "destinations" },
+      { to: "/admin/deals", label: "Deals", icon: Tag, exact: false, sectionKey: "deals" },
+      { to: "/admin/flight-offers", label: "Flight Offers", icon: PlaneTakeoff, exact: false, sectionKey: "flight-offers" },
+      { to: "/admin/holidays", label: "Holiday Types", icon: Sun, exact: false, sectionKey: "holidays" },
+      { to: "/admin/blog", label: "Blog", icon: BookOpen, exact: false, sectionKey: "blog" },
     ],
   },
   {
     label: "Feedback",
     items: [
-      { to: "/admin/testimonials", label: "Testimonials", icon: Star, exact: false },
-      { to: "/admin/faqs", label: "FAQs", icon: HelpCircle, exact: false },
+      { to: "/admin/testimonials", label: "Testimonials", icon: Star, exact: false, sectionKey: "testimonials" },
+      { to: "/admin/faqs", label: "FAQs", icon: HelpCircle, exact: false, sectionKey: "faqs" },
     ],
   },
   {
@@ -199,16 +208,18 @@ function AdminLayoutRoute() {
   const isLoginPage = pathname === "/admin/login";
   const queryClient = useQueryClient();
 
-  const { data: authed, isLoading: authLoading } = useQuery({
+  const { data: me, isLoading: authLoading } = useQuery<MeData | null>({
     queryKey: ["auth", "me"],
     queryFn: async () => {
       const res = await fetch("/api/auth/me");
-      return res.ok;
+      if (!res.ok) return null;
+      return res.json();
     },
     enabled: !isLoginPage,
     retry: false,
     staleTime: 5 * 60 * 1000,
   });
+  const authed = !!me;
 
   const { data: activity } = useQuery<ActivityData>({
     queryKey: ["activity"],
@@ -251,7 +262,20 @@ function AdminLayoutRoute() {
     navigate({ to: "/admin/login" });
   };
 
-  const activeItem = navSections
+  const isSuperAdmin = me?.role === "superadmin";
+  const mySections = me?.sections ?? [];
+
+  const visibleNavSections = navSections
+    .map((section) => ({
+      ...section,
+      items: section.items.filter((item) => {
+        if (!item.sectionKey) return item.to !== "/admin/users" || isSuperAdmin;
+        return isSuperAdmin || mySections.includes(item.sectionKey);
+      }),
+    }))
+    .filter((section) => section.items.length > 0);
+
+  const activeItem = visibleNavSections
     .flatMap((s) => s.items)
     .find((item) => (item.exact ? pathname === item.to : pathname.startsWith(item.to)));
 
@@ -331,7 +355,7 @@ function AdminLayoutRoute() {
           )}
           style={{ scrollbarWidth: "none" }}
         >
-          {navSections.map((section, si) => (
+          {visibleNavSections.map((section, si) => (
             <div key={section.label} className={si > 0 ? "mt-5" : ""}>
               {/* Section label — hidden when collapsed on desktop */}
               {!collapsed && (
@@ -423,7 +447,9 @@ function AdminLayoutRoute() {
               LX
             </div>
             <div className={cn("min-w-0 flex-1", collapsed && "lg:hidden")}>
-              <p className="truncate text-[12px] font-semibold text-white/80">Admin</p>
+              <p className="truncate text-[12px] font-semibold text-white/80 capitalize">
+                {me?.role ?? "Admin"}
+              </p>
               <p className="truncate text-[10px] text-white/30">Luxeonair</p>
             </div>
             <button
@@ -518,7 +544,9 @@ function AdminLayoutRoute() {
                 LX
               </div>
               <div className="hidden sm:block">
-                <p className="text-[12px] font-semibold text-gray-800 leading-none">Admin</p>
+                <p className="text-[12px] font-semibold text-gray-800 leading-none capitalize">
+                  {me?.role ?? "Admin"}
+                </p>
                 <p className="text-[10px] text-gray-400 leading-none mt-0.5">Luxeonair</p>
               </div>
             </div>
@@ -532,26 +560,32 @@ function AdminLayoutRoute() {
       </div>
 
       {/* Search palette */}
-      {searchOpen && <SearchPalette onClose={() => setSearchOpen(false)} navigate={navigate} />}
+      {searchOpen && (
+        <SearchPalette
+          onClose={() => setSearchOpen(false)}
+          navigate={navigate}
+          navSections={visibleNavSections}
+        />
+      )}
     </div>
   );
 }
 
 // ─── Search Palette ──────────────────────────────────────────────────────────
 
-const allNavItems = navSections.flatMap((s) =>
-  s.items.map((item) => ({ ...item, section: s.label })),
-);
-
 function SearchPalette({
   onClose,
   navigate,
+  navSections: sections,
 }: {
   onClose: () => void;
   navigate: ReturnType<typeof useNavigate>;
+  navSections: NavSection[];
 }) {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const allNavItems = sections.flatMap((s) => s.items.map((item) => ({ ...item, section: s.label })));
 
   useEffect(() => {
     inputRef.current?.focus();

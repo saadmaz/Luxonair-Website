@@ -1,12 +1,12 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { asc } from "drizzle-orm";
 import { db, faqGroups, faqItems } from "../../../../db/index";
-import { requireAuth } from "@/server/auth";
+import { requireSection } from "@/server/auth";
 import { faqItemSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/faq-items")({
   POST: async ({ request }) => {
-    await requireAuth(request);
+    await requireSection(request, "faqs");
     const raw = await request.json().catch(() => null);
     const parsed = faqItemSchema.safeParse(raw);
     if (!parsed.success) {

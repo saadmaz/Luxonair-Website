@@ -287,7 +287,8 @@ export const adminUsers = mysqlTable("admin_users", {
   id: int("id").autoincrement().primaryKey(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   passwordHash: varchar("password_hash", { length: 255 }).notNull(),
-  role: mysqlEnum("role", ["admin", "superadmin"]).notNull().default("admin"),
+  role: mysqlEnum("role", ["admin", "superadmin", "user"]).notNull().default("admin"),
+  sections: json("sections").$type<string[]>().notNull().default([]),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

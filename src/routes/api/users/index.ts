@@ -2,27 +2,34 @@ import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { hash } from "bcryptjs";
 import { asc } from "drizzle-orm";
 import { db, adminUsers } from "../../../../db/index";
-import { requireSuperAdmin } from "@/server/auth";
+import { requireSuperAdmin, requireAdminOrAbove } from "@/server/auth";
+import { SECTION_KEYS } from "@/lib/sections";
 import { z } from "zod";
 
 const createUserSchema = z.object({
   email: z.string().email().max(255),
   password: z.string().min(8).max(200),
-  role: z.enum(["admin", "superadmin"]).default("admin"),
+  role: z.enum(["admin", "superadmin", "user"]).default("admin"),
+  sections: z.array(z.enum(SECTION_KEYS)).default([]),
 });
+
+const userColumns = {
+  id: adminUsers.id,
+  email: adminUsers.email,
+  role: adminUsers.role,
+  sections: adminUsers.sections,
+  createdAt: adminUsers.createdAt,
+};
 
 export const APIRoute = createAPIFileRoute("/api/users")({
   GET: async ({ request }) => {
     await requireSuperAdmin(request);
-    const rows = await db
-      .select({ id: adminUsers.id, email: adminUsers.email, role: adminUsers.role, createdAt: adminUsers.createdAt })
-      .from(adminUsers)
-      .orderBy(asc(adminUsers.createdAt));
+    const rows = await db.select(userColumns).from(adminUsers).orderBy(asc(adminUsers.createdAt));
     return Response.json(rows);
   },
 
   POST: async ({ request }) => {
-    await requireSuperAdmin(request);
+    const ctx = await requireAdminOrAbove(request);
 
     const raw = await request.json().catch(() => null);
     const parsed = createUserSchema.safeParse(raw);
@@ -33,11 +40,25 @@ export const APIRoute = createAPIFileRoute("/api/users")({
       );
     }
 
-    const { email, password, role } = parsed.data;
+    const { email, password, role, sections } = parsed.data;
+
+    if (ctx.role !== "superadmin") {
+      if (role === "superadmin") {
+        return Response.json({ error: "Admins cannot create superadmin accounts" }, { status: 403 });
+      }
+      const forbidden = sections.filter((s) => !ctx.sections.includes(s));
+      if (forbidden.length > 0) {
+        return Response.json(
+          { error: `Cannot assign sections you don't have access to: ${forbidden.join(", ")}` },
+          { status: 403 },
+        );
+      }
+    }
+
     const passwordHash = await hash(password, 12);
 
     try {
-      await db.insert(adminUsers).values({ email: email.trim().toLowerCase(), passwordHash, role });
+      await db.insert(adminUsers).values({ email: email.trim().toLowerCase(), passwordHash, role, sections });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "";
       if (msg.includes("Duplicate") || msg.includes("unique")) {
@@ -46,10 +67,7 @@ export const APIRoute = createAPIFileRoute("/api/users")({
       throw e;
     }
 
-    const rows = await db
-      .select({ id: adminUsers.id, email: adminUsers.email, role: adminUsers.role, createdAt: adminUsers.createdAt })
-      .from(adminUsers)
-      .orderBy(asc(adminUsers.createdAt));
+    const rows = await db.select(userColumns).from(adminUsers).orderBy(asc(adminUsers.createdAt));
 
     return Response.json(rows, { status: 201 });
   },

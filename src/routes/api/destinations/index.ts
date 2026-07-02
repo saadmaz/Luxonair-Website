@@ -1,13 +1,13 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { count, desc, eq } from "drizzle-orm";
 import { db, destinations } from "../../../../db/index";
-import { requireAuth } from "@/server/auth";
+import { requireSection } from "@/server/auth";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { destinationSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/destinations")({
   GET: async ({ request }) => {
-    await requireAuth(request);
+    await requireSection(request, "destinations");
     const url = new URL(request.url);
     const limit = Number(url.searchParams.get("limit") || "0");
     const page  = Math.max(1, Number(url.searchParams.get("page") || "1"));
@@ -21,7 +21,7 @@ export const APIRoute = createAPIFileRoute("/api/destinations")({
   },
 
   POST: async ({ request }) => {
-    await requireAuth(request);
+    await requireSection(request, "destinations");
     const raw = await request.json().catch(() => null);
     const parsed = destinationSchema.safeParse(raw);
     if (!parsed.success) {

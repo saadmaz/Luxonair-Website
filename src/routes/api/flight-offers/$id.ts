@@ -1,12 +1,12 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { eq } from "drizzle-orm";
 import { db, flightOffers } from "../../../../db/index";
-import { requireAuth } from "@/server/auth";
+import { requireSection } from "@/server/auth";
 import { flightOfferSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/flight-offers/$id")({
   PATCH: async ({ request, params }) => {
-    await requireAuth(request);
+    await requireSection(request, "flight-offers");
     const { id } = params;
     const raw = await request.json().catch(() => null);
     const parsed = flightOfferSchema.omit({ id: true }).partial().safeParse(raw);
@@ -32,7 +32,7 @@ export const APIRoute = createAPIFileRoute("/api/flight-offers/$id")({
   },
 
   DELETE: async ({ request, params }) => {
-    await requireAuth(request);
+    await requireSection(request, "flight-offers");
     const { id } = params;
     let result: { affectedRows: number };
     try {

@@ -1,13 +1,13 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { eq } from "drizzle-orm";
 import { db, contacts } from "../../../../db/index";
-import { requireAuth } from "@/server/auth";
+import { requireSection } from "@/server/auth";
 import { contactUpdateSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/contacts/$id")({
   // Admin: mark read/unread
   PATCH: async ({ request, params }) => {
-    await requireAuth(request);
+    await requireSection(request, "messages");
     const id = Number(params.id);
     const raw = await request.json().catch(() => null);
     const parsed = contactUpdateSchema.safeParse(raw);
@@ -29,7 +29,7 @@ export const APIRoute = createAPIFileRoute("/api/contacts/$id")({
 
   // Admin: delete a contact message
   DELETE: async ({ request, params }) => {
-    await requireAuth(request);
+    await requireSection(request, "messages");
     const id = Number(params.id);
     const [result] = await db.delete(contacts).where(eq(contacts.id, id));
     if (result.affectedRows === 0) return Response.json({ error: "Not found" }, { status: 404 });

@@ -1,13 +1,13 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { eq } from "drizzle-orm";
 import { db, flightOfferBookings } from "../../../../db/index";
-import { requireAuth } from "@/server/auth";
+import { requireSection } from "@/server/auth";
 import { flightOfferBookingUpdateSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/flight-offer-bookings/$id")({
   // Admin: update status
   PATCH: async ({ request, params }) => {
-    await requireAuth(request);
+    await requireSection(request, "flight-bookings");
     const id = Number(params.id);
     const raw = await request.json().catch(() => null);
     const parsed = flightOfferBookingUpdateSchema.safeParse(raw);
@@ -29,7 +29,7 @@ export const APIRoute = createAPIFileRoute("/api/flight-offer-bookings/$id")({
 
   // Admin: delete a booking
   DELETE: async ({ request, params }) => {
-    await requireAuth(request);
+    await requireSection(request, "flight-bookings");
     const id = Number(params.id);
     const [result] = await db.delete(flightOfferBookings).where(eq(flightOfferBookings.id, id));
     if (result.affectedRows === 0) return Response.json({ error: "Not found" }, { status: 404 });

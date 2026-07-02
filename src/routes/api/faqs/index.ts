@@ -1,12 +1,12 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { asc } from "drizzle-orm";
 import { db, faqGroups, faqItems } from "../../../../db/index";
-import { requireAuth } from "@/server/auth";
+import { requireSection } from "@/server/auth";
 import { faqGroupSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/faqs")({
   GET: async ({ request }) => {
-    await requireAuth(request);
+    await requireSection(request, "faqs");
     const groups = await db.select().from(faqGroups).orderBy(asc(faqGroups.sortOrder));
     const items = await db.select().from(faqItems).orderBy(asc(faqItems.sortOrder));
     return Response.json(
@@ -15,7 +15,7 @@ export const APIRoute = createAPIFileRoute("/api/faqs")({
   },
 
   POST: async ({ request }) => {
-    await requireAuth(request);
+    await requireSection(request, "faqs");
     const raw = await request.json().catch(() => null);
     const parsed = faqGroupSchema.safeParse(raw);
     if (!parsed.success) {

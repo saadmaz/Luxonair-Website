@@ -1,13 +1,13 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { count, desc, eq } from "drizzle-orm";
 import { db, testimonials } from "../../../../db/index";
-import { requireAuth } from "@/server/auth";
+import { requireSection } from "@/server/auth";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { testimonialSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/testimonials")({
   GET: async ({ request }) => {
-    await requireAuth(request);
+    await requireSection(request, "testimonials");
     const url = new URL(request.url);
     const limit = Number(url.searchParams.get("limit") || "0");
     const page  = Math.max(1, Number(url.searchParams.get("page") || "1"));
@@ -21,7 +21,7 @@ export const APIRoute = createAPIFileRoute("/api/testimonials")({
   },
 
   POST: async ({ request }) => {
-    await requireAuth(request);
+    await requireSection(request, "testimonials");
     const raw = await request.json().catch(() => null);
     const parsed = testimonialSchema.safeParse(raw);
     if (!parsed.success) {

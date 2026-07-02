@@ -1,13 +1,13 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { count, asc, desc, eq } from "drizzle-orm";
 import { db, destinationHighlights } from "../../../../db/index";
-import { requireAuth } from "@/server/auth";
+import { requireSection } from "@/server/auth";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { destinationHighlightSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/destination-highlights")({
   GET: async ({ request }) => {
-    await requireAuth(request);
+    await requireSection(request, "destination-highlights");
     const url = new URL(request.url);
     const limit = Number(url.searchParams.get("limit") || "0");
     const page  = Math.max(1, Number(url.searchParams.get("page") || "1"));
@@ -30,7 +30,7 @@ export const APIRoute = createAPIFileRoute("/api/destination-highlights")({
   },
 
   POST: async ({ request }) => {
-    await requireAuth(request);
+    await requireSection(request, "destination-highlights");
     const raw = await request.json().catch(() => null);
     const parsed = destinationHighlightSchema.safeParse(raw);
     if (!parsed.success) {

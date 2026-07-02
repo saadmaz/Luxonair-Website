@@ -1,14 +1,14 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { count, desc } from "drizzle-orm";
 import { db, subscribers } from "../../../../db/index";
-import { requireAuth } from "@/server/auth";
+import { requireSection } from "@/server/auth";
 import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { subscriberSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/subscribers")({
   GET: async ({ request }) => {
-    await requireAuth(request);
+    await requireSection(request, "subscribers");
     const url = new URL(request.url);
     const limit = Number(url.searchParams.get("limit") || "0");
     const page  = Math.max(1, Number(url.searchParams.get("page") || "1"));

@@ -64,6 +64,13 @@
       "when": 1782995200000,
       "tag": "0008_add_role_and_admin_actions",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1783000000000,
+      "tag": "0009_add_sections_and_user_role",
+      "breakpoints": true
     }
   ]
 }
