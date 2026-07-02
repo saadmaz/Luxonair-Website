@@ -83,7 +83,7 @@ const initial: Form = {
   departWindow: "", flexibility: "Flexible ±1 week", nights: "7",
   departDate: "", returnDate: "",
   departAirport: "", cabinClass: "Business Class", directOnly: "No preference", preferredAirlines: "",
-  adults: "2", children: "0", budget: "£££",
+  adults: "1", children: "0", budget: "£££",
   name: "", email: "", phone: "", notes: "",
 };
 

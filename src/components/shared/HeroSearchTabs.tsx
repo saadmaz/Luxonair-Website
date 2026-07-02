@@ -252,7 +252,7 @@ function PackageForm() {
         <DatePicker name="return" placeholder="Return date (optional)" />
       </Field>
       <Field label="Travellers">
-        <input name="travellers" placeholder="2 adults" className="input-field" />
+        <input name="travellers" placeholder="1 adult" className="input-field" />
       </Field>
       <Field label="Cabin">
         <CabinSelect name="cabin" />
