@@ -51,7 +51,12 @@ function ContactPage() {
         }),
       });
       if (!res.ok) {
-        setSubmitError("Submission failed - please email us at info@luxeonair.co.uk or call directly.");
+        const body = await res.json().catch(() => null) as { issues?: Record<string, string[]> } | null;
+        const firstIssue = body?.issues && Object.values(body.issues)[0]?.[0];
+        setSubmitError(
+          firstIssue ??
+            "Submission failed - please email us at info@luxeonair.co.uk or call directly.",
+        );
         setSubmitting(false);
         return;
       }
@@ -205,8 +210,10 @@ function ContactPage() {
                 <Field label="Message">
                   <textarea
                     required
+                    minLength={10}
                     name="message"
                     rows={5}
+                    placeholder="At least 10 characters"
                     className="w-full rounded-md border border-input bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </Field>
