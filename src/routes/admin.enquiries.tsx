@@ -74,7 +74,7 @@ const statusConfig: Record<Status, { className: string; icon: typeof Circle }> =
 };
 
 function StatusBadge({ status }: { status: Status }) {
-  const { className, icon: Icon } = statusConfig[status];
+  const { className, icon: Icon } = statusConfig[status] ?? statusConfig.New;
   return (
     <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1", className)}>
       <Icon className="h-3 w-3" />{status}

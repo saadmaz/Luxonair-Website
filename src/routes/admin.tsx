@@ -234,10 +234,10 @@ function AdminLayoutRoute() {
   const newFlightBookings = activity?.newFlightBookingCount ?? 0;
 
   useEffect(() => {
-    if (!isLoginPage && authed === false) {
+    if (!isLoginPage && !authLoading && authed === false) {
       navigate({ to: "/admin/login" });
     }
-  }, [authed, isLoginPage, navigate]);
+  }, [authed, authLoading, isLoginPage, navigate]);
 
   if (isLoginPage) return <Outlet />;
 
