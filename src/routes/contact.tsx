@@ -10,7 +10,7 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact Our London Travel Team | Luxeonair" },
-      { name: "description", content: "Speak directly with a named UK travel consultant — no queue, no call centre. Call +44 7448 009739, WhatsApp, or email info@luxeonair.co.uk. We reply within 4 working hours." },
+      { name: "description", content: "Speak directly with a named UK travel consultant — no queue, no call centre. Call +44 7448 009739, WhatsApp, or email info@luxeonair.co.uk. Rapid response, guaranteed." },
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Contact Luxeonair | Speak to a UK Travel Consultant" },
       { property: "og:description", content: "Phone, WhatsApp or email a named consultant in London. No queues. No call centres. Rapid response, Mon–Fri." },
@@ -175,7 +175,7 @@ function ContactPage() {
                   Got it - we'll be in touch.
                 </h2>
                 <p className="mt-3 text-sm text-muted-foreground">
-                  A consultant replies within 4 working hours.
+                  A consultant replies with a rapid response.
                 </p>
               </div>
             ) : (

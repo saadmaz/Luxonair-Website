@@ -46,7 +46,7 @@ export async function sendEnquiryAlert(d: EnquiryPayload) {
   </div>
   <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:24px">
     <h2 style="margin:0 0 4px;font-size:18px;color:#031e3e">New quote enquiry</h2>
-    <p style="margin:0 0 20px;color:#6b7280;font-size:13px">Received just now — reply within 4 working hours.</p>
+    <p style="margin:0 0 20px;color:#6b7280;font-size:13px">Received just now — rapid response needed.</p>
 
     <table style="width:100%;border-collapse:collapse;font-size:14px">
       <tr style="background:#f9fafb"><td style="padding:8px 12px;font-weight:600;width:38%;border-bottom:1px solid #f3f4f6">Name</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6">${esc(d.name)}</td></tr>
@@ -75,6 +75,32 @@ export async function sendEnquiryAlert(d: EnquiryPayload) {
     from: from(),
     to: recipient,
     subject: `New enquiry: ${d.name} — ${d.destination}`,
+    html,
+  });
+}
+
+// ─── Enquiry confirmation (system → customer) ──────────────────────────────────
+
+export async function sendEnquiryConfirmation(d: Pick<EnquiryPayload, "name" | "email" | "destination">) {
+  const html = `
+<div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a2e">
+  <div style="background:#031e3e;padding:20px 24px;border-radius:8px 8px 0 0">
+    <img src="https://www.luxeonair.co.uk/Logo/main-logo.png" alt="Luxeonair" height="28" style="opacity:.9"/>
+  </div>
+  <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:24px">
+    <h2 style="margin:0 0 4px;font-size:18px;color:#031e3e">We've got your enquiry</h2>
+    <p style="margin:0 0 16px">Hi ${esc(d.name.split(" ")[0] || d.name)},</p>
+    <p style="margin:0 0 16px;line-height:1.6">Thanks for sending us your ${esc(d.destination)} enquiry. A named consultant is on it now and will be in touch with a rapid response by email or phone.</p>
+    <p style="margin:0;line-height:1.6">In the meantime, if anything changes or you'd like to add details, just reply to this email.</p>
+    <p style="margin:24px 0 0">Best regards,<br/>The Luxeonair team</p>
+  </div>
+  <p style="margin:16px 0 0;font-size:11px;color:#9ca3af;text-align:center">Luxeonair · luxeonair.co.uk</p>
+</div>`;
+
+  await client().emails.send({
+    from: from(),
+    to: d.email,
+    subject: "We've got your enquiry — Luxeonair",
     html,
   });
 }
@@ -170,6 +196,32 @@ export async function sendFlightBookingAlert(d: FlightOfferBookingPayload) {
   });
 }
 
+// ─── Flight offer booking confirmation (system → customer) ────────────────────
+
+export async function sendFlightBookingConfirmation(d: Pick<FlightOfferBookingPayload, "name" | "email" | "routeLabel">) {
+  const html = `
+<div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a2e">
+  <div style="background:#031e3e;padding:20px 24px;border-radius:8px 8px 0 0">
+    <img src="https://www.luxeonair.co.uk/Logo/main-logo.png" alt="Luxeonair" height="28" style="opacity:.9"/>
+  </div>
+  <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:24px">
+    <h2 style="margin:0 0 4px;font-size:18px;color:#031e3e">We've got your flight enquiry</h2>
+    <p style="margin:0 0 16px">Hi ${esc(d.name.split(" ")[0] || d.name)},</p>
+    <p style="margin:0 0 16px;line-height:1.6">Thanks for enquiring about ${esc(d.routeLabel)}. A consultant is confirming live availability and pricing now, and will come back to you with a rapid response.</p>
+    <p style="margin:0;line-height:1.6">If anything changes or you'd like to add details, just reply to this email.</p>
+    <p style="margin:24px 0 0">Best regards,<br/>The Luxeonair team</p>
+  </div>
+  <p style="margin:16px 0 0;font-size:11px;color:#9ca3af;text-align:center">Luxeonair · luxeonair.co.uk</p>
+</div>`;
+
+  await client().emails.send({
+    from: from(),
+    to: d.email,
+    subject: "We've got your flight enquiry — Luxeonair",
+    html,
+  });
+}
+
 // ─── Contact alert ────────────────────────────────────────────────────────────
 
 export interface ContactPayload {
@@ -214,6 +266,32 @@ export async function sendContactAlert(d: ContactPayload) {
     from: from(),
     to: recipient,
     subject: `New message: ${d.name}${d.topic ? ` — ${d.topic}` : ""}`,
+    html,
+  });
+}
+
+// ─── Contact confirmation (system → customer) ──────────────────────────────────
+
+export async function sendContactConfirmation(d: Pick<ContactPayload, "name" | "email">) {
+  const html = `
+<div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a2e">
+  <div style="background:#031e3e;padding:20px 24px;border-radius:8px 8px 0 0">
+    <img src="https://www.luxeonair.co.uk/Logo/main-logo.png" alt="Luxeonair" height="28" style="opacity:.9"/>
+  </div>
+  <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:24px">
+    <h2 style="margin:0 0 4px;font-size:18px;color:#031e3e">We've got your message</h2>
+    <p style="margin:0 0 16px">Hi ${esc(d.name.split(" ")[0] || d.name)},</p>
+    <p style="margin:0 0 16px;line-height:1.6">Thanks for getting in touch. A member of the Luxeonair team will get back to you with a rapid response.</p>
+    <p style="margin:0;line-height:1.6">If anything changes or you'd like to add details, just reply to this email.</p>
+    <p style="margin:24px 0 0">Best regards,<br/>The Luxeonair team</p>
+  </div>
+  <p style="margin:16px 0 0;font-size:11px;color:#9ca3af;text-align:center">Luxeonair · luxeonair.co.uk</p>
+</div>`;
+
+  await client().emails.send({
+    from: from(),
+    to: d.email,
+    subject: "We've got your message — Luxeonair",
     html,
   });
 }

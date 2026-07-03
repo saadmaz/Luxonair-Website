@@ -150,7 +150,7 @@ function ReviewsPage() {
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="font-display text-2xl font-semibold">Ready to write your own review?</h2>
-              <p className="mt-2 text-sm text-navy-fg/70">Start with a free quote - a consultant replies within 4 working hours.</p>
+              <p className="mt-2 text-sm text-navy-fg/70">Start with a free quote - a consultant replies with a rapid response.</p>
             </div>
             <div className="flex flex-wrap gap-3 shrink-0">
               <Button asChild className="bg-gold text-gold-foreground hover:bg-gold/90">

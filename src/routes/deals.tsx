@@ -46,7 +46,7 @@ function DealsPage() {
           </h1>
           <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
             Each offer is held by one of our consultants. Click through and you'll get a
-            real-person quote within 4 working hours.
+            real-person quote with a rapid response.
           </p>
         </div>
       </section>

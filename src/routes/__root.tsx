@@ -67,7 +67,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Luxeonair | Tailor-Made Luxury Travel from the UK" },
-      { name: "description", content: "London luxury travel agency specialising in bespoke long-haul holidays, family escapes and corporate trips. ATOL protected. A consultant replies to every quote within 4 hours." },
+      { name: "description", content: "London luxury travel agency specialising in bespoke long-haul holidays, family escapes and corporate trips. ATOL protected. A consultant replies to every quote with a rapid response." },
       { name: "author", content: "Luxeonair" },
       { name: "robots", content: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" },
       { property: "og:site_name", content: "Luxeonair" },

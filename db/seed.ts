@@ -341,7 +341,7 @@ async function seedFaqs() {
       title: "Booking & quotes",
       sortOrder: 0,
       items: [
-        { question: "How quickly will I hear back after submitting a quote?", answer: "A consultant replies within 4 working hours. We're available Mon–Fri 09:00–18:00 GMT and Sat–Sun 09:00–16:00 GMT. Outside these hours, first thing the next working morning.", sortOrder: 0 },
+        { question: "How quickly will I hear back after submitting a quote?", answer: "Rapid response - a consultant gets back to you fast. We're available Mon–Fri 09:00–18:00 GMT and Sat–Sun 09:00–16:00 GMT. Outside these hours, first thing the next working morning.", sortOrder: 0 },
         { question: "Do I pay anything to get a quote?", answer: "No. Quotes are free and non-binding. You only pay a deposit if you choose to book.", sortOrder: 1 },
         { question: "Can I change my dates after booking?", answer: "Most components allow date changes for a fee. Your consultant will confirm change rules in writing before deposit.", sortOrder: 2 },
       ],

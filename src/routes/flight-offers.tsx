@@ -63,7 +63,7 @@ function FlightOffersPage() {
           </h1>
           <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
             Indicative fares held by our consultants — every enquiry gets live availability and a
-            confirmed price within 4 working hours.
+            confirmed price with a rapid response.
           </p>
         </div>
       </section>

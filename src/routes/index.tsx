@@ -58,7 +58,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Bespoke long-haul holidays, family escapes and corporate trips built by London consultants who know every route. ATOL protected. Quote replied to within 4 working hours.",
+          "Bespoke long-haul holidays, family escapes and corporate trips built by London consultants who know every route. ATOL protected. Quote replied to with a rapid response.",
       },
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Luxeonair | Tailor-Made Luxury Travel from the UK" },
@@ -73,7 +73,7 @@ export const Route = createFileRoute("/")({
       {
         name: "twitter:description",
         content:
-          "Bespoke long-haul holidays & corporate trips from the UK. ATOL protected. A consultant replies to every quote within 4 hours.",
+          "Bespoke long-haul holidays & corporate trips from the UK. ATOL protected. A consultant replies to every quote with a rapid response.",
       },
     ],
     links: [

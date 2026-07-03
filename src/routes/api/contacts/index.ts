@@ -4,7 +4,7 @@ import { db, contacts } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { contactSchema } from "@/server/validate";
-import { sendContactAlert } from "@/server/email";
+import { sendContactAlert, sendContactConfirmation } from "@/server/email";
 
 export const APIRoute = createAPIFileRoute("/api/contacts")({
   GET: async ({ request }) => {
@@ -36,6 +36,9 @@ export const APIRoute = createAPIFileRoute("/api/contacts")({
 
     sendContactAlert({ name, email, phone, topic, message }).catch((err) =>
       console.error("[email] contact alert failed:", err)
+    );
+    sendContactConfirmation({ name, email }).catch((err) =>
+      console.error("[email] contact confirmation failed:", err)
     );
 
     return Response.json({ ok: true }, { status: 201 });

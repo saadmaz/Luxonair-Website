@@ -177,7 +177,7 @@ function DestinationDetail() {
 
           <p className="mt-10 rounded-xl border border-dashed border-border bg-muted/40 p-4 text-xs text-muted-foreground">
             All prices are <strong>indicative, per person</strong>, based on lead-in seasons. Live availability and final pricing
-            confirmed by your consultant within 4 working hours of your enquiry. Not bookable online.
+            confirmed by your consultant with a rapid response. Not bookable online.
           </p>
         </div>
 

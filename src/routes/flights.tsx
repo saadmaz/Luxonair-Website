@@ -269,7 +269,7 @@ function FlightsPage() {
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
             Tell us your route, dates and budget and a consultant will reply with a genuine
-            comparison - no jargon, no hidden fees, within 4 working hours.
+            comparison - no jargon, no hidden fees, with a rapid response.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Button asChild className="bg-gold text-gold-foreground hover:bg-gold/90">

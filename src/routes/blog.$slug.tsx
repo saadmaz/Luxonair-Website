@@ -118,7 +118,7 @@ function PostPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Ready to travel?</p>
               <h2 className="mt-2 font-display text-2xl font-semibold">Get a quote in four short steps.</h2>
               <p className="mt-1 text-sm text-navy-fg/60">
-                A consultant replies within 4 working hours — no call centre, no auto-routing.
+                A consultant replies with a rapid response — no call centre, no auto-routing.
               </p>
             </div>
             <Button asChild size="lg" className="shrink-0 bg-gold text-gold-foreground hover:bg-gold/90">

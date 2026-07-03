@@ -4,7 +4,7 @@ import { db, flightOfferBookings } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { flightOfferBookingSchema } from "@/server/validate";
-import { sendFlightBookingAlert } from "@/server/email";
+import { sendFlightBookingAlert, sendFlightBookingConfirmation } from "@/server/email";
 
 export const APIRoute = createAPIFileRoute("/api/flight-offer-bookings")({
   GET: async ({ request }) => {
@@ -63,6 +63,9 @@ export const APIRoute = createAPIFileRoute("/api/flight-offer-bookings")({
     // Fire-and-forget — DB insert is the source of truth; email failure must not break the response
     sendFlightBookingAlert(d).catch((err) =>
       console.error("[email] flight booking alert failed:", err),
+    );
+    sendFlightBookingConfirmation(d).catch((err) =>
+      console.error("[email] flight booking confirmation failed:", err),
     );
 
     return Response.json({ ok: true }, { status: 201 });

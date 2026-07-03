@@ -174,7 +174,7 @@ export function FlightOfferBookingModal({ offer, onOpenChange }: Props) {
                   <h3 className="font-display text-lg font-bold text-foreground">Enquiry sent</h3>
                   <p className="max-w-xs text-sm text-muted-foreground">
                     Thanks {form.name.split(" ")[0] || "there"} — a consultant will confirm live
-                    availability and pricing within 4 working hours.
+                    availability and pricing with a rapid response.
                   </p>
                   <button
                     onClick={() => onOpenChange(false)}

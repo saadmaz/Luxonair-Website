@@ -232,7 +232,7 @@ function HolidayTypePage() {
             </h2>
             <p className="mt-3 text-navy-fg/70">
               Tell us where you'd like to go, roughly when, and how many are
-              travelling. A consultant replies within 4 working hours — no spam,
+              travelling. A consultant replies with a rapid response — no spam,
               no auto-mailers.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
