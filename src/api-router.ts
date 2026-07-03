@@ -6,8 +6,10 @@ import { APIRoute as activityHandlers } from './routes/api/activity/index';
 import { APIRoute as enquiriesHandlers } from './routes/api/enquiries/index';
 import { APIRoute as enquiriesIdHandlers } from './routes/api/enquiries/$id';
 import { APIRoute as enquiriesReplyHandlers } from './routes/api/enquiries/$id.reply';
+import { APIRoute as enquiriesNotesHandlers } from './routes/api/enquiries/$id.notes';
 import { APIRoute as contactsHandlers } from './routes/api/contacts/index';
 import { APIRoute as contactsIdHandlers } from './routes/api/contacts/$id';
+import { APIRoute as contactsNotesHandlers } from './routes/api/contacts/$id.notes';
 import { APIRoute as subscribersHandlers } from './routes/api/subscribers/index';
 import { APIRoute as subscribersIdHandlers } from './routes/api/subscribers/$id';
 import { APIRoute as usersHandlers } from './routes/api/users/index';
@@ -59,8 +61,10 @@ const routes = [
   makeRoute('/api/enquiries', enquiriesHandlers as Handlers),
   makeRoute('/api/enquiries/$id', enquiriesIdHandlers as Handlers),
   makeRoute('/api/enquiries/$id/reply', enquiriesReplyHandlers as Handlers),
+  makeRoute('/api/enquiries/$id/notes', enquiriesNotesHandlers as Handlers),
   makeRoute('/api/contacts', contactsHandlers as Handlers),
   makeRoute('/api/contacts/$id', contactsIdHandlers as Handlers),
+  makeRoute('/api/contacts/$id/notes', contactsNotesHandlers as Handlers),
   makeRoute('/api/subscribers', subscribersHandlers as Handlers),
   makeRoute('/api/subscribers/$id', subscribersIdHandlers as Handlers),
   makeRoute('/api/users', usersHandlers as Handlers),
