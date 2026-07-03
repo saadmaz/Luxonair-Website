@@ -233,11 +233,18 @@ function AdminLayoutRoute() {
   const unreadMessages = activity?.unreadContactCount ?? 0;
   const newFlightBookings = activity?.newFlightBookingCount ?? 0;
 
+  // `me` is `undefined` both before the query has run and while a *disabled*
+  // query (enabled: !isLoginPage) hasn't started fetching yet — react-query
+  // reports isLoading: false for a disabled query even though no data has
+  // arrived, so that flag can't distinguish "not checked yet" from "checked,
+  // logged out". `null` is the one value queryFn only ever returns after a
+  // real fetch has completed and the server said "not authenticated" — only
+  // redirect on that explicit signal.
   useEffect(() => {
-    if (!isLoginPage && !authLoading && authed === false) {
+    if (!isLoginPage && me === null) {
       navigate({ to: "/admin/login" });
     }
-  }, [authed, authLoading, isLoginPage, navigate]);
+  }, [me, isLoginPage, navigate]);
 
   if (isLoginPage) return <Outlet />;
 
