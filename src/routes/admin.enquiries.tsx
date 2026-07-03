@@ -246,10 +246,10 @@ function AdminEnquiriesPage() {
                       <td colSpan={8} className="px-6 py-4">
                         <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
                           <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Phone</p><p className="mt-1 text-gray-800">{e.phone}</p></div>
-                          <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Notes</p><p className="mt-1 text-gray-800">{e.notes || "-"}</p></div>
-                          <div className="col-span-2 flex items-center gap-2">
+                          <div className="col-span-3 flex items-center gap-2">
                             <button onClick={() => openReply(e)} className="inline-flex items-center gap-1.5 rounded-lg bg-[#042045] px-4 py-2 text-xs font-semibold text-white hover:bg-[#042045]/90"><Mail className="h-3.5 w-3.5" />Reply by email</button>
                             <a href={`https://wa.me/${e.phone.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"><WhatsAppIcon className="h-3.5 w-3.5 text-[#25D366]" />WhatsApp</a>
+                            <button onClick={() => setEditItem({ ...e })} className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"><Pencil className="h-3.5 w-3.5" />View activity log</button>
                           </div>
                         </div>
                       </td>
