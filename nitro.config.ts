@@ -27,5 +27,12 @@ export default {
         ].join("; "),
       },
     },
+    // Session-gated pages and the auth-sensitive API surface must never be
+    // cached by an intermediary (Hostinger's LiteSpeed layer caches full-page
+    // HTML by URL only, ignoring cookies, unless explicitly told not to —
+    // without this it serves one cached logged-out snapshot to every visitor
+    // regardless of their session).
+    "/admin/**": { headers: { "Cache-Control": "private, no-store" } },
+    "/api/**": { headers: { "Cache-Control": "private, no-store" } },
   },
 };
