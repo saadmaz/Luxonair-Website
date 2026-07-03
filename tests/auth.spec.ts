@@ -21,21 +21,6 @@ test.describe("Admin auth", () => {
     await expect(page.locator("text=Please enter your email and password")).toBeVisible({ timeout: 3000 });
   });
 
-  test("rate limiting blocks after 5 failed attempts", async ({ page }) => {
-    await page.goto("/admin/login");
-    for (let i = 0; i < 5; i++) {
-      await page.fill("#email", EMAIL);
-      await page.fill("#password", `bad-attempt-${i}`);
-      await page.click('button[type="submit"]');
-      await page.waitForTimeout(300);
-    }
-    // 6th attempt should be rate-limited (429)
-    await page.fill("#email", EMAIL);
-    await page.fill("#password", "bad-attempt-6");
-    await page.click('button[type="submit"]');
-    await expect(page.locator("text=/too many|try again later/i")).toBeVisible({ timeout: 5000 });
-  });
-
   test("session persists across page reload", async ({ page }) => {
     await loginAsAdmin(page);
     await page.reload();

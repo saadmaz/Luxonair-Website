@@ -68,16 +68,6 @@ export async function runStartupMigrations() {
     try {
       await conn.execute(`CREATE INDEX IF NOT EXISTS \`sessions_email_idx\` ON \`sessions\` (\`email\`)`);
     } catch { /* index already exists or unsupported syntax — safe to ignore */ }
-
-    // rate_limits powers the login rate-limiter; must exist before any login request
-    await conn.execute(`
-      CREATE TABLE IF NOT EXISTS \`rate_limits\` (
-        \`key\` varchar(255) NOT NULL,
-        \`count\` int NOT NULL DEFAULT 1,
-        \`reset_at\` bigint NOT NULL,
-        CONSTRAINT \`rate_limits_key\` PRIMARY KEY(\`key\`)
-      )
-    `);
   } finally {
     conn.release();
   }

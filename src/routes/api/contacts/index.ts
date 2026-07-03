@@ -2,7 +2,6 @@ import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { count, desc } from "drizzle-orm";
 import { db, contacts } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
-import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { contactSchema } from "@/server/validate";
 import { sendContactAlert } from "@/server/email";
@@ -23,11 +22,6 @@ export const APIRoute = createAPIFileRoute("/api/contacts")({
   },
 
   POST: async ({ request }) => {
-    // 5 submissions per 10 minutes per IP
-    const ip = getClientIp(request);
-    const rl = await checkRateLimit(`contact:${ip}`, 5, 10 * 60 * 1000);
-    if (!rl.allowed) return rateLimitResponse(rl.retryAfter);
-
     const raw = await request.json().catch(() => null);
     const parsed = contactSchema.safeParse(raw);
     if (!parsed.success) {

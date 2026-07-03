@@ -2,7 +2,6 @@ import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { count, desc } from "drizzle-orm";
 import { db, enquiries } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
-import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { enquirySchema } from "@/server/validate";
 import { sendEnquiryAlert } from "@/server/email";
@@ -23,11 +22,6 @@ export const APIRoute = createAPIFileRoute("/api/enquiries")({
   },
 
   POST: async ({ request }) => {
-    // 5 submissions per 10 minutes per IP
-    const ip = getClientIp(request);
-    const rl = await checkRateLimit(`enquiry:${ip}`, 5, 10 * 60 * 1000);
-    if (!rl.allowed) return rateLimitResponse(rl.retryAfter);
-
     const raw = await request.json().catch(() => null);
     const parsed = enquirySchema.safeParse(raw);
     if (!parsed.success) {

@@ -3,15 +3,10 @@ import { compare } from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { db, adminUsers } from "../../../../db/index";
 import { signToken, makeSessionCookie, createSession } from "@/server/auth";
-import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
 import { loginSchema } from "@/server/validate";
 
 export const APIRoute = createAPIFileRoute("/api/auth/login")({
   POST: async ({ request }) => {
-    const ip = getClientIp(request);
-    const rl = await checkRateLimit(`login:${ip}`, 5, 15 * 60 * 1000);
-    if (!rl.allowed) return rateLimitResponse(rl.retryAfter);
-
     const raw = await request.json().catch(() => null);
     const parsed = loginSchema.safeParse(raw);
     if (!parsed.success) {
@@ -20,11 +15,6 @@ export const APIRoute = createAPIFileRoute("/api/auth/login")({
 
     const { username, password } = parsed.data;
     const normalUsername = username.trim().toLowerCase();
-
-    // Per-account lockout in addition to per-IP — mitigates credential stuffing
-    // from rotating IPs against a single known admin username.
-    const accountRl = await checkRateLimit(`login-account:${normalUsername}`, 5, 15 * 60 * 1000);
-    if (!accountRl.allowed) return rateLimitResponse(accountRl.retryAfter);
 
     // ── Path 1: env-var credentials (no DB required) ─────────────────────────
     const envUsername = process.env.ADMIN_USERNAME?.trim().toLowerCase();

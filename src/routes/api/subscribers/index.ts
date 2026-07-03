@@ -2,7 +2,6 @@ import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { count, desc } from "drizzle-orm";
 import { db, subscribers } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
-import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { subscriberSchema } from "@/server/validate";
 
@@ -22,11 +21,6 @@ export const APIRoute = createAPIFileRoute("/api/subscribers")({
   },
 
   POST: async ({ request }) => {
-    // 10 subscriptions per 10 minutes per IP (slightly more lenient)
-    const ip = getClientIp(request);
-    const rl = await checkRateLimit(`subscribe:${ip}`, 10, 10 * 60 * 1000);
-    if (!rl.allowed) return rateLimitResponse(rl.retryAfter);
-
     const raw = await request.json().catch(() => null);
     const parsed = subscriberSchema.safeParse(raw);
     if (!parsed.success) {

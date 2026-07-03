@@ -98,7 +98,6 @@ Luxonair-Website/
     │   ├── auth.ts               # JWT sign/verify, requireAuth, requireSuperAdmin
     │   ├── email.ts              # Resend email senders
     │   ├── queries.ts            # createServerFn loaders for SSR
-    │   ├── rate-limit.ts         # DB-backed rate limiter
     │   └── validate.ts           # all Zod input schemas
     └── styles/globals.css        # Tailwind v4 entry + OKLCH brand tokens
 ```
@@ -295,8 +294,6 @@ There are two auth paths:
 
 - Sessions are revocable individually (`POST /api/auth/logout`) or all-at-once (`POST /api/auth/logout-all`)
 - Cookie flags: `HttpOnly`, `SameSite=Lax`, `Secure` in production
-- Login is rate-limited: 5 attempts per 15 minutes per IP and per account
-- Rate limits enforced via the `rate_limits` database table (atomic upsert — safe under concurrent requests)
 
 ---
 
@@ -323,7 +320,7 @@ All API routes are TanStack Start `createAPIFileRoute` handlers processed by Nit
 
 | Method | Path | Access | Description |
 |---|---|---|---|
-| POST | `/api/auth/login` | Public | Rate-limited login. Sets `lx_session` cookie on success. |
+| POST | `/api/auth/login` | Public | Sets `lx_session` cookie on success. |
 | GET | `/api/auth/me` | Auth | Returns `{ ok: true }` if session is valid. |
 | POST | `/api/auth/logout` | Auth | Revokes current session; clears cookie. |
 | POST | `/api/auth/logout-all` | Auth | Revokes all sessions for the authenticated user. |
@@ -334,14 +331,14 @@ All API routes are TanStack Start `createAPIFileRoute` handlers processed by Nit
 |---|---|---|---|
 | GET | `/api/activity` | Auth | Returns new enquiry count, unread contact count, new flight booking count, recent enquiries, unread contacts. Used by the sidebar notification bell. |
 
-### Public endpoints (rate-limited)
+### Public endpoints
 
-| Method | Path | Limit | Description |
-|---|---|---|---|
-| POST | `/api/enquiries` | 5/10 min per IP | Submit quote wizard. Fires email alert to admin. |
-| POST | `/api/contacts` | 5/10 min per IP | Contact form submission. Fires email alert. |
-| POST | `/api/subscribers` | 10/10 min per IP | Newsletter signup. Upsert on duplicate email. |
-| POST | `/api/flight-offer-bookings` | 5/10 min per IP | Flight offer booking. Fires email alert. |
+| Method | Path | Description |
+|---|---|---|
+| POST | `/api/enquiries` | Submit quote wizard. Fires email alert to admin. |
+| POST | `/api/contacts` | Contact form submission. Fires email alert. |
+| POST | `/api/subscribers` | Newsletter signup. Upsert on duplicate email. |
+| POST | `/api/flight-offer-bookings` | Flight offer booking. Fires email alert. |
 
 ### Enquiry management
 
@@ -398,7 +395,6 @@ The following resource groups each expose `GET` (list + paginated), `POST` (crea
 | `destination_highlights` | Home page image tiles — image, country, city, type, sort_order |
 | `flight_offers` | Published flight offers — string PK, from_code/to_code (IATA), cabin_class, featured |
 | `flight_offer_bookings` | Flight offer booking requests — FK → `flight_offers.id` ON DELETE RESTRICT, status |
-| `rate_limits` | DB-backed rate limiting — PK `key` VARCHAR(255), count, reset_at (Unix ms) |
 | `sessions` | Admin auth sessions — PK random hex id, email, revoked_at (null = active) |
 | `admin_users` | Admin user accounts — email UNIQUE, password_hash, role ENUM(admin, superadmin) |
 | `admin_actions` | Audit log of admin API calls — admin_email, method, path, status |
@@ -422,20 +418,6 @@ Images uploaded through the admin are stored server-side (not as base64 or exter
 6. Files served at `GET /api/uploads/:filename` with path-traversal protection and 1-year immutable cache headers
 
 > **Warning:** Uploaded files are stored on the local VPS filesystem with no offsite backup. A server wipe will lose all uploaded images. Consider migrating to object storage (S3, Cloudflare R2) for production resilience.
-
----
-
-## Rate Limiting
-
-Rate limits are enforced via atomic upsert into the `rate_limits` database table — safe under concurrent requests and persistent across server restarts.
-
-| Endpoint | Limit | Window | Key |
-|---|---|---|---|
-| `POST /api/auth/login` | 5 attempts | 15 minutes | Per IP + per account |
-| `POST /api/enquiries` | 5 submissions | 10 minutes | Per IP |
-| `POST /api/contacts` | 5 submissions | 10 minutes | Per IP |
-| `POST /api/flight-offer-bookings` | 5 submissions | 10 minutes | Per IP |
-| `POST /api/subscribers` | 10 signups | 10 minutes | Per IP |
 
 ---
 

@@ -1,7 +1,7 @@
 // Popup enquiry form opened from a flight offer card's "Book Now" button.
 // Two-tab layout (Trip Details / Contact Details) matching the flight-offers
-// booking flow. Submits to /api/flight-offer-bookings, which is public but
-// rate-limited, and surfaces the booking in the admin "Flight Bookings" inbox.
+// booking flow. Submits to /api/flight-offer-bookings (public), and surfaces
+// the booking in the admin "Flight Bookings" inbox.
 import { useEffect, useState } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { useMutation } from "@tanstack/react-query";

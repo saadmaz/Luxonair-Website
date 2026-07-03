@@ -1,5 +1,4 @@
 import {
-  bigint,
   boolean,
   index,
   int,
@@ -265,12 +264,6 @@ export const flightOfferBookings = mysqlTable(
     index("flight_offer_bookings_created_at_idx").on(t.createdAt),
   ],
 );
-
-export const rateLimits = mysqlTable("rate_limits", {
-  key: varchar("key", { length: 255 }).primaryKey(),
-  count: int("count").notNull().default(1),
-  resetAt: bigint("reset_at", { mode: "number" }).notNull(),
-});
 
 export const sessions = mysqlTable(
   "sessions",

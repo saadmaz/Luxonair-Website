@@ -92,6 +92,13 @@
       "when": 1783000300000,
       "tag": "0012_add_note_types_and_contact_notes",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "5",
+      "when": 1783000400000,
+      "tag": "0013_drop_rate_limits",
+      "breakpoints": true
     }
   ]
 }
