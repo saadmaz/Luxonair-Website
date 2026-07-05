@@ -3,7 +3,7 @@
 // see src/routes/admin.enquiry-packages.tsx and admin.enquiry-flights.tsx.
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronDown, Pencil, Trash2, Loader2, Mail } from "lucide-react";
+import { ChevronDown, Pencil, Loader2, Mail } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { cn } from "@/lib/utils";
 import {
@@ -105,7 +105,6 @@ export function EnquiryManager({ kind }: { kind: Kind }) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [editItem, setEditItem] = useState<Enquiry | null>(null);
   const [saveError, setSaveError] = useState("");
-  const [deleteId, setDeleteId] = useState<number | null>(null);
   const [replyItem, setReplyItem] = useState<Enquiry | null>(null);
   const [replySubject, setReplySubject] = useState("");
   const [replyMessage, setReplyMessage] = useState("");
@@ -157,15 +156,6 @@ export function EnquiryManager({ kind }: { kind: Kind }) {
       api.post<NoteEntry>(`${apiBase}/${vars.id}/notes`, { body: vars.body, type: vars.type }),
     onSuccess: (_, vars) => {
       qc.invalidateQueries({ queryKey: [`${queryKey}-notes`, vars.id] });
-    },
-  });
-
-  const deleteEnquiry = useMutation({
-    mutationFn: (id: number) => api.delete(`${apiBase}/${id}`),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: [queryKey] });
-      setDeleteId(null);
-      if (expandedId === deleteId) setExpandedId(null);
     },
   });
 
@@ -274,7 +264,6 @@ export function EnquiryManager({ kind }: { kind: Kind }) {
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-1.5">
                         <button onClick={() => setEditItem({ ...e })} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-gray-50 hover:text-gray-600"><Pencil className="h-3.5 w-3.5" /></button>
-                        <button onClick={() => setDeleteId(e.id)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"><Trash2 className="h-3.5 w-3.5" /></button>
                         <button onClick={() => setExpandedId(expandedId === e.id ? null : e.id)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-gray-50">
                           <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", expandedId === e.id && "rotate-180")} />
                         </button>
@@ -334,7 +323,6 @@ export function EnquiryManager({ kind }: { kind: Kind }) {
               <div className="mt-3 flex gap-2">
                 <button onClick={() => openReply(e)} className="rounded-lg bg-[#042045] px-3 py-1.5 text-xs font-semibold text-white">Reply</button>
                 <button onClick={() => setEditItem({ ...e })} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600">Edit</button>
-                <button onClick={() => setDeleteId(e.id)} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-red-500">Delete</button>
               </div>
             </div>
           ))}
@@ -403,24 +391,6 @@ export function EnquiryManager({ kind }: { kind: Kind }) {
               className="rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90 disabled:opacity-60"
             >
               {saveEdit.isPending ? "Saving…" : "Save changes"}
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete modal */}
-      <Dialog open={deleteId !== null} onOpenChange={(o) => !o && setDeleteId(null)}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader><DialogTitle>Delete enquiry?</DialogTitle></DialogHeader>
-          <p className="text-sm text-gray-500">This will remove the enquiry from the dashboard. This action cannot be undone.</p>
-          <DialogFooter>
-            <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
-            <button
-              onClick={() => deleteId !== null && deleteEnquiry.mutate(deleteId)}
-              disabled={deleteEnquiry.isPending}
-              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
-            >
-              {deleteEnquiry.isPending ? "Deleting…" : "Delete"}
             </button>
           </DialogFooter>
         </DialogContent>

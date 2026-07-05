@@ -1,9 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Mail, MailOpen, Trash2, Loader2, Phone } from "lucide-react";
+import { Mail, MailOpen, Loader2, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { api } from "@/lib/api";
 import { NotesLog } from "@/components/admin/NotesLog";
 import type { NoteEntry, NoteType } from "@/lib/notes";
@@ -43,7 +42,6 @@ type StatusFilter = "All" | "Unread" | "Read";
 function AdminMessagesPage() {
   const qc = useQueryClient();
   const [selected, setSelected] = useState<number | null>(null);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [topicFilter, setTopicFilter] = useState<string>("All");
 
@@ -55,15 +53,6 @@ function AdminMessagesPage() {
   const markRead = useMutation({
     mutationFn: (id: number) => api.patch(`/api/contacts/${id}`, { read: true }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["contacts"] }),
-  });
-
-  const deleteMsg = useMutation({
-    mutationFn: (id: number) => api.delete(`/api/contacts/${id}`),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["contacts"] });
-      setDeleteId(null);
-      if (selected === deleteId) setSelected(null);
-    },
   });
 
   const { data: notes = [] } = useQuery({
@@ -99,10 +88,6 @@ function AdminMessagesPage() {
     setSelected(id);
     const msg = items.find((m) => m.id === id);
     if (msg && !msg.read) markRead.mutate(id);
-  };
-
-  const confirmDelete = () => {
-    if (deleteId != null) deleteMsg.mutate(deleteId);
   };
 
   if (isLoading) {
@@ -183,7 +168,6 @@ function AdminMessagesPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <button onClick={() => setSelected(null)} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 md:hidden">Back</button>
-                  <button onClick={() => setDeleteId(selectedMsg.id)} className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"><Trash2 className="h-4 w-4" /></button>
                   <a href={`mailto:${selectedMsg.email}?subject=Re: ${selectedMsg.topic}`} className="rounded-lg bg-[#042045] px-4 py-1.5 text-xs font-semibold text-white hover:bg-[#042045]/90">Reply</a>
                 </div>
               </div>
@@ -208,23 +192,6 @@ function AdminMessagesPage() {
           )}
         </div>
       </div>
-
-      <Dialog open={deleteId !== null} onOpenChange={(o) => !o && setDeleteId(null)}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader><DialogTitle>Delete message?</DialogTitle></DialogHeader>
-          <p className="text-sm text-gray-500">This will permanently remove the message. This cannot be undone.</p>
-          <DialogFooter>
-            <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
-            <button
-              onClick={confirmDelete}
-              disabled={deleteMsg.isPending}
-              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
-            >
-              {deleteMsg.isPending ? "Deleting…" : "Delete"}
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

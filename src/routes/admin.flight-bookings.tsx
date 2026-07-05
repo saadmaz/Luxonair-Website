@@ -1,17 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Clock, CheckCircle2, Circle, ChevronDown, Trash2, Loader2 } from "lucide-react";
+import { Clock, CheckCircle2, Circle, ChevronDown, Loader2 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { cn } from "@/lib/utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
 import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/flight-bookings")({
@@ -78,7 +70,6 @@ function AdminFlightBookingsPage() {
   const qc = useQueryClient();
   const [filter, setFilter] = useState<Status | "All">("All");
   const [expandedId, setExpandedId] = useState<number | null>(null);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
 
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["flight-bookings"],
@@ -89,15 +80,6 @@ function AdminFlightBookingsPage() {
     mutationFn: ({ id, status }: { id: number; status: Status }) =>
       api.patch(`/api/flight-offer-bookings/${id}`, { status: uiStatusToDb(status) }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["flight-bookings"] }),
-  });
-
-  const deleteBooking = useMutation({
-    mutationFn: (id: number) => api.delete(`/api/flight-offer-bookings/${id}`),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["flight-bookings"] });
-      setDeleteId(null);
-      if (expandedId === deleteId) setExpandedId(null);
-    },
   });
 
   const uiItems = items.map((b) => ({ ...b, uiStatus: dbStatusToUI(b.status) }));
@@ -217,12 +199,6 @@ function AdminFlightBookingsPage() {
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-1.5">
                         <button
-                          onClick={() => setDeleteId(b.id)}
-                          className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                        <button
                           onClick={() => setExpandedId(expandedId === b.id ? null : b.id)}
                           className="rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-gray-50"
                         >
@@ -316,12 +292,6 @@ function AdminFlightBookingsPage() {
                 >
                   Reply
                 </a>
-                <button
-                  onClick={() => setDeleteId(b.id)}
-                  className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-red-500"
-                >
-                  Delete
-                </button>
               </div>
             </div>
           ))}
@@ -330,32 +300,6 @@ function AdminFlightBookingsPage() {
           )}
         </div>
       </div>
-
-      {/* Delete modal */}
-      <Dialog open={deleteId !== null} onOpenChange={(o) => !o && setDeleteId(null)}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Delete booking?</DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-gray-500">
-            This will remove the booking from the dashboard. This action cannot be undone.
-          </p>
-          <DialogFooter>
-            <DialogClose asChild>
-              <button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">
-                Cancel
-              </button>
-            </DialogClose>
-            <button
-              onClick={() => deleteId !== null && deleteBooking.mutate(deleteId)}
-              disabled={deleteBooking.isPending}
-              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
-            >
-              {deleteBooking.isPending ? "Deleting…" : "Delete"}
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
