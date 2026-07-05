@@ -67,11 +67,11 @@ export function FlightOffers({ offers }: { offers: FlightOffer[] }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-40px" }}
                   transition={{ delay: i * 0.12, duration: 0.5, ease: "easeOut" }}
-                  className="group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                  className="group mx-auto w-full max-w-70 overflow-hidden rounded-2xl border border-border bg-card shadow-sm ring-1 ring-navy/3 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
                 >
                   {/* Image */}
                   <div className="relative overflow-hidden">
-                    <div className="aspect-[4/3] w-full overflow-hidden">
+                    <div className="aspect-3/2 w-full overflow-hidden">
                       <img
                         src={offer.image}
                         alt={`${fromA?.cityName ?? offer.fromCode} to ${toA?.cityName ?? offer.toCode}`}
@@ -79,50 +79,60 @@ export function FlightOffers({ offers }: { offers: FlightOffer[] }) {
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
-                    <span className="absolute right-3 top-3 rounded-full bg-navy/90 px-3 py-1 text-xs font-bold text-navy-fg shadow-md">
+                    <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-navy/55 via-navy/0 to-navy/10" />
+                    <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-navy/70 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-navy-fg ring-1 ring-white/15 backdrop-blur-md">
                       {offer.cabinClass}
                     </span>
+                    <div className="absolute bottom-3 left-3 flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-card/95 shadow-md ring-1 ring-white/40 backdrop-blur-sm">
+                      {offer.airlineLogo ? (
+                        <img
+                          src={offer.airlineLogo}
+                          alt={offer.airlineName}
+                          className="h-full w-full object-contain p-1"
+                        />
+                      ) : (
+                        <PlaneTakeoff className="h-3.5 w-3.5 text-muted-foreground" />
+                      )}
+                    </div>
                   </div>
 
                   {/* Body */}
-                  <div className="p-5">
+                  <div className="p-4">
                     <div className="flex items-center justify-between gap-2">
                       <div>
-                        <p className="font-display text-base font-bold text-foreground">
+                        <p className="font-display text-sm font-bold text-foreground">
                           {fromA?.cityName ?? offer.fromCode}
                         </p>
-                        <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                          {fromA && <Flag code={fromA.countryCode} size={12} />}
+                        <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                          {fromA && <Flag code={fromA.countryCode} size={11} />}
                           {offer.fromCode}
                         </p>
                       </div>
-                      <ArrowRight className="h-4 w-4 shrink-0 text-gold" />
+                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold/10">
+                        <ArrowRight className="h-3 w-3 text-gold" />
+                      </div>
                       <div className="text-right">
-                        <p className="font-display text-base font-bold text-foreground">
+                        <p className="font-display text-sm font-bold text-foreground">
                           {toA?.cityName ?? offer.toCode}
                         </p>
-                        <p className="flex items-center justify-end gap-1.5 text-xs text-muted-foreground">
+                        <p className="flex items-center justify-end gap-1.5 text-[11px] text-muted-foreground">
                           {offer.toCode}
-                          {toA && <Flag code={toA.countryCode} size={12} />}
+                          {toA && <Flag code={toA.countryCode} size={11} />}
                         </p>
                       </div>
                     </div>
 
-                    <div className="my-4 border-t border-border" />
+                    <div className="relative -mx-4 my-3.5">
+                      <div className="border-t border-dashed border-border" />
+                      <span className="absolute left-0 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background" />
+                      <span className="absolute right-0 top-1/2 h-3.5 w-3.5 -translate-y-1/2 translate-x-1/2 rounded-full bg-background" />
+                    </div>
 
                     <div className="flex items-center justify-between">
-                      <div className="flex h-8 w-14 items-center justify-center overflow-hidden rounded-md border border-border bg-background">
-                        {offer.airlineLogo ? (
-                          <img
-                            src={offer.airlineLogo}
-                            alt={offer.airlineName}
-                            className="h-full w-full object-contain p-1"
-                          />
-                        ) : (
-                          <PlaneTakeoff className="h-4 w-4 text-muted-foreground" />
-                        )}
-                      </div>
-                      <div className="text-right">
+                      <p className="truncate pr-2 text-[11px] font-medium text-muted-foreground">
+                        {offer.airlineName}
+                      </p>
+                      <div className="shrink-0 text-right">
                         <p className="text-[10px] text-muted-foreground">per person</p>
                         <p className="font-display text-lg font-bold text-foreground">
                           £{offer.price.toLocaleString()}
@@ -132,9 +142,10 @@ export function FlightOffers({ offers }: { offers: FlightOffer[] }) {
 
                     <button
                       onClick={() => setSelected(offer)}
-                      className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-lg bg-gold px-4 py-2.5 text-xs font-bold text-gold-foreground transition-all hover:bg-gold/90"
+                      className="mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-linear-to-b from-gold to-gold/90 px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-gold-foreground shadow-sm transition-all hover:shadow-md active:scale-98"
                     >
-                      Book Now <ArrowUpRight className="h-3.5 w-3.5" />
+                      Book Now
+                      <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </button>
                   </div>
                 </motion.article>
