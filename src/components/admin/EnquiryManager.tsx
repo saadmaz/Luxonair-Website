@@ -3,7 +3,7 @@
 // see src/routes/admin.enquiry-packages.tsx and admin.enquiry-flights.tsx.
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Clock, CheckCircle2, Circle, ChevronDown, Pencil, Trash2, Loader2, Mail } from "lucide-react";
+import { ChevronDown, Pencil, Trash2, Loader2, Mail } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { cn } from "@/lib/utils";
 import {
@@ -12,15 +12,15 @@ import {
 import { api } from "@/lib/api";
 import { NotesLog } from "@/components/admin/NotesLog";
 import type { NoteEntry, NoteType } from "@/lib/notes";
+import { ENQUIRY_STATUSES, ENQUIRY_STATUS_LABELS, ENQUIRY_STATUS_COLORS, type EnquiryStatus } from "@/lib/enquiry-status";
 
-type Status = "New" | "In Progress" | "Responded";
 type Kind = "package" | "flight";
 
 type Enquiry = {
   id: number; name: string; email: string; phone: string;
   destination: string; region: string; tripType: string;
   travelDate: string; dateMode: string; nights: number | null; adults: number; children: number; infants: number;
-  budget: string; status: Status; received: string; notes: string;
+  budget: string; status: EnquiryStatus; received: string; notes: string;
   hotelRating: string; boardBasis: string; flightsIncluded: boolean;
   cabinClass: string; departAirport: string; directOnly: string; preferredAirlines: string;
 };
@@ -30,22 +30,10 @@ type DbEnquiry = {
   destination: string; region: string | null; tripType: string;
   dateMode: string; departWindow: string | null; departDate: string | null;
   nights: number | null; adults: number; children: number; infants: number;
-  budget: string; status: string; notes: string | null; createdAt: string;
+  budget: string; status: EnquiryStatus; notes: string | null; createdAt: string;
   hotelRating: string | null; boardBasis: string | null; flightsIncluded: boolean | null;
   cabinClass: string | null; departAirport: string | null; directOnly: string | null; preferredAirlines: string | null;
 };
-
-function dbStatusToUI(s: string): Status {
-  if (s === "in_progress") return "In Progress";
-  if (s === "responded") return "Responded";
-  return "New";
-}
-
-function uiStatusToDb(s: Status): string {
-  if (s === "In Progress") return "in_progress";
-  if (s === "Responded") return "responded";
-  return "new";
-}
 
 function toUIEnquiry(row: DbEnquiry): Enquiry {
   return {
@@ -63,7 +51,7 @@ function toUIEnquiry(row: DbEnquiry): Enquiry {
     children: row.children,
     infants: row.infants,
     budget: row.budget,
-    status: dbStatusToUI(row.status),
+    status: row.status,
     received: new Date(row.createdAt).toLocaleDateString("en-GB", {
       day: "numeric", month: "short", year: "numeric",
     }),
@@ -78,18 +66,26 @@ function toUIEnquiry(row: DbEnquiry): Enquiry {
   };
 }
 
-const statusConfig: Record<Status, { className: string; icon: typeof Circle }> = {
-  New: { className: "bg-blue-50 text-blue-700 ring-blue-200", icon: Circle },
-  "In Progress": { className: "bg-amber-50 text-amber-700 ring-amber-200", icon: Clock },
-  Responded: { className: "bg-emerald-50 text-emerald-700 ring-emerald-200", icon: CheckCircle2 },
-};
-
-function StatusBadge({ status }: { status: Status }) {
-  const { className, icon: Icon } = statusConfig[status] ?? statusConfig.New;
+function StatusBadge({ status }: { status: EnquiryStatus }) {
+  const { className, dot } = ENQUIRY_STATUS_COLORS[status];
   return (
     <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1", className)}>
-      <Icon className="h-3 w-3" />{status}
+      <span className={cn("h-1.5 w-1.5 rounded-full", dot)} />{ENQUIRY_STATUS_LABELS[status]}
     </span>
+  );
+}
+
+function StatusSelect({ value, onChange, className }: { value: EnquiryStatus; onChange: (v: EnquiryStatus) => void; className?: string }) {
+  return (
+    <select
+      value={value}
+      onChange={(ev) => onChange(ev.target.value as EnquiryStatus)}
+      className={className}
+    >
+      {ENQUIRY_STATUSES.map((s) => (
+        <option key={s} value={s}>{ENQUIRY_STATUS_LABELS[s]}</option>
+      ))}
+    </select>
   );
 }
 
@@ -105,7 +101,7 @@ export function EnquiryManager({ kind }: { kind: Kind }) {
     : "Flight-only quote requests submitted via the website.";
 
   const qc = useQueryClient();
-  const [filter, setFilter] = useState<Status | "All">("All");
+  const [filter, setFilter] = useState<EnquiryStatus | "All">("All");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [editItem, setEditItem] = useState<Enquiry | null>(null);
   const [saveError, setSaveError] = useState("");
@@ -120,15 +116,15 @@ export function EnquiryManager({ kind }: { kind: Kind }) {
   });
 
   const updateStatus = useMutation({
-    mutationFn: ({ id, status }: { id: number; status: Status }) =>
-      api.patch(`${apiBase}/${id}`, { status: uiStatusToDb(status) }),
+    mutationFn: ({ id, status }: { id: number; status: EnquiryStatus }) =>
+      api.patch(`${apiBase}/${id}`, { status }),
     onSuccess: () => qc.invalidateQueries({ queryKey: [queryKey] }),
   });
 
   const saveEdit = useMutation({
     mutationFn: (e: Enquiry) =>
       api.patch(`${apiBase}/${e.id}`, {
-        status: uiStatusToDb(e.status),
+        status: e.status,
         name: e.name,
         email: e.email,
         phone: e.phone,
@@ -189,11 +185,14 @@ export function EnquiryManager({ kind }: { kind: Kind }) {
   };
 
   const filtered = filter === "All" ? items : items.filter((e) => e.status === filter);
-  const counts = {
+  const counts: Record<EnquiryStatus | "All", number> = {
     All: items.length,
-    New: items.filter((e) => e.status === "New").length,
-    "In Progress": items.filter((e) => e.status === "In Progress").length,
-    Responded: items.filter((e) => e.status === "Responded").length,
+    new: items.filter((e) => e.status === "new").length,
+    contacted: items.filter((e) => e.status === "contacted").length,
+    in_progress: items.filter((e) => e.status === "in_progress").length,
+    closed_won: items.filter((e) => e.status === "closed_won").length,
+    closed_lost: items.filter((e) => e.status === "closed_lost").length,
+    no_response: items.filter((e) => e.status === "no_response").length,
   };
 
   if (isLoading) {
@@ -213,12 +212,12 @@ export function EnquiryManager({ kind }: { kind: Kind }) {
 
       {/* Status filter tabs */}
       <div className="mb-6 flex flex-wrap gap-2">
-        {(["All", "New", "In Progress", "Responded"] as const).map((s) => (
+        {(["All", ...ENQUIRY_STATUSES] as const).map((s) => (
           <button key={s} onClick={() => setFilter(s)}
             className={cn("rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
               filter === s ? "bg-[#042045] text-white" : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50")}
           >
-            {s}
+            {s === "All" ? "All" : ENQUIRY_STATUS_LABELS[s]}
             <span className={cn("ml-2 rounded-full px-1.5 py-0.5 text-xs", filter === s ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500")}>
               {counts[s]}
             </span>
@@ -265,15 +264,11 @@ export function EnquiryManager({ kind }: { kind: Kind }) {
                     <td className="px-4 py-4 text-gray-600">{e.adults}A{e.children > 0 ? ` · ${e.children}C` : ""}{e.infants > 0 ? ` · ${e.infants}I` : ""}</td>
                     <td className="px-4 py-4 font-medium text-gray-700">{e.budget}</td>
                     <td className="px-4 py-4">
-                      <select
+                      <StatusSelect
                         value={e.status}
-                        onChange={(ev) => updateStatus.mutate({ id: e.id, status: ev.target.value as Status })}
+                        onChange={(status) => updateStatus.mutate({ id: e.id, status })}
                         className="rounded-lg border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-700 outline-none focus:border-[#042045] focus:ring-1 focus:ring-[#042045]/20 cursor-pointer"
-                      >
-                        <option>New</option>
-                        <option>In Progress</option>
-                        <option>Responded</option>
-                      </select>
+                      />
                     </td>
                     <td className="px-4 py-4 text-xs text-gray-400">{e.received}</td>
                     <td className="px-4 py-4">
@@ -367,9 +362,7 @@ export function EnquiryManager({ kind }: { kind: Kind }) {
                 <div><label className={labelCls}>Budget</label><input className={inputCls} value={editItem.budget} onChange={(e) => setEditItem({ ...editItem, budget: e.target.value })} /></div>
                 <div>
                   <label className={labelCls}>Status</label>
-                  <select className={inputCls} value={editItem.status} onChange={(e) => setEditItem({ ...editItem, status: e.target.value as Status })}>
-                    <option>New</option><option>In Progress</option><option>Responded</option>
-                  </select>
+                  <StatusSelect className={inputCls} value={editItem.status} onChange={(status) => setEditItem({ ...editItem, status })} />
                 </div>
                 {kind === "package" ? (
                   <>

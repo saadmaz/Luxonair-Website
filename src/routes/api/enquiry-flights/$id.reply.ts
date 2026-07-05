@@ -31,7 +31,7 @@ export const APIRoute = createAPIFileRoute("/api/enquiry-flights/$id/reply")({
       message: parsed.data.message,
     });
 
-    await db.update(enquiryFlights).set({ status: "responded" }).where(eq(enquiryFlights.id, id));
+    await db.update(enquiryFlights).set({ status: "contacted" }).where(eq(enquiryFlights.id, id));
     const [row] = await db.select().from(enquiryFlights).where(eq(enquiryFlights.id, id));
     return Response.json(row);
   },

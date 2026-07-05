@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { NOTE_TYPES } from "@/lib/notes";
+import { ENQUIRY_STATUSES } from "@/lib/enquiry-status";
 
 export const loginSchema = z.object({
   username: z.string().min(1).max(100),
@@ -215,7 +216,7 @@ export const faqItemSchema = z.object({
 });
 
 export const packageEnquiryUpdateSchema = z.object({
-  status: z.string().max(50).optional(),
+  status: z.enum(ENQUIRY_STATUSES).optional(),
   name: z.string().min(2).max(100).optional(),
   email: z.string().email().optional(),
   phone: z.string().min(7).max(30).optional(),
@@ -235,7 +236,7 @@ export const packageEnquiryUpdateSchema = z.object({
 });
 
 export const flightEnquiryUpdateSchema = z.object({
-  status: z.string().max(50).optional(),
+  status: z.enum(ENQUIRY_STATUSES).optional(),
   name: z.string().min(2).max(100).optional(),
   email: z.string().email().optional(),
   phone: z.string().min(7).max(30).optional(),

@@ -15,6 +15,18 @@ import type { JSONContent } from "@tiptap/react";
 // share almost no required fields in practice (see PackageQuoteForm vs
 // FlightQuoteForm), so keeping them as distinct tables means every column is
 // meaningful for its row instead of being null half the time.
+// Not exported: db/index.ts derives its JSON-column cache by assuming every
+// export from this file is a mysqlTable, so any non-table export crashes it.
+// Kept in sync with ENQUIRY_STATUSES in src/lib/enquiry-status.ts.
+const ENQUIRY_STATUS_VALUES = [
+  "new",
+  "contacted",
+  "in_progress",
+  "closed_won",
+  "closed_lost",
+  "no_response",
+] as const;
+
 export const enquiryPackages = mysqlTable(
   "enquiry_packages",
   {
@@ -42,7 +54,7 @@ export const enquiryPackages = mysqlTable(
     children: int("children").notNull().default(0),
     infants: int("infants").notNull().default(0),
     notes: text("notes"),
-    status: text("status").notNull().default("new"),
+    status: mysqlEnum("status", ENQUIRY_STATUS_VALUES).notNull().default("new"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [
@@ -73,7 +85,7 @@ export const enquiryFlights = mysqlTable(
     preferredAirlines: text("preferred_airlines"),
     budget: text("budget").notNull(),
     notes: text("notes"),
-    status: text("status").notNull().default("new"),
+    status: mysqlEnum("status", ENQUIRY_STATUS_VALUES).notNull().default("new"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [
