@@ -10,7 +10,10 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!/.+@.+\..+/.test(email)) return;
+    if (!/.+@.+\..+/.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
     setSubmitting(true);
     setError("");
 
@@ -73,7 +76,7 @@ export function Newsletter({ variant = "footer" }: { variant?: "footer" | "secti
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Type Your Email Address"
+                      placeholder="Your email address"
                       className="flex-1 bg-transparent py-2 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none"
                     />
                     <button

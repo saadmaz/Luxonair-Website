@@ -20,7 +20,7 @@ type Status = "New" | "In Progress" | "Responded";
 type Enquiry = {
   id: number; name: string; email: string; phone: string;
   destination: string; region: string; tripType: string;
-  travelDate: string; nights: number; adults: number; children: number; infants: number;
+  travelDate: string; dateMode: string; nights: number; adults: number; children: number; infants: number;
   budget: string; status: Status; received: string; notes: string;
 };
 
@@ -54,6 +54,7 @@ function toUIEnquiry(row: DbEnquiry): Enquiry {
     region: row.region ?? "",
     tripType: row.tripType,
     travelDate: row.departDate ?? row.departWindow ?? "",
+    dateMode: row.dateMode,
     nights: row.nights,
     adults: row.adults,
     children: row.children,
@@ -90,6 +91,7 @@ function AdminEnquiriesPage() {
   const [filter, setFilter] = useState<Status | "All">("All");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [editItem, setEditItem] = useState<Enquiry | null>(null);
+  const [saveError, setSaveError] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [replyItem, setReplyItem] = useState<Enquiry | null>(null);
   const [replySubject, setReplySubject] = useState("");
@@ -110,8 +112,22 @@ function AdminEnquiriesPage() {
     mutationFn: (e: Enquiry) =>
       api.patch(`/api/enquiries/${e.id}`, {
         status: uiStatusToDb(e.status),
+        name: e.name,
+        email: e.email,
+        phone: e.phone,
+        destination: e.destination,
+        // travelDate is a merged display field backed by either departDate
+        // (fixed dates) or departWindow (flexible dates) — write back to
+        // whichever one this enquiry actually used.
+        ...(e.dateMode === "specific" ? { departDate: e.travelDate } : { departWindow: e.travelDate }),
+        nights: e.nights,
+        adults: e.adults,
+        children: e.children,
+        infants: e.infants,
+        budget: e.budget,
       }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["enquiries"] }); setEditItem(null); },
+    onError: () => setSaveError("Failed to save changes. Please try again."),
   });
 
   const { data: notes = [] } = useQuery({
@@ -284,7 +300,7 @@ function AdminEnquiriesPage() {
       </div>
 
       {/* Edit modal */}
-      <Dialog open={!!editItem} onOpenChange={(o) => !o && setEditItem(null)}>
+      <Dialog open={!!editItem} onOpenChange={(o) => { if (!o) { setEditItem(null); setSaveError(""); } }}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>Edit Enquiry</DialogTitle></DialogHeader>
           {editItem && (
@@ -317,10 +333,11 @@ function AdminEnquiriesPage() {
               </div>
             </div>
           )}
+          {saveError && <p className="text-sm text-red-600">{saveError}</p>}
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
             <button
-              onClick={() => editItem && saveEdit.mutate(editItem)}
+              onClick={() => { setSaveError(""); editItem && saveEdit.mutate(editItem); }}
               disabled={saveEdit.isPending}
               className="rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90 disabled:opacity-60"
             >

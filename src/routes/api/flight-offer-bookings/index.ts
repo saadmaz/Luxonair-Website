@@ -5,6 +5,7 @@ import { requireSection } from "@/server/auth";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { flightOfferBookingSchema } from "@/server/validate";
 import { sendFlightBookingAlert, sendFlightBookingConfirmation } from "@/server/email";
+import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
 
 export const APIRoute = createAPIFileRoute("/api/flight-offer-bookings")({
   GET: async ({ request }) => {
@@ -31,6 +32,10 @@ export const APIRoute = createAPIFileRoute("/api/flight-offer-bookings")({
   },
 
   POST: async ({ request }) => {
+    if (!checkRateLimit(`flight-offer-bookings:${getClientIp(request)}`, 5, 10 * 60 * 1000)) {
+      return rateLimitResponse(600);
+    }
+
     const raw = await request.json().catch(() => null);
     const parsed = flightOfferBookingSchema.safeParse(raw);
     if (!parsed.success) {

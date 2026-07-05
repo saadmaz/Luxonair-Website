@@ -32,45 +32,45 @@ export const Route = createFileRoute("/blog/$slug")({
   },
   head: ({ loaderData, params }) => {
     const p = loaderData?.post;
-    if (!p) return { meta: [{ title: "Article | Luxonair Travel Journal" }] };
+    if (!p) return { meta: [{ title: "Article | Luxeonair Travel Journal" }] };
     return {
       meta: [
-        { title: `${p.title} | Luxonair` },
+        { title: `${p.title} | Luxeonair` },
         { name: "description", content: p.excerpt },
         { name: "robots", content: "index, follow" },
         { property: "og:title", content: p.title },
         { property: "og:description", content: p.excerpt },
         { property: "og:image", content: p.heroImage },
         { property: "og:type", content: "article" },
-        { property: "og:url", content: `https://www.luxonair.co.uk/blog/${params.slug}` },
+        { property: "og:url", content: `https://www.luxeonair.co.uk/blog/${params.slug}` },
         { name: "twitter:title", content: p.title },
         { name: "twitter:description", content: p.excerpt },
         { name: "twitter:image", content: p.heroImage },
       ],
-      links: [{ rel: "canonical", href: `https://www.luxonair.co.uk/blog/${params.slug}` }],
+      links: [{ rel: "canonical", href: `https://www.luxeonair.co.uk/blog/${params.slug}` }],
       scripts: [{
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Article",
-          "@id": `https://www.luxonair.co.uk/blog/${params.slug}`,
+          "@id": `https://www.luxeonair.co.uk/blog/${params.slug}`,
           "headline": p.title,
           "description": p.excerpt,
           "image": p.heroImage,
           "author": {
             "@type": "Organization",
             "name": p.author,
-            "@id": "https://www.luxonair.co.uk/#organization"
+            "@id": "https://www.luxeonair.co.uk/#organization"
           },
           "publisher": {
             "@type": "Organization",
-            "name": "Luxonair",
-            "@id": "https://www.luxonair.co.uk/#organization",
-            "logo": { "@type": "ImageObject", "url": "https://www.luxonair.co.uk/Logo/main-logo.png" }
+            "name": "Luxeonair",
+            "@id": "https://www.luxeonair.co.uk/#organization",
+            "logo": { "@type": "ImageObject", "url": "https://www.luxeonair.co.uk/Logo/main-logo.png" }
           },
           "datePublished": p.date,
           "dateModified": p.date,
-          "mainEntityOfPage": { "@type": "WebPage", "@id": `https://www.luxonair.co.uk/blog/${params.slug}` },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": `https://www.luxeonair.co.uk/blog/${params.slug}` },
           "inLanguage": "en-GB",
           "keywords": p.category,
         }),

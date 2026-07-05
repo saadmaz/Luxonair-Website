@@ -53,6 +53,13 @@ export async function revokeAllSessions(email: string) {
     .where(and(eq(sessions.email, email), isNull(sessions.revokedAt)));
 }
 
+export async function revokeSession(sid: string) {
+  await db
+    .update(sessions)
+    .set({ revokedAt: new Date() })
+    .where(and(eq(sessions.id, sid), isNull(sessions.revokedAt)));
+}
+
 export function makeSessionCookie(token: string) {
   const maxAge = 7 * 24 * 60 * 60;
   return `lx_session=${token}; HttpOnly; Path=/; SameSite=Strict; Max-Age=${maxAge}${process.env.NODE_ENV === "production" ? "; Secure" : ""}`;

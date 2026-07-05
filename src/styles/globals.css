@@ -44,7 +44,7 @@
 :root {
   --radius: 0.5rem;
   /*
-   * Luxonair brand palette (all six colours, light mode)
+   * Luxeonair brand palette (all six colours, light mode)
    *   Deep Navy Blue   #042045  → --navy, --foreground
    *   Royal Navy Blue  #12355B  → --primary
    *   Turquoise Teal   #0F9CA4  → --teal, --ring
@@ -154,5 +154,17 @@
   &:focus {
     outline: none;
     box-shadow: 0 0 0 2px var(--ring);
+  }
+}
+
+/* Respect the user's OS-level motion preference: kill CSS animations/
+   transitions (ken-burns zoom, WhatsApp ping, etc). Framer Motion is handled
+   separately via <MotionConfig reducedMotion="user"> in __root.tsx. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

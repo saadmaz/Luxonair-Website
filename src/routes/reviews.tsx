@@ -77,7 +77,7 @@ function ReviewsPage() {
                 Real travellers. Unedited words.
               </h1>
               <p className="mt-4 max-w-xl text-sm text-navy-fg/60 leading-relaxed">
-                Every review below is from a Luxonair-booked trip — unedited, verified, and nothing fabricated.
+                Every review below is from a Luxeonair-booked trip — unedited, verified, and nothing fabricated.
               </p>
             </div>
 
@@ -102,7 +102,7 @@ function ReviewsPage() {
                 From {items.length} verified trips
               </div>
               <div className="mt-5 border-t border-navy-fg/10 pt-4 text-xs text-navy-fg/40">
-                Every review is from a real Luxonair-booked traveller — nothing fabricated.
+                Every review is from a real Luxeonair-booked traveller — nothing fabricated.
               </div>
             </motion.div>
           </div>

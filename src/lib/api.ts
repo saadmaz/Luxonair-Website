@@ -1,5 +1,16 @@
 // Lightweight typed fetch wrapper used by all client-side API calls.
-// Returns parsed JSON on 2xx, throws an Error with the server message on failure.
+// Returns parsed JSON on 2xx, throws an ApiError with the server message and
+// HTTP status on failure (status is used by the global query/mutation error
+// handler in router.tsx to redirect on 401 and skip toasting on 429, etc).
+
+export class ApiError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, {
@@ -15,7 +26,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     } catch {
       // ignore JSON parse failures
     }
-    throw new Error(message);
+    throw new ApiError(message, res.status);
   }
 
   // 204 No Content

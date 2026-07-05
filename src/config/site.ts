@@ -1,4 +1,4 @@
-// ─── Luxonair site configuration ─────────────────────────────────────────────
+// ─── Luxeonair site configuration ────────────────────────────────────────────
 // Single source of truth for all brand constants used across the app.
 // Empty strings are "disabled" sentinels — social icons hidden, accreditation
 // badges suppressed. Fill before go-live.

@@ -149,14 +149,14 @@ function ContactPage() {
             <div>
               <div className="overflow-hidden rounded-2xl border border-border bg-muted shadow-sm min-h-72">
                 <iframe
-                  title="Luxonair London office"
-                  src="https://www.openstreetmap.org/export/embed.html?bbox=-0.1421%2C51.5045%2C-0.1186%2C51.5189&amp;layer=mapnik"
+                  title="Luxeonair Bicester office"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=-1.1618%2C51.8948%2C-1.1383%2C51.9092&amp;layer=mapnik"
                   className="h-72 w-full"
                   loading="lazy"
                 />
               </div>
               <a
-                href="https://www.openstreetmap.org/?mlat=51.5117&mlon=-0.1304#map=15/51.5117/-0.1304"
+                href="https://www.openstreetmap.org/?mlat=51.9020&mlon=-1.1500#map=15/51.9020/-1.1500"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"

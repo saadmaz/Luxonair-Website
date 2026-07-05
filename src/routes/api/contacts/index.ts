@@ -5,6 +5,7 @@ import { requireSection } from "@/server/auth";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { contactSchema } from "@/server/validate";
 import { sendContactAlert, sendContactConfirmation } from "@/server/email";
+import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
 
 export const APIRoute = createAPIFileRoute("/api/contacts")({
   GET: async ({ request }) => {
@@ -22,6 +23,10 @@ export const APIRoute = createAPIFileRoute("/api/contacts")({
   },
 
   POST: async ({ request }) => {
+    if (!checkRateLimit(`contacts:${getClientIp(request)}`, 5, 10 * 60 * 1000)) {
+      return rateLimitResponse(600);
+    }
+
     const raw = await request.json().catch(() => null);
     const parsed = contactSchema.safeParse(raw);
     if (!parsed.success) {

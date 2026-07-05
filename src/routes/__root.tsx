@@ -13,7 +13,7 @@ import {
   ScriptOnce,
 } from "@tanstack/react-router";
 import { type ReactNode } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, MotionConfig } from "framer-motion";
 
 import * as Sentry from "@sentry/react";
 import appCss from "../styles/globals.css?url";
@@ -21,6 +21,8 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { StickyMobileCTA } from "@/components/layout/StickyMobileCTA";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
+import { Toaster } from "@/components/ui/sonner";
+import { SITE } from "@/config/site";
 
 function NotFoundComponent() {
   return (
@@ -62,7 +64,16 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  head: () => {
+    // Only assert a credential in structured data once a real membership
+    // number is configured — an unqualified accreditation claim is a
+    // regulatory/trust risk for a UK travel seller.
+    const credentials = [
+      SITE.accreditation.atol && { "@type": "EducationalOccupationalCredential", "name": "ATOL Protected", "identifier": SITE.accreditation.atol },
+      SITE.accreditation.iata && { "@type": "EducationalOccupationalCredential", "name": "IATA Accredited", "identifier": SITE.accreditation.iata },
+    ].filter(Boolean);
+
+    return {
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -145,10 +156,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
                 "Dubai holidays",
                 "ATOL protected travel"
               ],
-              "hasCredential": [
-                { "@type": "EducationalOccupationalCredential", "name": "ATOL Protected" },
-                { "@type": "EducationalOccupationalCredential", "name": "IATA Accredited" }
-              ]
+              "hasCredential": credentials
             },
             {
               "@type": "WebSite",
@@ -171,7 +179,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         }),
       },
     ],
-  }),
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -204,8 +213,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {/* "user" respects the OS-level prefers-reduced-motion setting for every
+          framer-motion animation in the app without touching each call site. */}
+      <MotionConfig reducedMotion="user">
       {isAdmin ? (
-        <Outlet />
+        <>
+          <Outlet />
+          <Toaster richColors position="top-right" />
+        </>
       ) : (
         <div className="flex min-h-dvh flex-col">
           <a
@@ -233,6 +248,7 @@ function RootComponent() {
           <WhatsAppFloat />
         </div>
       )}
+      </MotionConfig>
     </QueryClientProvider>
   );
 }

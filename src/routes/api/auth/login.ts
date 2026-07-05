@@ -4,9 +4,21 @@ import { eq } from "drizzle-orm";
 import { db, adminUsers } from "../../../../db/index";
 import { signToken, makeSessionCookie, createSession } from "@/server/auth";
 import { loginSchema } from "@/server/validate";
+import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
+
+// 10 attempts per 15 minutes per IP, tightened further per-username so a
+// distributed attacker can't just rotate source IPs against one account.
+const IP_LIMIT = 10;
+const USERNAME_LIMIT = 5;
+const WINDOW_MS = 15 * 60 * 1000;
 
 export const APIRoute = createAPIFileRoute("/api/auth/login")({
   POST: async ({ request }) => {
+    const ip = getClientIp(request);
+    if (!checkRateLimit(`login:ip:${ip}`, IP_LIMIT, WINDOW_MS)) {
+      return rateLimitResponse(WINDOW_MS / 1000);
+    }
+
     const raw = await request.json().catch(() => null);
     const parsed = loginSchema.safeParse(raw);
     if (!parsed.success) {
@@ -15,6 +27,10 @@ export const APIRoute = createAPIFileRoute("/api/auth/login")({
 
     const { username, password } = parsed.data;
     const normalUsername = username.trim().toLowerCase();
+
+    if (!checkRateLimit(`login:user:${normalUsername}`, USERNAME_LIMIT, WINDOW_MS)) {
+      return rateLimitResponse(WINDOW_MS / 1000);
+    }
 
     // ── Path 1: env-var credentials (no DB required) ─────────────────────────
     const envUsername = process.env.ADMIN_USERNAME?.trim().toLowerCase();

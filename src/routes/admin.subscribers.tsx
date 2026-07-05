@@ -167,7 +167,7 @@ function AdminSubscribersPage() {
               disabled={addSubscriber.isPending}
               className="rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90 disabled:opacity-60"
             >
-              {addSubscriber.isPending ? "Addingâ€¦" : "Add"}
+              {addSubscriber.isPending ? "Adding…" : "Add"}
             </button>
           </DialogFooter>
         </DialogContent>
@@ -185,7 +185,7 @@ function AdminSubscribersPage() {
               disabled={deleteSubscriber.isPending}
               className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
             >
-              {deleteSubscriber.isPending ? "Removingâ€¦" : "Remove"}
+              {deleteSubscriber.isPending ? "Removing…" : "Remove"}
             </button>
           </DialogFooter>
         </DialogContent>

@@ -33,6 +33,7 @@ import {
   ArrowRight,
   PlaneTakeoff,
   Images,
+  Ban,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -269,6 +270,13 @@ function AdminLayoutRoute() {
     navigate({ to: "/admin/login" });
   };
 
+  const handleLogoutAll = async () => {
+    if (!window.confirm("Sign out of all devices? Every active session for your account will be ended, including this one.")) return;
+    await fetch("/api/auth/logout-all", { method: "POST" });
+    queryClient.clear();
+    navigate({ to: "/admin/login" });
+  };
+
   const isSuperAdmin = me?.role === "superadmin";
   const mySections = me?.sections ?? [];
 
@@ -460,7 +468,19 @@ function AdminLayoutRoute() {
               <p className="truncate text-[10px] text-white/30">Luxeonair</p>
             </div>
             <button
+              onClick={handleLogoutAll}
+              aria-label="Sign out of all devices"
+              title="Sign out of all devices"
+              className={cn(
+                "flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-white/25 transition-colors hover:bg-white/8 hover:text-white/70",
+                collapsed && "lg:hidden",
+              )}
+            >
+              <Ban className="h-3.5 w-3.5" strokeWidth={1.75} />
+            </button>
+            <button
               onClick={handleLogout}
+              aria-label="Sign out"
               title="Sign out"
               className={cn(
                 "flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-white/25 transition-colors hover:bg-white/8 hover:text-white/70",

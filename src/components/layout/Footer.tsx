@@ -47,25 +47,33 @@ export function Footer() {
             ))}
           </div>
 
-          {/* Accreditation badges */}
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <a href="https://www.caa.co.uk/atol-protection/" target="_blank" rel="noopener noreferrer"
-              className="rounded-lg bg-white px-3 py-2 transition-opacity hover:opacity-80">
-              <img
-                src="/Logo/atol-logo.png"
-                alt="ATOL Protected"
-                className="h-8 w-auto"
-              />
-            </a>
-            <a href="https://www.iata.org" target="_blank" rel="noopener noreferrer"
-              className="rounded-lg bg-white px-3 py-2 transition-opacity hover:opacity-80">
-              <img
-                src="/Logo/iata-logo.png"
-                alt="IATA"
-                className="h-8 w-auto"
-              />
-            </a>
-          </div>
+          {/* Accreditation badges — only shown once real membership numbers are
+              set in SITE.accreditation; an unqualified badge with no number
+              behind it is a regulatory/trust risk for a UK travel seller. */}
+          {(SITE.accreditation.atol || SITE.accreditation.iata) && (
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              {SITE.accreditation.atol && (
+                <a href="https://www.caa.co.uk/atol-protection/" target="_blank" rel="noopener noreferrer"
+                  className="rounded-lg bg-white px-3 py-2 transition-opacity hover:opacity-80">
+                  <img
+                    src="/Logo/atol-logo.png"
+                    alt={`ATOL Protected — membership ${SITE.accreditation.atol}`}
+                    className="h-8 w-auto"
+                  />
+                </a>
+              )}
+              {SITE.accreditation.iata && (
+                <a href="https://www.iata.org" target="_blank" rel="noopener noreferrer"
+                  className="rounded-lg bg-white px-3 py-2 transition-opacity hover:opacity-80">
+                  <img
+                    src="/Logo/iata-logo.png"
+                    alt={`IATA — membership ${SITE.accreditation.iata}`}
+                    className="h-8 w-auto"
+                  />
+                </a>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Explore column */}

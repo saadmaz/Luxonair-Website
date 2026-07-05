@@ -82,7 +82,7 @@ export function TrustPillars() {
         >
           <span className="mb-4 inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.25em] text-gold">
             <span className="h-px w-7 bg-gold/50" />
-            Why Luxonair
+            Why Luxeonair
             <span className="h-px w-7 bg-gold/50" />
           </span>
           <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-[2.75rem] text-balance">

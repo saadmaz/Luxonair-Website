@@ -176,6 +176,17 @@ export const faqItemSchema = z.object({
 
 export const enquiryUpdateSchema = z.object({
   status: z.string().max(50).optional(),
+  name: z.string().min(2).max(100).optional(),
+  email: z.string().email().optional(),
+  phone: z.string().min(7).max(30).optional(),
+  destination: z.string().min(1).max(200).optional(),
+  departDate: z.string().max(10).optional(),
+  departWindow: z.string().max(100).optional(),
+  nights: z.number().int().min(1).max(365).optional(),
+  adults: z.number().int().min(1).max(20).optional(),
+  children: z.number().int().min(0).max(20).optional(),
+  infants: z.number().int().min(0).max(20).optional(),
+  budget: z.string().min(1).max(100).optional(),
 });
 
 const noteTypeSchema = z.enum(NOTE_TYPES).default("note");

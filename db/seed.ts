@@ -6,6 +6,8 @@
  *   npx tsx db/seed.ts
  */
 import { count } from "drizzle-orm";
+import { randomBytes } from "node:crypto";
+import { hash } from "bcryptjs";
 import {
   db,
   adminUsers,
@@ -446,12 +448,29 @@ async function seedHolidayTypes() {
 
 async function seedAdmin() {
   if (!(await isEmpty(adminUsers))) { console.log("admin_users: already seeded, skipping."); return; }
-  // Hash of "Luxonair2026!" — change password via phpMyAdmin after first login
-  await db.insert(adminUsers).values({
-    email: "admin@luxeonair.co.uk",
-    passwordHash: "$2b$12$c47qV6vS7xtEUoaBJ1SJF.622LyosDm6XoAvjzbUUXdYQ.ZWFoob.",
-  });
-  console.log("admin_users: seeded 1 row (password: Luxonair2026!)");
+
+  const email = process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase();
+  if (!email) {
+    console.log("admin_users: skipped — set SEED_ADMIN_EMAIL (and optionally SEED_ADMIN_PASSWORD) to seed a fallback DB admin account.");
+    console.log("             The ADMIN_USERNAME/ADMIN_PASSWORD_HASH env-based admin (see .env) already covers login without a DB row.");
+    return;
+  }
+
+  // No fixed default password: use SEED_ADMIN_PASSWORD if provided, otherwise
+  // generate a random one-time password that is only ever shown here, once.
+  const generated = !process.env.SEED_ADMIN_PASSWORD;
+  const password = process.env.SEED_ADMIN_PASSWORD ?? randomBytes(18).toString("base64url");
+  const passwordHash = await hash(password, 12);
+
+  await db.insert(adminUsers).values({ email, passwordHash });
+
+  if (generated) {
+    console.log(`admin_users: seeded 1 row for ${email}.`);
+    console.log(`             GENERATED PASSWORD (shown once, not stored anywhere): ${password}`);
+    console.log("             Log in immediately and rotate it — this will not be shown again.");
+  } else {
+    console.log(`admin_users: seeded 1 row for ${email} using SEED_ADMIN_PASSWORD.`);
+  }
 }
 
 // ─── Run ──────────────────────────────────────────────────────────────────────

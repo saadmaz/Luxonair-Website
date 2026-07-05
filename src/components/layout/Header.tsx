@@ -86,6 +86,7 @@ export function Header() {
 
             <NavLink to="/deals">Deals</NavLink>
 
+            <NavLink to="/flights">Flights</NavLink>
             <NavLink to="/flight-offers">Flight Offers</NavLink>
             <NavLink to="/blog">Blog</NavLink>
             <NavLink to="/contact">Contact us</NavLink>
@@ -161,6 +162,13 @@ export function Header() {
                 Deals
               </Link>
 
+              <Link
+                to="/flights"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted"
+              >
+                Flights
+              </Link>
               <Link
                 to="/flight-offers"
                 onClick={() => setOpen(false)}

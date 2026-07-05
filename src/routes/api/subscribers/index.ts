@@ -4,6 +4,7 @@ import { db, subscribers } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { subscriberSchema } from "@/server/validate";
+import { checkRateLimit, getClientIp, rateLimitResponse } from "@/server/rate-limit";
 
 export const APIRoute = createAPIFileRoute("/api/subscribers")({
   GET: async ({ request }) => {
@@ -21,6 +22,10 @@ export const APIRoute = createAPIFileRoute("/api/subscribers")({
   },
 
   POST: async ({ request }) => {
+    if (!checkRateLimit(`subscribers:${getClientIp(request)}`, 5, 10 * 60 * 1000)) {
+      return rateLimitResponse(600);
+    }
+
     const raw = await request.json().catch(() => null);
     const parsed = subscriberSchema.safeParse(raw);
     if (!parsed.success) {

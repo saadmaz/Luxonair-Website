@@ -70,7 +70,7 @@ export function SocialProof({ testimonials }: { testimonials: Testimonial[] }) {
               style={{ inset: `calc(50% - ${OUTER_R}px)` }}
             />
             <div
-              className="pointer-events-none absolute rounded-full border-[1.5px] border-foreground/[0.10]`"
+              className="pointer-events-none absolute rounded-full border-[1.5px] border-foreground/[0.10]"
               style={{ inset: `calc(50% - ${INNER_R}px)` }}
             />
 
