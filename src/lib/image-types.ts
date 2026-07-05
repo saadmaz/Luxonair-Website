@@ -14,7 +14,7 @@ export const IMAGE_MIME_TYPES = [
 
 export type ImageMimeType = (typeof IMAGE_MIME_TYPES)[number];
 
-export const MAX_IMAGE_BYTES = 10 * 1024 * 1024; // 10MB
+export const MAX_IMAGE_BYTES = 20 * 1024 * 1024; // 20MB
 
 // A quality floor, not a thumbnail limit — blocks placeholder/scraped-thumbnail
 // uploads while staying low enough not to reject small logos or icons.

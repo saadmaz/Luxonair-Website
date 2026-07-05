@@ -21,8 +21,15 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   if (!res.ok) {
     let message = `${res.status} ${res.statusText}`;
     try {
-      const body = (await res.json()) as { error?: string };
+      const body = (await res.json()) as { error?: string; issues?: Record<string, string[] | undefined> };
       if (body.error) message = body.error;
+      if (body.issues) {
+        const detail = Object.entries(body.issues)
+          .filter((entry): entry is [string, string[]] => Array.isArray(entry[1]) && entry[1].length > 0)
+          .map(([field, msgs]) => `${field}: ${msgs.join(", ")}`)
+          .join("; ");
+        if (detail) message = `${message} — ${detail}`;
+      }
     } catch {
       // ignore JSON parse failures
     }
