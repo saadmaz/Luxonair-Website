@@ -155,7 +155,7 @@ function FlightOffersPage() {
                       </div>
                     </div>
 
-                    <div className="relative -mx-4 my-3.5">
+                    <div className="relative -mx-4 my-2.5">
                       <div className="border-t border-dashed border-border" />
                       <span className="absolute left-0 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background" />
                       <span className="absolute right-0 top-1/2 h-3.5 w-3.5 -translate-y-1/2 translate-x-1/2 rounded-full bg-background" />
@@ -165,7 +165,7 @@ function FlightOffersPage() {
                       <p className="truncate pr-2 text-[11px] font-medium text-muted-foreground">
                         {offer.airlineName}
                       </p>
-                      <div className="shrink-0 text-right">
+                      <div className="shrink-0 text-right leading-tight">
                         <div className="text-[10px] text-muted-foreground">per person</div>
                         <div className="font-display text-lg font-bold text-foreground">
                           £{offer.price.toLocaleString()}
@@ -175,7 +175,7 @@ function FlightOffersPage() {
 
                     <button
                       onClick={() => setSelected(offer)}
-                      className="mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-linear-to-b from-gold to-gold/90 px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-gold-foreground shadow-sm transition-all hover:shadow-md active:scale-98"
+                      className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-linear-to-b from-gold to-gold/90 px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-gold-foreground shadow-sm transition-all hover:shadow-md active:scale-98"
                     >
                       Book Now
                       <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
