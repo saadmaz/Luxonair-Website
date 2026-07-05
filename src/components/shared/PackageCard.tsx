@@ -54,10 +54,11 @@ export function PackageCard({ pkg }: { pkg: HolidayPackage }) {
             </Link>
             <div className="text-right">
               <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                per person
+                Starting from
               </p>
               <p className="text-xl font-bold text-foreground">
                 £{pkg.fromPrice.toLocaleString("en-GB", { minimumFractionDigits: 2 })}
+                <span className="text-xs font-medium text-muted-foreground">/PP</span>
               </p>
             </div>
           </div>

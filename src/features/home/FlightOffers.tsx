@@ -133,9 +133,10 @@ export function FlightOffers({ offers }: { offers: FlightOffer[] }) {
                         {offer.airlineName}
                       </p>
                       <div className="shrink-0 text-right leading-tight">
-                        <p className="text-[10px] text-muted-foreground">per person</p>
+                        <p className="text-[10px] text-muted-foreground">Starting from</p>
                         <p className="font-display text-lg font-bold text-foreground">
                           £{offer.price.toLocaleString()}
+                          <span className="text-xs font-medium text-muted-foreground">/PP</span>
                         </p>
                       </div>
                     </div>

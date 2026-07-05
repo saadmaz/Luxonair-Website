@@ -166,9 +166,10 @@ function FlightOffersPage() {
                         {offer.airlineName}
                       </p>
                       <div className="shrink-0 text-right leading-tight">
-                        <div className="text-[10px] text-muted-foreground">per person</div>
+                        <div className="text-[10px] text-muted-foreground">Starting from</div>
                         <div className="font-display text-lg font-bold text-foreground">
                           £{offer.price.toLocaleString()}
+                          <span className="text-xs font-medium text-muted-foreground">/PP</span>
                         </div>
                       </div>
                     </div>

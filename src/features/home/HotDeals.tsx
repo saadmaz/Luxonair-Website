@@ -102,17 +102,13 @@ export function HotDeals({ deals }: { deals: Deal[] }) {
                     <div className="mt-4 w-fit rounded-xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-sm">
                       <div className="flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-widest text-white/55">
                         <span className="h-px w-4 bg-white/30" />
-                        Total Price
+                        Starting From
                         <span className="h-px w-4 bg-white/30" />
                       </div>
                       <p className="font-display text-2xl font-extrabold text-white">
                         £{deal.fromPrice.toLocaleString()}
+                        <span className="text-sm font-semibold text-white/70">/PP</span>
                       </p>
-                      <div className="flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-widest text-white/55">
-                        <span className="h-px w-4 bg-white/30" />
-                        Per Person Only
-                        <span className="h-px w-4 bg-white/30" />
-                      </div>
                     </div>
 
                     <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-white/65 transition-colors group-hover:text-white">

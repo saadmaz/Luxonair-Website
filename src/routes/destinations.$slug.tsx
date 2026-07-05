@@ -223,7 +223,11 @@ function DestinationDetail() {
                 >
                   <img src={o.heroImage} alt={o.name} loading="lazy" className="aspect-[4/3] w-full rounded-lg object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
                   <div className="mt-3 font-medium">{o.name}</div>
-                  <div className="text-sm text-muted-foreground">From £{o.fromPrice.toLocaleString()} pp</div>
+                  <div className="mt-1 text-[10px] text-muted-foreground">Starting from</div>
+                  <div className="text-sm font-semibold text-foreground">
+                    £{o.fromPrice.toLocaleString()}
+                    <span className="text-xs font-normal text-muted-foreground">/PP</span>
+                  </div>
                 </Link>
               </motion.div>
             ))}

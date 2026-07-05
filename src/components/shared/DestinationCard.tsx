@@ -25,11 +25,15 @@ export function DestinationCard({ d }: { d: Destination }) {
         </div>
         <h3 className="mt-2 font-display text-xl font-semibold leading-tight">{d.name}</h3>
         <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{d.tagline}</p>
-        <div className="mt-4 flex items-center justify-between text-sm">
+        <div className="mt-4 flex items-end justify-between text-sm">
           <span className="text-muted-foreground">{d.durationNights} nights</span>
-          <span className="font-semibold text-teal">
-            From £{d.fromPrice.toLocaleString()} <span className="text-xs font-normal text-muted-foreground">pp</span>
-          </span>
+          <div className="text-right leading-tight">
+            <p className="text-[10px] text-muted-foreground">Starting from</p>
+            <p className="font-semibold text-teal">
+              £{d.fromPrice.toLocaleString()}
+              <span className="text-xs font-normal text-muted-foreground">/PP</span>
+            </p>
+          </div>
         </div>
       </div>
     </Link>

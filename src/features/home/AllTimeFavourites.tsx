@@ -130,9 +130,10 @@ export function AllTimeFavourites({ deals, holidayTypes }: { deals: Deal[]; holi
                     </a>
                     {card.price !== undefined && (
                       <div className="text-right">
-                        <p className="text-[10px] text-muted-foreground">per person</p>
+                        <p className="text-[10px] text-muted-foreground">Starting from</p>
                         <p className="font-display text-lg font-bold text-foreground">
                           £{card.price.toLocaleString()}
+                          <span className="text-xs font-medium text-muted-foreground">/PP</span>
                         </p>
                       </div>
                     )}

@@ -95,10 +95,11 @@ function DealsPage() {
 
                 <div className="mt-5 flex items-center justify-between gap-3">
                   <div>
-                    <div className="text-xs text-muted-foreground">From, per person</div>
+                    <div className="text-xs text-muted-foreground">Starting from</div>
                     <div className="flex items-baseline gap-2">
                       <span className="font-display text-2xl font-semibold text-teal">
                         £{d.fromPrice.toLocaleString()}
+                        <span className="text-xs font-normal text-muted-foreground">/PP</span>
                       </span>
                       {d.oldPrice && (
                         <span className="text-sm text-muted-foreground line-through">
