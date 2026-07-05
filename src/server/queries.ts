@@ -14,7 +14,8 @@ import {
   faqGroups,
   faqItems,
   holidayTypes,
-  enquiries,
+  enquiryPackages,
+  enquiryFlights,
   contacts,
   subscribers,
 } from "../../db/index";
@@ -97,18 +98,27 @@ export const getHolidayTypeBySlug = createServerFn({ method: "GET" })
 // ─── Dashboard stats ──────────────────────────────────────────────────────────
 
 export const getDashboardStats = createServerFn({ method: "GET" }).handler(async () => {
-  const [[enquiryTotal], [enquiryNew], [contactTotal], [contactUnread], [subscriberTotal]] =
-    await Promise.all([
-      db.select({ n: count() }).from(enquiries),
-      db.select({ n: count() }).from(enquiries).where(eq(enquiries.status, "new")),
-      db.select({ n: count() }).from(contacts),
-      db.select({ n: count() }).from(contacts).where(eq(contacts.read, false)),
-      db.select({ n: count() }).from(subscribers),
-    ]);
+  const [
+    [packageTotal],
+    [packageNew],
+    [flightTotal],
+    [flightNew],
+    [contactTotal],
+    [contactUnread],
+    [subscriberTotal],
+  ] = await Promise.all([
+    db.select({ n: count() }).from(enquiryPackages),
+    db.select({ n: count() }).from(enquiryPackages).where(eq(enquiryPackages.status, "new")),
+    db.select({ n: count() }).from(enquiryFlights),
+    db.select({ n: count() }).from(enquiryFlights).where(eq(enquiryFlights.status, "new")),
+    db.select({ n: count() }).from(contacts),
+    db.select({ n: count() }).from(contacts).where(eq(contacts.read, false)),
+    db.select({ n: count() }).from(subscribers),
+  ]);
 
   return {
-    enquiries: Number(enquiryTotal?.n ?? 0),
-    newEnquiries: Number(enquiryNew?.n ?? 0),
+    enquiries: Number(packageTotal?.n ?? 0) + Number(flightTotal?.n ?? 0),
+    newEnquiries: Number(packageNew?.n ?? 0) + Number(flightNew?.n ?? 0),
     contacts: Number(contactTotal?.n ?? 0),
     unreadContacts: Number(contactUnread?.n ?? 0),
     subscribers: Number(subscriberTotal?.n ?? 0),

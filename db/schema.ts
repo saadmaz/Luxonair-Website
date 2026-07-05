@@ -11,11 +11,14 @@ import {
 } from "drizzle-orm/mysql-core";
 import type { JSONContent } from "@tiptap/react";
 
-export const enquiries = mysqlTable(
-  "enquiries",
+// Two fully separate enquiry tables — a package enquiry and a flight enquiry
+// share almost no required fields in practice (see PackageQuoteForm vs
+// FlightQuoteForm), so keeping them as distinct tables means every column is
+// meaningful for its row instead of being null half the time.
+export const enquiryPackages = mysqlTable(
+  "enquiry_packages",
   {
     id: int("id").autoincrement().primaryKey(),
-    quoteType: mysqlEnum("quote_type", ["package", "flight"]).notNull().default("package"),
     name: text("name").notNull(),
     email: text("email").notNull(),
     phone: text("phone").notNull(),
@@ -27,29 +30,55 @@ export const enquiries = mysqlTable(
     flexibility: text("flexibility"),
     departDate: text("depart_date"),
     returnDate: text("return_date"),
-    // Package-only: length of stay. Null for flight-only enquiries.
-    nights: int("nights"),
-    // Required for flight quotes; only present on package quotes when flightsIncluded is true.
+    nights: int("nights").notNull(),
+    budget: text("budget").notNull(),
+    hotelRating: text("hotel_rating"),
+    boardBasis: text("board_basis"),
+    flightsIncluded: boolean("flights_included").notNull().default(true),
+    // Only set when flightsIncluded is true.
     departAirport: text("depart_airport"),
     cabinClass: text("cabin_class"),
-    directOnly: text("direct_only"),
-    preferredAirlines: text("preferred_airlines"),
     adults: int("adults").notNull(),
     children: int("children").notNull().default(0),
     infants: int("infants").notNull().default(0),
-    budget: text("budget").notNull(),
-    // Package-only fields
-    hotelRating: text("hotel_rating"),
-    boardBasis: text("board_basis"),
-    flightsIncluded: boolean("flights_included").default(true),
     notes: text("notes"),
     status: text("status").notNull().default("new"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [
-    index("enquiries_status_idx").on(t.status),
-    index("enquiries_created_at_idx").on(t.createdAt),
-    index("enquiries_quote_type_idx").on(t.quoteType),
+    index("enquiry_packages_status_idx").on(t.status),
+    index("enquiry_packages_created_at_idx").on(t.createdAt),
+  ],
+);
+
+export const enquiryFlights = mysqlTable(
+  "enquiry_flights",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+    phone: text("phone").notNull(),
+    departAirport: text("depart_airport").notNull(),
+    destination: text("destination").notNull(),
+    tripType: varchar("trip_type", { length: 20 }).notNull(),
+    dateMode: text("date_mode").notNull(),
+    departWindow: text("depart_window"),
+    departDate: text("depart_date"),
+    returnDate: text("return_date"),
+    adults: int("adults").notNull(),
+    children: int("children").notNull().default(0),
+    infants: int("infants").notNull().default(0),
+    cabinClass: text("cabin_class").notNull(),
+    directOnly: text("direct_only"),
+    preferredAirlines: text("preferred_airlines"),
+    budget: text("budget").notNull(),
+    notes: text("notes"),
+    status: text("status").notNull().default("new"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("enquiry_flights_status_idx").on(t.status),
+    index("enquiry_flights_created_at_idx").on(t.createdAt),
   ],
 );
 
@@ -78,7 +107,8 @@ export const subscribers = mysqlTable(
   (t) => [index("subscribers_created_at_idx").on(t.createdAt)],
 );
 
-export type Enquiry = typeof enquiries.$inferSelect;
+export type EnquiryPackage = typeof enquiryPackages.$inferSelect;
+export type EnquiryFlight = typeof enquiryFlights.$inferSelect;
 export type Contact = typeof contacts.$inferSelect;
 export type Subscriber = typeof subscribers.$inferSelect;
 
@@ -300,20 +330,36 @@ export const adminUsers = mysqlTable("admin_users", {
 // export from this file is a mysqlTable, so any non-table export crashes it.
 const NOTE_TYPE_VALUES = ["note", "call", "follow_up", "email"] as const;
 
-export const enquiryNotes = mysqlTable(
-  "enquiry_notes",
+export const enquiryPackageNotes = mysqlTable(
+  "enquiry_package_notes",
   {
     id: int("id").autoincrement().primaryKey(),
     enquiryId: int("enquiry_id")
       .notNull()
-      .references(() => enquiries.id, { onDelete: "cascade" }),
+      .references(() => enquiryPackages.id, { onDelete: "cascade" }),
     body: text("body").notNull(),
     type: mysqlEnum("type", NOTE_TYPE_VALUES).notNull().default("note"),
     authorEmail: varchar("author_email", { length: 255 }).notNull(),
     authorName: varchar("author_name", { length: 100 }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (t) => [index("enquiry_notes_enquiry_id_idx").on(t.enquiryId)],
+  (t) => [index("enquiry_package_notes_enquiry_id_idx").on(t.enquiryId)],
+);
+
+export const enquiryFlightNotes = mysqlTable(
+  "enquiry_flight_notes",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    enquiryId: int("enquiry_id")
+      .notNull()
+      .references(() => enquiryFlights.id, { onDelete: "cascade" }),
+    body: text("body").notNull(),
+    type: mysqlEnum("type", NOTE_TYPE_VALUES).notNull().default("note"),
+    authorEmail: varchar("author_email", { length: 255 }).notNull(),
+    authorName: varchar("author_name", { length: 100 }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("enquiry_flight_notes_enquiry_id_idx").on(t.enquiryId)],
 );
 
 export const contactNotes = mysqlTable(
@@ -361,5 +407,6 @@ export type AdminUser = typeof adminUsers.$inferSelect;
 export type FlightOffer = typeof flightOffers.$inferSelect;
 export type FlightOfferBooking = typeof flightOfferBookings.$inferSelect;
 export type AdminAction = typeof adminActions.$inferSelect;
-export type EnquiryNote = typeof enquiryNotes.$inferSelect;
+export type EnquiryPackageNote = typeof enquiryPackageNotes.$inferSelect;
+export type EnquiryFlightNote = typeof enquiryFlightNotes.$inferSelect;
 export type ContactNote = typeof contactNotes.$inferSelect;

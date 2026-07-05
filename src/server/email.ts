@@ -9,33 +9,7 @@ function client() {
 const from = () => process.env.RESEND_FROM ?? "Luxeonair <noreply@luxeonair.co.uk>";
 const to = () => process.env.RESEND_TO ?? process.env.ADMIN_EMAIL ?? "";
 
-// ─── Enquiry alert ────────────────────────────────────────────────────────────
-
-export interface EnquiryPayload {
-  quoteType: "package" | "flight";
-  name: string;
-  email: string;
-  phone: string;
-  destination: string;
-  tripType: string;
-  dateMode: string;
-  departWindow?: string | null;
-  departDate?: string | null;
-  returnDate?: string | null;
-  nights?: number | null;
-  adults: number;
-  children: number;
-  infants: number;
-  cabinClass?: string | null;
-  departAirport?: string | null;
-  directOnly?: string | null;
-  preferredAirlines?: string | null;
-  budget: string;
-  hotelRating?: string | null;
-  boardBasis?: string | null;
-  flightsIncluded?: boolean | null;
-  notes?: string | null;
-}
+// ─── Shared row-table helper ──────────────────────────────────────────────────
 
 // Renders only rows with a value, so package/flight enquiries never show empty cells
 // for fields that don't apply to that quote type.
@@ -49,7 +23,36 @@ function rowsHtml(rows: (readonly [string, string | number | null | undefined])[
     .join("");
 }
 
-export async function sendEnquiryAlert(d: EnquiryPayload) {
+function travellersLabel(adults: number, children: number, infants: number): string {
+  return `${adults} adult${adults !== 1 ? "s" : ""}${children ? ` · ${children} child${children !== 1 ? "ren" : ""}` : ""}${infants ? ` · ${infants} infant${infants !== 1 ? "s" : ""}` : ""}`;
+}
+
+// ─── Package enquiry alert ─────────────────────────────────────────────────────
+
+export interface PackageEnquiryPayload {
+  name: string;
+  email: string;
+  phone: string;
+  destination: string;
+  tripType: string;
+  dateMode: string;
+  departWindow?: string | null;
+  departDate?: string | null;
+  returnDate?: string | null;
+  nights: number;
+  adults: number;
+  children: number;
+  infants: number;
+  budget: string;
+  hotelRating?: string | null;
+  boardBasis?: string | null;
+  flightsIncluded?: boolean | null;
+  departAirport?: string | null;
+  cabinClass?: string | null;
+  notes?: string | null;
+}
+
+export async function sendPackageEnquiryAlert(d: PackageEnquiryPayload) {
   const recipient = to();
   if (!recipient) return;
 
@@ -57,37 +60,21 @@ export async function sendEnquiryAlert(d: EnquiryPayload) {
     d.dateMode === "specific"
       ? `${d.departDate ?? "?"}${d.returnDate ? ` → ${d.returnDate}` : ""}`
       : (d.departWindow ?? "Flexible");
-  const travellers = `${d.adults} adult${d.adults !== 1 ? "s" : ""}${d.children ? ` · ${d.children} child${d.children !== 1 ? "ren" : ""}` : ""}${d.infants ? ` · ${d.infants} infant${d.infants !== 1 ? "s" : ""}` : ""}`;
 
-  const rows: (readonly [string, string | number | null | undefined])[] =
-    d.quoteType === "flight"
-      ? [
-          ["Name", esc(d.name)],
-          ["Email", `<a href="mailto:${esc(d.email)}" style="color:#0066cc">${esc(d.email)}</a>`],
-          ["Phone", `<a href="tel:${esc(d.phone)}" style="color:#0066cc">${esc(d.phone)}</a>`],
-          ["Route", `${esc(d.departAirport ?? "?")} → ${esc(d.destination)} (${esc(d.tripType)})`],
-          ["Dates", `${esc(dateInfo)}`],
-          ["Travellers", travellers],
-          ["Cabin class", d.cabinClass ? esc(d.cabinClass) : null],
-          ["Routing preference", d.directOnly ? esc(d.directOnly) : null],
-          ["Preferred airlines", d.preferredAirlines ? esc(d.preferredAirlines) : null],
-          ["Budget", esc(d.budget)],
-          ["Notes", d.notes ? esc(d.notes) : null],
-        ]
-      : [
-          ["Name", esc(d.name)],
-          ["Email", `<a href="mailto:${esc(d.email)}" style="color:#0066cc">${esc(d.email)}</a>`],
-          ["Phone", `<a href="tel:${esc(d.phone)}" style="color:#0066cc">${esc(d.phone)}</a>`],
-          ["Destination", esc(d.destination)],
-          ["Trip type", esc(d.tripType)],
-          ["Dates", `${esc(dateInfo)}${d.nights ? ` · ${d.nights} nights` : ""}`],
-          ["Travellers", travellers],
-          ["Hotel rating", d.hotelRating ? esc(d.hotelRating) : null],
-          ["Board basis", d.boardBasis ? esc(d.boardBasis) : null],
-          ["Flights included", d.flightsIncluded ? `Yes — from ${esc(d.departAirport ?? "?")}${d.cabinClass ? `, ${esc(d.cabinClass)}` : ""}` : "No"],
-          ["Budget", esc(d.budget)],
-          ["Notes", d.notes ? esc(d.notes) : null],
-        ];
+  const rows: (readonly [string, string | number | null | undefined])[] = [
+    ["Name", esc(d.name)],
+    ["Email", `<a href="mailto:${esc(d.email)}" style="color:#0066cc">${esc(d.email)}</a>`],
+    ["Phone", `<a href="tel:${esc(d.phone)}" style="color:#0066cc">${esc(d.phone)}</a>`],
+    ["Destination", esc(d.destination)],
+    ["Trip type", esc(d.tripType)],
+    ["Dates", `${esc(dateInfo)} · ${d.nights} nights`],
+    ["Travellers", travellersLabel(d.adults, d.children, d.infants)],
+    ["Hotel rating", d.hotelRating ? esc(d.hotelRating) : null],
+    ["Board basis", d.boardBasis ? esc(d.boardBasis) : null],
+    ["Flights included", d.flightsIncluded ? `Yes — from ${esc(d.departAirport ?? "?")}${d.cabinClass ? `, ${esc(d.cabinClass)}` : ""}` : "No"],
+    ["Budget", esc(d.budget)],
+    ["Notes", d.notes ? esc(d.notes) : null],
+  ];
 
   const html = `
 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a2e">
@@ -95,7 +82,7 @@ export async function sendEnquiryAlert(d: EnquiryPayload) {
     <img src="https://www.luxeonair.co.uk/Logo/main-logo.png" alt="Luxeonair" height="28" style="opacity:.9"/>
   </div>
   <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:24px">
-    <h2 style="margin:0 0 4px;font-size:18px;color:#031e3e">New ${d.quoteType === "flight" ? "flight" : "holiday package"} enquiry</h2>
+    <h2 style="margin:0 0 4px;font-size:18px;color:#031e3e">New holiday package enquiry</h2>
     <p style="margin:0 0 20px;color:#6b7280;font-size:13px">Received just now — rapid response needed.</p>
 
     <table style="width:100%;border-collapse:collapse;font-size:14px">
@@ -103,7 +90,7 @@ export async function sendEnquiryAlert(d: EnquiryPayload) {
     </table>
 
     <div style="margin-top:24px">
-      <a href="https://www.luxeonair.co.uk/admin/enquiries"
+      <a href="https://www.luxeonair.co.uk/admin/enquiry-packages"
          style="display:inline-block;background:#031e3e;color:#fff;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:14px;font-weight:600">
         View in admin →
       </a>
@@ -115,14 +102,12 @@ export async function sendEnquiryAlert(d: EnquiryPayload) {
   await client().emails.send({
     from: from(),
     to: recipient,
-    subject: `New ${d.quoteType} enquiry: ${d.name} — ${d.destination}`,
+    subject: `New package enquiry: ${d.name} — ${d.destination}`,
     html,
   });
 }
 
-// ─── Enquiry confirmation (system → customer) ──────────────────────────────────
-
-export async function sendEnquiryConfirmation(d: Pick<EnquiryPayload, "name" | "email" | "destination">) {
+export async function sendPackageEnquiryConfirmation(d: Pick<PackageEnquiryPayload, "name" | "email" | "destination">) {
   const html = `
 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a2e">
   <div style="background:#031e3e;padding:20px 24px;border-radius:8px 8px 0 0">
@@ -142,6 +127,107 @@ export async function sendEnquiryConfirmation(d: Pick<EnquiryPayload, "name" | "
     from: from(),
     to: d.email,
     subject: "We've got your enquiry — Luxeonair",
+    html,
+  });
+}
+
+// ─── Flight enquiry alert ──────────────────────────────────────────────────────
+
+export interface FlightEnquiryPayload {
+  name: string;
+  email: string;
+  phone: string;
+  departAirport: string;
+  destination: string;
+  tripType: string;
+  dateMode: string;
+  departWindow?: string | null;
+  departDate?: string | null;
+  returnDate?: string | null;
+  adults: number;
+  children: number;
+  infants: number;
+  cabinClass: string;
+  directOnly?: string | null;
+  preferredAirlines?: string | null;
+  budget: string;
+  notes?: string | null;
+}
+
+export async function sendFlightEnquiryAlert(d: FlightEnquiryPayload) {
+  const recipient = to();
+  if (!recipient) return;
+
+  const dateInfo =
+    d.dateMode === "specific"
+      ? `${d.departDate ?? "?"}${d.returnDate ? ` → ${d.returnDate}` : ""}`
+      : (d.departWindow ?? "Flexible");
+
+  const rows: (readonly [string, string | number | null | undefined])[] = [
+    ["Name", esc(d.name)],
+    ["Email", `<a href="mailto:${esc(d.email)}" style="color:#0066cc">${esc(d.email)}</a>`],
+    ["Phone", `<a href="tel:${esc(d.phone)}" style="color:#0066cc">${esc(d.phone)}</a>`],
+    ["Route", `${esc(d.departAirport)} → ${esc(d.destination)} (${esc(d.tripType)})`],
+    ["Dates", esc(dateInfo)],
+    ["Travellers", travellersLabel(d.adults, d.children, d.infants)],
+    ["Cabin class", esc(d.cabinClass)],
+    ["Routing preference", d.directOnly ? esc(d.directOnly) : null],
+    ["Preferred airlines", d.preferredAirlines ? esc(d.preferredAirlines) : null],
+    ["Budget", esc(d.budget)],
+    ["Notes", d.notes ? esc(d.notes) : null],
+  ];
+
+  const html = `
+<div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a2e">
+  <div style="background:#031e3e;padding:20px 24px;border-radius:8px 8px 0 0">
+    <img src="https://www.luxeonair.co.uk/Logo/main-logo.png" alt="Luxeonair" height="28" style="opacity:.9"/>
+  </div>
+  <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:24px">
+    <h2 style="margin:0 0 4px;font-size:18px;color:#031e3e">New flight enquiry</h2>
+    <p style="margin:0 0 20px;color:#6b7280;font-size:13px">Received just now — rapid response needed.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:14px">
+      ${rowsHtml(rows)}
+    </table>
+
+    <div style="margin-top:24px">
+      <a href="https://www.luxeonair.co.uk/admin/enquiry-flights"
+         style="display:inline-block;background:#031e3e;color:#fff;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:14px;font-weight:600">
+        View in admin →
+      </a>
+    </div>
+  </div>
+  <p style="margin:16px 0 0;font-size:11px;color:#9ca3af;text-align:center">Luxeonair · luxeonair.co.uk</p>
+</div>`;
+
+  await client().emails.send({
+    from: from(),
+    to: recipient,
+    subject: `New flight enquiry: ${d.name} — ${d.departAirport} → ${d.destination}`,
+    html,
+  });
+}
+
+export async function sendFlightEnquiryConfirmation(d: Pick<FlightEnquiryPayload, "name" | "email" | "destination">) {
+  const html = `
+<div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a2e">
+  <div style="background:#031e3e;padding:20px 24px;border-radius:8px 8px 0 0">
+    <img src="https://www.luxeonair.co.uk/Logo/main-logo.png" alt="Luxeonair" height="28" style="opacity:.9"/>
+  </div>
+  <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:24px">
+    <h2 style="margin:0 0 4px;font-size:18px;color:#031e3e">We've got your flight enquiry</h2>
+    <p style="margin:0 0 16px">Hi ${esc(d.name.split(" ")[0] || d.name)},</p>
+    <p style="margin:0 0 16px;line-height:1.6">Thanks for enquiring about a flight to ${esc(d.destination)}. A named consultant is on it now and will be in touch with a rapid response by email or phone.</p>
+    <p style="margin:0;line-height:1.6">In the meantime, if anything changes or you'd like to add details, just reply to this email.</p>
+    <p style="margin:24px 0 0">Best regards,<br/>The Luxeonair team</p>
+  </div>
+  <p style="margin:16px 0 0;font-size:11px;color:#9ca3af;text-align:center">Luxeonair · luxeonair.co.uk</p>
+</div>`;
+
+  await client().emails.send({
+    from: from(),
+    to: d.email,
+    subject: "We've got your flight enquiry — Luxeonair",
     html,
   });
 }
