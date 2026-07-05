@@ -16,20 +16,25 @@ export const Route = createFileRoute("/admin/enquiries")({
 });
 
 type Status = "New" | "In Progress" | "Responded";
+type QuoteType = "package" | "flight";
 
 type Enquiry = {
-  id: number; name: string; email: string; phone: string;
+  id: number; quoteType: QuoteType; name: string; email: string; phone: string;
   destination: string; region: string; tripType: string;
-  travelDate: string; dateMode: string; nights: number; adults: number; children: number; infants: number;
+  travelDate: string; dateMode: string; nights: number | null; adults: number; children: number; infants: number;
   budget: string; status: Status; received: string; notes: string;
+  hotelRating: string; boardBasis: string; flightsIncluded: boolean;
+  cabinClass: string; departAirport: string; directOnly: string; preferredAirlines: string;
 };
 
 type DbEnquiry = {
-  id: number; name: string; email: string; phone: string;
+  id: number; quoteType: QuoteType; name: string; email: string; phone: string;
   destination: string; region: string | null; tripType: string;
   dateMode: string; departWindow: string | null; departDate: string | null;
-  nights: number; adults: number; children: number; infants: number;
+  nights: number | null; adults: number; children: number; infants: number;
   budget: string; status: string; notes: string | null; createdAt: string;
+  hotelRating: string | null; boardBasis: string | null; flightsIncluded: boolean | null;
+  cabinClass: string | null; departAirport: string | null; directOnly: string | null; preferredAirlines: string | null;
 };
 
 function dbStatusToUI(s: string): Status {
@@ -47,6 +52,7 @@ function uiStatusToDb(s: Status): string {
 function toUIEnquiry(row: DbEnquiry): Enquiry {
   return {
     id: row.id,
+    quoteType: row.quoteType,
     name: row.name,
     email: row.email,
     phone: row.phone,
@@ -65,7 +71,28 @@ function toUIEnquiry(row: DbEnquiry): Enquiry {
       day: "numeric", month: "short", year: "numeric",
     }),
     notes: row.notes ?? "",
+    hotelRating: row.hotelRating ?? "",
+    boardBasis: row.boardBasis ?? "",
+    flightsIncluded: row.flightsIncluded ?? false,
+    cabinClass: row.cabinClass ?? "",
+    departAirport: row.departAirport ?? "",
+    directOnly: row.directOnly ?? "",
+    preferredAirlines: row.preferredAirlines ?? "",
   };
+}
+
+const typeConfig: Record<QuoteType, { label: string; className: string }> = {
+  package: { label: "Package", className: "bg-violet-50 text-violet-700 ring-violet-200" },
+  flight: { label: "Flight", className: "bg-sky-50 text-sky-700 ring-sky-200" },
+};
+
+function TypeBadge({ type }: { type: QuoteType }) {
+  const { label, className } = typeConfig[type];
+  return (
+    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1", className)}>
+      {label}
+    </span>
+  );
 }
 
 const statusConfig: Record<Status, { className: string; icon: typeof Circle }> = {
@@ -89,6 +116,7 @@ const labelCls = "block text-sm font-medium text-gray-700 mb-1";
 function AdminEnquiriesPage() {
   const qc = useQueryClient();
   const [filter, setFilter] = useState<Status | "All">("All");
+  const [typeFilter, setTypeFilter] = useState<QuoteType | "All">("All");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [editItem, setEditItem] = useState<Enquiry | null>(null);
   const [saveError, setSaveError] = useState("");
@@ -120,11 +148,14 @@ function AdminEnquiriesPage() {
         // (fixed dates) or departWindow (flexible dates) — write back to
         // whichever one this enquiry actually used.
         ...(e.dateMode === "specific" ? { departDate: e.travelDate } : { departWindow: e.travelDate }),
-        nights: e.nights,
+        ...(e.nights !== null ? { nights: e.nights } : {}),
         adults: e.adults,
         children: e.children,
         infants: e.infants,
         budget: e.budget,
+        ...(e.quoteType === "package"
+          ? { hotelRating: e.hotelRating, boardBasis: e.boardBasis, flightsIncluded: e.flightsIncluded }
+          : { cabinClass: e.cabinClass, departAirport: e.departAirport, directOnly: e.directOnly, preferredAirlines: e.preferredAirlines }),
       }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["enquiries"] }); setEditItem(null); },
     onError: () => setSaveError("Failed to save changes. Please try again."),
@@ -168,12 +199,18 @@ function AdminEnquiriesPage() {
     setReplyMessage("");
   };
 
-  const filtered = filter === "All" ? items : items.filter((e) => e.status === filter);
+  const byType = typeFilter === "All" ? items : items.filter((e) => e.quoteType === typeFilter);
+  const filtered = filter === "All" ? byType : byType.filter((e) => e.status === filter);
   const counts = {
+    All: byType.length,
+    New: byType.filter((e) => e.status === "New").length,
+    "In Progress": byType.filter((e) => e.status === "In Progress").length,
+    Responded: byType.filter((e) => e.status === "Responded").length,
+  };
+  const typeCounts = {
     All: items.length,
-    New: items.filter((e) => e.status === "New").length,
-    "In Progress": items.filter((e) => e.status === "In Progress").length,
-    Responded: items.filter((e) => e.status === "Responded").length,
+    package: items.filter((e) => e.quoteType === "package").length,
+    flight: items.filter((e) => e.quoteType === "flight").length,
   };
 
   if (isLoading) {
@@ -191,7 +228,22 @@ function AdminEnquiriesPage() {
         <p className="mt-1 text-sm text-gray-500">Quote requests submitted via the website.</p>
       </div>
 
-      {/* Filter tabs */}
+      {/* Type filter */}
+      <div className="mb-3 flex flex-wrap gap-2">
+        {(["All", "package", "flight"] as const).map((t) => (
+          <button key={t} onClick={() => setTypeFilter(t)}
+            className={cn("rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+              typeFilter === t ? "bg-[#042045] text-white" : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50")}
+          >
+            {t === "All" ? "All types" : typeConfig[t].label}
+            <span className={cn("ml-2 rounded-full px-1.5 py-0.5 text-xs", typeFilter === t ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500")}>
+              {typeCounts[t]}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* Status filter tabs */}
       <div className="mb-6 flex flex-wrap gap-2">
         {(["All", "New", "In Progress", "Responded"] as const).map((s) => (
           <button key={s} onClick={() => setFilter(s)}
@@ -212,7 +264,7 @@ function AdminEnquiriesPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/60">
-                {["Customer", "Destination", "Travel", "Party", "Budget", "Status", "Received", ""].map((h) => (
+                {["Customer", "Type", "Destination", "Travel", "Party", "Budget", "Status", "Received", ""].map((h) => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-400 first:pl-6">{h}</th>
                 ))}
               </tr>
@@ -225,13 +277,23 @@ function AdminEnquiriesPage() {
                       <p className="font-semibold text-gray-900">{e.name}</p>
                       <p className="text-xs text-gray-400">{e.email}</p>
                     </td>
+                    <td className="px-4 py-4"><TypeBadge type={e.quoteType} /></td>
                     <td className="px-4 py-4">
-                      <p className="font-medium text-gray-800">{e.destination}</p>
-                      <p className="text-xs text-gray-400">{e.region} · {e.tripType}</p>
+                      {e.quoteType === "flight" ? (
+                        <>
+                          <p className="font-medium text-gray-800">{e.departAirport} → {e.destination}</p>
+                          <p className="text-xs text-gray-400">{e.tripType}{e.cabinClass ? ` · ${e.cabinClass}` : ""}</p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="font-medium text-gray-800">{e.destination}</p>
+                          <p className="text-xs text-gray-400">{[e.region, e.tripType].filter(Boolean).join(" · ")}</p>
+                        </>
+                      )}
                     </td>
                     <td className="px-4 py-4 text-gray-600">
                       <p>{e.travelDate}</p>
-                      <p className="text-xs text-gray-400">{e.nights} nights</p>
+                      {e.nights !== null && <p className="text-xs text-gray-400">{e.nights} nights</p>}
                     </td>
                     <td className="px-4 py-4 text-gray-600">{e.adults}A{e.children > 0 ? ` · ${e.children}C` : ""}{e.infants > 0 ? ` · ${e.infants}I` : ""}</td>
                     <td className="px-4 py-4 font-medium text-gray-700">{e.budget}</td>
@@ -259,10 +321,24 @@ function AdminEnquiriesPage() {
                   </tr>
                   {expandedId === e.id && (
                     <tr key={`${e.id}-exp`} className="bg-blue-50/30">
-                      <td colSpan={8} className="px-6 py-4">
+                      <td colSpan={9} className="px-6 py-4">
                         <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
                           <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Phone</p><p className="mt-1 text-gray-800">{e.phone}</p></div>
-                          <div className="col-span-3 flex items-center gap-2">
+                          {e.quoteType === "package" ? (
+                            <>
+                              <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Hotel / board</p><p className="mt-1 text-gray-800">{[e.hotelRating, e.boardBasis].filter(Boolean).join(" · ") || "-"}</p></div>
+                              <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Flights</p><p className="mt-1 text-gray-800">{e.flightsIncluded ? `${e.departAirport || "?"} · ${e.cabinClass || "?"}` : "Not required"}</p></div>
+                            </>
+                          ) : (
+                            <>
+                              <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Routing</p><p className="mt-1 text-gray-800">{e.directOnly || "No preference"}</p></div>
+                              <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Preferred airlines</p><p className="mt-1 text-gray-800">{e.preferredAirlines || "-"}</p></div>
+                            </>
+                          )}
+                          {e.notes && (
+                            <div className="col-span-2 md:col-span-4"><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Notes</p><p className="mt-1 text-gray-800">{e.notes}</p></div>
+                          )}
+                          <div className="col-span-2 flex items-center gap-2 md:col-span-4">
                             <button onClick={() => openReply(e)} className="inline-flex items-center gap-1.5 rounded-lg bg-[#042045] px-4 py-2 text-xs font-semibold text-white hover:bg-[#042045]/90"><Mail className="h-3.5 w-3.5" />Reply by email</button>
                             <a href={`https://wa.me/${e.phone.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"><WhatsAppIcon className="h-3.5 w-3.5 text-[#25D366]" />WhatsApp</a>
                             <button onClick={() => setEditItem({ ...e })} className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"><Pencil className="h-3.5 w-3.5" />View activity log</button>
@@ -283,11 +359,15 @@ function AdminEnquiriesPage() {
             <div key={e.id} className="px-5 py-4">
               <div className="flex items-start justify-between gap-3">
                 <div><p className="font-semibold text-gray-900">{e.name}</p><p className="text-xs text-gray-400">{e.email}</p></div>
-                <StatusBadge status={e.status} />
+                <div className="flex flex-col items-end gap-1"><TypeBadge type={e.quoteType} /><StatusBadge status={e.status} /></div>
               </div>
               <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500">
-                <span className="font-medium text-gray-700">{e.destination}</span>
-                <span>{e.travelDate}</span><span>{e.nights}n</span><span>{e.budget}</span>
+                <span className="font-medium text-gray-700">
+                  {e.quoteType === "flight" ? `${e.departAirport} → ${e.destination}` : e.destination}
+                </span>
+                <span>{e.travelDate}</span>
+                {e.nights !== null && <span>{e.nights}n</span>}
+                <span>{e.budget}</span>
               </div>
               <div className="mt-3 flex gap-2">
                 <button onClick={() => openReply(e)} className="rounded-lg bg-[#042045] px-3 py-1.5 text-xs font-semibold text-white">Reply</button>
@@ -302,16 +382,18 @@ function AdminEnquiriesPage() {
       {/* Edit modal */}
       <Dialog open={!!editItem} onOpenChange={(o) => { if (!o) { setEditItem(null); setSaveError(""); } }}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle>Edit Enquiry</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle className="flex items-center gap-2">Edit Enquiry {editItem && <TypeBadge type={editItem.quoteType} />}</DialogTitle></DialogHeader>
           {editItem && (
             <div className="space-y-4 py-2">
               <div className="grid grid-cols-2 gap-4">
                 <div><label className={labelCls}>Name</label><input className={inputCls} value={editItem.name} onChange={(e) => setEditItem({ ...editItem, name: e.target.value })} /></div>
                 <div><label className={labelCls}>Email</label><input className={inputCls} value={editItem.email} onChange={(e) => setEditItem({ ...editItem, email: e.target.value })} /></div>
                 <div><label className={labelCls}>Phone</label><input className={inputCls} value={editItem.phone} onChange={(e) => setEditItem({ ...editItem, phone: e.target.value })} /></div>
-                <div><label className={labelCls}>Destination</label><input className={inputCls} value={editItem.destination} onChange={(e) => setEditItem({ ...editItem, destination: e.target.value })} /></div>
+                <div><label className={labelCls}>{editItem.quoteType === "flight" ? "Arrival airport" : "Destination"}</label><input className={inputCls} value={editItem.destination} onChange={(e) => setEditItem({ ...editItem, destination: e.target.value })} /></div>
                 <div><label className={labelCls}>Travel Date</label><input className={inputCls} value={editItem.travelDate} onChange={(e) => setEditItem({ ...editItem, travelDate: e.target.value })} /></div>
-                <div><label className={labelCls}>Nights</label><input type="number" className={inputCls} value={editItem.nights} onChange={(e) => setEditItem({ ...editItem, nights: +e.target.value })} /></div>
+                {editItem.quoteType === "package" && (
+                  <div><label className={labelCls}>Nights</label><input type="number" className={inputCls} value={editItem.nights ?? 0} onChange={(e) => setEditItem({ ...editItem, nights: +e.target.value })} /></div>
+                )}
                 <div><label className={labelCls}>Adults</label><input type="number" className={inputCls} value={editItem.adults} onChange={(e) => setEditItem({ ...editItem, adults: +e.target.value })} /></div>
                 <div><label className={labelCls}>Children</label><input type="number" className={inputCls} value={editItem.children} onChange={(e) => setEditItem({ ...editItem, children: +e.target.value })} /></div>
                 <div><label className={labelCls}>Infants</label><input type="number" className={inputCls} value={editItem.infants} onChange={(e) => setEditItem({ ...editItem, infants: +e.target.value })} /></div>
@@ -322,6 +404,25 @@ function AdminEnquiriesPage() {
                     <option>New</option><option>In Progress</option><option>Responded</option>
                   </select>
                 </div>
+                {editItem.quoteType === "package" ? (
+                  <>
+                    <div><label className={labelCls}>Hotel rating</label><input className={inputCls} value={editItem.hotelRating} onChange={(e) => setEditItem({ ...editItem, hotelRating: e.target.value })} /></div>
+                    <div><label className={labelCls}>Board basis</label><input className={inputCls} value={editItem.boardBasis} onChange={(e) => setEditItem({ ...editItem, boardBasis: e.target.value })} /></div>
+                    <div>
+                      <label className={labelCls}>Flights included</label>
+                      <select className={inputCls} value={editItem.flightsIncluded ? "Yes" : "No"} onChange={(e) => setEditItem({ ...editItem, flightsIncluded: e.target.value === "Yes" })}>
+                        <option>Yes</option><option>No</option>
+                      </select>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div><label className={labelCls}>Departure airport</label><input className={inputCls} value={editItem.departAirport} onChange={(e) => setEditItem({ ...editItem, departAirport: e.target.value })} /></div>
+                    <div><label className={labelCls}>Cabin class</label><input className={inputCls} value={editItem.cabinClass} onChange={(e) => setEditItem({ ...editItem, cabinClass: e.target.value })} /></div>
+                    <div><label className={labelCls}>Routing preference</label><input className={inputCls} value={editItem.directOnly} onChange={(e) => setEditItem({ ...editItem, directOnly: e.target.value })} /></div>
+                    <div><label className={labelCls}>Preferred airlines</label><input className={inputCls} value={editItem.preferredAirlines} onChange={(e) => setEditItem({ ...editItem, preferredAirlines: e.target.value })} /></div>
+                  </>
+                )}
               </div>
               <div>
                 <label className={labelCls}>Activity log</label>

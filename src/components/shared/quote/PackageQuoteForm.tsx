@@ -1,13 +1,11 @@
-// Five-step quote enquiry wizard.
-// Validation runs per-step using Zod schemas so the user only sees errors
-// for the current step's fields. On final submit the payload is sent to
-// Formspree if SITE.formspree.quote is configured; otherwise it logs to the
-// console (demo mode) so the form is always testable without live credentials.
+// Three-step holiday package enquiry wizard: Trip → Stay & extras → Contact.
+// Validation runs per-step using Zod schemas so the user only sees errors for the
+// current step's fields. On submit the payload is posted to /api/enquiries as a
+// { quoteType: "package", ... } enquiry.
 import { useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -15,28 +13,24 @@ import { regions, budgetBands } from "@/data/destinations";
 import { SITE } from "@/config/site";
 import { DatePicker } from "@/components/shared/DatePicker";
 import { AirportPicker } from "@/components/admin/AirportPicker";
-
-// ─── Per-step Zod schemas ─────────────────────────────────────────────────────
+import { Field, Pills, Row, Select, Stepper, calcNights } from "./shared";
 
 const step1 = z.object({
   destination: z.string().min(2, "Tell us where you'd like to go"),
   region: z.string().optional(),
   tripType: z.string().min(1, "Pick one"),
   tripTypeOther: z.string().optional(),
-}).superRefine((data, ctx) => {
-  if (data.tripType === "Other" && (!data.tripTypeOther || data.tripTypeOther.trim().length < 2)) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Tell us the holiday type", path: ["tripTypeOther"] });
-  }
-});
-
-const step2 = z.object({
   dateMode: z.enum(["flexible", "specific"]),
   departWindow: z.string().optional(),
   departDate: z.string().optional(),
   returnDate: z.string().optional(),
   flexibility: z.string().optional(),
   nights: z.coerce.number().min(1, "At least 1 night").max(60),
+  budget: z.string().min(1, "Pick a budget band"),
 }).superRefine((data, ctx) => {
+  if (data.tripType === "Other" && (!data.tripTypeOther || data.tripTypeOther.trim().length < 2)) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Tell us the holiday type", path: ["tripTypeOther"] });
+  }
   if (data.dateMode === "flexible" && (!data.departWindow || data.departWindow.trim().length < 2)) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Roughly when?", path: ["departWindow"] });
   }
@@ -45,36 +39,37 @@ const step2 = z.object({
   }
 });
 
-const step3 = z.object({
-  departAirport: z.string().min(2, "Select your departure airport"),
-  cabinClass: z.string().min(1, "Pick a cabin class"),
-  directOnly: z.string(),
-  preferredAirlines: z.string().optional(),
-});
-
-const step4 = z.object({
+const step2 = z.object({
+  hotelRating: z.string(),
+  boardBasis: z.string(),
+  flightsIncluded: z.boolean(),
+  departAirport: z.string(),
+  cabinClass: z.string(),
   adults: z.coerce.number().min(1, "At least 1 adult").max(20),
   children: z.coerce.number().min(0).max(20),
   infants: z.coerce.number().min(0).max(20),
-  budget: z.string().min(1, "Pick a budget band"),
+}).superRefine((data, ctx) => {
+  if (data.flightsIncluded && !data.departAirport) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Select your departure airport", path: ["departAirport"] });
+  }
 });
 
-const step5 = z.object({
+const step3 = z.object({
   name: z.string().trim().min(2, "Your full name"),
   email: z.string().trim().email("Valid email"),
   phone: z.string().trim().min(7, "Phone or WhatsApp number"),
   notes: z.string().max(1000).optional(),
 });
 
-// ─── Form state type ──────────────────────────────────────────────────────────
-
 type Form = {
   destination: string; region: string; tripType: string; tripTypeOther: string;
   dateMode: "flexible" | "specific";
   departWindow: string; flexibility: string; nights: string;
   departDate: string; returnDate: string;
-  departAirport: string; cabinClass: string; directOnly: string; preferredAirlines: string;
-  adults: string; children: string; infants: string; budget: string;
+  budget: string;
+  hotelRating: string; boardBasis: string; flightsIncluded: boolean;
+  departAirport: string; cabinClass: string;
+  adults: string; children: string; infants: string;
   name: string; email: string; phone: string; notes: string;
 };
 
@@ -83,17 +78,19 @@ const initial: Form = {
   dateMode: "flexible",
   departWindow: "", flexibility: "Flexible ±1 week", nights: "7",
   departDate: "", returnDate: "",
-  departAirport: "", cabinClass: "Business Class", directOnly: "No preference", preferredAirlines: "",
-  adults: "1", children: "0", infants: "0", budget: "£££",
+  budget: "£££",
+  hotelRating: "No preference", boardBasis: "All Inclusive", flightsIncluded: true,
+  departAirport: "", cabinClass: "Business Class",
+  adults: "1", children: "0", infants: "0",
   name: "", email: "", phone: "", notes: "",
 };
 
+const HOTEL_RATINGS = ["No preference", "3-star", "4-star", "5-star"];
+const BOARD_OPTIONS = ["All Inclusive", "Half Board", "Bed & Breakfast", "Room Only"];
 const CABIN_CLASSES = ["Economy", "Premium Economy", "Business Class", "First Class"];
-const DIRECT_OPTIONS = ["No preference", "Direct only"];
+const steps = ["Trip", "Stay & extras", "Contact"] as const;
 
-const steps = ["Where", "When", "Flights", "Who", "Contact"] as const;
-
-export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialValues?: Partial<Form>; holidayTypeNames?: string[] }) {
+export function PackageQuoteForm({ initialValues, holidayTypeNames = [] }: { initialValues?: Partial<Form>; holidayTypeNames?: string[] }) {
   const tripTypeOptions = [...holidayTypeNames, "Other"];
   const [form, setForm] = useState<Form>({ ...initial, ...initialValues });
   const [step, setStep] = useState(0);
@@ -102,27 +99,19 @@ export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialVal
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  const set = <K extends keyof Form>(k: K, v: Form[K]) =>
-    setForm((f) => ({ ...f, [k]: v }));
-
-  const calcNights = (depart: string, ret: string) => {
-    if (!depart || !ret) return null;
-    const diff = Math.round((new Date(ret).getTime() - new Date(depart).getTime()) / 86_400_000);
-    return diff > 0 ? diff : null;
-  };
+  const set = <K extends keyof Form>(k: K, v: Form[K]) => setForm((f) => ({ ...f, [k]: v }));
 
   const handleDepartDate = (date: string) => {
     const nights = calcNights(date, form.returnDate);
     setForm((f) => ({ ...f, departDate: date, ...(nights ? { nights: String(nights) } : {}) }));
   };
-
   const handleReturnDate = (date: string) => {
     const nights = calcNights(form.departDate, date);
     setForm((f) => ({ ...f, returnDate: date, ...(nights ? { nights: String(nights) } : {}) }));
   };
 
   const validate = () => {
-    const schema = [step1, step2, step3, step4, step5][step];
+    const schema = [step1, step2, step3][step];
     const res = schema.safeParse(form);
     if (!res.success) {
       const e: Record<string, string> = {};
@@ -142,15 +131,12 @@ export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialVal
     setSubmitting(true);
     setSubmitError("");
 
-    const departInfo = form.dateMode === "specific"
-      ? `${form.departDate}${form.returnDate ? ` → ${form.returnDate}` : ""}`
-      : `${form.departWindow} (${form.flexibility})`;
-
     try {
       const res = await fetch("/api/enquiries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          quoteType: "package",
           name: form.name,
           email: form.email,
           phone: form.phone,
@@ -163,14 +149,15 @@ export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialVal
           departDate: form.departDate || undefined,
           returnDate: form.returnDate || undefined,
           nights: Number(form.nights),
-          departAirport: form.departAirport,
-          cabinClass: form.cabinClass,
-          directOnly: form.directOnly || undefined,
-          preferredAirlines: form.preferredAirlines || undefined,
+          budget: form.budget,
+          hotelRating: form.hotelRating || undefined,
+          boardBasis: form.boardBasis || undefined,
+          flightsIncluded: form.flightsIncluded,
+          departAirport: form.flightsIncluded ? form.departAirport : undefined,
+          cabinClass: form.flightsIncluded ? form.cabinClass : undefined,
           adults: Number(form.adults),
           children: Number(form.children),
           infants: Number(form.infants),
-          budget: form.budget,
           notes: form.notes || undefined,
         }),
       });
@@ -216,9 +203,10 @@ export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialVal
         <div className="mt-6 grid gap-2 text-left text-sm sm:grid-cols-2">
           <Row k="Destination" v={form.destination} />
           <Row k="When" v={departInfo} />
-          <Row k="Flights" v={`${form.departAirport} · ${form.cabinClass}`} />
+          <Row k="Stay" v={`${form.nights} nights · ${form.boardBasis}${form.hotelRating !== "No preference" ? ` · ${form.hotelRating}` : ""}`} />
+          <Row k="Flights" v={form.flightsIncluded ? `${form.departAirport} · ${form.cabinClass}` : "Not required"} />
           <Row k="Travellers" v={`${form.adults} adult${form.adults === "1" ? "" : "s"}${Number(form.children) ? `, ${form.children} child` : ""}${Number(form.infants) ? `, ${form.infants} infant` : ""}`} />
-          <Row k="Budget" v={`${form.budget} (${form.nights} nights)`} />
+          <Row k="Budget" v={form.budget} />
         </div>
       </motion.div>
     );
@@ -228,7 +216,7 @@ export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialVal
 
   return (
     <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
-      <Stepper current={step} />
+      <Stepper steps={steps} current={step} />
       <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={step}
@@ -238,34 +226,23 @@ export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialVal
         transition={{ duration: 0.2, ease: "easeOut" }}
         className="mt-6"
       >
-
-        {/* ── Step 0: Where ── */}
+        {/* ── Step 0: Trip ── */}
         {step === 0 && (
           <div className="grid gap-4">
             <Field label="Destination or region" error={errors.destination}>
               <Input value={form.destination} onChange={(e) => set("destination", e.target.value)} placeholder="e.g. Maldives, Tokyo, anywhere warm" />
             </Field>
             <Field label="Region (optional)">
-              <Select value={form.region} onChange={(v) => set("region", v)} options={["", ...regions]} />
+              <Select value={form.region} onChange={(v) => set("region", v)} options={["", ...regions]} emptyLabel="Any region" />
             </Field>
-            <Field label="Trip type" error={errors.tripType}>
+            <Field label="Trip style" error={errors.tripType}>
               <Pills value={form.tripType} onChange={(v) => set("tripType", v)} options={tripTypeOptions} />
             </Field>
             {form.tripType === "Other" && (
               <Field label="Tell us the holiday type" error={errors.tripTypeOther}>
-                <Input
-                  value={form.tripTypeOther}
-                  onChange={(e) => set("tripTypeOther", e.target.value)}
-                  placeholder="e.g. Cruise, Ski, Safari"
-                />
+                <Input value={form.tripTypeOther} onChange={(e) => set("tripTypeOther", e.target.value)} placeholder="e.g. Cruise, Ski, Safari" />
               </Field>
             )}
-          </div>
-        )}
-
-        {/* ── Step 1: When ── */}
-        {step === 1 && (
-          <div className="grid gap-4">
             <Field label="How fixed are your dates?">
               <Pills
                 value={form.dateMode}
@@ -274,99 +251,50 @@ export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialVal
                 labels={{ flexible: "I'm flexible", specific: "I have specific dates" }}
               />
             </Field>
-
             {form.dateMode === "flexible" ? (
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Depart window" error={errors.departWindow}>
-                  <Input
-                    value={form.departWindow}
-                    onChange={(e) => set("departWindow", e.target.value)}
-                    placeholder="e.g. October half-term"
-                  />
+                  <Input value={form.departWindow} onChange={(e) => set("departWindow", e.target.value)} placeholder="e.g. October half-term" />
                 </Field>
                 <Field label="Date flexibility">
-                  <Select
-                    value={form.flexibility}
-                    onChange={(v) => set("flexibility", v)}
-                    options={["Flexible ±3 days", "Flexible ±1 week", "Flexible ±1 month"]}
-                  />
-                </Field>
-                <Field label="Return date (optional)" className="sm:col-span-2">
-                  <DatePicker
-                    name="returnDate"
-                    placeholder="Select return date"
-                    minDate={new Date(today)}
-                    value={form.returnDate}
-                    onChange={(v) => set("returnDate", v)}
-                  />
+                  <Select value={form.flexibility} onChange={(v) => set("flexibility", v)} options={["Flexible ±3 days", "Flexible ±1 week", "Flexible ±1 month"]} />
                 </Field>
               </div>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Departure date" error={errors.departDate}>
-                  <DatePicker
-                    name="departDate"
-                    placeholder="Select departure date"
-                    minDate={new Date(today)}
-                    value={form.departDate}
-                    onChange={handleDepartDate}
-                  />
+                  <DatePicker name="departDate" placeholder="Select departure date" minDate={new Date(today)} value={form.departDate} onChange={handleDepartDate} />
                 </Field>
-                <Field label="Return date (optional)">
-                  <DatePicker
-                    name="returnDate"
-                    placeholder="Select return date"
-                    minDate={new Date(form.departDate || today)}
-                    value={form.returnDate}
-                    onChange={handleReturnDate}
-                  />
+                <Field label="Return date">
+                  <DatePicker name="returnDate" placeholder="Select return date" minDate={new Date(form.departDate || today)} value={form.returnDate} onChange={handleReturnDate} />
                 </Field>
               </div>
             )}
-
-            <Field label="Nights" error={errors.nights}>
-              <Input
-                type="number"
-                min={1}
-                value={form.nights}
-                onChange={(e) => set("nights", e.target.value)}
-              />
-              {form.dateMode === "specific" && form.departDate && form.returnDate && (
-                <p className="mt-1 text-xs text-muted-foreground">Auto-calculated from your dates</p>
-              )}
-            </Field>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Nights" error={errors.nights}>
+                <Input type="number" min={1} value={form.nights} onChange={(e) => set("nights", e.target.value)} />
+                {form.dateMode === "specific" && form.departDate && form.returnDate && (
+                  <p className="mt-1 text-xs text-muted-foreground">Auto-calculated from your dates</p>
+                )}
+              </Field>
+              <Field label="Budget pp" error={errors.budget}>
+                <Select value={form.budget} onChange={(v) => set("budget", v)} options={[...budgetBands]} emptyLabel="Pick a budget" />
+              </Field>
+            </div>
           </div>
         )}
 
-        {/* ── Step 2: Flights ── */}
-        {step === 2 && (
+        {/* ── Step 1: Stay & extras ── */}
+        {step === 1 && (
           <div className="grid gap-4">
-            <Field label="Departing from" error={errors.departAirport}>
-              <AirportPicker
-                label=""
-                value={form.departAirport}
-                onChange={(v) => set("departAirport", v)}
-              />
-            </Field>
-            <Field label="Cabin class" error={errors.cabinClass}>
-              <Pills value={form.cabinClass} onChange={(v) => set("cabinClass", v)} options={CABIN_CLASSES} />
-            </Field>
-            <Field label="Routing preference">
-              <Pills value={form.directOnly} onChange={(v) => set("directOnly", v)} options={DIRECT_OPTIONS} />
-            </Field>
-            <Field label="Preferred airlines (optional)">
-              <Input
-                value={form.preferredAirlines}
-                onChange={(e) => set("preferredAirlines", e.target.value)}
-                placeholder="e.g. Emirates, British Airways"
-              />
-            </Field>
-          </div>
-        )}
-
-        {/* ── Step 3: Who ── */}
-        {step === 3 && (
-          <div className="grid gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Hotel rating">
+                <Select value={form.hotelRating} onChange={(v) => set("hotelRating", v)} options={HOTEL_RATINGS} />
+              </Field>
+              <Field label="Board basis">
+                <Select value={form.boardBasis} onChange={(v) => set("boardBasis", v)} options={BOARD_OPTIONS} />
+              </Field>
+            </div>
             <div className="grid gap-4 sm:grid-cols-3">
               <Field label="Adults" error={errors.adults}>
                 <Input type="number" min={1} value={form.adults} onChange={(e) => set("adults", e.target.value)} />
@@ -378,17 +306,28 @@ export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialVal
                 <Input type="number" min={0} value={form.infants} onChange={(e) => set("infants", e.target.value)} />
               </Field>
             </div>
-            <Field label="Budget pp" error={errors.budget}>
-              <Pills value={form.budget} onChange={(v) => set("budget", v)} options={[...budgetBands]} />
-              <p className="mt-1.5 text-xs text-muted-foreground">
-                ££ up to £1,500 · £££ £1,500–3,500 · ££££ £3,500+
-              </p>
+            <Field label="Do you need flights included?">
+              <Pills
+                value={form.flightsIncluded ? "Yes" : "No"}
+                onChange={(v) => set("flightsIncluded", v === "Yes")}
+                options={["Yes", "No"]}
+              />
             </Field>
+            {form.flightsIncluded && (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Departing from" error={errors.departAirport}>
+                  <AirportPicker label="" value={form.departAirport} onChange={(v) => set("departAirport", v)} />
+                </Field>
+                <Field label="Cabin class">
+                  <Pills value={form.cabinClass} onChange={(v) => set("cabinClass", v)} options={CABIN_CLASSES} />
+                </Field>
+              </div>
+            )}
           </div>
         )}
 
-        {/* ── Step 4: Contact ── */}
-        {step === 4 && (
+        {/* ── Step 2: Contact ── */}
+        {step === 2 && (
           <div className="grid gap-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Full name" error={errors.name}>
@@ -402,7 +341,7 @@ export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialVal
               <Input value={form.phone} onChange={(e) => set("phone", e.target.value)} autoComplete="tel" />
             </Field>
             <Field label="Anything else? (optional)">
-              <Textarea rows={4} value={form.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Special occasions, accessibility, dietary..." />
+              <Textarea rows={4} value={form.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Preferred activities, special occasions, accessibility, visa or insurance questions..." />
             </Field>
           </div>
         )}
@@ -430,92 +369,6 @@ export function QuoteForm({ initialValues, holidayTypeNames = [] }: { initialVal
       <p className="mt-4 text-xs text-muted-foreground">
         We respond rapidly, {SITE.hours.display}. No spam, no auto-mailers - just a consultant.
       </p>
-    </div>
-  );
-}
-
-function Stepper({ current }: { current: number }) {
-  return (
-    <ol className="flex items-center gap-2 sm:gap-4" aria-label="Progress">
-      {steps.map((label, i) => (
-        <li key={label} className="flex flex-1 items-center gap-2">
-          <span
-            className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-medium ${
-              i <= current ? "bg-primary text-primary-foreground" : "border border-border bg-transparent text-muted-foreground"
-            }`}
-          >
-            {i < current ? <Check className="h-3.5 w-3.5" /> : i + 1}
-          </span>
-          <span className={`hidden text-sm sm:inline ${i === current ? "font-medium text-foreground" : "text-muted-foreground"}`}>
-            {label}
-          </span>
-          {i < steps.length - 1 && <span className="ml-1 hidden h-px flex-1 bg-border sm:block" />}
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-function Field({ label, error, children, className }: { label: string; error?: string; children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`grid gap-1.5${className ? ` ${className}` : ""}`}>
-      <Label className="text-sm font-medium">{label}</Label>
-      {children}
-      {error && <span className="text-xs text-destructive">{error}</span>}
-    </div>
-  );
-}
-
-function Row({ k, v }: { k: string; v: string }) {
-  return (
-    <div className="rounded-md bg-muted px-3 py-2">
-      <div className="text-xs uppercase tracking-wider text-muted-foreground">{k}</div>
-      <div className="font-medium">{v || "-"}</div>
-    </div>
-  );
-}
-
-function Select({ value, onChange, options, emptyLabel = "Any region" }: {
-  value: string;
-  onChange: (v: string) => void;
-  options: string[];
-  emptyLabel?: string;
-}) {
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-    >
-      {options.map((o) => (
-        <option key={o} value={o}>{o || emptyLabel}</option>
-      ))}
-    </select>
-  );
-}
-
-function Pills({ value, onChange, options, labels }: {
-  value: string;
-  onChange: (v: string) => void;
-  options: string[];
-  labels?: Record<string, string>;
-}) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      {options.map((o) => (
-        <button
-          key={o}
-          type="button"
-          onClick={() => onChange(o)}
-          className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${
-            value === o
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border bg-background text-foreground hover:bg-muted"
-          }`}
-        >
-          {labels?.[o] ?? o}
-        </button>
-      ))}
     </div>
   );
 }

@@ -14,29 +14,63 @@ export const contactSchema = z.object({
   message: z.string().min(10).max(2000),
 });
 
-export const enquirySchema = z.object({
+// ─── Enquiries: two quote types sharing common fields, discriminated by quoteType ──
+// Package quotes ask holiday-shaped questions (destination, stay length, hotel/board,
+// whether flights are bundled in); flight quotes ask journey-shaped questions (route,
+// one-way/return, cabin, airline/routing preference). See src/components/shared/
+// PackageQuoteForm.tsx and FlightQuoteForm.tsx for the wizards that produce these payloads.
+
+const enquiryBaseFields = {
   name: z.string().min(2).max(100),
   email: z.string().email(),
   phone: z.string().min(7).max(30),
   destination: z.string().min(1).max(200),
-  region: z.string().max(50).optional(),
-  tripType: z.string().min(1).max(50),
-  dateMode: z.string().max(20),
+  dateMode: z.enum(["flexible", "specific"]),
   departWindow: z.string().max(100).optional(),
   flexibility: z.string().max(50).optional(),
   departDate: z.string().max(10).optional(),
   returnDate: z.string().max(10).optional(),
-  nights: z.number().int().min(1).max(365),
-  departAirport: z.string().min(1).max(100),
-  cabinClass: z.string().min(1).max(50),
-  directOnly: z.string().max(20).optional(),
-  preferredAirlines: z.string().max(200).optional(),
   adults: z.number().int().min(1).max(20),
   children: z.number().int().min(0).max(20).default(0),
   infants: z.number().int().min(0).max(20).default(0),
   budget: z.string().min(1).max(100),
   notes: z.string().max(2000).optional(),
+};
+
+const packageEnquiryObject = z.object({
+  quoteType: z.literal("package"),
+  ...enquiryBaseFields,
+  region: z.string().max(50).optional(),
+  tripType: z.string().min(1).max(50),
+  nights: z.number().int().min(1).max(365),
+  hotelRating: z.string().max(50).optional(),
+  boardBasis: z.string().max(50).optional(),
+  flightsIncluded: z.boolean().default(true),
+  departAirport: z.string().max(100).optional(),
+  cabinClass: z.string().max(50).optional(),
 });
+
+const flightEnquiryObject = z.object({
+  quoteType: z.literal("flight"),
+  ...enquiryBaseFields,
+  tripType: z.enum(["One Way", "Return"]),
+  departAirport: z.string().min(1).max(100),
+  cabinClass: z.string().min(1).max(50),
+  directOnly: z.string().max(20).optional(),
+  preferredAirlines: z.string().max(200).optional(),
+});
+
+export const enquirySchema = z
+  .discriminatedUnion("quoteType", [packageEnquiryObject, flightEnquiryObject])
+  .superRefine((d, ctx) => {
+    if (d.quoteType === "package" && d.flightsIncluded && !d.departAirport) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Departure airport is required when flights are included",
+        path: ["departAirport"],
+      });
+    }
+  });
 
 export const subscriberSchema = z.object({
   email: z.string().email().max(255),
@@ -187,6 +221,15 @@ export const enquiryUpdateSchema = z.object({
   children: z.number().int().min(0).max(20).optional(),
   infants: z.number().int().min(0).max(20).optional(),
   budget: z.string().min(1).max(100).optional(),
+  // Package-only edits
+  hotelRating: z.string().max(50).optional(),
+  boardBasis: z.string().max(50).optional(),
+  flightsIncluded: z.boolean().optional(),
+  // Flight-only edits
+  cabinClass: z.string().max(50).optional(),
+  departAirport: z.string().max(100).optional(),
+  directOnly: z.string().max(20).optional(),
+  preferredAirlines: z.string().max(200).optional(),
 });
 
 const noteTypeSchema = z.enum(NOTE_TYPES).default("note");

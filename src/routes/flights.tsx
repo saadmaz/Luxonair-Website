@@ -1,6 +1,14 @@
 ﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { AIRLINES, FLIGHT_ROUTES } from "@/data/flights";
+import { searchAirports } from "@/data/airports";
+
+// The quote wizard's arrival-airport field is an airport picker keyed by IATA code,
+// while FLIGHT_ROUTES lists destinations as plain city names — resolve to a code
+// so the "Quote" link actually pre-fills the field instead of showing it blank.
+function cityToAirportCode(city: string): string {
+  return searchAirports(city)[0]?.code ?? city;
+}
 import {
   ArrowRight,
   Briefcase,
@@ -53,7 +61,7 @@ function FlightsPage() {
               size="lg"
               className="bg-gold text-gold-foreground hover:bg-gold/90"
             >
-              <Link to="/quote" search={{ tripType: "Flight only" }}>
+              <Link to="/quote" search={{ type: "flight" }}>
                 Get a flight quote <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -211,7 +219,7 @@ function FlightsPage() {
                   <td className="px-5 py-4 text-right">
                     <Link
                       to="/quote"
-                      search={{ destination: to, tripType: "Flight only" }}
+                      search={{ type: "flight", destination: cityToAirportCode(to) }}
                       className="inline-flex min-h-11 min-w-11 items-center justify-end gap-1 rounded-lg px-3 text-sm font-medium text-primary transition-colors hover:bg-primary/8"
                     >
                       Quote <ArrowRight className="h-3.5 w-3.5" />
@@ -253,7 +261,7 @@ function FlightsPage() {
           </div>
           <div className="mt-10">
             <Button asChild size="lg" className="bg-gold text-gold-foreground hover:bg-gold/90">
-              <Link to="/quote" search={{ tripType: "Flight only" }}>
+              <Link to="/quote" search={{ type: "flight" }}>
                 Get a flight quote <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -273,7 +281,7 @@ function FlightsPage() {
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Button asChild className="bg-gold text-gold-foreground hover:bg-gold/90">
-              <Link to="/quote" search={{ tripType: "Flight only" }}>
+              <Link to="/quote" search={{ type: "flight" }}>
                 Start a quote
               </Link>
             </Button>

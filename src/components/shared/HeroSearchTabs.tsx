@@ -258,7 +258,7 @@ function FlightForm() {
       method="get"
       className="grid grid-cols-2 gap-2.5 p-4 sm:gap-3 sm:p-5 lg:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] lg:items-end"
     >
-      <input type="hidden" name="tripType" value="Flight only" />
+      <input type="hidden" name="type" value="flight" />
       <Field label="From">
         <AirportSelect name="from" placeholder="Departure airport" defaultAirportCode="LHR" />
       </Field>

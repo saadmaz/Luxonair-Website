@@ -1,6 +1,7 @@
 ﻿import type React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { QuoteForm } from "@/components/shared/QuoteForm";
+import { PackageQuoteForm } from "@/components/shared/quote/PackageQuoteForm";
+import { FlightQuoteForm } from "@/components/shared/quote/FlightQuoteForm";
 import { Clock, Phone, ShieldCheck } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
@@ -16,14 +17,18 @@ export const Route = createFileRoute("/quote")({
     }
   },
   validateSearch: (search: Record<string, unknown>): {
+    type?: "package" | "flight";
     destination?: string;
+    from?: string;
     when?: string;
     depart?: string;
     tripType?: string;
     travellers?: string;
     cabin?: string;
   } => ({
+    type: search.type === "flight" ? "flight" : undefined,
     destination: (search.destination as string) || undefined,
+    from: (search.from as string) || undefined,
     when: (search.when as string) || undefined,
     depart: (search.depart as string) || undefined,
     tripType: (search.tripType as string) || undefined,
@@ -32,15 +37,15 @@ export const Route = createFileRoute("/quote")({
   }),
   head: () => ({
     meta: [
-      { title: "Get a Free Holiday Quote | 4 Steps | Luxeonair" },
-      { name: "description", content: "Four quick steps. A dedicated UK travel consultant reviews your brief and replies with a rapid response. Mon–Fri 09:00–18:00, Sat–Sun 09:00–16:00 GMT. ATOL protected. No obligation, no spam." },
+      { title: "Get a Free Holiday or Flight Quote | 3 Steps | Luxeonair" },
+      { name: "description", content: "Three quick steps. A dedicated UK travel consultant reviews your brief and replies with a rapid response. Mon–Fri 09:00–18:00, Sat–Sun 09:00–16:00 GMT. ATOL protected. No obligation, no spam." },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: "Get a Free Holiday Quote | Luxeonair" },
-      { property: "og:description", content: "Four quick steps. A UK consultant replies with a rapid response. ATOL protected. No obligation, no spam." },
+      { property: "og:title", content: "Get a Free Holiday or Flight Quote | Luxeonair" },
+      { property: "og:description", content: "Three quick steps. A UK consultant replies with a rapid response. ATOL protected. No obligation, no spam." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.luxeonair.co.uk/quote" },
-      { name: "twitter:title", content: "Get a Free Holiday Quote | Luxeonair" },
-      { name: "twitter:description", content: "Four quick steps. A UK consultant replies with a rapid response. ATOL protected. No obligation." },
+      { name: "twitter:title", content: "Get a Free Holiday or Flight Quote | Luxeonair" },
+      { name: "twitter:description", content: "Three quick steps. A UK consultant replies with a rapid response. ATOL protected. No obligation." },
     ],
     links: [{ rel: "canonical", href: "https://www.luxeonair.co.uk/quote" }],
   }),
@@ -57,24 +62,50 @@ function parseTravellers(str: string): { adults?: string; children?: string } {
   };
 }
 
+// Hero search widget's cabin dropdown uses short labels ("Business"); the quote
+// wizards use the fuller labels shown in their cabin-class pills ("Business Class").
+const CABIN_LABELS: Record<string, string> = {
+  economy: "Economy",
+  "premium economy": "Premium Economy",
+  business: "Business Class",
+  first: "First Class",
+};
+
+function parseCabin(str: string | undefined): { cabinClass?: string } {
+  if (!str) return {};
+  const label = CABIN_LABELS[str.trim().toLowerCase()];
+  return label ? { cabinClass: label } : {};
+}
+
 function QuotePage() {
   const search = Route.useSearch();
   const { holidayTypeNames } = Route.useLoaderData();
+  const isFlight = search.type === "flight";
 
-  // Map hero search widget params → QuoteForm initial state
-  const initialValues = {
+  const packageInitialValues = {
     destination: search.destination ?? "",
     departWindow: search.when ?? search.depart ?? "",
     tripType: search.tripType ?? "",
     ...parseTravellers(search.travellers ?? ""),
+    ...parseCabin(search.cabin),
+  };
+
+  const flightInitialValues = {
+    departAirport: search.from ?? "",
+    destination: search.destination ?? "",
+    departWindow: search.when ?? search.depart ?? "",
+    ...parseTravellers(search.travellers ?? ""),
+    ...parseCabin(search.cabin),
   };
 
   return (
     <div className="container-page grid gap-8 py-10 lg:grid-cols-[1fr_1.4fr] md:py-16 lg:py-20 lg:gap-12">
       <aside className="order-last lg:order-first">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Get a quote</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+          {isFlight ? "Get a flight quote" : "Get a quote"}
+        </p>
         <h1 className="mt-2 font-display text-3xl font-semibold text-balance sm:text-4xl lg:text-5xl">
-          Four short steps. One human reply.
+          Three short steps. One human reply.
         </h1>
         <p className="mt-4 text-muted-foreground">
           We don't auto-route, auto-quote, or pass you to a call centre. Your enquiry lands with a consultant who builds the trip and stays with you through it.
@@ -86,7 +117,11 @@ function QuotePage() {
           <Row icon={WhatsAppIcon} title="WhatsApp" body="Send the same details on WhatsApp if you prefer." href={`https://wa.me/${SITE.phone.whatsapp}`} />
         </ul>
       </aside>
-      <QuoteForm initialValues={initialValues} holidayTypeNames={holidayTypeNames} />
+      {isFlight ? (
+        <FlightQuoteForm initialValues={flightInitialValues} />
+      ) : (
+        <PackageQuoteForm initialValues={packageInitialValues} holidayTypeNames={holidayTypeNames} />
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { QuoteForm } from "@/components/shared/QuoteForm";
+import { PackageQuoteForm } from "@/components/shared/quote/PackageQuoteForm";
 import { ArrowLeft, Check } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
@@ -241,13 +241,13 @@ function QuoteSection({ defaultDestination }: { defaultDestination: string }) {
     <section className="border-t border-border bg-secondary/30">
       <div className="container-page grid gap-10 py-16 lg:grid-cols-[1fr_1.4fr]">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Quote in 4 short steps</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Quote in 3 short steps</p>
           <h2 className="mt-2 font-display text-3xl font-semibold text-balance">Tell us roughly what you want.</h2>
           <p className="mt-3 text-muted-foreground">
             We pre-fill destination based on the page you came from. You can change anything.
           </p>
         </div>
-        <QuoteForm initialValues={{ destination: defaultDestination }} />
+        <PackageQuoteForm initialValues={{ destination: defaultDestination }} />
       </div>
     </section>
   );

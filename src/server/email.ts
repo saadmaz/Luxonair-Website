@@ -12,6 +12,7 @@ const to = () => process.env.RESEND_TO ?? process.env.ADMIN_EMAIL ?? "";
 // ─── Enquiry alert ────────────────────────────────────────────────────────────
 
 export interface EnquiryPayload {
+  quoteType: "package" | "flight";
   name: string;
   email: string;
   phone: string;
@@ -21,13 +22,31 @@ export interface EnquiryPayload {
   departWindow?: string | null;
   departDate?: string | null;
   returnDate?: string | null;
-  nights: number;
+  nights?: number | null;
   adults: number;
   children: number;
   infants: number;
-  cabinClass: string;
+  cabinClass?: string | null;
+  departAirport?: string | null;
+  directOnly?: string | null;
+  preferredAirlines?: string | null;
   budget: string;
+  hotelRating?: string | null;
+  boardBasis?: string | null;
+  flightsIncluded?: boolean | null;
   notes?: string | null;
+}
+
+// Renders only rows with a value, so package/flight enquiries never show empty cells
+// for fields that don't apply to that quote type.
+function rowsHtml(rows: (readonly [string, string | number | null | undefined])[]): string {
+  const present = rows.filter((r): r is [string, string | number] => r[1] !== null && r[1] !== undefined && r[1] !== "");
+  return present
+    .map(
+      ([label, value], i) =>
+        `<tr${i % 2 === 0 ? ' style="background:#f9fafb"' : ""}><td style="padding:8px 12px;font-weight:600;width:38%;${i < present.length - 1 ? "border-bottom:1px solid #f3f4f6" : ""}">${esc(label)}</td><td style="padding:8px 12px;${i < present.length - 1 ? "border-bottom:1px solid #f3f4f6" : ""}">${value}</td></tr>`,
+    )
+    .join("");
 }
 
 export async function sendEnquiryAlert(d: EnquiryPayload) {
@@ -35,9 +54,40 @@ export async function sendEnquiryAlert(d: EnquiryPayload) {
   if (!recipient) return;
 
   const dateInfo =
-    d.dateMode === "exact"
-      ? `${d.departDate ?? "?"} → ${d.returnDate ?? "?"}`
+    d.dateMode === "specific"
+      ? `${d.departDate ?? "?"}${d.returnDate ? ` → ${d.returnDate}` : ""}`
       : (d.departWindow ?? "Flexible");
+  const travellers = `${d.adults} adult${d.adults !== 1 ? "s" : ""}${d.children ? ` · ${d.children} child${d.children !== 1 ? "ren" : ""}` : ""}${d.infants ? ` · ${d.infants} infant${d.infants !== 1 ? "s" : ""}` : ""}`;
+
+  const rows: (readonly [string, string | number | null | undefined])[] =
+    d.quoteType === "flight"
+      ? [
+          ["Name", esc(d.name)],
+          ["Email", `<a href="mailto:${esc(d.email)}" style="color:#0066cc">${esc(d.email)}</a>`],
+          ["Phone", `<a href="tel:${esc(d.phone)}" style="color:#0066cc">${esc(d.phone)}</a>`],
+          ["Route", `${esc(d.departAirport ?? "?")} → ${esc(d.destination)} (${esc(d.tripType)})`],
+          ["Dates", `${esc(dateInfo)}`],
+          ["Travellers", travellers],
+          ["Cabin class", d.cabinClass ? esc(d.cabinClass) : null],
+          ["Routing preference", d.directOnly ? esc(d.directOnly) : null],
+          ["Preferred airlines", d.preferredAirlines ? esc(d.preferredAirlines) : null],
+          ["Budget", esc(d.budget)],
+          ["Notes", d.notes ? esc(d.notes) : null],
+        ]
+      : [
+          ["Name", esc(d.name)],
+          ["Email", `<a href="mailto:${esc(d.email)}" style="color:#0066cc">${esc(d.email)}</a>`],
+          ["Phone", `<a href="tel:${esc(d.phone)}" style="color:#0066cc">${esc(d.phone)}</a>`],
+          ["Destination", esc(d.destination)],
+          ["Trip type", esc(d.tripType)],
+          ["Dates", `${esc(dateInfo)}${d.nights ? ` · ${d.nights} nights` : ""}`],
+          ["Travellers", travellers],
+          ["Hotel rating", d.hotelRating ? esc(d.hotelRating) : null],
+          ["Board basis", d.boardBasis ? esc(d.boardBasis) : null],
+          ["Flights included", d.flightsIncluded ? `Yes — from ${esc(d.departAirport ?? "?")}${d.cabinClass ? `, ${esc(d.cabinClass)}` : ""}` : "No"],
+          ["Budget", esc(d.budget)],
+          ["Notes", d.notes ? esc(d.notes) : null],
+        ];
 
   const html = `
 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a2e">
@@ -45,20 +95,11 @@ export async function sendEnquiryAlert(d: EnquiryPayload) {
     <img src="https://www.luxeonair.co.uk/Logo/main-logo.png" alt="Luxeonair" height="28" style="opacity:.9"/>
   </div>
   <div style="border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;padding:24px">
-    <h2 style="margin:0 0 4px;font-size:18px;color:#031e3e">New quote enquiry</h2>
+    <h2 style="margin:0 0 4px;font-size:18px;color:#031e3e">New ${d.quoteType === "flight" ? "flight" : "holiday package"} enquiry</h2>
     <p style="margin:0 0 20px;color:#6b7280;font-size:13px">Received just now — rapid response needed.</p>
 
     <table style="width:100%;border-collapse:collapse;font-size:14px">
-      <tr style="background:#f9fafb"><td style="padding:8px 12px;font-weight:600;width:38%;border-bottom:1px solid #f3f4f6">Name</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6">${esc(d.name)}</td></tr>
-      <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f3f4f6">Email</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6"><a href="mailto:${esc(d.email)}" style="color:#0066cc">${esc(d.email)}</a></td></tr>
-      <tr style="background:#f9fafb"><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f3f4f6">Phone</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6"><a href="tel:${esc(d.phone)}" style="color:#0066cc">${esc(d.phone)}</a></td></tr>
-      <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f3f4f6">Destination</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6">${esc(d.destination)}</td></tr>
-      <tr style="background:#f9fafb"><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f3f4f6">Trip type</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6">${esc(d.tripType)}</td></tr>
-      <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f3f4f6">Dates</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6">${esc(dateInfo)} · ${d.nights} nights</td></tr>
-      <tr style="background:#f9fafb"><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f3f4f6">Travellers</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6">${d.adults} adult${d.adults !== 1 ? "s" : ""}${d.children ? ` · ${d.children} child${d.children !== 1 ? "ren" : ""}` : ""}${d.infants ? ` · ${d.infants} infant${d.infants !== 1 ? "s" : ""}` : ""}</td></tr>
-      <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #f3f4f6">Cabin class</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6">${esc(d.cabinClass)}</td></tr>
-      <tr style="background:#f9fafb"><td style="padding:8px 12px;font-weight:600;${d.notes ? "border-bottom:1px solid #f3f4f6" : ""}">Budget</td><td style="padding:8px 12px;${d.notes ? "border-bottom:1px solid #f3f4f6" : ""}">${esc(d.budget)}</td></tr>
-      ${d.notes ? `<tr><td style="padding:8px 12px;font-weight:600">Notes</td><td style="padding:8px 12px">${esc(d.notes)}</td></tr>` : ""}
+      ${rowsHtml(rows)}
     </table>
 
     <div style="margin-top:24px">
@@ -74,7 +115,7 @@ export async function sendEnquiryAlert(d: EnquiryPayload) {
   await client().emails.send({
     from: from(),
     to: recipient,
-    subject: `New enquiry: ${d.name} — ${d.destination}`,
+    subject: `New ${d.quoteType} enquiry: ${d.name} — ${d.destination}`,
     html,
   });
 }

@@ -15,6 +15,7 @@ export const enquiries = mysqlTable(
   "enquiries",
   {
     id: int("id").autoincrement().primaryKey(),
+    quoteType: mysqlEnum("quote_type", ["package", "flight"]).notNull().default("package"),
     name: text("name").notNull(),
     email: text("email").notNull(),
     phone: text("phone").notNull(),
@@ -26,15 +27,21 @@ export const enquiries = mysqlTable(
     flexibility: text("flexibility"),
     departDate: text("depart_date"),
     returnDate: text("return_date"),
-    nights: int("nights").notNull(),
-    departAirport: text("depart_airport").notNull(),
-    cabinClass: text("cabin_class").notNull(),
+    // Package-only: length of stay. Null for flight-only enquiries.
+    nights: int("nights"),
+    // Required for flight quotes; only present on package quotes when flightsIncluded is true.
+    departAirport: text("depart_airport"),
+    cabinClass: text("cabin_class"),
     directOnly: text("direct_only"),
     preferredAirlines: text("preferred_airlines"),
     adults: int("adults").notNull(),
     children: int("children").notNull().default(0),
     infants: int("infants").notNull().default(0),
     budget: text("budget").notNull(),
+    // Package-only fields
+    hotelRating: text("hotel_rating"),
+    boardBasis: text("board_basis"),
+    flightsIncluded: boolean("flights_included").default(true),
     notes: text("notes"),
     status: text("status").notNull().default("new"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -42,6 +49,7 @@ export const enquiries = mysqlTable(
   (t) => [
     index("enquiries_status_idx").on(t.status),
     index("enquiries_created_at_idx").on(t.createdAt),
+    index("enquiries_quote_type_idx").on(t.quoteType),
   ],
 );
 
