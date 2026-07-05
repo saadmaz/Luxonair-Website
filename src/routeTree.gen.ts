@@ -36,6 +36,7 @@ import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
 import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
 import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
+import { Route as AdminLogsRouteImport } from './routes/admin.logs'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminHolidaysRouteImport } from './routes/admin.holidays'
 import { Route as AdminFlightOffersRouteImport } from './routes/admin.flight-offers'
@@ -183,6 +184,11 @@ const AdminMessagesRoute = AdminMessagesRouteImport.update({
   path: '/messages',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminLogsRoute = AdminLogsRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -268,6 +274,7 @@ export interface FileRoutesByFullPath {
   '/admin/flight-offers': typeof AdminFlightOffersRoute
   '/admin/holidays': typeof AdminHolidaysRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/logs': typeof AdminLogsRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
@@ -304,6 +311,7 @@ export interface FileRoutesByTo {
   '/admin/flight-offers': typeof AdminFlightOffersRoute
   '/admin/holidays': typeof AdminHolidaysRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/logs': typeof AdminLogsRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
@@ -345,6 +353,7 @@ export interface FileRoutesById {
   '/admin/flight-offers': typeof AdminFlightOffersRoute
   '/admin/holidays': typeof AdminHolidaysRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/logs': typeof AdminLogsRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
@@ -387,6 +396,7 @@ export interface FileRouteTypes {
     | '/admin/flight-offers'
     | '/admin/holidays'
     | '/admin/login'
+    | '/admin/logs'
     | '/admin/messages'
     | '/admin/subscribers'
     | '/admin/testimonials'
@@ -423,6 +433,7 @@ export interface FileRouteTypes {
     | '/admin/flight-offers'
     | '/admin/holidays'
     | '/admin/login'
+    | '/admin/logs'
     | '/admin/messages'
     | '/admin/subscribers'
     | '/admin/testimonials'
@@ -463,6 +474,7 @@ export interface FileRouteTypes {
     | '/admin/flight-offers'
     | '/admin/holidays'
     | '/admin/login'
+    | '/admin/logs'
     | '/admin/messages'
     | '/admin/subscribers'
     | '/admin/testimonials'
@@ -686,6 +698,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMessagesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/logs': {
+      id: '/admin/logs'
+      path: '/logs'
+      fullPath: '/admin/logs'
+      preLoaderRoute: typeof AdminLogsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/login'
@@ -778,6 +797,7 @@ interface AdminRouteChildren {
   AdminFlightOffersRoute: typeof AdminFlightOffersRoute
   AdminHolidaysRoute: typeof AdminHolidaysRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminLogsRoute: typeof AdminLogsRoute
   AdminMessagesRoute: typeof AdminMessagesRoute
   AdminSubscribersRoute: typeof AdminSubscribersRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
@@ -797,6 +817,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminFlightOffersRoute: AdminFlightOffersRoute,
   AdminHolidaysRoute: AdminHolidaysRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminLogsRoute: AdminLogsRoute,
   AdminMessagesRoute: AdminMessagesRoute,
   AdminSubscribersRoute: AdminSubscribersRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,

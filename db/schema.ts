@@ -432,6 +432,9 @@ export const contactNotes = mysqlTable(
   (t) => [index("contact_notes_contact_id_idx").on(t.contactId)],
 );
 
+// Append-only audit trail — auto-populated for every mutating admin request by
+// src/api-router.ts, rendered on /admin/logs. Intentionally has no update/delete
+// API surface anywhere in the app: these rows are permanent.
 export const adminActions = mysqlTable(
   "admin_actions",
   {
@@ -440,6 +443,15 @@ export const adminActions = mysqlTable(
     method: varchar("method", { length: 10 }).notNull(),
     path: varchar("path", { length: 500 }).notNull(),
     status: int("status").notNull(),
+    // created/updated/deleted/other — derived from method, see src/server/audit-log.ts
+    action: varchar("action", { length: 20 }).notNull().default("other"),
+    // Normalized resource key (route template with $id segments stripped),
+    // e.g. "destinations", "enquiry-packages/notes". Null for rows logged
+    // before this column existed.
+    resourceType: varchar("resource_type", { length: 100 }),
+    // Best-effort human identifier for the affected record (name/title/email/etc,
+    // or the id path param when the response body doesn't carry one — e.g. deletes).
+    resourceLabel: varchar("resource_label", { length: 255 }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [

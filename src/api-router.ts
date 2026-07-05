@@ -40,8 +40,10 @@ import { APIRoute as flightOfferBookingsHandlers } from './routes/api/flight-off
 import { APIRoute as flightOfferBookingsIdHandlers } from './routes/api/flight-offer-bookings/$id';
 import { APIRoute as uploadHandlers } from './routes/api/upload';
 import { APIRoute as uploadsFilenameHandlers } from './routes/api/uploads/$filename';
+import { APIRoute as adminActionsHandlers } from './routes/api/admin-actions/index';
 import { getSession } from './server/auth';
 import { db, adminActions } from '../db/index';
+import { verbFromMethod, resourceTypeFromTemplate, extractResourceLabel } from './server/audit-log';
 
 type Ctx = { request: Request; params: Record<string, string> };
 type Handler = (ctx: Ctx) => Promise<Response> | Response;
@@ -53,7 +55,7 @@ function makeRoute(tanstackPath: string, handlers: Handlers) {
     paramNames.push(name);
     return '([^/]+)';
   });
-  return { pattern: new RegExp(`^${regexStr}$`), paramNames, handlers };
+  return { pattern: new RegExp(`^${regexStr}$`), paramNames, handlers, tanstackPath };
 }
 
 const routes = [
@@ -99,25 +101,58 @@ const routes = [
   makeRoute('/api/flight-offer-bookings/$id', flightOfferBookingsIdHandlers as Handlers),
   makeRoute('/api/upload', uploadHandlers as Handlers),
   makeRoute('/api/uploads/$filename', uploadsFilenameHandlers as Handlers),
+  makeRoute('/api/admin-actions', adminActionsHandlers as Handlers),
 ];
 
 // Fire-and-forget audit log for every mutating admin request. Only logs when an
 // authenticated session is present — the public lead-capture POSTs (enquiries,
-// contacts, subscribers, flight-offer-bookings) aren't "admin actions".
-function logAdminAction(request: Request, path: string, status: number) {
-  getSession(request)
-    .then((session) => {
-      if (!session) return;
-      return db.insert(adminActions).values({ adminEmail: session.email, method: request.method, path, status });
-    })
-    .catch((err) => console.error('[audit] failed to log admin action:', err));
+// contacts, subscribers, flight-offer-bookings) aren't "admin actions". These
+// rows are permanent: no endpoint or admin UI anywhere ever updates or deletes
+// an admin_actions row.
+async function logAdminAction(
+  request: Request,
+  tanstackPath: string,
+  path: string,
+  status: number,
+  response: Response | null,
+  params: Record<string, string>,
+) {
+  try {
+    const session = await getSession(request);
+    if (!session) return;
+
+    const resourceType = resourceTypeFromTemplate(tanstackPath);
+    const action = verbFromMethod(request.method);
+
+    let resourceLabel: string | null = null;
+    if (response) {
+      try {
+        resourceLabel = extractResourceLabel(await response.json());
+      } catch {
+        // Non-JSON or empty body — leave label null.
+      }
+    }
+    resourceLabel ??= params.id ?? params.filename ?? null;
+
+    await db.insert(adminActions).values({
+      adminEmail: session.email,
+      method: request.method,
+      path,
+      status,
+      action,
+      resourceType,
+      resourceLabel,
+    });
+  } catch (err) {
+    console.error('[audit] failed to log admin action:', err);
+  }
 }
 
 export async function handleApiRequest(request: Request): Promise<Response | null> {
   const url = new URL(request.url);
   if (!url.pathname.startsWith('/api/')) return null;
 
-  for (const { pattern, paramNames, handlers } of routes) {
+  for (const { pattern, paramNames, handlers, tanstackPath } of routes) {
     const match = url.pathname.match(pattern);
     if (!match) continue;
 
@@ -133,11 +168,19 @@ export async function handleApiRequest(request: Request): Promise<Response | nul
 
     try {
       const response = await handler({ request, params });
-      if (request.method !== 'GET') logAdminAction(request, url.pathname, response.status);
+      if (request.method !== 'GET') {
+        // Clone synchronously, before returning — logAdminAction runs fire-and-forget
+        // after an `await`, by which point the original response's body may already
+        // be locked/consumed by the runtime as it streams the reply to the client.
+        const responseForLog = response.ok ? response.clone() : null;
+        void logAdminAction(request, tanstackPath, url.pathname, response.status, responseForLog, params);
+      }
       return response;
     } catch (error) {
       if (error instanceof Response) {
-        if (request.method !== 'GET') logAdminAction(request, url.pathname, error.status);
+        if (request.method !== 'GET') {
+          void logAdminAction(request, tanstackPath, url.pathname, error.status, null, params);
+        }
         return error;
       }
       console.error(`API error ${request.method} ${url.pathname}:`, error);

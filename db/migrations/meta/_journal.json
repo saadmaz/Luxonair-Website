@@ -120,6 +120,13 @@
       "when": 1783300000000,
       "tag": "0016_add_images_table",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "5",
+      "when": 1783400000000,
+      "tag": "0017_add_admin_action_details",
+      "breakpoints": true
     }
   ]
 }

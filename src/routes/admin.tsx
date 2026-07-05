@@ -34,6 +34,7 @@ import {
   PlaneTakeoff,
   Images,
   Ban,
+  ScrollText,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -118,7 +119,8 @@ type AdminPath =
   | "/admin/blog"
   | "/admin/testimonials"
   | "/admin/faqs"
-  | "/admin/users";
+  | "/admin/users"
+  | "/admin/logs";
 
 type NavItem = {
   to: AdminPath;
@@ -164,7 +166,10 @@ const navSections: NavSection[] = [
   },
   {
     label: "Settings",
-    items: [{ to: "/admin/users", label: "Users", icon: UserCog, exact: false }],
+    items: [
+      { to: "/admin/users", label: "Users", icon: UserCog, exact: false },
+      { to: "/admin/logs", label: "Logs", icon: ScrollText, exact: false },
+    ],
   },
 ];
 
@@ -289,7 +294,10 @@ function AdminLayoutRoute() {
     .map((section) => ({
       ...section,
       items: section.items.filter((item) => {
-        if (!item.sectionKey) return item.to !== "/admin/users" || isSuperAdmin;
+        if (!item.sectionKey) {
+          const superAdminOnly = item.to === "/admin/users" || item.to === "/admin/logs";
+          return !superAdminOnly || isSuperAdmin;
+        }
         return isSuperAdmin || mySections.includes(item.sectionKey);
       }),
     }))
