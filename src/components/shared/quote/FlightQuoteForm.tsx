@@ -36,6 +36,9 @@ const step1 = z.object({
   if (data.tripType === "Return" && data.dateMode === "specific" && !data.returnDate) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Pick a return date", path: ["returnDate"] });
   }
+  if (data.departAirport && data.destination && data.departAirport === data.destination) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Choose a different arrival airport", path: ["destination"] });
+  }
 });
 
 const step2 = z.object({
@@ -84,7 +87,18 @@ export function FlightQuoteForm({ initialValues }: { initialValues?: Partial<For
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  const set = <K extends keyof Form>(k: K, v: Form[K]) => setForm((f) => ({ ...f, [k]: v }));
+  const set = <K extends keyof Form>(k: K, v: Form[K]) => {
+    setForm((f) => ({ ...f, [k]: v }));
+    // departAirport/destination share a cross-field "must differ" check, so
+    // changing either one should clear a stale error on both.
+    const keysToClear = k === "departAirport" || k === "destination" ? ["departAirport", "destination"] : [k as string];
+    setErrors((e) => {
+      if (!keysToClear.some((key) => e[key])) return e;
+      const next = { ...e };
+      for (const key of keysToClear) delete next[key];
+      return next;
+    });
+  };
 
   const validate = () => {
     const schema = [step1, step2, step3][step];

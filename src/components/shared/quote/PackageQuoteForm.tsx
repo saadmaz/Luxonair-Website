@@ -98,7 +98,10 @@ export function PackageQuoteForm({ initialValues, holidayTypeNames = [] }: { ini
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  const set = <K extends keyof Form>(k: K, v: Form[K]) => setForm((f) => ({ ...f, [k]: v }));
+  const set = <K extends keyof Form>(k: K, v: Form[K]) => {
+    setForm((f) => ({ ...f, [k]: v }));
+    setErrors((e) => (e[k as string] ? { ...e, [k as string]: "" } : e));
+  };
 
   const handleDepartDate = (date: string) => {
     const nights = calcNights(date, form.returnDate);
