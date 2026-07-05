@@ -1,8 +1,9 @@
-﻿import type React from "react";
+import type React from "react";
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { PackageQuoteForm } from "@/components/shared/quote/PackageQuoteForm";
 import { FlightQuoteForm } from "@/components/shared/quote/FlightQuoteForm";
-import { Clock, Phone, ShieldCheck } from "lucide-react";
+import { Clock, Package, Phone, Plane, ShieldCheck } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { SITE } from "@/config/site";
 import { getHolidayTypes } from "@/server/queries";
@@ -20,8 +21,8 @@ export const Route = createFileRoute("/quote")({
     type?: "package" | "flight";
     destination?: string;
     from?: string;
-    when?: string;
     depart?: string;
+    return?: string;
     tripType?: string;
     travellers?: string;
     cabin?: string;
@@ -29,8 +30,8 @@ export const Route = createFileRoute("/quote")({
     type: search.type === "flight" ? "flight" : undefined,
     destination: (search.destination as string) || undefined,
     from: (search.from as string) || undefined,
-    when: (search.when as string) || undefined,
     depart: (search.depart as string) || undefined,
+    return: (search.return as string) || undefined,
     tripType: (search.tripType as string) || undefined,
     travellers: (search.travellers as string) || undefined,
     cabin: (search.cabin as string) || undefined,
@@ -77,15 +78,24 @@ function parseCabin(str: string | undefined): { cabinClass?: string } {
   return label ? { cabinClass: label } : {};
 }
 
+// The hero search widget's date pickers hand over real yyyy-MM-dd dates, so a
+// depart date means the customer already committed to specific dates — carry
+// that straight into the wizard's "specific dates" mode instead of dumping it
+// into the free-text "flexible window" field, which would ask them again.
+function parseDates(depart?: string, ret?: string): { dateMode?: "flexible" | "specific"; departDate?: string; returnDate?: string } {
+  if (!depart) return {};
+  return { dateMode: "specific", departDate: depart, ...(ret ? { returnDate: ret } : {}) };
+}
+
 function QuotePage() {
   const search = Route.useSearch();
   const { holidayTypeNames } = Route.useLoaderData();
-  const isFlight = search.type === "flight";
+  const [type, setType] = useState<"package" | "flight">(search.type === "flight" ? "flight" : "package");
 
   const packageInitialValues = {
     destination: search.destination ?? "",
-    departWindow: search.when ?? search.depart ?? "",
     tripType: search.tripType ?? "",
+    ...parseDates(search.depart, search.return),
     ...parseTravellers(search.travellers ?? ""),
     ...parseCabin(search.cabin),
   };
@@ -93,7 +103,7 @@ function QuotePage() {
   const flightInitialValues = {
     departAirport: search.from ?? "",
     destination: search.destination ?? "",
-    departWindow: search.when ?? search.depart ?? "",
+    ...parseDates(search.depart, search.return),
     ...parseTravellers(search.travellers ?? ""),
     ...parseCabin(search.cabin),
   };
@@ -101,9 +111,7 @@ function QuotePage() {
   return (
     <div className="container-page grid gap-8 py-10 lg:grid-cols-[1fr_1.4fr] md:py-16 lg:py-20 lg:gap-12">
       <aside className="order-last lg:order-first">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-          {isFlight ? "Get a flight quote" : "Get a quote"}
-        </p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Get a quote</p>
         <h1 className="mt-2 font-display text-3xl font-semibold text-balance sm:text-4xl lg:text-5xl">
           Three short steps. One human reply.
         </h1>
@@ -117,12 +125,51 @@ function QuotePage() {
           <Row icon={WhatsAppIcon} title="WhatsApp" body="Send the same details on WhatsApp if you prefer." href={`https://wa.me/${SITE.phone.whatsapp}`} />
         </ul>
       </aside>
-      {isFlight ? (
-        <FlightQuoteForm initialValues={flightInitialValues} />
-      ) : (
-        <PackageQuoteForm initialValues={packageInitialValues} holidayTypeNames={holidayTypeNames} />
-      )}
+
+      <div>
+        {/* Package / Flight switcher — same page, no navigation */}
+        <div role="tablist" aria-label="Quote type" className="mb-4 inline-flex gap-1 rounded-xl bg-muted/70 p-1">
+          <QuoteTab active={type === "package"} onClick={() => setType("package")} icon={Package}>
+            Holiday Package
+          </QuoteTab>
+          <QuoteTab active={type === "flight"} onClick={() => setType("flight")} icon={Plane}>
+            Flights Only
+          </QuoteTab>
+        </div>
+
+        {type === "flight" ? (
+          <FlightQuoteForm key="flight" initialValues={flightInitialValues} />
+        ) : (
+          <PackageQuoteForm key="package" initialValues={packageInitialValues} holidayTypeNames={holidayTypeNames} />
+        )}
+      </div>
     </div>
+  );
+}
+
+function QuoteTab({
+  active,
+  onClick,
+  icon: Icon,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ComponentType<{ className?: string }>;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      role="tab"
+      aria-selected={active}
+      type="button"
+      onClick={onClick}
+      className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+        active ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      <Icon className="h-4 w-4" /> {children}
+    </button>
   );
 }
 

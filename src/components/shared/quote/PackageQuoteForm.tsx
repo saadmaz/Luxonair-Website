@@ -1,7 +1,6 @@
 // Three-step holiday package enquiry wizard: Trip → Stay & extras → Contact.
 // Validation runs per-step using Zod schemas so the user only sees errors for the
-// current step's fields. On submit the payload is posted to /api/enquiries as a
-// { quoteType: "package", ... } enquiry.
+// current step's fields. On submit the payload is posted to /api/enquiry-packages.
 import { useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -132,11 +131,10 @@ export function PackageQuoteForm({ initialValues, holidayTypeNames = [] }: { ini
     setSubmitError("");
 
     try {
-      const res = await fetch("/api/enquiries", {
+      const res = await fetch("/api/enquiry-packages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          quoteType: "package",
           name: form.name,
           email: form.email,
           phone: form.phone,

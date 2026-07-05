@@ -42,11 +42,13 @@ import type { SectionKey } from "@/lib/sections";
 type MeData = { email: string; role: "superadmin" | "admin" | "user"; sections: SectionKey[] };
 
 type ActivityData = {
-  newEnquiryCount: number;
+  newPackageEnquiryCount: number;
+  newFlightEnquiryCount: number;
   unreadContactCount: number;
   newFlightBookingCount: number;
   recentEnquiries: {
     id: number;
+    kind: "package" | "flight";
     name: string;
     destination: string;
     createdAt: string;
@@ -103,7 +105,8 @@ function AdminErrorScreen() {
 
 type AdminPath =
   | "/admin"
-  | "/admin/enquiries"
+  | "/admin/enquiry-packages"
+  | "/admin/enquiry-flights"
   | "/admin/flight-bookings"
   | "/admin/messages"
   | "/admin/subscribers"
@@ -134,7 +137,8 @@ const navSections: NavSection[] = [
   {
     label: "Customer Relations",
     items: [
-      { to: "/admin/enquiries", label: "Quote Inquiries", icon: FileText, exact: false, sectionKey: "enquiries" },
+      { to: "/admin/enquiry-packages", label: "Package Enquiries", icon: FileText, exact: false, sectionKey: "enquiry-packages" },
+      { to: "/admin/enquiry-flights", label: "Flight Enquiries", icon: PlaneTakeoff, exact: false, sectionKey: "enquiry-flights" },
       { to: "/admin/flight-bookings", label: "Flight Bookings", icon: PlaneTakeoff, exact: false, sectionKey: "flight-bookings" },
       { to: "/admin/messages", label: "Messages", icon: MessageSquare, exact: false, sectionKey: "messages" },
       { to: "/admin/subscribers", label: "Subscribers", icon: Mail, exact: false, sectionKey: "subscribers" },
@@ -230,7 +234,8 @@ function AdminLayoutRoute() {
     staleTime: 30 * 1000,
   });
 
-  const newEnquiries = activity?.newEnquiryCount ?? 0;
+  const newPackageEnquiries = activity?.newPackageEnquiryCount ?? 0;
+  const newFlightEnquiries = activity?.newFlightEnquiryCount ?? 0;
   const unreadMessages = activity?.unreadContactCount ?? 0;
   const newFlightBookings = activity?.newFlightBookingCount ?? 0;
 
@@ -386,8 +391,10 @@ function AdminLayoutRoute() {
                 {section.items.map((item) => {
                   const { to, label, icon: Icon, exact } = item;
                   const badge =
-                    to === "/admin/enquiries" && newEnquiries > 0
-                      ? String(newEnquiries)
+                    to === "/admin/enquiry-packages" && newPackageEnquiries > 0
+                      ? String(newPackageEnquiries)
+                      : to === "/admin/enquiry-flights" && newFlightEnquiries > 0
+                        ? String(newFlightEnquiries)
                       : to === "/admin/flight-bookings" && newFlightBookings > 0
                         ? String(newFlightBookings)
                         : to === "/admin/messages" && unreadMessages > 0
@@ -550,7 +557,7 @@ function AdminLayoutRoute() {
                 className="relative flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
               >
                 <Bell className="h-4 w-4" />
-                {(newEnquiries > 0 || unreadMessages > 0 || newFlightBookings > 0) && (
+                {(newPackageEnquiries > 0 || newFlightEnquiries > 0 || unreadMessages > 0 || newFlightBookings > 0) && (
                   <span className="absolute right-[7px] top-[7px] h-1.5 w-1.5 rounded-full bg-amber-400 ring-[1.5px] ring-white" />
                 )}
               </button>
@@ -735,7 +742,10 @@ function NotificationsPanel({
 
   const enquiries = activity?.recentEnquiries ?? [];
   const messages = activity?.unreadContacts ?? [];
-  const totalUnread = (activity?.newEnquiryCount ?? 0) + (activity?.unreadContactCount ?? 0);
+  const totalUnread =
+    (activity?.newPackageEnquiryCount ?? 0) +
+    (activity?.newFlightEnquiryCount ?? 0) +
+    (activity?.unreadContactCount ?? 0);
 
   const hasActivity = enquiries.length > 0 || messages.length > 0;
 
@@ -766,10 +776,10 @@ function NotificationsPanel({
         )}
 
         {enquiries.map((e) => (
-          <li key={`enq-${e.id}`}>
+          <li key={`enq-${e.kind}-${e.id}`}>
             <button
               onClick={() => {
-                navigate({ to: "/admin/enquiries" });
+                navigate({ to: e.kind === "flight" ? "/admin/enquiry-flights" : "/admin/enquiry-packages" });
                 onClose();
               }}
               className={cn(
@@ -787,7 +797,7 @@ function NotificationsPanel({
                     e.status === "new" ? "font-semibold text-gray-900" : "text-gray-600",
                   )}
                 >
-                  New enquiry — {e.destination}
+                  New {e.kind} enquiry — {e.destination}
                 </p>
                 <p className="mt-0.5 truncate text-[11px] text-gray-400">{e.name}</p>
                 <p className="mt-1 text-[10px] text-gray-400">{timeAgo(e.createdAt)}</p>
@@ -827,15 +837,24 @@ function NotificationsPanel({
       </ul>
 
       {/* Footer */}
-      <div className="border-t border-gray-100 px-4 py-2.5">
+      <div className="flex border-t border-gray-100 px-2 py-2">
         <button
           onClick={() => {
-            navigate({ to: "/admin/enquiries" });
+            navigate({ to: "/admin/enquiry-packages" });
             onClose();
           }}
-          className="flex w-full items-center justify-center gap-1.5 text-[12px] font-medium text-gray-500 hover:text-gray-800"
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800"
         >
-          View all enquiries <ArrowRight className="h-3.5 w-3.5" />
+          Package enquiries <ArrowRight className="h-3.5 w-3.5" />
+        </button>
+        <button
+          onClick={() => {
+            navigate({ to: "/admin/enquiry-flights" });
+            onClose();
+          }}
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-[12px] font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+        >
+          Flight enquiries <ArrowRight className="h-3.5 w-3.5" />
         </button>
       </div>
     </div>

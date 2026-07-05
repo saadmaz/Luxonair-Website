@@ -1,7 +1,7 @@
 // Three-step flights-only enquiry wizard: Journey → Preferences → Contact.
 // Validation runs per-step using Zod schemas so the user only sees errors for the
-// current step's fields. On submit the payload is posted to /api/enquiries as a
-// { quoteType: "flight", ... } enquiry. No holiday/package fields ever appear here.
+// current step's fields. On submit the payload is posted to /api/enquiry-flights.
+// No holiday/package fields ever appear here.
 import { useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -108,11 +108,10 @@ export function FlightQuoteForm({ initialValues }: { initialValues?: Partial<For
     setSubmitError("");
 
     try {
-      const res = await fetch("/api/enquiries", {
+      const res = await fetch("/api/enquiry-flights", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          quoteType: "flight",
           name: form.name,
           email: form.email,
           phone: form.phone,

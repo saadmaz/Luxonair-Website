@@ -1,5 +1,6 @@
 export const SECTION_KEYS = [
-  "enquiries",
+  "enquiry-packages",
+  "enquiry-flights",
   "flight-bookings",
   "messages",
   "subscribers",
@@ -16,7 +17,8 @@ export const SECTION_KEYS = [
 export type SectionKey = (typeof SECTION_KEYS)[number];
 
 export const SECTION_LABELS: Record<SectionKey, string> = {
-  enquiries: "Quote Inquiries",
+  "enquiry-packages": "Package Enquiries",
+  "enquiry-flights": "Flight Enquiries",
   "flight-bookings": "Flight Bookings",
   messages: "Messages",
   subscribers: "Subscribers",

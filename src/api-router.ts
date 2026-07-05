@@ -3,10 +3,14 @@ import { APIRoute as logoutHandlers } from './routes/api/auth/logout';
 import { APIRoute as logoutAllHandlers } from './routes/api/auth/logout-all';
 import { APIRoute as meHandlers } from './routes/api/auth/me';
 import { APIRoute as activityHandlers } from './routes/api/activity/index';
-import { APIRoute as enquiriesHandlers } from './routes/api/enquiries/index';
-import { APIRoute as enquiriesIdHandlers } from './routes/api/enquiries/$id';
-import { APIRoute as enquiriesReplyHandlers } from './routes/api/enquiries/$id.reply';
-import { APIRoute as enquiriesNotesHandlers } from './routes/api/enquiries/$id.notes';
+import { APIRoute as enquiryPackagesHandlers } from './routes/api/enquiry-packages/index';
+import { APIRoute as enquiryPackagesIdHandlers } from './routes/api/enquiry-packages/$id';
+import { APIRoute as enquiryPackagesReplyHandlers } from './routes/api/enquiry-packages/$id.reply';
+import { APIRoute as enquiryPackagesNotesHandlers } from './routes/api/enquiry-packages/$id.notes';
+import { APIRoute as enquiryFlightsHandlers } from './routes/api/enquiry-flights/index';
+import { APIRoute as enquiryFlightsIdHandlers } from './routes/api/enquiry-flights/$id';
+import { APIRoute as enquiryFlightsReplyHandlers } from './routes/api/enquiry-flights/$id.reply';
+import { APIRoute as enquiryFlightsNotesHandlers } from './routes/api/enquiry-flights/$id.notes';
 import { APIRoute as contactsHandlers } from './routes/api/contacts/index';
 import { APIRoute as contactsIdHandlers } from './routes/api/contacts/$id';
 import { APIRoute as contactsNotesHandlers } from './routes/api/contacts/$id.notes';
@@ -58,10 +62,14 @@ const routes = [
   makeRoute('/api/auth/logout-all', logoutAllHandlers as Handlers),
   makeRoute('/api/auth/me', meHandlers as Handlers),
   makeRoute('/api/activity', activityHandlers as Handlers),
-  makeRoute('/api/enquiries', enquiriesHandlers as Handlers),
-  makeRoute('/api/enquiries/$id', enquiriesIdHandlers as Handlers),
-  makeRoute('/api/enquiries/$id/reply', enquiriesReplyHandlers as Handlers),
-  makeRoute('/api/enquiries/$id/notes', enquiriesNotesHandlers as Handlers),
+  makeRoute('/api/enquiry-packages', enquiryPackagesHandlers as Handlers),
+  makeRoute('/api/enquiry-packages/$id', enquiryPackagesIdHandlers as Handlers),
+  makeRoute('/api/enquiry-packages/$id/reply', enquiryPackagesReplyHandlers as Handlers),
+  makeRoute('/api/enquiry-packages/$id/notes', enquiryPackagesNotesHandlers as Handlers),
+  makeRoute('/api/enquiry-flights', enquiryFlightsHandlers as Handlers),
+  makeRoute('/api/enquiry-flights/$id', enquiryFlightsIdHandlers as Handlers),
+  makeRoute('/api/enquiry-flights/$id/reply', enquiryFlightsReplyHandlers as Handlers),
+  makeRoute('/api/enquiry-flights/$id/notes', enquiryFlightsNotesHandlers as Handlers),
   makeRoute('/api/contacts', contactsHandlers as Handlers),
   makeRoute('/api/contacts/$id', contactsIdHandlers as Handlers),
   makeRoute('/api/contacts/$id/notes', contactsNotesHandlers as Handlers),

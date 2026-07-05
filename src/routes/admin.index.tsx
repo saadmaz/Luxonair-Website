@@ -22,6 +22,8 @@ type DbEnquiry = {
   createdAt: string;
 };
 
+type UiEnquiry = DbEnquiry & { kind: "package" | "flight" };
+
 type DbContact = { id: number; read: boolean };
 type DbSubscriber = { id: number };
 
@@ -62,15 +64,22 @@ function AdminDashboard() {
   const greeting = now.getHours() < 12 ? "Good morning" : now.getHours() < 17 ? "Good afternoon" : "Good evening";
   const dateStr = now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
-  const { data: enquiries = [], isLoading: enquiriesLoading } = useQuery({ queryKey: ["enquiries"], queryFn: () => api.get<DbEnquiry[]>("/api/enquiries") });
+  const { data: packageEnquiries = [], isLoading: packagesLoading } = useQuery({ queryKey: ["enquiry-packages"], queryFn: () => api.get<DbEnquiry[]>("/api/enquiry-packages") });
+  const { data: flightEnquiries = [], isLoading: flightsLoading } = useQuery({ queryKey: ["enquiry-flights"], queryFn: () => api.get<DbEnquiry[]>("/api/enquiry-flights") });
   const { data: contacts = [] } = useQuery({ queryKey: ["contacts"], queryFn: () => api.get<DbContact[]>("/api/contacts") });
   const { data: subscribers = [], isLoading: subsLoading } = useQuery({ queryKey: ["subscribers"], queryFn: () => api.get<DbSubscriber[]>("/api/subscribers") });
+
+  const enquiries: UiEnquiry[] = [
+    ...packageEnquiries.map((e) => ({ ...e, kind: "package" as const })),
+    ...flightEnquiries.map((e) => ({ ...e, kind: "flight" as const })),
+  ];
 
   const totalEnquiries = enquiries.length;
   const newEnquiries = enquiries.filter((e) => e.status === "new").length;
   const unreadContacts = contacts.filter((c) => !c.read).length;
   const totalSubs = subscribers.length;
 
+  const enquiriesLoading = packagesLoading || flightsLoading;
   const statsLoading = subsLoading || enquiriesLoading;
 
   const statCards = [
@@ -80,7 +89,9 @@ function AdminDashboard() {
     { label: "Unread Messages",  value: unreadContacts,  change: "Contact form",        positive: unreadContacts === 0,    icon: MessageSquare, accent: "bg-[#D2972A]", iconBg: "bg-[#D2972A]/10", iconColor: "text-[#D2972A]" },
   ];
 
-  const recentEnquiries = enquiries.slice(0, 6);
+  const recentEnquiries = enquiries
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 6);
 
   return (
     <div className="p-6 lg:p-8">
@@ -125,12 +136,20 @@ function AdminDashboard() {
             <h2 className="text-sm font-bold text-gray-900">Recent Enquiries</h2>
             <p className="mt-0.5 text-xs text-gray-400">Latest quote requests from the website</p>
           </div>
-          <button
-            onClick={() => navigate({ to: "/admin/enquiries" })}
-            className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-semibold text-gray-600 transition-all hover:border-gray-300 hover:bg-gray-100"
-          >
-            View all <ArrowUpRight className="h-3 w-3" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate({ to: "/admin/enquiry-packages" })}
+              className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-semibold text-gray-600 transition-all hover:border-gray-300 hover:bg-gray-100"
+            >
+              Packages <ArrowUpRight className="h-3 w-3" />
+            </button>
+            <button
+              onClick={() => navigate({ to: "/admin/enquiry-flights" })}
+              className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-semibold text-gray-600 transition-all hover:border-gray-300 hover:bg-gray-100"
+            >
+              Flights <ArrowUpRight className="h-3 w-3" />
+            </button>
+          </div>
         </div>
 
         {enquiriesLoading ? (
@@ -151,7 +170,7 @@ function AdminDashboard() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-100 bg-gray-50/60">
-                    {["Customer", "Destination", "Travel Date", "Budget", "Party", "Status", "Received"].map((h) => (
+                    {["Customer", "Type", "Destination", "Travel Date", "Budget", "Party", "Status", "Received"].map((h) => (
                       <th key={h} className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[0.14em] text-gray-400 first:pl-6">{h}</th>
                     ))}
                   </tr>
@@ -163,7 +182,11 @@ function AdminDashboard() {
                       : e.departWindow ?? "Flexible";
                     const received = new Date(e.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
                     return (
-                      <tr key={e.id} className="group transition-colors hover:bg-gray-50/70">
+                      <tr
+                        key={`${e.kind}-${e.id}`}
+                        onClick={() => navigate({ to: e.kind === "flight" ? "/admin/enquiry-flights" : "/admin/enquiry-packages" })}
+                        className="group cursor-pointer transition-colors hover:bg-gray-50/70"
+                      >
                         <td className="py-3.5 pl-6 pr-4">
                           <div className="flex items-center gap-3">
                             <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-bold", avatarColors[i % avatarColors.length])}>
@@ -174,6 +197,11 @@ function AdminDashboard() {
                               <p className="text-[11px] text-gray-400">{e.email}</p>
                             </div>
                           </div>
+                        </td>
+                        <td className="px-4 py-3.5">
+                          <span className={cn("inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold", e.kind === "flight" ? "bg-sky-50 text-sky-700" : "bg-violet-50 text-violet-700")}>
+                            {e.kind === "flight" ? "Flight" : "Package"}
+                          </span>
                         </td>
                         <td className="px-4 py-3.5"><span className="font-medium text-gray-700">{e.destination}</span></td>
                         <td className="px-4 py-3.5 text-gray-500">{travelDate}</td>
@@ -194,7 +222,11 @@ function AdminDashboard() {
                   ? new Date(e.departDate).toLocaleDateString("en-GB", { month: "short", year: "numeric" })
                   : e.departWindow ?? "Flexible";
                 return (
-                  <div key={e.id} className="flex items-start gap-3 px-5 py-4">
+                  <div
+                    key={`${e.kind}-${e.id}`}
+                    onClick={() => navigate({ to: e.kind === "flight" ? "/admin/enquiry-flights" : "/admin/enquiry-packages" })}
+                    className="flex items-start gap-3 px-5 py-4"
+                  >
                     <div className={cn("mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-bold", avatarColors[i % avatarColors.length])}>
                       {initials(e.name)}
                     </div>
@@ -207,6 +239,9 @@ function AdminDashboard() {
                         <StatusBadge status={e.status} />
                       </div>
                       <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-gray-500">
+                        <span className={cn("inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold", e.kind === "flight" ? "bg-sky-50 text-sky-700" : "bg-violet-50 text-violet-700")}>
+                          {e.kind === "flight" ? "Flight" : "Package"}
+                        </span>
                         <span className="font-medium text-gray-700">{e.destination}</span>
                         <span>{travelDate}</span>
                         <span>{e.budget}</span>

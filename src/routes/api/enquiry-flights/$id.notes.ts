@@ -1,25 +1,25 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { asc, eq } from "drizzle-orm";
-import { db, enquiryNotes } from "../../../../db/index";
+import { db, enquiryFlightNotes } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
 import { enquiryNoteCreateSchema } from "@/server/validate";
 
-export const APIRoute = createAPIFileRoute("/api/enquiries/$id/notes")({
+export const APIRoute = createAPIFileRoute("/api/enquiry-flights/$id/notes")({
   GET: async ({ request, params }) => {
-    await requireSection(request, "enquiries");
+    await requireSection(request, "enquiry-flights");
     const id = Number(params.id);
 
     const rows = await db
       .select()
-      .from(enquiryNotes)
-      .where(eq(enquiryNotes.enquiryId, id))
-      .orderBy(asc(enquiryNotes.createdAt));
+      .from(enquiryFlightNotes)
+      .where(eq(enquiryFlightNotes.enquiryId, id))
+      .orderBy(asc(enquiryFlightNotes.createdAt));
 
     return Response.json(rows);
   },
 
   POST: async ({ request, params }) => {
-    const ctx = await requireSection(request, "enquiries");
+    const ctx = await requireSection(request, "enquiry-flights");
     const id = Number(params.id);
 
     const raw = await request.json().catch(() => null);
@@ -28,7 +28,7 @@ export const APIRoute = createAPIFileRoute("/api/enquiries/$id/notes")({
       return Response.json({ error: "Invalid request", issues: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
 
-    const [result] = await db.insert(enquiryNotes).values({
+    const [result] = await db.insert(enquiryFlightNotes).values({
       enquiryId: id,
       body: parsed.data.body,
       type: parsed.data.type,
@@ -36,7 +36,7 @@ export const APIRoute = createAPIFileRoute("/api/enquiries/$id/notes")({
       authorName: ctx.displayName ?? null,
     });
 
-    const [row] = await db.select().from(enquiryNotes).where(eq(enquiryNotes.id, result.insertId));
+    const [row] = await db.select().from(enquiryFlightNotes).where(eq(enquiryFlightNotes.id, result.insertId));
     return Response.json(row, { status: 201 });
   },
 });

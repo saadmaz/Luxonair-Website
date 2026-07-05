@@ -1,7 +1,7 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { db, enquiries } from "../../../../db/index";
+import { db, enquiryFlights } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
 import { sendEnquiryReply } from "@/server/email";
 
@@ -10,9 +10,9 @@ const replySchema = z.object({
   message: z.string().min(1).max(5000),
 });
 
-export const APIRoute = createAPIFileRoute("/api/enquiries/$id/reply")({
+export const APIRoute = createAPIFileRoute("/api/enquiry-flights/$id/reply")({
   POST: async ({ request, params }) => {
-    await requireSection(request, "enquiries");
+    await requireSection(request, "enquiry-flights");
     const id = Number(params.id);
 
     const raw = await request.json().catch(() => null);
@@ -21,7 +21,7 @@ export const APIRoute = createAPIFileRoute("/api/enquiries/$id/reply")({
       return Response.json({ error: "Invalid request", issues: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
 
-    const [enquiry] = await db.select().from(enquiries).where(eq(enquiries.id, id));
+    const [enquiry] = await db.select().from(enquiryFlights).where(eq(enquiryFlights.id, id));
     if (!enquiry) return Response.json({ error: "Not found" }, { status: 404 });
 
     await sendEnquiryReply({
@@ -31,8 +31,8 @@ export const APIRoute = createAPIFileRoute("/api/enquiries/$id/reply")({
       message: parsed.data.message,
     });
 
-    await db.update(enquiries).set({ status: "responded" }).where(eq(enquiries.id, id));
-    const [row] = await db.select().from(enquiries).where(eq(enquiries.id, id));
+    await db.update(enquiryFlights).set({ status: "responded" }).where(eq(enquiryFlights.id, id));
+    const [row] = await db.select().from(enquiryFlights).where(eq(enquiryFlights.id, id));
     return Response.json(row);
   },
 });

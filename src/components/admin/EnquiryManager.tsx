@@ -1,4 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+// Shared admin UI for the two separate enquiry tables (enquiry_packages /
+// enquiry_flights). The two routes render this with `kind` set accordingly —
+// see src/routes/admin.enquiry-packages.tsx and admin.enquiry-flights.tsx.
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Clock, CheckCircle2, Circle, ChevronDown, Pencil, Trash2, Loader2, Mail } from "lucide-react";
@@ -11,15 +13,11 @@ import { api } from "@/lib/api";
 import { NotesLog } from "@/components/admin/NotesLog";
 import type { NoteEntry, NoteType } from "@/lib/notes";
 
-export const Route = createFileRoute("/admin/enquiries")({
-  component: AdminEnquiriesPage,
-});
-
 type Status = "New" | "In Progress" | "Responded";
-type QuoteType = "package" | "flight";
+type Kind = "package" | "flight";
 
 type Enquiry = {
-  id: number; quoteType: QuoteType; name: string; email: string; phone: string;
+  id: number; name: string; email: string; phone: string;
   destination: string; region: string; tripType: string;
   travelDate: string; dateMode: string; nights: number | null; adults: number; children: number; infants: number;
   budget: string; status: Status; received: string; notes: string;
@@ -28,7 +26,7 @@ type Enquiry = {
 };
 
 type DbEnquiry = {
-  id: number; quoteType: QuoteType; name: string; email: string; phone: string;
+  id: number; name: string; email: string; phone: string;
   destination: string; region: string | null; tripType: string;
   dateMode: string; departWindow: string | null; departDate: string | null;
   nights: number | null; adults: number; children: number; infants: number;
@@ -52,7 +50,6 @@ function uiStatusToDb(s: Status): string {
 function toUIEnquiry(row: DbEnquiry): Enquiry {
   return {
     id: row.id,
-    quoteType: row.quoteType,
     name: row.name,
     email: row.email,
     phone: row.phone,
@@ -81,20 +78,6 @@ function toUIEnquiry(row: DbEnquiry): Enquiry {
   };
 }
 
-const typeConfig: Record<QuoteType, { label: string; className: string }> = {
-  package: { label: "Package", className: "bg-violet-50 text-violet-700 ring-violet-200" },
-  flight: { label: "Flight", className: "bg-sky-50 text-sky-700 ring-sky-200" },
-};
-
-function TypeBadge({ type }: { type: QuoteType }) {
-  const { label, className } = typeConfig[type];
-  return (
-    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1", className)}>
-      {label}
-    </span>
-  );
-}
-
 const statusConfig: Record<Status, { className: string; icon: typeof Circle }> = {
   New: { className: "bg-blue-50 text-blue-700 ring-blue-200", icon: Circle },
   "In Progress": { className: "bg-amber-50 text-amber-700 ring-amber-200", icon: Clock },
@@ -113,10 +96,16 @@ function StatusBadge({ status }: { status: Status }) {
 const inputCls = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#042045] focus:bg-white focus:ring-2 focus:ring-[#042045]/10";
 const labelCls = "block text-sm font-medium text-gray-700 mb-1";
 
-function AdminEnquiriesPage() {
+export function EnquiryManager({ kind }: { kind: Kind }) {
+  const apiBase = kind === "package" ? "/api/enquiry-packages" : "/api/enquiry-flights";
+  const queryKey = kind === "package" ? "enquiry-packages" : "enquiry-flights";
+  const title = kind === "package" ? "Package Enquiries" : "Flight Enquiries";
+  const description = kind === "package"
+    ? "Holiday package quote requests submitted via the website."
+    : "Flight-only quote requests submitted via the website.";
+
   const qc = useQueryClient();
   const [filter, setFilter] = useState<Status | "All">("All");
-  const [typeFilter, setTypeFilter] = useState<QuoteType | "All">("All");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [editItem, setEditItem] = useState<Enquiry | null>(null);
   const [saveError, setSaveError] = useState("");
@@ -126,19 +115,19 @@ function AdminEnquiriesPage() {
   const [replyMessage, setReplyMessage] = useState("");
 
   const { data: items = [], isLoading } = useQuery({
-    queryKey: ["enquiries"],
-    queryFn: () => api.get<DbEnquiry[]>("/api/enquiries").then((rows) => rows.map(toUIEnquiry)),
+    queryKey: [queryKey],
+    queryFn: () => api.get<DbEnquiry[]>(apiBase).then((rows) => rows.map(toUIEnquiry)),
   });
 
   const updateStatus = useMutation({
     mutationFn: ({ id, status }: { id: number; status: Status }) =>
-      api.patch(`/api/enquiries/${id}`, { status: uiStatusToDb(status) }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["enquiries"] }),
+      api.patch(`${apiBase}/${id}`, { status: uiStatusToDb(status) }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: [queryKey] }),
   });
 
   const saveEdit = useMutation({
     mutationFn: (e: Enquiry) =>
-      api.patch(`/api/enquiries/${e.id}`, {
+      api.patch(`${apiBase}/${e.id}`, {
         status: uiStatusToDb(e.status),
         name: e.name,
         email: e.email,
@@ -148,37 +137,37 @@ function AdminEnquiriesPage() {
         // (fixed dates) or departWindow (flexible dates) — write back to
         // whichever one this enquiry actually used.
         ...(e.dateMode === "specific" ? { departDate: e.travelDate } : { departWindow: e.travelDate }),
-        ...(e.nights !== null ? { nights: e.nights } : {}),
+        ...(kind === "package" ? { nights: e.nights ?? 1 } : {}),
         adults: e.adults,
         children: e.children,
         infants: e.infants,
         budget: e.budget,
-        ...(e.quoteType === "package"
+        ...(kind === "package"
           ? { hotelRating: e.hotelRating, boardBasis: e.boardBasis, flightsIncluded: e.flightsIncluded }
           : { cabinClass: e.cabinClass, departAirport: e.departAirport, directOnly: e.directOnly, preferredAirlines: e.preferredAirlines }),
       }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["enquiries"] }); setEditItem(null); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: [queryKey] }); setEditItem(null); },
     onError: () => setSaveError("Failed to save changes. Please try again."),
   });
 
   const { data: notes = [] } = useQuery({
-    queryKey: ["enquiry-notes", editItem?.id],
-    queryFn: () => api.get<NoteEntry[]>(`/api/enquiries/${editItem!.id}/notes`),
+    queryKey: [`${queryKey}-notes`, editItem?.id],
+    queryFn: () => api.get<NoteEntry[]>(`${apiBase}/${editItem!.id}/notes`),
     enabled: editItem !== null,
   });
 
   const addNote = useMutation({
     mutationFn: (vars: { id: number; body: string; type: NoteType }) =>
-      api.post<NoteEntry>(`/api/enquiries/${vars.id}/notes`, { body: vars.body, type: vars.type }),
+      api.post<NoteEntry>(`${apiBase}/${vars.id}/notes`, { body: vars.body, type: vars.type }),
     onSuccess: (_, vars) => {
-      qc.invalidateQueries({ queryKey: ["enquiry-notes", vars.id] });
+      qc.invalidateQueries({ queryKey: [`${queryKey}-notes`, vars.id] });
     },
   });
 
   const deleteEnquiry = useMutation({
-    mutationFn: (id: number) => api.delete(`/api/enquiries/${id}`),
+    mutationFn: (id: number) => api.delete(`${apiBase}/${id}`),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["enquiries"] });
+      qc.invalidateQueries({ queryKey: [queryKey] });
       setDeleteId(null);
       if (expandedId === deleteId) setExpandedId(null);
     },
@@ -186,9 +175,9 @@ function AdminEnquiriesPage() {
 
   const sendReply = useMutation({
     mutationFn: (vars: { id: number; subject: string; message: string }) =>
-      api.post(`/api/enquiries/${vars.id}/reply`, { subject: vars.subject, message: vars.message }),
+      api.post(`${apiBase}/${vars.id}/reply`, { subject: vars.subject, message: vars.message }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["enquiries"] });
+      qc.invalidateQueries({ queryKey: [queryKey] });
       setReplyItem(null);
     },
   });
@@ -199,18 +188,12 @@ function AdminEnquiriesPage() {
     setReplyMessage("");
   };
 
-  const byType = typeFilter === "All" ? items : items.filter((e) => e.quoteType === typeFilter);
-  const filtered = filter === "All" ? byType : byType.filter((e) => e.status === filter);
+  const filtered = filter === "All" ? items : items.filter((e) => e.status === filter);
   const counts = {
-    All: byType.length,
-    New: byType.filter((e) => e.status === "New").length,
-    "In Progress": byType.filter((e) => e.status === "In Progress").length,
-    Responded: byType.filter((e) => e.status === "Responded").length,
-  };
-  const typeCounts = {
     All: items.length,
-    package: items.filter((e) => e.quoteType === "package").length,
-    flight: items.filter((e) => e.quoteType === "flight").length,
+    New: items.filter((e) => e.status === "New").length,
+    "In Progress": items.filter((e) => e.status === "In Progress").length,
+    Responded: items.filter((e) => e.status === "Responded").length,
   };
 
   if (isLoading) {
@@ -224,23 +207,8 @@ function AdminEnquiriesPage() {
   return (
     <div className="p-6 lg:p-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Enquiries</h1>
-        <p className="mt-1 text-sm text-gray-500">Quote requests submitted via the website.</p>
-      </div>
-
-      {/* Type filter */}
-      <div className="mb-3 flex flex-wrap gap-2">
-        {(["All", "package", "flight"] as const).map((t) => (
-          <button key={t} onClick={() => setTypeFilter(t)}
-            className={cn("rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
-              typeFilter === t ? "bg-[#042045] text-white" : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-50")}
-          >
-            {t === "All" ? "All types" : typeConfig[t].label}
-            <span className={cn("ml-2 rounded-full px-1.5 py-0.5 text-xs", typeFilter === t ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500")}>
-              {typeCounts[t]}
-            </span>
-          </button>
-        ))}
+        <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+        <p className="mt-1 text-sm text-gray-500">{description}</p>
       </div>
 
       {/* Status filter tabs */}
@@ -264,7 +232,7 @@ function AdminEnquiriesPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/60">
-                {["Customer", "Type", "Destination", "Travel", "Party", "Budget", "Status", "Received", ""].map((h) => (
+                {[kind === "flight" ? "Route" : "Destination", "Customer", "Travel", "Party", "Budget", "Status", "Received", ""].map((h) => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-400 first:pl-6">{h}</th>
                 ))}
               </tr>
@@ -274,12 +242,7 @@ function AdminEnquiriesPage() {
                 <>
                   <tr key={e.id} className="transition-colors hover:bg-gray-50/40">
                     <td className="py-4 pl-6 pr-4">
-                      <p className="font-semibold text-gray-900">{e.name}</p>
-                      <p className="text-xs text-gray-400">{e.email}</p>
-                    </td>
-                    <td className="px-4 py-4"><TypeBadge type={e.quoteType} /></td>
-                    <td className="px-4 py-4">
-                      {e.quoteType === "flight" ? (
+                      {kind === "flight" ? (
                         <>
                           <p className="font-medium text-gray-800">{e.departAirport} → {e.destination}</p>
                           <p className="text-xs text-gray-400">{e.tripType}{e.cabinClass ? ` · ${e.cabinClass}` : ""}</p>
@@ -290,6 +253,10 @@ function AdminEnquiriesPage() {
                           <p className="text-xs text-gray-400">{[e.region, e.tripType].filter(Boolean).join(" · ")}</p>
                         </>
                       )}
+                    </td>
+                    <td className="px-4 py-4">
+                      <p className="font-semibold text-gray-900">{e.name}</p>
+                      <p className="text-xs text-gray-400">{e.email}</p>
                     </td>
                     <td className="px-4 py-4 text-gray-600">
                       <p>{e.travelDate}</p>
@@ -321,10 +288,10 @@ function AdminEnquiriesPage() {
                   </tr>
                   {expandedId === e.id && (
                     <tr key={`${e.id}-exp`} className="bg-blue-50/30">
-                      <td colSpan={9} className="px-6 py-4">
+                      <td colSpan={8} className="px-6 py-4">
                         <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
                           <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Phone</p><p className="mt-1 text-gray-800">{e.phone}</p></div>
-                          {e.quoteType === "package" ? (
+                          {kind === "package" ? (
                             <>
                               <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Hotel / board</p><p className="mt-1 text-gray-800">{[e.hotelRating, e.boardBasis].filter(Boolean).join(" · ") || "-"}</p></div>
                               <div><p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Flights</p><p className="mt-1 text-gray-800">{e.flightsIncluded ? `${e.departAirport || "?"} · ${e.cabinClass || "?"}` : "Not required"}</p></div>
@@ -359,11 +326,11 @@ function AdminEnquiriesPage() {
             <div key={e.id} className="px-5 py-4">
               <div className="flex items-start justify-between gap-3">
                 <div><p className="font-semibold text-gray-900">{e.name}</p><p className="text-xs text-gray-400">{e.email}</p></div>
-                <div className="flex flex-col items-end gap-1"><TypeBadge type={e.quoteType} /><StatusBadge status={e.status} /></div>
+                <StatusBadge status={e.status} />
               </div>
               <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500">
                 <span className="font-medium text-gray-700">
-                  {e.quoteType === "flight" ? `${e.departAirport} → ${e.destination}` : e.destination}
+                  {kind === "flight" ? `${e.departAirport} → ${e.destination}` : e.destination}
                 </span>
                 <span>{e.travelDate}</span>
                 {e.nights !== null && <span>{e.nights}n</span>}
@@ -382,16 +349,16 @@ function AdminEnquiriesPage() {
       {/* Edit modal */}
       <Dialog open={!!editItem} onOpenChange={(o) => { if (!o) { setEditItem(null); setSaveError(""); } }}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle className="flex items-center gap-2">Edit Enquiry {editItem && <TypeBadge type={editItem.quoteType} />}</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Edit {kind === "flight" ? "Flight" : "Package"} Enquiry</DialogTitle></DialogHeader>
           {editItem && (
             <div className="space-y-4 py-2">
               <div className="grid grid-cols-2 gap-4">
                 <div><label className={labelCls}>Name</label><input className={inputCls} value={editItem.name} onChange={(e) => setEditItem({ ...editItem, name: e.target.value })} /></div>
                 <div><label className={labelCls}>Email</label><input className={inputCls} value={editItem.email} onChange={(e) => setEditItem({ ...editItem, email: e.target.value })} /></div>
                 <div><label className={labelCls}>Phone</label><input className={inputCls} value={editItem.phone} onChange={(e) => setEditItem({ ...editItem, phone: e.target.value })} /></div>
-                <div><label className={labelCls}>{editItem.quoteType === "flight" ? "Arrival airport" : "Destination"}</label><input className={inputCls} value={editItem.destination} onChange={(e) => setEditItem({ ...editItem, destination: e.target.value })} /></div>
+                <div><label className={labelCls}>{kind === "flight" ? "Arrival airport" : "Destination"}</label><input className={inputCls} value={editItem.destination} onChange={(e) => setEditItem({ ...editItem, destination: e.target.value })} /></div>
                 <div><label className={labelCls}>Travel Date</label><input className={inputCls} value={editItem.travelDate} onChange={(e) => setEditItem({ ...editItem, travelDate: e.target.value })} /></div>
-                {editItem.quoteType === "package" && (
+                {kind === "package" && (
                   <div><label className={labelCls}>Nights</label><input type="number" className={inputCls} value={editItem.nights ?? 0} onChange={(e) => setEditItem({ ...editItem, nights: +e.target.value })} /></div>
                 )}
                 <div><label className={labelCls}>Adults</label><input type="number" className={inputCls} value={editItem.adults} onChange={(e) => setEditItem({ ...editItem, adults: +e.target.value })} /></div>
@@ -404,7 +371,7 @@ function AdminEnquiriesPage() {
                     <option>New</option><option>In Progress</option><option>Responded</option>
                   </select>
                 </div>
-                {editItem.quoteType === "package" ? (
+                {kind === "package" ? (
                   <>
                     <div><label className={labelCls}>Hotel rating</label><input className={inputCls} value={editItem.hotelRating} onChange={(e) => setEditItem({ ...editItem, hotelRating: e.target.value })} /></div>
                     <div><label className={labelCls}>Board basis</label><input className={inputCls} value={editItem.boardBasis} onChange={(e) => setEditItem({ ...editItem, boardBasis: e.target.value })} /></div>
@@ -438,7 +405,7 @@ function AdminEnquiriesPage() {
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
             <button
-              onClick={() => { setSaveError(""); editItem && saveEdit.mutate(editItem); }}
+              onClick={() => { setSaveError(""); if (editItem) saveEdit.mutate(editItem); }}
               disabled={saveEdit.isPending}
               className="rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white hover:bg-[#042045]/90 disabled:opacity-60"
             >

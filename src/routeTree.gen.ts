@@ -41,7 +41,8 @@ import { Route as AdminHolidaysRouteImport } from './routes/admin.holidays'
 import { Route as AdminFlightOffersRouteImport } from './routes/admin.flight-offers'
 import { Route as AdminFlightBookingsRouteImport } from './routes/admin.flight-bookings'
 import { Route as AdminFaqsRouteImport } from './routes/admin.faqs'
-import { Route as AdminEnquiriesRouteImport } from './routes/admin.enquiries'
+import { Route as AdminEnquiryPackagesRouteImport } from './routes/admin.enquiry-packages'
+import { Route as AdminEnquiryFlightsRouteImport } from './routes/admin.enquiry-flights'
 import { Route as AdminDestinationsRouteImport } from './routes/admin.destinations'
 import { Route as AdminDestinationHighlightsRouteImport } from './routes/admin.destination-highlights'
 import { Route as AdminDealsRouteImport } from './routes/admin.deals'
@@ -207,9 +208,14 @@ const AdminFaqsRoute = AdminFaqsRouteImport.update({
   path: '/faqs',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminEnquiriesRoute = AdminEnquiriesRouteImport.update({
-  id: '/enquiries',
-  path: '/enquiries',
+const AdminEnquiryPackagesRoute = AdminEnquiryPackagesRouteImport.update({
+  id: '/enquiry-packages',
+  path: '/enquiry-packages',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEnquiryFlightsRoute = AdminEnquiryFlightsRouteImport.update({
+  id: '/enquiry-flights',
+  path: '/enquiry-flights',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminDestinationsRoute = AdminDestinationsRouteImport.update({
@@ -255,7 +261,8 @@ export interface FileRoutesByFullPath {
   '/admin/deals': typeof AdminDealsRoute
   '/admin/destination-highlights': typeof AdminDestinationHighlightsRoute
   '/admin/destinations': typeof AdminDestinationsRoute
-  '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/enquiry-flights': typeof AdminEnquiryFlightsRoute
+  '/admin/enquiry-packages': typeof AdminEnquiryPackagesRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/flight-bookings': typeof AdminFlightBookingsRoute
   '/admin/flight-offers': typeof AdminFlightOffersRoute
@@ -290,7 +297,8 @@ export interface FileRoutesByTo {
   '/admin/deals': typeof AdminDealsRoute
   '/admin/destination-highlights': typeof AdminDestinationHighlightsRoute
   '/admin/destinations': typeof AdminDestinationsRoute
-  '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/enquiry-flights': typeof AdminEnquiryFlightsRoute
+  '/admin/enquiry-packages': typeof AdminEnquiryPackagesRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/flight-bookings': typeof AdminFlightBookingsRoute
   '/admin/flight-offers': typeof AdminFlightOffersRoute
@@ -330,7 +338,8 @@ export interface FileRoutesById {
   '/admin/deals': typeof AdminDealsRoute
   '/admin/destination-highlights': typeof AdminDestinationHighlightsRoute
   '/admin/destinations': typeof AdminDestinationsRoute
-  '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/enquiry-flights': typeof AdminEnquiryFlightsRoute
+  '/admin/enquiry-packages': typeof AdminEnquiryPackagesRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/flight-bookings': typeof AdminFlightBookingsRoute
   '/admin/flight-offers': typeof AdminFlightOffersRoute
@@ -371,7 +380,8 @@ export interface FileRouteTypes {
     | '/admin/deals'
     | '/admin/destination-highlights'
     | '/admin/destinations'
-    | '/admin/enquiries'
+    | '/admin/enquiry-flights'
+    | '/admin/enquiry-packages'
     | '/admin/faqs'
     | '/admin/flight-bookings'
     | '/admin/flight-offers'
@@ -406,7 +416,8 @@ export interface FileRouteTypes {
     | '/admin/deals'
     | '/admin/destination-highlights'
     | '/admin/destinations'
-    | '/admin/enquiries'
+    | '/admin/enquiry-flights'
+    | '/admin/enquiry-packages'
     | '/admin/faqs'
     | '/admin/flight-bookings'
     | '/admin/flight-offers'
@@ -445,7 +456,8 @@ export interface FileRouteTypes {
     | '/admin/deals'
     | '/admin/destination-highlights'
     | '/admin/destinations'
-    | '/admin/enquiries'
+    | '/admin/enquiry-flights'
+    | '/admin/enquiry-packages'
     | '/admin/faqs'
     | '/admin/flight-bookings'
     | '/admin/flight-offers'
@@ -709,11 +721,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFaqsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/enquiries': {
-      id: '/admin/enquiries'
-      path: '/enquiries'
-      fullPath: '/admin/enquiries'
-      preLoaderRoute: typeof AdminEnquiriesRouteImport
+    '/admin/enquiry-packages': {
+      id: '/admin/enquiry-packages'
+      path: '/enquiry-packages'
+      fullPath: '/admin/enquiry-packages'
+      preLoaderRoute: typeof AdminEnquiryPackagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/enquiry-flights': {
+      id: '/admin/enquiry-flights'
+      path: '/enquiry-flights'
+      fullPath: '/admin/enquiry-flights'
+      preLoaderRoute: typeof AdminEnquiryFlightsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/destinations': {
@@ -752,7 +771,8 @@ interface AdminRouteChildren {
   AdminDealsRoute: typeof AdminDealsRoute
   AdminDestinationHighlightsRoute: typeof AdminDestinationHighlightsRoute
   AdminDestinationsRoute: typeof AdminDestinationsRoute
-  AdminEnquiriesRoute: typeof AdminEnquiriesRoute
+  AdminEnquiryFlightsRoute: typeof AdminEnquiryFlightsRoute
+  AdminEnquiryPackagesRoute: typeof AdminEnquiryPackagesRoute
   AdminFaqsRoute: typeof AdminFaqsRoute
   AdminFlightBookingsRoute: typeof AdminFlightBookingsRoute
   AdminFlightOffersRoute: typeof AdminFlightOffersRoute
@@ -770,7 +790,8 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminDealsRoute: AdminDealsRoute,
   AdminDestinationHighlightsRoute: AdminDestinationHighlightsRoute,
   AdminDestinationsRoute: AdminDestinationsRoute,
-  AdminEnquiriesRoute: AdminEnquiriesRoute,
+  AdminEnquiryFlightsRoute: AdminEnquiryFlightsRoute,
+  AdminEnquiryPackagesRoute: AdminEnquiryPackagesRoute,
   AdminFaqsRoute: AdminFaqsRoute,
   AdminFlightBookingsRoute: AdminFlightBookingsRoute,
   AdminFlightOffersRoute: AdminFlightOffersRoute,
