@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { ImageIcon, Loader2, UploadCloud, X } from "lucide-react";
+import { IMAGE_MIME_TYPES, MAX_IMAGE_BYTES } from "@/lib/image-types";
 
 type Props = {
   value: string;
@@ -7,8 +8,8 @@ type Props = {
   label?: string;
 };
 
-const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-const MAX_BYTES = 8 * 1024 * 1024;
+const ACCEPTED_TYPES: readonly string[] = IMAGE_MIME_TYPES;
+const MAX_BYTES = MAX_IMAGE_BYTES;
 
 export function ImageUpload({ value, onChange, label = "Image" }: Props) {
   const [draft, setDraft] = useState(value);
@@ -25,11 +26,11 @@ export function ImageUpload({ value, onChange, label = "Image" }: Props) {
   async function upload(file: File) {
     setError("");
     if (!ACCEPTED_TYPES.includes(file.type)) {
-      setError("Use a JPG, PNG, WEBP or GIF image");
+      setError("Use a JPG, PNG, WEBP, GIF, HEIC, HEIF, BMP, TIFF, SVG or AVIF image");
       return;
     }
     if (file.size > MAX_BYTES) {
-      setError("Image is too large (max 8MB)");
+      setError(`Image is too large (max ${MAX_BYTES / 1024 / 1024}MB)`);
       return;
     }
 
@@ -146,7 +147,7 @@ export function ImageUpload({ value, onChange, label = "Image" }: Props) {
                 <ImageIcon className="h-5 w-5 text-gray-500" />
               </div>
               <p className="text-sm font-medium text-gray-600">Click to upload or drag & drop</p>
-              <p className="text-xs text-gray-400">JPG, PNG, WEBP or GIF — up to 8MB</p>
+              <p className="text-xs text-gray-400">JPG, PNG, WEBP, GIF, HEIC, HEIF, BMP, TIFF, SVG or AVIF — up to {MAX_BYTES / 1024 / 1024}MB</p>
             </>
           )}
         </button>

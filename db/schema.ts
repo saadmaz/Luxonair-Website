@@ -1,5 +1,6 @@
 import {
   boolean,
+  customType,
   index,
   int,
   json,
@@ -10,6 +11,15 @@ import {
   varchar,
 } from "drizzle-orm/mysql-core";
 import type { JSONContent } from "@tiptap/react";
+
+// mysql2 returns LONGBLOB columns as Buffer by default — no custom driver-side
+// mapping needed, just the DDL type. Drizzle's mysql-core has no built-in blob
+// column, hence the customType.
+const longblob = customType<{ data: Buffer; driverData: Buffer }>({
+  dataType() {
+    return "longblob";
+  },
+});
 
 // Two fully separate enquiry tables — a package enquiry and a flight enquiry
 // share almost no required fields in practice (see PackageQuoteForm vs
@@ -315,6 +325,38 @@ export const flightOfferBookings = mysqlTable(
   ],
 );
 
+// Kept in sync with IMAGE_MIME_TYPES in src/lib/image-types.ts.
+// Not exported: db/index.ts derives its JSON-column cache by assuming every
+// export from this file is a mysqlTable, so any non-table export crashes it.
+const IMAGE_MIME_TYPE_VALUES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/heic",
+  "image/heif",
+  "image/bmp",
+  "image/tiff",
+  "image/svg+xml",
+  "image/avif",
+] as const;
+
+// Uploaded images live in the DB as bytes rather than on disk — width/height
+// are null for vector SVGs, which have no fixed pixel size.
+export const images = mysqlTable(
+  "images",
+  {
+    id: varchar("id", { length: 36 }).primaryKey(),
+    mimeType: mysqlEnum("mime_type", IMAGE_MIME_TYPE_VALUES).notNull(),
+    data: longblob("data").notNull(),
+    byteSize: int("byte_size").notNull(),
+    width: int("width"),
+    height: int("height"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("images_created_at_idx").on(t.createdAt)],
+);
+
 export const sessions = mysqlTable(
   "sessions",
   {
@@ -422,3 +464,4 @@ export type AdminAction = typeof adminActions.$inferSelect;
 export type EnquiryPackageNote = typeof enquiryPackageNotes.$inferSelect;
 export type EnquiryFlightNote = typeof enquiryFlightNotes.$inferSelect;
 export type ContactNote = typeof contactNotes.$inferSelect;
+export type ImageAsset = typeof images.$inferSelect;

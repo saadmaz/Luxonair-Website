@@ -1,40 +1,28 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api";
-import { readFile, stat } from "node:fs/promises";
-import path from "node:path";
+import { eq } from "drizzle-orm";
+import { db, images } from "../../../../db/index";
 
-const UPLOAD_DIR = path.join(process.cwd(), "uploads");
-
-const MIME_BY_EXT: Record<string, string> = {
-  jpg: "image/jpeg",
-  jpeg: "image/jpeg",
-  png: "image/png",
-  webp: "image/webp",
-  gif: "image/gif",
-};
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const APIRoute = createAPIFileRoute("/api/uploads/$filename")({
   GET: async ({ params }) => {
-    // Reject anything that isn't a bare "<uuid>.<ext>" — blocks path traversal
-    // (../) and access to arbitrary files elsewhere on disk.
-    const filename = params.filename;
-    if (!/^[a-f0-9-]+\.(jpg|jpeg|png|webp|gif)$/i.test(filename)) {
+    // Historic uploads were served as "<uuid>.<ext>" filenames; images are now
+    // looked up by id alone, so strip any extension before validating.
+    const id = params.filename.replace(/\.[a-z0-9]+$/i, "");
+    if (!UUID_RE.test(id)) {
       return new Response("Not found", { status: 404 });
     }
 
-    const ext = filename.split(".").pop()!.toLowerCase();
-    const filePath = path.join(UPLOAD_DIR, filename);
-
-    try {
-      await stat(filePath);
-      const data = await readFile(filePath);
-      return new Response(data, {
-        headers: {
-          "Content-Type": MIME_BY_EXT[ext] ?? "application/octet-stream",
-          "Cache-Control": "public, max-age=31536000, immutable",
-        },
-      });
-    } catch {
+    const [row] = await db.select().from(images).where(eq(images.id, id)).limit(1);
+    if (!row) {
       return new Response("Not found", { status: 404 });
     }
+
+    return new Response(new Uint8Array(row.data), {
+      headers: {
+        "Content-Type": row.mimeType,
+        "Cache-Control": "public, max-age=31536000, immutable",
+      },
+    });
   },
 });

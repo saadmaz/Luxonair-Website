@@ -2,6 +2,7 @@ import { useEditor, EditorContent, type JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
+import { IMAGE_MIME_TYPES } from "@/lib/image-types";
 import {
   Bold,
   Italic,
@@ -49,7 +50,7 @@ export function RichTextEditor({ value, onChange }: Props) {
   const addImage = async () => {
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = "image/jpeg,image/png,image/webp,image/gif";
+    input.accept = IMAGE_MIME_TYPES.join(",");
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;

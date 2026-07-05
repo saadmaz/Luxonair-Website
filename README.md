@@ -371,8 +371,8 @@ The following resource groups each expose `GET` (list + paginated), `POST` (crea
 
 | Method | Path | Access | Description |
 |---|---|---|---|
-| POST | `/api/upload` | Auth | Upload image (JPG/PNG/WEBP/GIF, max 8MB). MIME detected via magic bytes. Returns `{ url: "/api/uploads/<uuid>.<ext>" }`. |
-| GET | `/api/uploads/:filename` | Public | Serve uploaded file. UUID-only filenames enforced (path-traversal protection). Cache: 1-year immutable. |
+| POST | `/api/upload` | Auth | Upload image (JPG/PNG/WEBP/GIF/HEIC/HEIF/BMP/TIFF/SVG/AVIF, max 10MB, min 100×100px). Stored as bytes in the `images` table. Returns `{ url: "/api/uploads/<uuid>" }`. |
+| GET | `/api/uploads/:filename` | Public | Serve uploaded image from the `images` table by id. Cache: 1-year immutable. |
 
 ---
 
@@ -398,6 +398,7 @@ The following resource groups each expose `GET` (list + paginated), `POST` (crea
 | `sessions` | Admin auth sessions — PK random hex id, email, revoked_at (null = active) |
 | `admin_users` | Admin user accounts — email UNIQUE, password_hash, role ENUM(admin, superadmin) |
 | `admin_actions` | Audit log of admin API calls — admin_email, method, path, status |
+| `images` | Uploaded image bytes — PK UUID, `mime_type` ENUM, `data` LONGBLOB, byte_size, width, height |
 
 **Relationships:**
 - `deals.destination_slug` → `destinations.slug` ON DELETE RESTRICT
@@ -408,16 +409,16 @@ The following resource groups each expose `GET` (list + paginated), `POST` (crea
 
 ## File Uploads
 
-Images uploaded through the admin are stored server-side (not as base64 or external CDN):
+Images uploaded through the admin are stored as bytes in the `images` table (not on disk, not base64 in other tables, not an external CDN):
 
 1. Admin POSTs multipart form data to `POST /api/upload`
-2. Server validates MIME type via **magic bytes** (not the Content-Type header) — accepts JPG, PNG, WEBP, GIF only
-3. Size limit: 8MB
-4. File saved with a UUID filename to prevent enumeration
-5. Server returns `{ url: "/api/uploads/<uuid>.<ext>" }`
-6. Files served at `GET /api/uploads/:filename` with path-traversal protection and 1-year immutable cache headers
+2. Server detects the real format from **file content** (not the Content-Type header) via the `image-size` library — accepts JPG, PNG, WEBP, GIF, HEIC, HEIF, BMP, TIFF, SVG, AVIF
+3. Size limit: 10MB. Minimum resolution: 100×100px (skipped for SVG, which is vector and has no fixed pixel size)
+4. Row inserted into `images` (`id` UUID, `mime_type`, `data` LONGBLOB, `byte_size`, `width`, `height`)
+5. Server returns `{ url: "/api/uploads/<uuid>" }`
+6. Images served at `GET /api/uploads/:id` straight from the database, with `Content-Type` from the stored `mime_type` and a 1-year immutable cache header
 
-> **Warning:** Uploaded files are stored on the local VPS filesystem with no offsite backup. A server wipe will lose all uploaded images. Consider migrating to object storage (S3, Cloudflare R2) for production resilience.
+Storing bytes in the database means uploads are backed up along with the rest of the data and survive redeploys without needing separate object storage.
 
 ---
 
