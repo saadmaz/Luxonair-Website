@@ -28,7 +28,7 @@ const step1 = z.object({
   infants: z.coerce.number().min(0).max(20),
 }).superRefine((data, ctx) => {
   if (data.dateMode === "flexible" && (!data.departWindow || data.departWindow.trim().length < 2)) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Roughly when?", path: ["departWindow"] });
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Tell us roughly when you'd like to fly", path: ["departWindow"] });
   }
   if (data.dateMode === "specific" && !data.departDate) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Pick a departure date", path: ["departDate"] });
