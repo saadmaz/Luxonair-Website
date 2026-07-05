@@ -97,14 +97,14 @@ function FlightOffersPage() {
             More {tab.toLowerCase()} offers coming soon — enquire and we'll build a bespoke fare.
           </p>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {shown.map((offer) => {
               const fromA = findAirport(offer.fromCode);
               const toA = findAirport(offer.toCode);
               return (
                 <article
                   key={offer.id}
-                  className="group mx-auto flex w-full max-w-75 min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm ring-1 ring-navy/3 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+                  className="group flex w-full min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm ring-1 ring-navy/3 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
                 >
                   <div className="relative aspect-3/2 w-full overflow-hidden bg-muted">
                     <img

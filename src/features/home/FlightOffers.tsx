@@ -14,7 +14,7 @@ export function FlightOffers({ offers }: { offers: FlightOffer[] }) {
   const [tab, setTab] = useState<(typeof TABS)[number]>("Economy");
   const [selected, setSelected] = useState<FlightOffer | null>(null);
 
-  const shown = offers.filter((o) => o.cabinClass === tab).slice(0, 3);
+  const shown = offers.filter((o) => o.cabinClass === tab).slice(0, 4);
 
   return (
     <section className="bg-background py-12 md:py-20">
@@ -56,7 +56,7 @@ export function FlightOffers({ offers }: { offers: FlightOffer[] }) {
             More {tab.toLowerCase()} offers coming soon.
           </p>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {shown.map((offer, i) => {
               const fromA = findAirport(offer.fromCode);
               const toA = findAirport(offer.toCode);
@@ -67,7 +67,7 @@ export function FlightOffers({ offers }: { offers: FlightOffer[] }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-40px" }}
                   transition={{ delay: i * 0.12, duration: 0.5, ease: "easeOut" }}
-                  className="group mx-auto w-full max-w-70 overflow-hidden rounded-2xl border border-border bg-card shadow-sm ring-1 ring-navy/3 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+                  className="group w-full overflow-hidden rounded-2xl border border-border bg-card shadow-sm ring-1 ring-navy/3 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
                 >
                   {/* Image */}
                   <div className="relative overflow-hidden">
