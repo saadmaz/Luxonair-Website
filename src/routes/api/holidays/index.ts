@@ -4,6 +4,7 @@ import { db, holidayTypes } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { holidayTypeSchema } from "@/server/validate";
+import { isDuplicateKeyError } from "@/server/db-errors";
 
 export const APIRoute = createAPIFileRoute("/api/holidays")({
   GET: async ({ request }) => {
@@ -32,8 +33,7 @@ export const APIRoute = createAPIFileRoute("/api/holidays")({
     try {
       await db.insert(holidayTypes).values(body);
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "";
-      if (msg.includes("Duplicate") || msg.includes("unique")) {
+      if (isDuplicateKeyError(e)) {
         return Response.json({ error: "A holiday type with that slug already exists" }, { status: 409 });
       }
       throw e;

@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { db, flightOffers } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
 import { flightOfferSchema } from "@/server/validate";
+import { isForeignKeyError } from "@/server/db-errors";
 
 export const APIRoute = createAPIFileRoute("/api/flight-offers/$id")({
   PATCH: async ({ request, params }) => {
@@ -38,8 +39,7 @@ export const APIRoute = createAPIFileRoute("/api/flight-offers/$id")({
     try {
       [result] = await db.delete(flightOffers).where(eq(flightOffers.id, id));
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "";
-      if (msg.toLowerCase().includes("foreign key constraint")) {
+      if (isForeignKeyError(e)) {
         return Response.json(
           { error: "This flight offer still has bookings referencing it — those must be handled first" },
           { status: 409 },

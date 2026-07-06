@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { db, deals } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
 import { dealSchema } from "@/server/validate";
+import { isForeignKeyError } from "@/server/db-errors";
 
 export const APIRoute = createAPIFileRoute("/api/deals/$id")({
   PATCH: async ({ request, params }) => {
@@ -22,18 +23,13 @@ export const APIRoute = createAPIFileRoute("/api/deals/$id")({
     try {
       await db.update(deals).set(update as Record<string, unknown>).where(eq(deals.id, id));
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "";
-      if (msg.toLowerCase().includes("foreign key constraint")) {
+      if (isForeignKeyError(e)) {
         return Response.json(
           { error: "Destination slug does not match any existing destination" },
           { status: 400 },
         );
       }
-      // TODO(debug-deals-500): temporary — surface the raw DB error to the
-      // (superadmin-only) client so this can be diagnosed without VPS log
-      // access. Revert to `throw e` once the live 500 is root-caused.
-      console.error("PATCH /api/deals/$id failed:", e);
-      return Response.json({ error: `Update failed: ${msg || "unknown error"}` }, { status: 500 });
+      throw e;
     }
     const [row] = await db.select().from(deals).where(eq(deals.id, id));
     if (!row) return Response.json({ error: "Not found" }, { status: 404 });

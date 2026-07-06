@@ -4,6 +4,7 @@ import { asc } from "drizzle-orm";
 import { db, adminUsers } from "../../../../db/index";
 import { requireSuperAdmin, requireAdminOrAbove } from "@/server/auth";
 import { SECTION_KEYS } from "@/lib/sections";
+import { isDuplicateKeyError } from "@/server/db-errors";
 import { z } from "zod";
 
 const createUserSchema = z.object({
@@ -68,8 +69,7 @@ export const APIRoute = createAPIFileRoute("/api/users")({
         displayName: displayName?.trim() || null,
       });
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "";
-      if (msg.includes("Duplicate") || msg.includes("unique")) {
+      if (isDuplicateKeyError(e)) {
         return Response.json({ error: "A user with that email already exists" }, { status: 409 });
       }
       throw e;

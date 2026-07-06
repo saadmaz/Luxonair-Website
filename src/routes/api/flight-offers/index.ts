@@ -4,6 +4,7 @@ import { db, flightOffers } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { flightOfferSchema } from "@/server/validate";
+import { isDuplicateKeyError } from "@/server/db-errors";
 
 export const APIRoute = createAPIFileRoute("/api/flight-offers")({
   GET: async ({ request }) => {
@@ -40,8 +41,7 @@ export const APIRoute = createAPIFileRoute("/api/flight-offers")({
     try {
       await db.insert(flightOffers).values(body);
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "";
-      if (msg.includes("Duplicate") || msg.includes("unique")) {
+      if (isDuplicateKeyError(e)) {
         return Response.json(
           { error: "A flight offer with that ID already exists" },
           { status: 409 },

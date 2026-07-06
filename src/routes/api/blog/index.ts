@@ -4,6 +4,7 @@ import { db, blogPosts } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { blogPostSchema } from "@/server/validate";
+import { isDuplicateKeyError } from "@/server/db-errors";
 
 export const APIRoute = createAPIFileRoute("/api/blog")({
   GET: async ({ request }) => {
@@ -32,8 +33,7 @@ export const APIRoute = createAPIFileRoute("/api/blog")({
     try {
       await db.insert(blogPosts).values({ ...body, content: body.content ?? {} });
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "";
-      if (msg.includes("Duplicate") || msg.includes("unique")) {
+      if (isDuplicateKeyError(e)) {
         return Response.json({ error: "A post with that slug already exists" }, { status: 409 });
       }
       throw e;
