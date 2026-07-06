@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 type Deal = {
   id: string;
   title: string;
-  destinationSlug: string;
   nights: number;
   fromPrice: number;
   badge: string;
@@ -54,7 +53,7 @@ export function HotDeals({ deals }: { deals: Deal[] }) {
                 transition={{ delay: i * 0.12, duration: 0.5, ease: "easeOut" }}
               >
                 <a
-                  href={deal.destinationSlug ? `/destinations/${deal.destinationSlug}` : "/deals"}
+                  href="/deals"
                   className="group relative flex min-h-50 overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
                   style={{
                     background: `linear-gradient(135deg, ${theme.from} 0%, ${theme.to} 100%)`,

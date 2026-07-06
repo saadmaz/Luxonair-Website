@@ -3,7 +3,6 @@ import { eq } from "drizzle-orm";
 import { db, destinations } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
 import { destinationSchema } from "@/server/validate";
-import { isForeignKeyError } from "@/server/db-errors";
 
 export const APIRoute = createAPIFileRoute("/api/destinations/$id")({
   PATCH: async ({ request, params }) => {
@@ -29,18 +28,7 @@ export const APIRoute = createAPIFileRoute("/api/destinations/$id")({
   DELETE: async ({ request, params }) => {
     await requireSection(request, "destinations");
     const id = Number(params.id);
-    let result: { affectedRows: number };
-    try {
-      [result] = await db.delete(destinations).where(eq(destinations.id, id));
-    } catch (e: unknown) {
-      if (isForeignKeyError(e)) {
-        return Response.json(
-          { error: "This destination still has deals referencing it — remove those deals first" },
-          { status: 409 },
-        );
-      }
-      throw e;
-    }
+    const [result] = await db.delete(destinations).where(eq(destinations.id, id));
     if (result.affectedRows === 0) return Response.json({ error: "Not found" }, { status: 404 });
     return Response.json({ ok: true });
   },

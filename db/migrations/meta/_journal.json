@@ -134,6 +134,13 @@
       "when": 1783500000000,
       "tag": "0018_update_enquiry_status_options",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "5",
+      "when": 1783600000000,
+      "tag": "0019_remove_deal_destination_slug",
+      "breakpoints": true
     }
   ]
 }

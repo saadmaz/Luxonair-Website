@@ -185,9 +185,6 @@ export const deals = mysqlTable(
   {
     id: varchar("id", { length: 100 }).primaryKey(),
     title: text("title").notNull(),
-    destinationSlug: varchar("destination_slug", { length: 255 })
-      .notNull()
-      .references(() => destinations.slug, { onDelete: "restrict" }),
     region: varchar("region", { length: 100 }).notNull(),
     nights: int("nights").notNull(),
     board: varchar("board", { length: 50 }).notNull(),

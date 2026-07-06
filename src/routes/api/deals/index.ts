@@ -4,7 +4,7 @@ import { db, deals } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
 import { DEFAULT_LIST_LIMIT } from "@/server/pagination";
 import { dealSchema } from "@/server/validate";
-import { isDuplicateKeyError, isForeignKeyError } from "@/server/db-errors";
+import { isDuplicateKeyError } from "@/server/db-errors";
 
 export const APIRoute = createAPIFileRoute("/api/deals")({
   GET: async ({ request }) => {
@@ -35,12 +35,6 @@ export const APIRoute = createAPIFileRoute("/api/deals")({
     } catch (e: unknown) {
       if (isDuplicateKeyError(e)) {
         return Response.json({ error: "A deal with that ID already exists" }, { status: 409 });
-      }
-      if (isForeignKeyError(e)) {
-        return Response.json(
-          { error: "Destination slug does not match any existing destination" },
-          { status: 400 },
-        );
       }
       throw e;
     }

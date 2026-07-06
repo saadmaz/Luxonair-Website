@@ -123,7 +123,6 @@ export const blogPostSchema = z.object({
 export const dealSchema = z.object({
   id: z.string().min(1).max(100),
   title: z.string().min(1).max(300),
-  destinationSlug: z.string().min(1).max(100),
   region: z.string().max(100).default(""),
   nights: z.number().int().min(1).max(365).default(7),
   board: z.string().max(100).default("All Inclusive"),

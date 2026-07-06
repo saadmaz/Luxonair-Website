@@ -3,7 +3,6 @@ import { eq } from "drizzle-orm";
 import { db, deals } from "../../../../db/index";
 import { requireSection } from "@/server/auth";
 import { dealSchema } from "@/server/validate";
-import { isForeignKeyError } from "@/server/db-errors";
 
 export const APIRoute = createAPIFileRoute("/api/deals/$id")({
   PATCH: async ({ request, params }) => {
@@ -20,17 +19,7 @@ export const APIRoute = createAPIFileRoute("/api/deals/$id")({
       return Response.json({ error: "Nothing to update" }, { status: 400 });
     }
 
-    try {
-      await db.update(deals).set(update as Record<string, unknown>).where(eq(deals.id, id));
-    } catch (e: unknown) {
-      if (isForeignKeyError(e)) {
-        return Response.json(
-          { error: "Destination slug does not match any existing destination" },
-          { status: 400 },
-        );
-      }
-      throw e;
-    }
+    await db.update(deals).set(update as Record<string, unknown>).where(eq(deals.id, id));
     const [row] = await db.select().from(deals).where(eq(deals.id, id));
     if (!row) return Response.json({ error: "Not found" }, { status: 404 });
     return Response.json(row);

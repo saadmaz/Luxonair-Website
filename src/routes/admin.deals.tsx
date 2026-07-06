@@ -16,7 +16,6 @@ export const Route = createFileRoute("/admin/deals")({
 type DbDeal = {
   id: string;
   title: string;
-  destinationSlug: string;
   region: string;
   nights: number;
   board: string;
@@ -38,7 +37,7 @@ const boards = ["Room only", "B&B", "Half board", "Full board", "Premium AI", "M
 const badges = ["Honeymoon", "Family", "Corporate", "Couples", "Tailor-made", "City break", "Luxury"];
 
 const emptyForm = {
-  id: "", title: "", destinationSlug: "", region: "Europe", nights: 7,
+  id: "", title: "", region: "Europe", nights: 7,
   board: "B&B", fromPrice: 0, oldPrice: "" as string | number,
   badge: "Honeymoon", expires: "", image: "", gallery: [] as string[], isFavourite: false, blurb: "",
 };
@@ -81,7 +80,7 @@ function AdminDealsPage() {
   const openAdd = () => { setForm(emptyForm); setEditId(null); setModal("add"); };
   const openEdit = (d: DbDeal) => {
     setEditId(d.id);
-    setForm({ id: d.id, title: d.title, destinationSlug: d.destinationSlug, region: d.region, nights: d.nights, board: d.board, fromPrice: d.fromPrice, oldPrice: d.oldPrice ?? "", badge: d.badge, expires: d.expires, image: d.image, gallery: parseArr(d.gallery), isFavourite: d.isFavourite ?? false, blurb: d.blurb });
+    setForm({ id: d.id, title: d.title, region: d.region, nights: d.nights, board: d.board, fromPrice: d.fromPrice, oldPrice: d.oldPrice ?? "", badge: d.badge, expires: d.expires, image: d.image, gallery: parseArr(d.gallery), isFavourite: d.isFavourite ?? false, blurb: d.blurb });
     setModal("edit");
   };
 
@@ -182,7 +181,6 @@ function AdminDealsPage() {
               {modal === "add" && (
                 <div className="col-span-2"><label className={labelCls}>Deal ID (unique slug)</label><input className={inputCls} placeholder="e.g. maldives-jun-2026" value={form.id} onChange={(e) => setForm({ ...form, id: e.target.value })} /></div>
               )}
-              <div><label className={labelCls}>Destination slug</label><input className={inputCls} placeholder="e.g. maldives" value={form.destinationSlug} onChange={(e) => setForm({ ...form, destinationSlug: e.target.value })} /></div>
               <div>
                 <label className={labelCls}>Region</label>
                 <select className={inputCls} value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })}>

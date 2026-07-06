@@ -234,7 +234,6 @@ async function seedDeals() {
     {
       id: "maldives-7nt-bb",
       title: "Maldives - 7 nights, water villa",
-      destinationSlug: "maldives-private-villa",
       region: "Indian Ocean",
       nights: 7,
       board: "Half board",
@@ -248,7 +247,6 @@ async function seedDeals() {
     {
       id: "antigua-10nt-ai",
       title: "Antigua - 10 nights all-inclusive",
-      destinationSlug: "antigua-family-all-inclusive",
       region: "Caribbean",
       nights: 10,
       board: "Premium AI",
@@ -262,7 +260,6 @@ async function seedDeals() {
     {
       id: "dubai-4nt-corp",
       title: "Dubai - 4 nights, business stopover",
-      destinationSlug: "dubai-corporate-stopover",
       region: "Middle East",
       nights: 4,
       board: "B&B",
@@ -276,7 +273,6 @@ async function seedDeals() {
     {
       id: "santorini-7nt",
       title: "Santorini - 7 nights, caldera view",
-      destinationSlug: "santorini-couples",
       region: "Europe",
       nights: 7,
       board: "B&B",
@@ -290,7 +286,6 @@ async function seedDeals() {
     {
       id: "japan-12nt",
       title: "Japan - 12 nights tailor-made",
-      destinationSlug: "japan-tailor-made",
       region: "Asia",
       nights: 12,
       board: "Mixed",
@@ -304,7 +299,6 @@ async function seedDeals() {
     {
       id: "nyc-4nt",
       title: "New York - 4 nights Midtown",
-      destinationSlug: "new-york-business",
       region: "Americas",
       nights: 4,
       board: "Room only",

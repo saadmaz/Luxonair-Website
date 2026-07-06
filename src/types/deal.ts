@@ -1,8 +1,6 @@
 export type Deal = {
   id: string;
   title: string;
-  /** Links this deal card to its destination detail page when set */
-  destinationSlug?: string;
   region: string;
   nights: number;
   board: string;
