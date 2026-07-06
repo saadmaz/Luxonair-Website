@@ -29,3 +29,17 @@ export const ENQUIRY_STATUS_COLORS: Record<EnquiryStatus, { className: string; d
   sale_done: { className: "bg-emerald-50 text-emerald-700 ring-emerald-200", dot: "bg-emerald-400" },
   cancelled: { className: "bg-rose-50 text-rose-700 ring-rose-200", dot: "bg-rose-400" },
 };
+
+const FALLBACK_STATUS_COLOR = { className: "bg-gray-100 text-gray-600 ring-gray-300", dot: "bg-gray-400" };
+
+// Tolerant lookups — a row can carry a status value the current build doesn't
+// recognise (e.g. mid-deploy, before its status-set migration has run against
+// the DB). Falling back here keeps the admin UI rendering instead of crashing
+// the whole page on an unrecognised enum string.
+export function getStatusColor(status: string): { className: string; dot: string } {
+  return ENQUIRY_STATUS_COLORS[status as EnquiryStatus] ?? FALLBACK_STATUS_COLOR;
+}
+
+export function getStatusLabel(status: string): string {
+  return ENQUIRY_STATUS_LABELS[status as EnquiryStatus] ?? status;
+}

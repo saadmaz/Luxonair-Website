@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FileText, MessageSquare, Users, TrendingUp, ArrowUpRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api";
-import { ENQUIRY_STATUS_LABELS, ENQUIRY_STATUS_COLORS, type EnquiryStatus } from "@/lib/enquiry-status";
+import { getStatusColor, getStatusLabel, type EnquiryStatus } from "@/lib/enquiry-status";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
@@ -29,11 +29,11 @@ type DbContact = { id: number; read: boolean };
 type DbSubscriber = { id: number };
 
 function StatusBadge({ status }: { status: EnquiryStatus }) {
-  const { className, dot } = ENQUIRY_STATUS_COLORS[status];
+  const { className, dot } = getStatusColor(status);
   return (
     <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ring-1", className)}>
       <span className={cn("h-1.5 w-1.5 rounded-full", dot)} />
-      {ENQUIRY_STATUS_LABELS[status]}
+      {getStatusLabel(status)}
     </span>
   );
 }
