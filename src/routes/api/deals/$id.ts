@@ -19,7 +19,18 @@ export const APIRoute = createAPIFileRoute("/api/deals/$id")({
       return Response.json({ error: "Nothing to update" }, { status: 400 });
     }
 
-    await db.update(deals).set(update as Record<string, unknown>).where(eq(deals.id, id));
+    try {
+      await db.update(deals).set(update as Record<string, unknown>).where(eq(deals.id, id));
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "";
+      if (msg.toLowerCase().includes("foreign key constraint")) {
+        return Response.json(
+          { error: "Destination slug does not match any existing destination" },
+          { status: 400 },
+        );
+      }
+      throw e;
+    }
     const [row] = await db.select().from(deals).where(eq(deals.id, id));
     if (!row) return Response.json({ error: "Not found" }, { status: 404 });
     return Response.json(row);
