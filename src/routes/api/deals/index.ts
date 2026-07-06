@@ -36,7 +36,15 @@ export const APIRoute = createAPIFileRoute("/api/deals")({
       if (msg.includes("Duplicate") || msg.includes("unique")) {
         return Response.json({ error: "A deal with that ID already exists" }, { status: 409 });
       }
-      throw e;
+      if (msg.toLowerCase().includes("foreign key constraint")) {
+        return Response.json(
+          { error: "Destination slug does not match any existing destination" },
+          { status: 400 },
+        );
+      }
+      // TODO(debug-deals-500): temporary — see matching note in $id.ts PATCH.
+      console.error("POST /api/deals failed:", e);
+      return Response.json({ error: `Create failed: ${msg || "unknown error"}` }, { status: 500 });
     }
 
     const [row] = await db.select().from(deals).where(eq(deals.id, body.id));
