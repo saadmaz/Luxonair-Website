@@ -127,6 +127,13 @@
       "when": 1783400000000,
       "tag": "0017_add_admin_action_details",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "5",
+      "when": 1783500000000,
+      "tag": "0018_update_enquiry_status_options",
+      "breakpoints": true
     }
   ]
 }

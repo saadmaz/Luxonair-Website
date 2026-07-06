@@ -32,9 +32,9 @@ const ENQUIRY_STATUS_VALUES = [
   "new",
   "contacted",
   "in_progress",
-  "closed_won",
-  "closed_lost",
   "no_response",
+  "sale_done",
+  "cancelled",
 ] as const;
 
 export const enquiryPackages = mysqlTable(

@@ -180,9 +180,9 @@ export function EnquiryManager({ kind }: { kind: Kind }) {
     new: items.filter((e) => e.status === "new").length,
     contacted: items.filter((e) => e.status === "contacted").length,
     in_progress: items.filter((e) => e.status === "in_progress").length,
-    closed_won: items.filter((e) => e.status === "closed_won").length,
-    closed_lost: items.filter((e) => e.status === "closed_lost").length,
     no_response: items.filter((e) => e.status === "no_response").length,
+    sale_done: items.filter((e) => e.status === "sale_done").length,
+    cancelled: items.filter((e) => e.status === "cancelled").length,
   };
 
   if (isLoading) {
