@@ -29,7 +29,11 @@ export const APIRoute = createAPIFileRoute("/api/deals/$id")({
           { status: 400 },
         );
       }
-      throw e;
+      // TODO(debug-deals-500): temporary — surface the raw DB error to the
+      // (superadmin-only) client so this can be diagnosed without VPS log
+      // access. Revert to `throw e` once the live 500 is root-caused.
+      console.error("PATCH /api/deals/$id failed:", e);
+      return Response.json({ error: `Update failed: ${msg || "unknown error"}` }, { status: 500 });
     }
     const [row] = await db.select().from(deals).where(eq(deals.id, id));
     if (!row) return Response.json({ error: "Not found" }, { status: 404 });
