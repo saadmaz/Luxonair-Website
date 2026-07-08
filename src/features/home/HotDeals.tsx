@@ -54,7 +54,7 @@ export function HotDeals({ deals }: { deals: Deal[] }) {
               >
                 <a
                   href="/deals"
-                  className="group relative flex min-h-50 overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
+                  className="group relative flex aspect-[1.586] w-full overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
                   style={{
                     background: `linear-gradient(135deg, ${theme.from} 0%, ${theme.to} 100%)`,
                   }}
@@ -76,42 +76,46 @@ export function HotDeals({ deals }: { deals: Deal[] }) {
                   </div>
 
                   {/* Content */}
-                  <div className="relative z-10 flex flex-col p-5 md:p-6">
-                    {/* Offer label */}
-                    <span className="font-serif text-[11px] italic tracking-wide text-white/60">
-                      {deal.badge ?? theme.label}
-                    </span>
-
-                    {/* Destination name */}
-                    <h3
-                      className="mt-1.5 font-display text-2xl font-extrabold leading-tight md:text-[1.55rem]"
-                      style={{ color: "#C8FF3C" }}
-                    >
-                      {destination}
-                    </h3>
-
-                    {/* Duration pill */}
-                    <div className="mt-2">
-                      <span className="inline-flex items-center rounded-full bg-[#C8FF3C] px-3 py-0.5 text-[10px] font-bold text-[#1a1a1a]">
-                        {days}Days · {deal.nights} Nights
+                  <div className="relative z-10 flex h-full w-full flex-col justify-between p-4 md:p-5">
+                    <div>
+                      {/* Offer label */}
+                      <span className="font-serif text-[11px] italic tracking-wide text-white/60">
+                        {deal.badge ?? theme.label}
                       </span>
-                    </div>
 
-                    {/* Price block */}
-                    <div className="mt-4 w-fit rounded-xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-sm">
-                      <div className="flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-widest text-white/55">
-                        <span className="h-px w-4 bg-white/30" />
-                        Starting From
-                        <span className="h-px w-4 bg-white/30" />
+                      {/* Destination name */}
+                      <h3
+                        className="mt-1.5 line-clamp-2 font-display text-xl font-extrabold leading-tight md:text-2xl"
+                        style={{ color: "#C8FF3C" }}
+                      >
+                        {destination}
+                      </h3>
+
+                      {/* Duration pill */}
+                      <div className="mt-2">
+                        <span className="inline-flex items-center rounded-full bg-[#C8FF3C] px-3 py-0.5 text-[10px] font-bold text-[#1a1a1a]">
+                          {days}Days · {deal.nights} Nights
+                        </span>
                       </div>
-                      <p className="font-display text-2xl font-extrabold text-white">
-                        £{deal.fromPrice.toLocaleString()}
-                        <span className="text-sm font-semibold text-white/70">/PP</span>
-                      </p>
                     </div>
 
-                    <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-white/65 transition-colors group-hover:text-white">
-                      Get a quote <ArrowRight className="h-3.5 w-3.5" />
+                    <div>
+                      {/* Price block */}
+                      <div className="w-fit rounded-xl border border-white/20 bg-white/10 px-3 py-2 backdrop-blur-sm md:px-4 md:py-3">
+                        <div className="flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-widest text-white/55">
+                          <span className="h-px w-4 bg-white/30" />
+                          Starting From
+                          <span className="h-px w-4 bg-white/30" />
+                        </div>
+                        <p className="font-display text-xl font-extrabold text-white md:text-2xl">
+                          £{deal.fromPrice.toLocaleString()}
+                          <span className="text-sm font-semibold text-white/70">/PP</span>
+                        </p>
+                      </div>
+
+                      <div className="mt-3 flex items-center gap-1 text-xs font-semibold text-white/65 transition-colors group-hover:text-white">
+                        Get a quote <ArrowRight className="h-3.5 w-3.5" />
+                      </div>
                     </div>
                   </div>
                 </a>
