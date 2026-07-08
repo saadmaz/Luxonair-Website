@@ -31,16 +31,16 @@ export function Hero() {
             className="mt-3 font-display text-[2.1rem] font-semibold leading-[1.08] tracking-tight text-white sm:mt-4 sm:text-5xl md:text-[3.25rem] text-balance animate-in fade-in-0 slide-in-from-bottom-4 duration-700"
             style={{ animationFillMode: "both" }}
           >
-            Tailor-Made Holidays,{" "}
-            <span className="text-gold">Built Around</span>{" "}
-            You
+            Custom made Holidays to{" "}
+            <span className="text-gold">Every Traveller's</span>{" "}
+            Need
           </h1>
 
           <p
             className="mt-3 max-w-lg text-sm leading-relaxed text-white/80 md:mt-4 md:text-base animate-in fade-in-0 slide-in-from-bottom-4 duration-700"
             style={{ animationDelay: "150ms", animationFillMode: "both" }}
           >
-            Long-haul adventures, family getaways, business travel. We handle the lot. One consultant, one point of contact, genuinely good advice from start to finish.
+            Premium long haul flights, family escapes, and corporate travel solutions crafted by a dedicated travel consultant.
           </p>
 
           <div
