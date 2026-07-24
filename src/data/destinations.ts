@@ -4,7 +4,18 @@ import type { Destination } from "@/types/destination";
 // ─── Reference constants ──────────────────────────────────────────────────────
 // Used for nav mega-panel grouping, QuoteForm dropdowns, and destination filtering.
 
-export const regions = ["Europe", "Caribbean", "Indian Ocean", "Asia", "Americas", "Middle East"] as const;
+export const regions = [
+  "Europe",
+  "Asia",
+  "Africa",
+  "North America",
+  "South America",
+  "Oceania",
+  "Americas",
+  "Caribbean",
+  "Indian Ocean",
+  "Middle East",
+] as const;
 export const tripTypes = ["Family", "Business", "Honeymoon", "Luxury", "City Break"] as const;
 export const budgetBands = ["££", "£££", "££££"] as const;
 

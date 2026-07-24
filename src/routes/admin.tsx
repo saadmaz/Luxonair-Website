@@ -149,9 +149,9 @@ const navSections: NavSection[] = [
   {
     label: "Content",
     items: [
-      { to: "/admin/destination-highlights", label: "Destinations", icon: Images, exact: false, sectionKey: "destination-highlights" },
+      { to: "/admin/destination-highlights", label: "Destination Highlights", icon: Images, exact: false, sectionKey: "destination-highlights" },
       { to: "/admin/destinations", label: "Destination Pages", icon: MapPin, exact: false, sectionKey: "destinations" },
-      { to: "/admin/deals", label: "Deals", icon: Tag, exact: false, sectionKey: "deals" },
+      { to: "/admin/deals", label: "Offers", icon: Tag, exact: false, sectionKey: "deals" },
       { to: "/admin/flight-offers", label: "Flight Offers", icon: PlaneTakeoff, exact: false, sectionKey: "flight-offers" },
       { to: "/admin/holidays", label: "Holiday Types", icon: Sun, exact: false, sectionKey: "holidays" },
       { to: "/admin/blog", label: "Blog", icon: BookOpen, exact: false, sectionKey: "blog" },

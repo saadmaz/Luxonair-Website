@@ -4,9 +4,8 @@ import { ArrowRight, Check, MessageCircle, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { Newsletter } from "@/components/shared/Newsletter";
 import { PackageCard } from "@/components/shared/PackageCard";
-import { destinations } from "@/data/destinations";
 import { holidayPackages } from "@/data/packages";
-import { getHolidayTypeBySlug } from "@/server/queries";
+import { getHolidayTypeBySlug, getDestinations } from "@/server/queries";
 import { SITE } from "@/config";
 
 const parseArr = <T,>(v: unknown): T[] =>
@@ -19,7 +18,8 @@ export const Route = createFileRoute("/holiday/$slug")({
     const bullets = parseArr<string>(row.bullets);
     const destinationSlugs = parseArr<string>(row.destinationSlugs);
     const holidayType = { ...row, bullets, destinationSlugs };
-    const linkedDestinations = destinations.filter((d) =>
+    const allDestinations = await getDestinations();
+    const linkedDestinations = allDestinations.filter((d) =>
       destinationSlugs.includes(d.slug)
     );
     const packages = holidayPackages.filter(

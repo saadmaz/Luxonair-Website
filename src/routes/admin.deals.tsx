@@ -8,6 +8,7 @@ import { GalleryUpload } from "@/components/admin/GalleryUpload";
 import { DatePicker } from "@/components/shared/DatePicker";
 import { api } from "@/lib/api";
 import { Pagination } from "@/components/ui/Pagination";
+import { regions } from "@/data/destinations";
 
 export const Route = createFileRoute("/admin/deals")({
   component: AdminDealsPage,
@@ -32,7 +33,6 @@ type DbDeal = {
 const inputCls = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#042045] focus:bg-white focus:ring-2 focus:ring-[#042045]/10";
 const labelCls = "block text-sm font-medium text-gray-700 mb-1";
 
-const regions = ["Europe", "Caribbean", "Indian Ocean", "Asia", "Americas", "Middle East"];
 const boards = ["Room only", "B&B", "Half board", "Full board", "Premium AI", "Mixed"];
 const badges = ["Honeymoon", "Family", "Corporate", "Couples", "Tailor-made", "City break", "Luxury"];
 
@@ -88,11 +88,11 @@ function AdminDealsPage() {
     <div className="p-6 lg:p-8">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Deals</h1>
-          <p className="mt-1 text-sm text-gray-500">{items.length} active deals on the site.</p>
+          <h1 className="text-2xl font-bold text-gray-900">Offers</h1>
+          <p className="mt-1 text-sm text-gray-500">{items.length} active offers on the site.</p>
         </div>
         <button onClick={openAdd} className="inline-flex items-center gap-2 rounded-lg bg-[#042045] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#042045]/90">
-          <Plus className="h-4 w-4" />Add deal
+          <Plus className="h-4 w-4" />Add offer
         </button>
       </div>
 
@@ -104,7 +104,7 @@ function AdminDealsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50/60">
-                  {["Deal", "Region", "Nights", "Board", "Price", "Was", "Badge", "Expires", ""].map((h) => (
+                  {["Offer", "Region", "Nights", "Board", "Price", "Was", "Badge", "Expires", ""].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-400 first:pl-6">{h}</th>
                   ))}
                 </tr>
@@ -174,12 +174,12 @@ function AdminDealsPage() {
       {/* Add / Edit modal */}
       <Dialog open={modal !== null} onOpenChange={(o) => !o && setModal(null)}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle>{modal === "add" ? "Add deal" : "Edit deal"}</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{modal === "add" ? "Add offer" : "Edit offer"}</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2"><label className={labelCls}>Title</label><input className={inputCls} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
               {modal === "add" && (
-                <div className="col-span-2"><label className={labelCls}>Deal ID (unique slug)</label><input className={inputCls} placeholder="e.g. maldives-jun-2026" value={form.id} onChange={(e) => setForm({ ...form, id: e.target.value })} /></div>
+                <div className="col-span-2"><label className={labelCls}>Offer ID (unique slug)</label><input className={inputCls} placeholder="e.g. maldives-jun-2026" value={form.id} onChange={(e) => setForm({ ...form, id: e.target.value })} /></div>
               )}
               <div>
                 <label className={labelCls}>Region</label>
@@ -230,8 +230,8 @@ function AdminDealsPage() {
       {/* Delete modal */}
       <Dialog open={deleteId !== null} onOpenChange={(o) => !o && setDeleteId(null)}>
         <DialogContent className="max-w-sm">
-          <DialogHeader><DialogTitle>Delete deal?</DialogTitle></DialogHeader>
-          <p className="text-sm text-gray-500">This will remove the deal from the site.</p>
+          <DialogHeader><DialogTitle>Delete offer?</DialogTitle></DialogHeader>
+          <p className="text-sm text-gray-500">This will remove the offer from the site.</p>
           <DialogFooter>
             <DialogClose asChild><button className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button></DialogClose>
             <button onClick={() => deleteId && deleteMut.mutate(deleteId)} disabled={deleteMut.isPending} className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60">

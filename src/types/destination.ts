@@ -2,7 +2,17 @@ export type Destination = {
   slug: string;
   name: string;
   country: string;
-  region: "Europe" | "Caribbean" | "Indian Ocean" | "Asia" | "Americas" | "Middle East";
+  region:
+    | "Europe"
+    | "Asia"
+    | "Africa"
+    | "North America"
+    | "South America"
+    | "Oceania"
+    | "Americas"
+    | "Caribbean"
+    | "Indian Ocean"
+    | "Middle East";
   tripType: ("Family" | "Business" | "Honeymoon" | "Luxury" | "City Break")[];
   budgetBand: "££" | "£££" | "££££";
   /** Indicative per-person price in GBP - confirmed live at quote stage */

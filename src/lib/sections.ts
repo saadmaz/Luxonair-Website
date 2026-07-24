@@ -24,7 +24,7 @@ export const SECTION_LABELS: Record<SectionKey, string> = {
   subscribers: "Subscribers",
   "destination-highlights": "Destination Highlights",
   destinations: "Destination Pages",
-  deals: "Deals",
+  deals: "Offers",
   "flight-offers": "Flight Offers",
   holidays: "Holiday Types",
   blog: "Blog",

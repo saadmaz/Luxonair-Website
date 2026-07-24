@@ -1,8 +1,7 @@
 ﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { destinations } from "@/data/destinations";
 import { DestinationCard } from "@/components/shared/DestinationCard";
-import { getHolidayTypes } from "@/server/queries";
+import { getHolidayTypes, getDestinations } from "@/server/queries";
 import {
   ArrowRight,
   Clock,
@@ -15,9 +14,10 @@ import {
 export const Route = createFileRoute("/holidays")({
   loader: async () => {
     try {
-      return await getHolidayTypes();
+      const [holidayTypes, destinations] = await Promise.all([getHolidayTypes(), getDestinations()]);
+      return { holidayTypes, destinations };
     } catch {
-      return [];
+      return { holidayTypes: [], destinations: [] };
     }
   },
   head: () => ({
@@ -38,7 +38,7 @@ export const Route = createFileRoute("/holidays")({
 });
 
 function HolidaysPage() {
-  const holidayTypes = Route.useLoaderData() ?? [];
+  const { holidayTypes, destinations } = Route.useLoaderData() ?? { holidayTypes: [], destinations: [] };
   return (
     <>
       {/* Hero */}
@@ -205,7 +205,7 @@ function HolidaysPage() {
         </div>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {destinations.slice(0, 6).map((d) => (
-            <DestinationCard key={d.slug} d={d} />
+            <DestinationCard key={d.slug} d={d as never} />
           ))}
         </div>
       </section>

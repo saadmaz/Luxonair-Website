@@ -1,12 +1,14 @@
 ﻿import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { GalleryUpload } from "@/components/admin/GalleryUpload";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { Pagination } from "@/components/ui/Pagination";
+import { regions } from "@/data/destinations";
 
 export const Route = createFileRoute("/admin/destinations")({
   component: AdminDestinationsPage,
@@ -25,18 +27,28 @@ type DbDestination = {
   heroImage: string;
   tagline: string;
   summary: string;
+  gallery: string[];
+  itinerary: { day: string; title: string; detail: string }[];
+  highlights: string[];
 };
 
 const inputCls = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#042045] focus:bg-white focus:ring-2 focus:ring-[#042045]/10";
 const labelCls = "block text-sm font-medium text-gray-700 mb-1";
 
-const regions = ["Europe", "Caribbean", "Indian Ocean", "Asia", "Americas", "Middle East"];
 const budgetBands = ["££", "£££", "££££", "£££££"];
 const tripTypeOptions = ["Family", "Business", "Honeymoon", "Luxury", "City Break", "Couples"];
+
+// The API may return json columns as JSON-encoded strings rather than already-parsed
+// arrays, depending on how the MariaDB driver typecasts them.
+const parseArr = <T,>(v: unknown): T[] =>
+  Array.isArray(v) ? (v as T[]) : typeof v === "string" ? JSON.parse(v) : [];
 
 const emptyForm = {
   slug: "", name: "", country: "", region: "Europe", tripType: ["Luxury"] as string[],
   budgetBand: "£££", fromPrice: 0, durationNights: 7, heroImage: "", tagline: "", summary: "",
+  gallery: [] as string[],
+  itinerary: [] as { day: string; title: string; detail: string }[],
+  highlights: [] as string[],
 };
 
 function AdminDestinationsPage() {
@@ -70,13 +82,30 @@ function AdminDestinationsPage() {
   const openAdd = () => { setForm(emptyForm); setEditId(null); setModal("add"); };
   const openEdit = (d: DbDestination) => {
     setEditId(d.id);
-    setForm({ slug: d.slug, name: d.name, country: d.country, region: d.region, tripType: Array.isArray(d.tripType) ? d.tripType : [], budgetBand: d.budgetBand, fromPrice: d.fromPrice, durationNights: d.durationNights, heroImage: d.heroImage, tagline: d.tagline, summary: d.summary });
+    setForm({
+      slug: d.slug, name: d.name, country: d.country, region: d.region,
+      tripType: parseArr<string>(d.tripType), budgetBand: d.budgetBand, fromPrice: d.fromPrice,
+      durationNights: d.durationNights, heroImage: d.heroImage, tagline: d.tagline, summary: d.summary,
+      gallery: parseArr<string>(d.gallery),
+      itinerary: parseArr<{ day: string; title: string; detail: string }>(d.itinerary),
+      highlights: parseArr<string>(d.highlights),
+    });
     setModal("edit");
   };
 
   const toggleTripType = (t: string) => {
     setForm({ ...form, tripType: form.tripType.includes(t) ? form.tripType.filter((x) => x !== t) : [...form.tripType, t] });
   };
+
+  const addItineraryStep = () => setForm({ ...form, itinerary: [...form.itinerary, { day: "", title: "", detail: "" }] });
+  const updateItineraryStep = (i: number, patch: Partial<{ day: string; title: string; detail: string }>) =>
+    setForm({ ...form, itinerary: form.itinerary.map((s, idx) => (idx === i ? { ...s, ...patch } : s)) });
+  const removeItineraryStep = (i: number) => setForm({ ...form, itinerary: form.itinerary.filter((_, idx) => idx !== i) });
+
+  const addHighlight = () => setForm({ ...form, highlights: [...form.highlights, ""] });
+  const updateHighlight = (i: number, value: string) =>
+    setForm({ ...form, highlights: form.highlights.map((h, idx) => (idx === i ? value : h)) });
+  const removeHighlight = (i: number) => setForm({ ...form, highlights: form.highlights.filter((_, idx) => idx !== i) });
 
   return (
     <div className="p-6 lg:p-8">
@@ -170,6 +199,43 @@ function AdminDestinationsPage() {
             <div><label className={labelCls}>Tagline</label><input className={inputCls} value={form.tagline} onChange={(e) => setForm({ ...form, tagline: e.target.value })} /></div>
             <div><label className={labelCls}>Summary</label><textarea className={inputCls} rows={3} value={form.summary} onChange={(e) => setForm({ ...form, summary: e.target.value })} /></div>
             <ImageUpload label="Hero image" value={form.heroImage} onChange={(url) => setForm({ ...form, heroImage: url })} />
+            <GalleryUpload label="Gallery images" value={form.gallery} onChange={(gallery) => setForm({ ...form, gallery })} />
+
+            <div>
+              <div className="mb-1 flex items-center justify-between">
+                <label className={labelCls}>Outline itinerary</label>
+                <button type="button" onClick={addItineraryStep} className="text-xs font-semibold text-[#042045] hover:underline">+ Add step</button>
+              </div>
+              <div className="space-y-2">
+                {form.itinerary.map((step, i) => (
+                  <div key={i} className="flex gap-2 rounded-lg border border-gray-200 bg-gray-50 p-2">
+                    <div className="grid flex-1 grid-cols-3 gap-2">
+                      <input className={inputCls} placeholder="Day (e.g. Day 1)" value={step.day} onChange={(e) => updateItineraryStep(i, { day: e.target.value })} />
+                      <input className={inputCls} placeholder="Title" value={step.title} onChange={(e) => updateItineraryStep(i, { title: e.target.value })} />
+                      <input className={inputCls} placeholder="Detail" value={step.detail} onChange={(e) => updateItineraryStep(i, { detail: e.target.value })} />
+                    </div>
+                    <button type="button" onClick={() => removeItineraryStep(i)} className="shrink-0 rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"><X className="h-3.5 w-3.5" /></button>
+                  </div>
+                ))}
+                {form.itinerary.length === 0 && <p className="text-xs text-gray-400">No itinerary steps yet.</p>}
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-1 flex items-center justify-between">
+                <label className={labelCls}>What's included (highlights)</label>
+                <button type="button" onClick={addHighlight} className="text-xs font-semibold text-[#042045] hover:underline">+ Add highlight</button>
+              </div>
+              <div className="space-y-2">
+                {form.highlights.map((h, i) => (
+                  <div key={i} className="flex gap-2">
+                    <input className={inputCls} placeholder="e.g. Business-class returns" value={h} onChange={(e) => updateHighlight(i, e.target.value)} />
+                    <button type="button" onClick={() => removeHighlight(i)} className="shrink-0 rounded-lg border border-gray-200 p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"><X className="h-3.5 w-3.5" /></button>
+                  </div>
+                ))}
+                {form.highlights.length === 0 && <p className="text-xs text-gray-400">No highlights yet.</p>}
+              </div>
+            </div>
           </div>
           {saveMut.error && <p className="text-sm text-red-600">{(saveMut.error as Error).message}</p>}
           <DialogFooter>
