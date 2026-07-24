@@ -134,6 +134,7 @@ export const dealSchema = z.object({
   gallery: z.array(z.string().max(500)).default([]),
   isFavourite: z.boolean().default(false),
   blurb: z.string().max(1000).default(""),
+  holidayTypeSlugs: z.array(z.string().max(100)).default([]),
 });
 
 export const testimonialSchema = z.object({

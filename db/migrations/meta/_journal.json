@@ -141,6 +141,13 @@
       "when": 1783600000000,
       "tag": "0019_remove_deal_destination_slug",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1783700000000,
+      "tag": "0020_add_deal_holiday_type_slugs",
+      "breakpoints": true
     }
   ]
 }

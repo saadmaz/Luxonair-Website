@@ -196,6 +196,7 @@ export const deals = mysqlTable(
     gallery: json("gallery").$type<string[]>().notNull().default([]),
     isFavourite: boolean("is_favourite").notNull().default(false),
     blurb: text("blurb").notNull(),
+    holidayTypeSlugs: json("holiday_type_slugs").$type<string[]>().notNull().default([]),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [index("deals_expires_idx").on(t.expires), index("deals_is_favourite_idx").on(t.isFavourite)],

@@ -3,9 +3,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, MessageCircle, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { Newsletter } from "@/components/shared/Newsletter";
-import { PackageCard } from "@/components/shared/PackageCard";
-import { holidayPackages } from "@/data/packages";
-import { getHolidayTypeBySlug, getDestinations } from "@/server/queries";
+import { OfferCard } from "@/components/shared/OfferCard";
+import { getHolidayTypeBySlug, getDestinations, getDeals } from "@/server/queries";
 import { SITE } from "@/config";
 
 const parseArr = <T,>(v: unknown): T[] =>
@@ -18,14 +17,14 @@ export const Route = createFileRoute("/holiday/$slug")({
     const bullets = parseArr<string>(row.bullets);
     const destinationSlugs = parseArr<string>(row.destinationSlugs);
     const holidayType = { ...row, bullets, destinationSlugs };
-    const allDestinations = await getDestinations();
+    const [allDestinations, allDeals] = await Promise.all([getDestinations(), getDeals()]);
     const linkedDestinations = allDestinations.filter((d) =>
       destinationSlugs.includes(d.slug)
     );
-    const packages = holidayPackages.filter(
-      (p) => p.holidayTypeSlug === params.slug
+    const offers = allDeals.filter((d) =>
+      parseArr<string>(d.holidayTypeSlugs).includes(params.slug)
     );
-    return { holidayType, linkedDestinations, packages };
+    return { holidayType, linkedDestinations, offers };
   },
   head: ({ loaderData, params }) => {
     const h = loaderData?.holidayType;
@@ -79,7 +78,7 @@ export const Route = createFileRoute("/holiday/$slug")({
 });
 
 function HolidayTypePage() {
-  const { holidayType: h, packages } = Route.useLoaderData();
+  const { holidayType: h, offers } = Route.useLoaderData();
 
   return (
     <>
@@ -150,19 +149,19 @@ function HolidayTypePage() {
         </div>
       </section>
 
-      {/* ── PACKAGES GRID ────────────────────────────────────────────────── */}
-      {packages.length > 0 && (
+      {/* ── OFFERS GRID ──────────────────────────────────────────────────── */}
+      {offers.length > 0 && (
         <section className="bg-secondary/30 py-16 md:py-20">
           <div className="container-page">
             <div className="mb-10 text-center">
               <h2 className="font-display text-3xl font-bold sm:text-4xl">
-                Top {h.name} Holidays 2026
+                Top {h.name} Offers 2026
               </h2>
               <p className="mt-2 text-muted-foreground">{h.tagline}</p>
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {packages.map((pkg) => (
-                <PackageCard key={pkg.id} pkg={pkg} />
+              {offers.map((d) => (
+                <OfferCard key={d.id} d={d} />
               ))}
             </div>
             <div className="mt-10 text-center">

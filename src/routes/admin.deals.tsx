@@ -9,6 +9,7 @@ import { DatePicker } from "@/components/shared/DatePicker";
 import { api } from "@/lib/api";
 import { Pagination } from "@/components/ui/Pagination";
 import { regions } from "@/data/destinations";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/deals")({
   component: AdminDealsPage,
@@ -28,7 +29,10 @@ type DbDeal = {
   gallery: string[];
   isFavourite: boolean;
   blurb: string;
+  holidayTypeSlugs: string[];
 };
+
+type DbHolidayType = { id: number; slug: string; name: string };
 
 const inputCls = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#042045] focus:bg-white focus:ring-2 focus:ring-[#042045]/10";
 const labelCls = "block text-sm font-medium text-gray-700 mb-1";
@@ -40,6 +44,7 @@ const emptyForm = {
   id: "", title: "", region: "Europe", nights: 7,
   board: "B&B", fromPrice: 0, oldPrice: "" as string | number,
   badge: "Honeymoon", expires: "", image: "", gallery: [] as string[], isFavourite: false, blurb: "",
+  holidayTypeSlugs: [] as string[],
 };
 
 // The API may return gallery as a JSON-encoded string rather than an already-parsed
@@ -62,6 +67,11 @@ function AdminDealsPage() {
   const items = result?.data ?? [];
   const total = result?.total ?? 0;
 
+  const { data: holidayTypes = [] } = useQuery({
+    queryKey: ["holidays-list"],
+    queryFn: () => api.get<DbHolidayType[]>("/api/holidays"),
+  });
+
   const saveMut = useMutation({
     mutationFn: (data: typeof emptyForm) => {
       const payload = { ...data, oldPrice: data.oldPrice !== "" ? Number(data.oldPrice) : undefined };
@@ -80,8 +90,17 @@ function AdminDealsPage() {
   const openAdd = () => { setForm(emptyForm); setEditId(null); setModal("add"); };
   const openEdit = (d: DbDeal) => {
     setEditId(d.id);
-    setForm({ id: d.id, title: d.title, region: d.region, nights: d.nights, board: d.board, fromPrice: d.fromPrice, oldPrice: d.oldPrice ?? "", badge: d.badge, expires: d.expires, image: d.image, gallery: parseArr(d.gallery), isFavourite: d.isFavourite ?? false, blurb: d.blurb });
+    setForm({ id: d.id, title: d.title, region: d.region, nights: d.nights, board: d.board, fromPrice: d.fromPrice, oldPrice: d.oldPrice ?? "", badge: d.badge, expires: d.expires, image: d.image, gallery: parseArr(d.gallery), isFavourite: d.isFavourite ?? false, blurb: d.blurb, holidayTypeSlugs: parseArr(d.holidayTypeSlugs) });
     setModal("edit");
+  };
+
+  const toggleHolidayType = (slug: string) => {
+    setForm({
+      ...form,
+      holidayTypeSlugs: form.holidayTypeSlugs.includes(slug)
+        ? form.holidayTypeSlugs.filter((s) => s !== slug)
+        : [...form.holidayTypeSlugs, slug],
+    });
   };
 
   return (
@@ -207,6 +226,18 @@ function AdminDealsPage() {
             <div><label className={labelCls}>Blurb</label><textarea className={inputCls} rows={2} value={form.blurb} onChange={(e) => setForm({ ...form, blurb: e.target.value })} /></div>
             <ImageUpload label="Cover image" value={form.image} onChange={(url) => setForm({ ...form, image: url })} />
             <GalleryUpload label="Additional images" value={form.gallery} onChange={(gallery) => setForm({ ...form, gallery })} />
+            <div>
+              <label className={labelCls}>Holiday types (shows this offer on those pages)</label>
+              <div className="flex flex-wrap gap-2">
+                {holidayTypes.map((h) => (
+                  <button key={h.slug} type="button" onClick={() => toggleHolidayType(h.slug)}
+                    className={cn("rounded-full px-3 py-1 text-xs font-medium transition-colors", form.holidayTypeSlugs.includes(h.slug) ? "bg-[#042045] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200")}>
+                    {h.name}
+                  </button>
+                ))}
+                {holidayTypes.length === 0 && <p className="text-xs text-gray-400">No holiday types set up yet.</p>}
+              </div>
+            </div>
             <label className="flex items-center gap-2 text-sm text-gray-700">
               <input
                 type="checkbox"
