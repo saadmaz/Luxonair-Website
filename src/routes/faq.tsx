@@ -50,7 +50,7 @@ function FaqPage() {
       <header className="max-w-2xl">
         <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Help centre</p>
         <h1 className="mt-2 font-display text-3xl font-semibold sm:text-5xl text-balance">Frequently asked questions.</h1>
-        <p className="mt-3 text-muted-foreground">Can't find your answer? Call <a href={`tel:${SITE.phone.primary.tel}`} className="text-primary hover:underline">{SITE.phone.primary.display}</a> or <a href={`tel:${SITE.phone.secondary.tel}`} className="text-primary hover:underline">{SITE.phone.secondary.display}</a>, or WhatsApp us.</p>
+        <p className="mt-3 text-muted-foreground">Can't find your answer? Call <a href={`tel:${SITE.phone.primary.tel}`} className="text-primary hover:underline">{SITE.phone.primary.display}</a> or WhatsApp us.</p>
       </header>
 
       <div className="mt-12 space-y-14">

@@ -122,8 +122,7 @@ function QuotePage() {
           <Row icon={Clock} title="Rapid response" body="Mon–Fri 09:00–18:00 · Sat–Sun 09:00–16:00 GMT. Outside hours, first thing next morning." />
           <Row icon={ShieldCheck} title="ATOL-protected" body="Where flights are included. Membership numbers shown on About page." />
           <Row icon={Phone} title="Or call us" body={`${SITE.phone.primary.display} - direct to a consultant, never a queue.`} href={`tel:${SITE.phone.primary.tel}`} />
-          <Row icon={Phone} title="Alternative number" body={SITE.phone.secondary.display} href={`tel:${SITE.phone.secondary.tel}`} />
-          <Row icon={WhatsAppIcon} title="WhatsApp" body="Send the same details on WhatsApp if you prefer." href={`https://wa.me/${SITE.phone.whatsapp}`} />
+          <Row icon={WhatsAppIcon} title="WhatsApp" body={`${SITE.phone.secondary.display} - send the same details if you prefer.`} href={`https://wa.me/${SITE.phone.whatsapp}`} />
         </ul>
       </aside>
 

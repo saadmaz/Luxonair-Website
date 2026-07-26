@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getHolidayTypes } from "@/server/queries";
 import { SITE } from "@/config/site";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { AnimatePresence, motion } from "framer-motion";
 
 export function Header() {
@@ -30,10 +31,12 @@ export function Header() {
             </a>
             <span className="hidden text-navy-fg/30 sm:block">|</span>
             <a
-              href={`tel:${SITE.phone.secondary.tel}`}
+              href={`https://wa.me/${SITE.phone.whatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="hidden items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold sm:flex"
             >
-              <Phone className="h-3 w-3 shrink-0" /> {SITE.phone.secondary.display}
+              <WhatsAppIcon className="h-3 w-3 shrink-0 text-[#25D366]" /> {SITE.phone.secondary.display}
             </a>
             <span className="hidden text-navy-fg/30 sm:block">|</span>
             <a

@@ -121,20 +121,11 @@ export function Footer() {
             </li>
             <li>
               <a
-                href={`tel:${SITE.phone.secondary.tel}`}
-                className="flex items-center gap-2 text-navy-fg/60 transition-colors hover:text-gold"
-              >
-                <Phone className="h-3.5 w-3.5 shrink-0 text-gold/60" />
-                {SITE.phone.secondary.display}
-              </a>
-            </li>
-            <li>
-              <a
                 href={`https://wa.me/${SITE.phone.whatsapp}`}
                 className="flex items-center gap-2 text-navy-fg/60 transition-colors hover:text-gold"
               >
                 <WhatsAppIcon className="h-3.5 w-3.5 shrink-0 text-gold/60" />
-                WhatsApp us
+                {SITE.phone.secondary.display}
               </a>
             </li>
             <li>

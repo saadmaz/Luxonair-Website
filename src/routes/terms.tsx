@@ -328,9 +328,7 @@ function TermsPage() {
                     Our team is here to help. Email us at{" "}
                     <a href={`mailto:${SITE.email}`} className="text-primary font-medium hover:underline">{SITE.email}</a>{" "}
                     or call{" "}
-                    <a href={`tel:${SITE.phone.primary.tel}`} className="text-primary font-medium hover:underline">{SITE.phone.primary.display}</a>{" "}
-                    or{" "}
-                    <a href={`tel:${SITE.phone.secondary.tel}`} className="text-primary font-medium hover:underline">{SITE.phone.secondary.display}</a>.
+                    <a href={`tel:${SITE.phone.primary.tel}`} className="text-primary font-medium hover:underline">{SITE.phone.primary.display}</a>.
                   </p>
                   <p className="mt-0.5 text-xs text-muted-foreground">Luxeonair LTD · {SITE.address} · Company No. 17264512</p>
                 </div>

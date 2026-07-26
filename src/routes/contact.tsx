@@ -117,7 +117,7 @@ function ContactPage() {
           {/* Left: info */}
           <aside className="space-y-8">
             <ul className="space-y-4">
-              <Row icon={Phone} title="Call us" body={`${SITE.phone.primary.display} / ${SITE.phone.secondary.display}`} />
+              <Row icon={Phone} title="Call us" body={SITE.phone.primary.display} />
               <Row
                 icon={WhatsAppIcon}
                 title="WhatsApp"
