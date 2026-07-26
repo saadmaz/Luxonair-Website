@@ -5,8 +5,8 @@
 
 export const SITE = {
   phone: {
-    display: "+44 7448 009739",
-    tel: "+447448009739",
+    primary: { display: "+44 020 8087 4818", tel: "+442080874818" },
+    secondary: { display: "+44 7448 009739", tel: "+447448009739" },
     whatsapp: "447448009739",
   },
   email: "info@luxeonair.co.uk",

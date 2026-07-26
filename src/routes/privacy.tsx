@@ -97,7 +97,7 @@ function PrivacyPage() {
                 <p className="mt-1 text-muted-foreground">{SITE.address}</p>
                 <div className="mt-2 space-y-0.5">
                   <p>Email: <a href={`mailto:${SITE.email}`} className="text-primary hover:underline">{SITE.email}</a></p>
-                  <p>Phone: <a href={`tel:${SITE.phone.tel}`} className="text-primary hover:underline">{SITE.phone.display}</a></p>
+                  <p>Phone: <a href={`tel:${SITE.phone.primary.tel}`} className="text-primary hover:underline">{SITE.phone.primary.display}</a> / <a href={`tel:${SITE.phone.secondary.tel}`} className="text-primary hover:underline">{SITE.phone.secondary.display}</a></p>
                 </div>
                 <p className="mt-2 text-xs text-muted-foreground">Company No. 17264512, registered in England &amp; Wales</p>
               </div>
@@ -331,7 +331,7 @@ function PrivacyPage() {
                 <p className="mt-2 text-muted-foreground">{SITE.address}</p>
                 <div className="mt-2 space-y-0.5">
                   <p>Email: <a href={`mailto:${SITE.email}`} className="text-primary hover:underline">{SITE.email}</a></p>
-                  <p>Phone: <a href={`tel:${SITE.phone.tel}`} className="text-primary hover:underline">{SITE.phone.display}</a></p>
+                  <p>Phone: <a href={`tel:${SITE.phone.primary.tel}`} className="text-primary hover:underline">{SITE.phone.primary.display}</a> / <a href={`tel:${SITE.phone.secondary.tel}`} className="text-primary hover:underline">{SITE.phone.secondary.display}</a></p>
                 </div>
               </div>
               <p className="mt-4 text-muted-foreground">

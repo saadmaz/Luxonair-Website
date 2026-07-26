@@ -106,7 +106,7 @@ function HolidayTypePage() {
               variant="outline"
               className="border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white"
             >
-              <a href={`tel:${SITE.phone.tel}`}>
+              <a href={`tel:${SITE.phone.primary.tel}`}>
                 <Phone className="mr-2 h-4 w-4" /> Talk to an Expert
               </a>
             </Button>

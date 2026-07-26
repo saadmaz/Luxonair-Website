@@ -88,7 +88,7 @@ function ContactPage() {
           {/* Quick contact chips */}
           <div className="mt-6 flex gap-2.5 overflow-x-auto pb-0.5 sm:flex-wrap sm:overflow-x-visible sm:pb-0 sm:gap-3">
             <a
-              href={`tel:${SITE.phone.tel}`}
+              href={`tel:${SITE.phone.primary.tel}`}
               className="inline-flex shrink-0 items-center gap-2 rounded-full border border-navy-fg/20 bg-navy-fg/5 px-3.5 py-2 text-sm text-navy-fg/80 transition-colors hover:border-gold hover:text-gold sm:px-4"
             >
               <Phone className="h-3.5 w-3.5" /> Call us
@@ -117,7 +117,7 @@ function ContactPage() {
           {/* Left: info */}
           <aside className="space-y-8">
             <ul className="space-y-4">
-              <Row icon={Phone} title="Call us" body={SITE.phone.display} />
+              <Row icon={Phone} title="Call us" body={`${SITE.phone.primary.display} / ${SITE.phone.secondary.display}`} />
               <Row
                 icon={WhatsAppIcon}
                 title="WhatsApp"

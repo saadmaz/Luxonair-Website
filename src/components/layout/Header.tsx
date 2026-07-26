@@ -23,10 +23,17 @@ export function Header() {
         <div className="container-page flex items-center justify-between gap-x-4 py-1.5 text-xs">
           <div className="flex items-center gap-3">
             <a
-              href={`tel:${SITE.phone.tel}`}
+              href={`tel:${SITE.phone.primary.tel}`}
               className="flex items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold"
             >
-              <Phone className="h-3 w-3 shrink-0" /> {SITE.phone.display}
+              <Phone className="h-3 w-3 shrink-0" /> {SITE.phone.primary.display}
+            </a>
+            <span className="hidden text-navy-fg/30 sm:block">|</span>
+            <a
+              href={`tel:${SITE.phone.secondary.tel}`}
+              className="hidden items-center gap-1.5 text-navy-fg/80 transition-colors hover:text-gold sm:flex"
+            >
+              <Phone className="h-3 w-3 shrink-0" /> {SITE.phone.secondary.display}
             </a>
             <span className="hidden text-navy-fg/30 sm:block">|</span>
             <a

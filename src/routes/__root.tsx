@@ -124,7 +124,7 @@ gtag('config', 'G-W2KM9SWBE8');`,
               "url": "https://www.luxeonair.co.uk",
               "logo": "https://www.luxeonair.co.uk/Logo/main-logo.png",
               "description": "London-based luxury travel agency crafting bespoke long-haul holidays, family escapes and corporate travel programmes from the UK. ATOL protected. One dedicated consultant per trip.",
-              "telephone": "+447448009739",
+              "telephone": SITE.phone.primary.tel,
               "email": "info@luxeonair.co.uk",
               "address": {
                 "@type": "PostalAddress",
