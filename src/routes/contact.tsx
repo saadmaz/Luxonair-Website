@@ -121,7 +121,12 @@ function ContactPage() {
               <Row
                 icon={WhatsAppIcon}
                 title="WhatsApp"
-                body={`+${SITE.phone.whatsapp} - text us anything`}
+                body={
+                  <span className="inline-flex items-center gap-1.5">
+                    <WhatsAppIcon className="h-3.5 w-3.5 shrink-0 text-[#25D366]" />
+                    +{SITE.phone.whatsapp} - text us anything
+                  </span>
+                }
               />
               <Row icon={Mail} title="Email" body={SITE.email} />
               <Row
@@ -279,7 +284,7 @@ function Row({
 }: {
   icon: React.ComponentType<{ className?: string }>;
   title: string;
-  body: string;
+  body: React.ReactNode;
 }) {
   return (
     <li className="flex items-start gap-3">
